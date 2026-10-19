@@ -1,0 +1,582 @@
+@import 'tailwindcss';
+/* shortcut: Outfit stands in for Gilroy until the web licence is settled (open question 11); swap --font-sans when it is. */
+@import '@fontsource-variable/outfit';
+
+/* The charter on the night (docs/brand.md, system sheet #10). */
+@theme {
+  --font-sans: 'Outfit Variable', system-ui, sans-serif;
+
+  --color-night: #141e27;
+  --color-night-up: #1a2733;
+  --color-blue: #127dbb;
+  --color-aqua: #69c4af;
+  --color-gray: #efefef;
+  --color-mute: #a3afba; /* captions on night, 8.1:1 */
+  --color-ink: #3b4954; /* body on Bright Gray */
+  --color-link: oklch(0.5 0.129 242.2); /* the nudged blue, one step darker so it clears 4.5:1 on Bright Gray too */
+  --color-gold: #d4a843;
+  --color-ignite: #e0313f;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --line: rgb(239 239 239 / 0.14);
+  --line-dark: rgb(20 30 39 / 0.16);
+  --grad: linear-gradient(135deg, #127dbb, #69c4af);
+  --radius: 20px;
+
+  /* type scale, signed in #10 */
+  --t-display: clamp(52px, 9vw, 128px);
+  --t-act: clamp(36px, 5vw, 72px);
+  --t-cut: clamp(40px, 7vw, 104px);
+  --t-figure: clamp(44px, 5.6vw, 80px);
+  --t-lead: clamp(18px, 1.5vw, 22px);
+  --t-body: clamp(16px, 1.15vw, 17px);
+  --t-ui: 15px;
+  --t-cap: 13px;
+
+  --rail: max(20px, 2.4vw);
+  --gut: calc(var(--rail) + 132px);
+  --edge: 24px;
+}
+
+@media (max-width: 767px) {
+  .t-display,
+  .t-act {
+    letter-spacing: -0.015em;
+  }
+  :root {
+    --rail: 10px;
+    --gut: 40px;
+    --edge: 16px;
+    --radius: 16px;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-night);
+    color: var(--color-gray);
+    -webkit-font-smoothing: antialiased;
+    scrollbar-color: #2b3a47 var(--color-night);
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--color-night);
+    font-size: var(--t-body);
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-aqua);
+    color: var(--color-night);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-aqua);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* ---------- type roles ---------- */
+  .t-display {
+    font-weight: 900;
+    font-size: var(--t-display);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .t-act {
+    font-weight: 900;
+    font-size: var(--t-act);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .t-lead {
+    font-size: var(--t-lead);
+    line-height: 1.45;
+    max-width: 34ch;
+  }
+  .t-cap {
+    font-size: var(--t-cap);
+    line-height: 1.5;
+    color: var(--color-mute);
+  }
+  /* ghost numerals: the fill paints over the stroke, hiding the variable font's overlapping contours */
+  .ghost {
+    color: var(--color-gray);
+    -webkit-text-stroke: 3px rgb(20 30 39 / 0.3);
+    paint-order: stroke fill;
+  }
+  .tab {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- page frame ---------- */
+  .wrap {
+    position: relative;
+    z-index: 2;
+    padding-left: var(--gut);
+    padding-right: var(--edge);
+  }
+
+  /* static grain and vignette over the poster, under the content (#10) */
+  .fx {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .vignette {
+    background: radial-gradient(120% 90% at 50% 45%, transparent 45%, rgb(8 12 17 / 0.85) 100%);
+  }
+  .grain {
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- the Apply pill: night fill, gradient ring, white label ---------- */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 8px 0 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: var(--t-ui);
+    line-height: 1.15;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    background:
+      linear-gradient(var(--color-night), var(--color-night)) padding-box,
+      var(--grad) border-box;
+    border: 1.5px solid transparent;
+    box-shadow: 0 8px 32px -8px rgb(18 125 187 / 0.55);
+    transition:
+      box-shadow 0.4s var(--ease-out-expo),
+      transform 0.4s var(--ease-out-expo),
+      opacity 0.5s var(--ease-out-expo);
+  }
+  .pill:focus-visible {
+    border-radius: 999px;
+  }
+  .pill.is-open {
+    padding-left: 22px;
+    padding-right: 6px;
+  }
+  .pill:hover {
+    box-shadow: 0 10px 40px -6px rgb(105 196 175 / 0.6);
+    transform: translateY(-1px);
+  }
+  .pill:active {
+    transform: scale(0.98);
+  }
+  .pill .chip {
+    flex: none;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 11px;
+    border-radius: 999px;
+    background: rgb(105 196 175 / 0.14);
+    color: var(--color-aqua);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+  }
+  .pill .go {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: var(--color-night);
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+  .pill .go svg {
+    width: 16px;
+    height: 16px;
+  }
+  .pill:hover .go {
+    transform: rotate(45deg);
+  }
+  .pill-lg {
+    height: 54px;
+    font-size: 16px;
+    padding-left: 24px;
+  }
+  .pill-lg .go {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* ---------- chrome ---------- */
+  .logoplate {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9;
+    width: calc(var(--gut) + 260px);
+    height: 96px;
+    pointer-events: none;
+    background: radial-gradient(ellipse 100% 100% at 0 0, var(--color-night) 0, var(--color-night) 58%, rgb(20 30 39 / 0) 100%);
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+  .logo {
+    position: fixed;
+    top: 22px;
+    left: var(--gut);
+    height: 34px;
+    z-index: 10;
+    border-radius: 4px;
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+  .logo img {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+  .away {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .readout {
+    position: fixed;
+    top: 22px;
+    right: var(--edge);
+    z-index: 10;
+    text-align: right;
+    font-size: var(--t-cap);
+    line-height: 1.4;
+    color: var(--color-mute);
+    transition: color 0.35s var(--ease-out-expo);
+  }
+  .readout b {
+    display: block;
+    font-weight: 400;
+    font-size: 22px;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.35s var(--ease-out-expo);
+  }
+  .readout.lit {
+    color: #4a5762;
+  }
+  .readout.lit b {
+    color: var(--color-night);
+  }
+
+  .rail {
+    position: fixed;
+    left: var(--rail);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .rail::before,
+  .rail::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    width: 1px;
+    bottom: 6px;
+    background: var(--line);
+  }
+  .rail::after {
+    background: var(--grad);
+    bottom: auto;
+    height: var(--fill, 0%);
+    box-shadow: 0 0 8px rgb(105 196 175 / 0.6);
+    transition: height 0.5s var(--ease-out-expo);
+  }
+  .rail a {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: rgb(239 239 239 / 0.45);
+    font-size: var(--t-cap);
+    line-height: 1;
+    transition: color 0.35s var(--ease-out-expo);
+  }
+  .rail i {
+    flex: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    background: var(--color-night);
+    transition:
+      background 0.5s var(--ease-out-expo),
+      border-color 0.5s var(--ease-out-expo),
+      box-shadow 0.5s var(--ease-out-expo);
+  }
+  .rail span {
+    opacity: 0;
+    transform: translateX(-6px);
+    transition:
+      opacity 0.4s var(--ease-out-expo),
+      transform 0.4s var(--ease-out-expo);
+    white-space: nowrap;
+  }
+  .rail a.on {
+    color: #fff;
+  }
+  .rail a.on i {
+    background: var(--color-aqua);
+    border-color: var(--color-aqua);
+  }
+  .rail a.now i {
+    box-shadow:
+      0 0 0 4px rgb(105 196 175 / 0.18),
+      0 0 14px var(--color-aqua);
+  }
+  .rail a.now span,
+  .rail:hover span,
+  .rail a:focus-visible span {
+    opacity: 1;
+    transform: none;
+  }
+  /* over the light act each piece flips on its own (#10) */
+  .rail.lit a {
+    color: rgb(20 30 39 / 0.4);
+  }
+  .rail.lit a.on {
+    color: var(--color-night);
+  }
+  .rail.lit i {
+    background: var(--color-gray);
+  }
+  .rail.lit a.on i {
+    background: var(--color-night);
+    border-color: var(--color-night);
+  }
+  .rail.lit a.now i {
+    box-shadow: 0 0 0 4px rgb(20 30 39 / 0.12);
+  }
+  .rail.lit::before {
+    background: var(--line-dark);
+  }
+
+  .pill.corner {
+    position: fixed;
+    top: 78px;
+    right: var(--edge);
+    z-index: 10;
+  }
+  .pill.corner.hide {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+  }
+
+  .skip {
+    position: fixed;
+    left: var(--edge);
+    top: -80px;
+    z-index: 20;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--color-gray);
+    color: var(--color-night);
+    font-weight: 700;
+    font-size: var(--t-ui);
+    text-decoration: none;
+  }
+  .skip:focus {
+    top: 16px;
+  }
+
+  @media (max-width: 767px) {
+    .logo {
+      top: 18px;
+      height: 26px;
+    }
+    .logoplate {
+      height: 76px;
+      width: calc(var(--gut) + 200px);
+    }
+    .readout {
+      top: 16px;
+      font-size: 11px;
+    }
+    .readout b {
+      font-size: 17px;
+    }
+    .rail {
+      gap: 16px;
+    }
+    .rail span {
+      /* dots only on phones; the names stay for screen readers */
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .rail a {
+      padding: 6px;
+    }
+    .rail::before,
+    .rail::after {
+      left: 10px;
+    }
+    .pill.corner {
+      top: auto;
+      bottom: 16px;
+    }
+    .pill.corner.hide {
+      transform: translateY(6px);
+    }
+  }
+
+  /* ---------- chips and hairline lists, shared by the cards ---------- */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chips li {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1px solid rgb(239 239 239 / 0.22);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.25;
+    color: #fff;
+  }
+  .chips li.flag {
+    border-color: var(--c);
+    box-shadow: inset 0 0 0 1px var(--c);
+    background: color-mix(in srgb, var(--c) 10%, transparent);
+  }
+
+  .rule {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--t-cap);
+    color: var(--color-mute);
+  }
+  .rule::before {
+    content: '';
+    width: 26px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--c), var(--c2, var(--c)));
+  }
+  .rule b {
+    font-weight: 700;
+    /* the accent lifted toward white, so Ignite red still reads at 4.5:1 as text */
+    color: color-mix(in srgb, var(--c) 72%, #fff);
+  }
+
+  /* the cards of the department and event acts on tier 0 (#13, #15) */
+  .card {
+    position: relative;
+    min-width: 0;
+    border: 1.5px solid color-mix(in srgb, var(--c) 62%, transparent);
+    border-radius: var(--radius);
+    background: var(--color-night-up);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.05),
+      0 30px 60px -40px color-mix(in srgb, var(--c) 45%, transparent);
+  }
+  .card::before {
+    /* the lit hairline along the top edge of each cut */
+    content: '';
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c), var(--c2, var(--c)), transparent);
+    box-shadow: 0 0 12px var(--c);
+    opacity: 0.8;
+  }
+
+  /* ---------- horizon: the night lifts into Bright Gray across a lit line (#10, #16) ---------- */
+  .horizon {
+    position: relative;
+    z-index: 2;
+    height: 46vh;
+    background: linear-gradient(180deg, var(--color-night) 0%, #1d2b37 34%, #5d6b77 66%, var(--color-gray) 100%);
+  }
+  .horizon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 52%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #127dbb 30%, #69c4af 70%, transparent);
+    box-shadow: 0 0 24px 2px rgb(105 196 175 / 0.45);
+  }
+  .horizon.down {
+    background: linear-gradient(0deg, var(--color-night) 0%, #1d2b37 34%, #5d6b77 66%, var(--color-gray) 100%);
+  }
+  .horizon.down::after {
+    top: 48%;
+  }
+  @media (max-width: 767px) {
+    .horizon {
+      height: 34vh;
+    }
+  }
+
+  .lightact {
+    position: relative;
+    z-index: 2;
+    background: var(--color-gray);
+    color: var(--color-night);
+  }
+  .lightact ::selection {
+    background: var(--color-night);
+    color: var(--color-gray);
+  }
+  .lightact :focus-visible {
+    outline-color: var(--color-link);
+  }
+  .lightact a {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}

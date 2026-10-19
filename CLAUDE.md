@@ -5,10 +5,11 @@ scroll-driven page whose one call to action takes candidates to the registration
 not built here: today it is the Google Form, later the registration app planned in the
 `VIC-Recruitment-2026` repo (`docs/registration-app.md` there).
 
-## Phase: docs first, no building
+## Phase: build
 
-Nothing gets scaffolded, installed or coded until `docs/build-plan.md` says the docs gate is passed
-(owner sign-off recorded in `docs/decisions.md`). Until then, work happens only in `docs/`.
+Gate 0 is signed (`docs/decisions.md`, 38) and the build runs slice by slice as `docs/build-plan.md` defines.
+`npm install`, then `npm run dev`, `npm test` and `npm run build`. Append `?now=<ISO date>` to any URL to check the
+CTA before and after `OPENS_AT`.
 
 Start every session at `docs/README.md`. It has the reading order and the current state.
 

@@ -73,7 +73,6 @@ Needed by the signed acts and not made yet:
 | Seven outlined department icons | Departments tier 0 cards only ([#13](https://github.com/puIad/vic-enp/issues/13)) | Drawn in the build |
 | One ambient sound loop, under 300 KB | The optional sound toggle ([#10](https://github.com/puIad/vic-enp/issues/10)) | To find, with a licence for public use |
 | One photo for AEC, one each for CPSP, STEPS, Anglosphere, VICra (3:2) | Events cuts 4 and 5 ([#15](https://github.com/puIad/vic-enp/issues/15)) | The owner |
-| `og.png` and the favicon | Share tags (open question 26) | Slice 1 |
 
 ## Generated assets (agy)
 
@@ -94,5 +93,8 @@ Every file in `public/` that isn't code, one row each, filled during the build.
 | File | Source | Licence or owner | Used in |
 |---|---|---|---|
 | `public/brand/*` | VIC charter files via `VIC-Recruitment-2026` | VIC | Header, footer, share image |
+| `public/og.png` | Rendered in slice 1 from the page's own tier 0 hero (seeded cloud, white logo, tagline in the page font), 1200×630 | VIC | Share tags (open question 26) |
+| `public/apple-touch-icon.png` | `vic-icon-white.svg` on night, 180×180 | VIC | Home-screen icon |
+| Outfit (npm `@fontsource-variable/outfit`, bundled) | Google Fonts via Fontsource | SIL OFL 1.1 | Every word, until the Gilroy web licence is settled (open question 11) |
 | `public/photos/*` | `assets/pics/` (club photos) | VIC | Peak, events |
 | `src/world/` depth stack (code) | [Gallery](https://21st.dev/@mengto/components/gallery) by Meng To on 21st.dev, installed on the owner's account | MIT, notice kept in the file | Peak photo sequence |

@@ -94,6 +94,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .rows div:last-child{border-bottom:1px solid var(--line)}
 .rows b{font-weight:900;font-size:clamp(26px,2.6vw,40px);letter-spacing:-.02em;color:#fff;line-height:1}
 .rows p{margin-top:8px;font-size:15px;line-height:1.45;color:var(--gray);max-width:52ch}
+/* placeholders for photos still to come: same frame, radius and tint as a real photo */
+.slot{display:grid;place-items:center;text-align:center;background:repeating-linear-gradient(135deg,rgba(239,239,239,.04) 0 12px,transparent 12px 24px),#16222d;border:1.5px dashed color-mix(in srgb,var(--c) 70%,transparent);color:var(--mute);font-size:var(--t-cap);font-weight:700;border-radius:var(--radius);overflow:hidden}
+.ph.slot::after{display:none}
+.rows div{display:grid;grid-template-columns:104px 1fr;gap:4px 20px;align-items:start}
+.rows .slot{grid-row:1/3;width:104px;aspect-ratio:3/2;border-radius:12px;font-size:11px}
+.rows b{grid-column:2}.rows p{grid-column:2;margin-top:0}
 /* the pan streak on every cut */
 .streak{position:fixed;top:0;bottom:0;left:0;width:22vw;z-index:5;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--sc,#69C4AF) 70%,#fff);mix-blend-mode:screen}
 .streak.go{animation:streak .3s cubic-bezier(.5,0,.2,1) 1}
@@ -121,7 +127,7 @@ html.t0 .ph{aspect-ratio:3/2}
 html.t0 .ph img,html.t0 .cut.on .ph,html.t0 .cut.on .ph img{animation:none}
 html.t0 .big{font-size:clamp(30px,3vw,44px);line-height:1}
 html.t0 .big .w>span{transform:none!important;transition:none!important}
-html.t0 .cut.span2{grid-column:1/-1}
+html.t0 .rows div{grid-template-columns:104px 1fr}html.t0 .cut.span2{grid-column:1/-1}
 html.t0 .cities{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
 
 /* reduced motion with WebGL: the cuts stack, nothing pins, nothing pans */
@@ -148,7 +154,7 @@ html.stack .streak{display:none}
   .pick button{height:30px;padding:0 10px}
   .note{display:none}
     .rows{left:var(--gut);right:20px;top:84px;width:auto}
-  .rows div{padding:9px 0}.rows b{font-size:22px}.rows p{font-size:13px;margin-top:3px}
+  .rows div{padding:9px 0;grid-template-columns:64px 1fr;gap:2px 12px}.rows .slot{width:64px;border-radius:10px;font-size:9px}.rows div{padding:9px 0}.rows b{font-size:22px}.rows p{font-size:13px;margin-top:3px}
   html.t0 #act{padding-left:20px}html.t0 .grid{grid-template-columns:minmax(0,1fr)}html.t0 .logo{left:20px}
   html.t0 .ph{height:auto;left:auto;top:auto}
 }
@@ -201,7 +207,8 @@ html.stack .streak{display:none}
       <div class="chips"><span>Line followers</span><span>Maze solvers</span><span>Prep workshops</span></div>
     </div>
   </article>
-  <article class="cut" data-f="aec" data-c="#69C4AF" data-n="AEC" style="--c:#69C4AF">
+  <article class="cut photo" data-f="aec" data-c="#69C4AF" data-n="AEC" style="--c:#69C4AF">
+    <div class="ph slot" role="img" aria-label="Photo of AEC to come">Photo to come<br>AEC</div>
     <div class="txt">
       <p class="lbl">Algerian Engineering Competition</p>
       <h3 class="big">AEC.</h3>
@@ -211,10 +218,10 @@ html.stack .streak{display:none}
   </article>
   <article class="cut span2" data-f="more" data-c="#69C4AF" data-n="Four more" style="--c:#69C4AF">
     <div class="rows">
-      <div><b>CPSP</b><p>A starter pack for ENP newcomers: discover the school and get tips for the Prepa Cycle, with guests who were class majors.</p></div>
-      <div><b>STEPS</b><p>Studying abroad, language tests and scholarships, with workshops and the "STEPS Abroad" YouTube series.</p></div>
-      <div><b>Anglosphere</b><p>A celebration of the English language, with conferences, workshops and stands.</p></div>
-      <div><b>VICra</b><p>VIC's Ramadan project: a series of Islamic reminders, each followed by a quiz open to everyone, with prizes.</p></div>
+      <div><span class="slot" role="img" aria-label="Photo of CPSP to come">Photo<br>to come</span><b>CPSP</b><p>A starter pack for ENP newcomers: discover the school and get tips for the Prepa Cycle, with guests who were class majors.</p></div>
+      <div><span class="slot" role="img" aria-label="Photo of STEPS to come">Photo<br>to come</span><b>STEPS</b><p>Studying abroad, language tests and scholarships, with workshops and the "STEPS Abroad" YouTube series.</p></div>
+      <div><span class="slot" role="img" aria-label="Photo of Anglosphere to come">Photo<br>to come</span><b>Anglosphere</b><p>A celebration of the English language, with conferences, workshops and stands.</p></div>
+      <div><span class="slot" role="img" aria-label="Photo of VICra to come">Photo<br>to come</span><b>VICra</b><p>VIC's Ramadan project: a series of Islamic reminders, each followed by a quiz open to everyone, with prizes.</p></div>
     </div>
     <div class="txt">
       <p class="lbl">Projects <em>· CPSP, STEPS, Anglosphere, VICra</em></p>

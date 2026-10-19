@@ -13,4 +13,4 @@ Open `http://127.0.0.1:8793/index.html`. Copy `Gilroy-{Regular,Bold,Heavy}.woff2
 ## Shots
 
 `shots/step0..5-<d|m>.jpg`: Gala, Ignite, Polymaze, AEC, four more, horizon (`d` 1440x900, `m` 390x844). `sheet-d/m.jpg` all seven, `cuts-scroll-d/m.gif` a scroll capture across Gala, Ignite and Polymaze, `stack-full-*` reduced motion, `t0-full-*` tier 0.
-Event colours (gold `#D4A843`, red `#E0313F`, blue `#2F80ED`) are picked by eye, not from posters (none in the repo): open question 12 for the owner. Headless Chrome for Testing (playwright-chrome), software WebGL: frame rate on a phone is not checked.
+Photo slots (AEC and the four projects) are dashed placeholders for pictures the owner will add. Event colours (gold `#D4A843`, red `#E0313F`, blue `#2F80ED`) are picked by eye, not from posters (none in the repo): open question 12 for the owner. Headless Chrome for Testing (playwright-chrome), software WebGL: frame rate on a phone is not checked.

@@ -1,10 +1,12 @@
 import type { CSSProperties } from 'react'
 import { Arrow } from '../components/ApplyPill'
+import { Photo } from '../components/Photo'
 import { INSTAGRAM } from '../config'
 import { EVENTS, PROJECTS } from '../content/events'
 
 // Act 5 (#15), tier 0: the title over a two-column grid of outlined event cards, then the four projects full width.
-// shortcut: the Gala, Ignite and Polymaze photos join the cards in slice 2; AEC and the projects wait for the owner's photos.
+// shortcut: the pinned stage of five sideways cuts arrives with the world's snap formations; AEC and the projects
+// wait for the owner's photos.
 
 const accent = (c: string) => ({ '--c': c }) as CSSProperties
 
@@ -17,6 +19,13 @@ export function Events() {
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {EVENTS.map((e) => (
           <article key={e.id} aria-labelledby={`e-${e.id}`} className="card flex flex-col p-6 md:p-8" style={accent(e.accent)}>
+            {e.photo && (
+              <Photo
+                id={e.photo}
+                sizes="(max-width: 767px) 92vw, 44vw"
+                className="mb-6 aspect-[16/9] w-full rounded-[calc(var(--radius)-8px)] object-cover"
+              />
+            )}
             <p className="rule">
               <b>{e.tag}</b>
             </p>

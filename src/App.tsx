@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Chrome } from './components/Chrome'
 import { HeroPoster } from './components/Poster'
 import { useCta } from './lib/opening'
@@ -9,9 +10,21 @@ import { Hero } from './sections/Hero'
 import { Join } from './sections/Join'
 import { WhatVic, WhyJoin } from './sections/WhatVic'
 
-// The content layer (docs/architecture.md, Two layers). Slice 1 is the whole page on tier 0: no canvas yet.
+// The content layer (docs/architecture.md, Two layers). No canvas yet: the world arrives in slice 3.
 export function App() {
   const cta = useCta()
+  // the scroll engine loads after first paint; the page reads and scrolls natively until it arrives
+  useEffect(() => {
+    let stop: (() => void) | undefined
+    let gone = false
+    import('./scroll/smooth').then((m) => {
+      if (!gone) stop = m.startScroll()
+    })
+    return () => {
+      gone = true
+      stop?.()
+    }
+  }, [])
   return (
     <>
       <div className="fx vignette" aria-hidden="true" />

@@ -17,11 +17,11 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
 | `DSCF7405.jpg` | 6240×4160 | 3:2 | Large formal group in a draped hall, suits and dresses | Engineers' Gala | Events, Gala cut |
 | `_T2A6297.jpg` | 6160×4640 | 4:3 | Group on a stage with a red backdrop | Ignite Algiers | Events, Ignite cut |
 | `IMG_8026.JPG` | 6000×4000 | 3:2 | Crowd around a robot maze on the floor | Polymaze | Events, Polymaze cut |
-| `IMG_2757.JPG` | 3456×2304 | 3:2 | Full conference hall, speaker on stage, VIC ring on the back wall | A talk or training | Peak photo 3 (pan) |
+| `IMG_2757.JPG` | 3456×2304 | 3:2 | Full conference hall seen from the back, speakers on a small stage, the venue's logo on the back wall | A talk or training | Peak photo 3 (pan) |
 | `IMG_0645.jpg` | 6000×4000 | 3:2 | Large group outdoors in a forest | A club outing | Peak photo 2 (slit) |
 | `IMG_9072.jpg` | 4000×6000 | 2:3 portrait | Night, long lit tables in a courtyard | A Ramadan iftar? | Peak photo 4 (rise), the portrait moment on phones |
 | `IMG_9159.jpg` | 6000×4000 | 3:2 | Night selfie, a close group of friends | | Peak photo 5 (lens pull) |
-| `IMG_8641.JPG` | 5472×3648 | 3:2 | A student lifting a trophy in front of the ENP building | A competition win | Peak photo 6 (split) |
+| `IMG_8641.JPG` | 5472×3648 | 3:2 | A student lifting a bottle rocket in front of the ENP building, friends cheering | A rocket competition? | Peak photo 6 (split) |
 | `IMG_0257.JPG` | 6000×4000 | 3:2 | Close-up of a small robot in a white maze | Polymaze | Spare (not placed) |
 | `IMG_6141.jpg` | 6000×4000 | 3:2 | A hand holding a small robot in front of a laptop with code | SPARK workshop | Spare (not placed) |
 | `IMG_6171.jpg` | 5472×3072 | 16:9 | Casual group indoors | | Spare, tier 0 grid or close |
@@ -37,11 +37,12 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
 - One script (`scripts/photos.mjs`, using `sharp`) writes, per photo: AVIF and WebP at 640, 1280 and 1920 px wide
   (2560 for the peak photo), EXIF stripped (no GPS or camera data on the public site), orientation applied, sRGB.
   Output goes to `public/photos/`, which is committed.
-- Crops for phones: each photo gets a focal point (x, y in %) in one data file, so portrait crops keep the faces.
-  Set by eye, per photo, once.
+- Crops for phones: each photo gets a focal point (x, y in %) in `src/content/photos.ts`, so portrait crops keep the
+  faces. Set by eye, per photo, once.
 - The point-resolve formation samples the 640 px WebP in the browser; no extra file.
-- Targets: 1280 px AVIF under 200 KB, 640 px under 70 KB.
-- Captions and alt text in the same data file. Alt text describes the scene ("Around 80 VIC members in front of
+- Targets: 1280 px AVIF under 200 KB, 640 px under 70 KB. The script fails when one is over, or when an original's
+  size doesn't match `photos.ts`. Run it with `npm run photos -- <originals dir>` (default `assets/pics`).
+- Captions and alt text in the same file. Alt text describes the scene ("Around 80 VIC members in front of
   the ENP building"), not "photo 3".
 - `sharp`'s prebuilt binaries don't decode HEIC, hence the JPEG export for `IMG_8095`.
 

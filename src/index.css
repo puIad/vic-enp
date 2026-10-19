@@ -625,7 +625,7 @@
     width: min(96vw, 120lvh);
     aspect-ratio: 3 / 2;
     translate: -50% -50%;
-    visibility: hidden;
+    opacity: 0;
   }
   .peak-one .peak-frame {
     border-radius: calc(var(--radius) * var(--round, 1));
@@ -653,7 +653,7 @@
   .peak-card {
     position: absolute;
     inset: 0;
-    visibility: hidden;
+    opacity: 0;
     will-change: transform, opacity;
   }
   .half-l {
@@ -666,7 +666,7 @@
   .peak-ledger {
     position: absolute;
     left: var(--gut);
-    visibility: hidden;
+    opacity: 0; /* faded, never hidden: screen readers still read the act */
   }
   .peak-title {
     bottom: 12vh;
@@ -744,14 +744,25 @@
     .peak-ledger::before {
       inset: -8vh -40px -70px -40px;
     }
+    /* the unlit rows leave the screen but stay readable, like sr-only */
     .peak-ledger li {
-      display: none;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
       padding: 0;
       border: 0;
       opacity: 1;
     }
     .peak-ledger li.on {
-      display: block;
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
     }
     .peak-ledger li:last-child {
       border: 0;

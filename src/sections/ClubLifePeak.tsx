@@ -2,7 +2,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { Photo } from '../components/Photo'
-import { LEAD, LEDGER, TITLE } from '../content/clubLife'
+import { LEAD, LEDGER, PEAK_ONE, STACK, TITLE } from '../content/clubLife'
 import { photo } from '../content/photos'
 
 // Act 4, the peak (#14), with motion: six screens pinned, photo 1 then a depth stack of seven, the ledger over it.
@@ -13,18 +13,6 @@ gsap.registerPlugin(ScrollTrigger)
 
 // ---------- the sequence ----------
 
-type Mode = 'slit' | 'pan' | 'rise' | 'lens' | 'split' | 'deal' | 'fly'
-// [x, y, size]: the frame's centre and size as fractions of the viewport, desktop (d) then phone (m), from the
-// signed comp. size is a width, or a height for the portrait (tall).
-const STACK: { id: string; mode: Mode; d: number[]; m: number[]; tall?: true }[] = [
-  { id: 'img-0645', mode: 'slit', d: [0.66, 0.42, 0.4], m: [0.5, 0.34, 0.86] },
-  { id: 'img-2757', mode: 'pan', d: [0.55, 0.6, 0.36], m: [0.5, 0.4, 0.86] },
-  { id: 'img-9072', mode: 'rise', d: [0.72, 0.5, 0.74], m: [0.5, 0.34, 0.62], tall: true },
-  { id: 'img-9159', mode: 'lens', d: [0.48, 0.38, 0.34], m: [0.5, 0.31, 0.86] },
-  { id: 'img-8641', mode: 'split', d: [0.7, 0.56, 0.38], m: [0.5, 0.38, 0.86] },
-  { id: 'img-7544', mode: 'deal', d: [0.6, 0.48, 0.54], m: [0.5, 0.33, 0.9] },
-  { id: 'img-8759', mode: 'fly', d: [0.64, 0.46, 0.46], m: [0.5, 0.35, 0.86] },
-]
 // the act's progress p runs 0..1 over 6 screens; photo i lives from START + i * STEP for LIFE
 const START = 0.42
 const STEP = 0.07
@@ -94,7 +82,7 @@ export default function ClubLifePeak() {
 
       // photo 1: comes in from far and dim (the camera's approach, so the title reads over the night first), rounds
       // its corners once it has formed, holds still, steps aside for the stack, returns
-      tl.fromTo('.peak-one', { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, ease: 'power2.inOut', duration: 0.26 }, 0.02)
+      tl.fromTo('.peak-one', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, ease: 'power2.inOut', duration: 0.26 }, 0.02)
         .fromTo('.peak-one .peak-dim', { opacity: 0.6 }, { opacity: 0, ease: 'power1.in', duration: 0.27 }, 0.02)
         .fromTo('.peak-one', { '--round': 0 }, { '--round': 1, duration: 0.07 }, 0.24)
         .to('.peak-one', { scale: phone ? 0.92 : 0.78, x: phone ? 0 : () => innerWidth * 0.15, ease: 'power1.inOut', duration: 0.06 }, 0.4)
@@ -102,11 +90,12 @@ export default function ClubLifePeak() {
         .to('.peak-one', { scale: 1, x: 0, ease: 'power1.inOut', duration: 0.06 }, 0.93)
         .to('.peak-one .peak-dim', { opacity: 0, duration: 0.06 }, 0.93)
 
-      // words: the title over the opening, the ledger over the stack
-      tl.fromTo('.peak-title', { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.05 }, 0.01)
-        .to('.peak-title', { autoAlpha: 0, y: -14, duration: 0.06 }, 0.2)
-        .fromTo('.peak-ledger', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.06 }, 0.44)
-        .to('.peak-ledger', { autoAlpha: 0, duration: 0.03 }, 0.95)
+      // words: the title over the opening, the ledger over the stack. Everything here fades by opacity only: hidden
+      // (visibility or display) text and photos would drop out of what screen readers read.
+      tl.fromTo('.peak-title', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.05 }, 0.01)
+        .to('.peak-title', { opacity: 0, y: -14, duration: 0.06 }, 0.2)
+        .fromTo('.peak-ledger', { opacity: 0 }, { opacity: 1, duration: 0.06 }, 0.44)
+        .to('.peak-ledger', { opacity: 0, duration: 0.03 }, 0.95)
 
       // the stack: no two neighbours enter the same way; every photo leaves toward the camera
       root.querySelectorAll<HTMLElement>('.peak-card').forEach((card, i) => {
@@ -114,7 +103,7 @@ export default function ClubLifePeak() {
         const d = LIFE * 0.45
         const img = card.querySelectorAll('img')
         const fade = (dur: number) => tl.fromTo(card, { opacity: 0 }, { opacity: 1, duration: dur }, s)
-        tl.set(card, { visibility: 'visible' }, s).set(card, { visibility: 'hidden' }, s + LIFE)
+        tl.set(card, { opacity: 1 }, s) // on from s; the fading entrances below restart it at 0, the exit ends it at 0
         switch (STACK[i].mode) {
           case 'slit':
             tl.fromTo(card.querySelector('.peak-frame'), { clipPath: 'inset(50% 0% 50% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power3.out', duration: d }, s)
@@ -167,7 +156,7 @@ export default function ClubLifePeak() {
       <div className="peak-stage" data-sc-stage>
         <div className="peak-one">
           <div className="peak-frame">
-            <Photo id="img-8658" sizes="(max-width: 767px) 100vw, min(96vw, 120vh)" className="peak-img" />
+            <Photo id={PEAK_ONE} sizes="(max-width: 767px) 100vw, min(96vw, 120vh)" className="peak-img" />
             <div className="peak-dim" />
           </div>
         </div>

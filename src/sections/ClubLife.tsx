@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Photo } from '../components/Photo'
-import { LEAD, LEDGER, TITLE } from '../content/clubLife'
+import { GRID, LEAD, LEDGER, TITLE } from '../content/clubLife'
 import { useReducedMotion } from '../lib/motion'
 
 // Act 4, the peak (#14). With motion: the pinned photo sequence (ClubLifePeak, its own chunk). Reduced motion,
@@ -23,17 +23,6 @@ export function ClubLife() {
 }
 
 // ---------- tier 0 and reduced motion ----------
-
-const GRID = [
-  ['img-8658', 'a', '(max-width: 767px) 100vw, 60vw'],
-  ['img-9072', 'b', '(max-width: 767px) 50vw, 30vw'],
-  ['img-0645', 'c', '(max-width: 767px) 50vw, 30vw'],
-  ['img-2757', 'd', '(max-width: 767px) 50vw, 30vw'],
-  ['img-9159', 'e', '(max-width: 767px) 100vw, 30vw'],
-  ['img-8641', 'f', '(max-width: 767px) 50vw, 30vw'],
-  ['img-7544', 'h', '(max-width: 767px) 50vw, 30vw'],
-  ['img-8759', 'i', '(max-width: 767px) 100vw, 30vw'],
-]
 
 function ClubLifeStill() {
   return (

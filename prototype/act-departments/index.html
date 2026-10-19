@@ -1,0 +1,392 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #13, vic-enp). Act 3, the departments: seven hard cuts of the same 600-point world, between C's door and tunnel. Never merged. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Act: the departments (comp)</title>
+<link rel="preload" href="fonts/Gilroy-Heavy.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900;font-display:swap}
+:root{
+  --night:#141E27; --lift:#1C2A37; --blue:#127DBB; --aqua:#69C4AF; --gray:#EFEFEF;
+  --night-up:#1A2733; --line:rgba(239,239,239,.14); --mute:#A3AFBA;
+  --grad:linear-gradient(135deg,#127DBB,#69C4AF);
+  --t-cut:clamp(40px,6.4vw,96px); --t-lead:clamp(18px,1.5vw,22px); --t-body:clamp(16px,1.15vw,17px); --t-ui:15px; --t-cap:13px;
+  --rail:max(10px,2.4vw); --gut:calc(var(--rail) + 132px);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --c:#69C4AF; --rule:linear-gradient(90deg,var(--c),var(--c));
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--night);color:var(--gray);font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased;scrollbar-color:#2b3a47 var(--night);scrollbar-width:thin}
+body{background:var(--night);font-size:var(--t-body);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--aqua);color:var(--night)}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:999px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+#field{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
+.tint{position:fixed;inset:0;z-index:1;pointer-events:none;background:var(--lift);opacity:0}
+.tint.on{opacity:.72}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:6}
+.vignette{background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(8,12,17,.85) 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* chrome stand-ins from the system sheet */
+.logo{position:fixed;top:22px;left:var(--gut);height:34px;z-index:10}.logo img{height:100%;display:block}
+.rail{position:fixed;left:var(--rail);top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.rail .wp{display:flex;align-items:center;gap:12px;font-size:var(--t-cap);line-height:1;color:#fff;margin-bottom:8px}
+.rail .wp i{width:9px;height:9px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 4px rgba(105,196,175,.18),0 0 14px var(--aqua)}
+.rail .wp span{white-space:nowrap}
+.rail b{display:block;width:3px;height:3px;border-radius:50%;background:rgba(239,239,239,.3);margin-left:3px;transition:background .2s,box-shadow .2s}
+.rail b.on{background:var(--aqua)}
+.rail b.now{box-shadow:0 0 0 3px rgba(105,196,175,.22),0 0 8px var(--aqua);transform:scale(1.5)}
+.pill{position:fixed;top:78px;right:24px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 8px 0 20px;border-radius:999px;font-weight:700;font-size:var(--t-ui);color:#fff;text-decoration:none;white-space:nowrap;
+  background:linear-gradient(var(--night),var(--night)) padding-box,var(--grad) border-box;border:1.5px solid transparent;box-shadow:0 8px 32px -8px rgba(18,125,187,.55)}
+.pill .chip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(105,196,175,.14);color:var(--aqua);font-size:14px}
+.go{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:var(--night)}.go svg{width:16px;height:16px}
+
+/* standing stand-ins for the acts either side */
+.edge{position:relative;z-index:2;min-height:90svh;display:grid;align-content:center;padding:0 24px 0 var(--gut);color:var(--mute)}
+.edge b{display:block;color:#fff;font-weight:900;font-size:clamp(28px,4vw,56px);line-height:1;letter-spacing:-.02em;margin-top:8px}
+.edge.end{align-content:start;padding-top:18svh}
+
+/* the act: a pinned stage, a hard cut every 0.65 vh */
+#act{position:relative;z-index:2}
+.stick{position:sticky;top:0;height:100svh;overflow:hidden}
+.cut{position:absolute;inset:0;display:none;flex-direction:column;justify-content:flex-end;padding:0 24px 168px var(--gut)}
+.cut.on{display:flex}
+.cut::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--blue) 0 50%,var(--aqua) 50%);box-shadow:4px 0 0 var(--aqua),-4px 0 0 var(--blue);opacity:.9}
+.lbl{font-weight:700;font-size:15px;color:var(--c);margin-bottom:16px;display:flex;gap:12px;align-items:center}
+.lbl::before{content:"";width:28px;height:3px;border-radius:2px;background:var(--rule)}
+.lbl em{font-style:normal;color:var(--mute);font-weight:400}
+.big{font-weight:900;font-size:var(--t-cut);line-height:.92;letter-spacing:-.03em;color:#fff;max-width:13ch;text-wrap:balance}
+.big .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.04em .02em .08em 0;margin-right:.16em}
+.big .w>span{display:inline-block;transform:translateY(105%) skewY(8deg);transform-origin:0 100%}
+.cut.on .big .w>span{transform:none;transition:transform .36s cubic-bezier(.15,.9,.2,1) calc(var(--i)*45ms)}
+.cut.on .big{animation:split .3s steps(3) 1}
+@keyframes split{0%{text-shadow:-8px 0 var(--blue),8px 0 var(--aqua)}60%{text-shadow:-3px 0 var(--blue),3px 0 var(--aqua)}100%{text-shadow:none}}
+.sub{margin-top:20px;font-size:var(--t-lead);line-height:1.45;color:var(--gray);max-width:34ch}
+.chips{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;max-width:44ch}
+.chips span{font-weight:700;font-size:var(--t-cap);padding:7px 14px;border-radius:999px;border:1.5px solid rgba(239,239,239,.3);color:var(--gray)}
+.chips span.flag{border-color:var(--c);color:#fff;background:rgba(18,125,187,.18)}
+.suits{margin-top:14px;font-size:var(--t-cap);color:var(--mute);max-width:46ch}
+.more{margin-top:18px;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 16px 0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(20,30,39,.6);font-weight:700;font-size:var(--t-ui);align-self:flex-start;transition:border-color .3s var(--ease)}
+.more:hover{border-color:var(--c)}
+.more i{width:10px;height:10px;position:relative}.more i::before,.more i::after{content:"";position:absolute;left:0;right:0;top:4px;height:2px;background:var(--c);border-radius:1px}.more i::after{transform:rotate(90deg);transition:transform .3s var(--ease)}
+.cut.open .more i::after{transform:none}
+.detail{display:none;margin-top:20px;padding:18px 20px;border-radius:14px;background:var(--night-up);border:1px solid var(--line);max-width:46ch}
+.detail h3{font-weight:700;font-size:var(--t-cap);color:var(--c);margin-bottom:8px}
+.detail ul{list-style:none;padding:0;display:grid;gap:8px}
+.detail li{font-size:15px;line-height:1.4;color:var(--gray);padding-left:16px;position:relative}
+.detail li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--c)}
+.detail .sx{display:none}
+.cut.open .detail{display:block}
+.cut.open .sub,.cut.open .chips,.cut.open .suits{display:none}
+
+/* the picker: one main, one activity (tap = jump to the cut) */
+.pick{position:absolute;z-index:3;left:var(--gut);right:24px;bottom:28px;display:flex;gap:28px;flex-wrap:wrap;align-items:center}
+.pick .grp{display:flex;align-items:center;gap:6px}
+.pick small{font-size:var(--t-cap);color:var(--mute);margin-right:6px}
+.pick button{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);font-weight:700;font-size:var(--t-cap);color:var(--mute);background:rgba(20,30,39,.55);transition:color .2s,border-color .2s,background .2s}
+.pick button:hover{color:#fff}
+.pick button[aria-current=true]{color:#fff;border-color:var(--bc);background:rgba(20,30,39,.85);box-shadow:0 0 18px -4px var(--bc)}
+.note{position:absolute;left:var(--gut);bottom:68px;font-size:var(--t-cap);color:var(--mute)}
+.passage-hint{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:var(--t-cap);color:var(--mute);display:none}
+
+/* tier 0 (no WebGL): the departments as outlined cards, no canvas, no pin */
+html.t0 #field,html.t0 .tint,html.t0 .pick,html.t0 .note,html.t0 .rail{display:none}
+html.t0 .stick{position:static;height:auto;overflow:visible}
+html.t0 #act{height:auto!important;padding:0 24px 80px var(--gut)}
+html.t0 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+html.t0 .grid.act3{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px}
+html.t0 .t0head{display:block}
+html.t0 .cut{position:relative;display:flex;inset:auto;padding:26px 24px 28px;border:1.5px solid var(--c);border-radius:16px;background:var(--night-up);justify-content:flex-start}
+html.t0 .cut::before{display:none}
+html.t0 .big{font-size:clamp(30px,3vw,44px);line-height:1}
+html.t0 .big .w>span{transform:none!important;transition:none!important}
+html.t0 .cut.on .big{animation:none}
+html.t0 .sub{font-size:16px}
+html.t0 .more{display:none}
+html.t0 .detail{display:block;background:none;border:0;padding:0;margin-top:14px}
+html.t0 .cut.open .sub,html.t0 .cut.open .suits{display:block}
+html.t0 .cut.open .chips{display:flex}
+html.t0 .cut .ico{display:block}
+html.t0 .detail .sx{display:none}
+html.t0 .suits{display:block}
+html.t0 .cut{min-width:0}
+.t0head,.ico{display:none}
+.t0head{margin:0 0 28px;font-weight:900;font-size:clamp(32px,4.4vw,64px);line-height:1;letter-spacing:-.025em;color:#fff;max-width:18ch}
+.ico{width:44px;height:44px;border:1.5px solid var(--c);border-radius:12px;margin-bottom:18px;position:relative}
+.ico::after{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--c)}
+
+/* reduced motion with WebGL: the cuts stack, nothing pins, nothing peels */
+html.stack #act{height:auto!important}
+html.stack .stick{position:static;height:auto;overflow:visible}
+html.stack .cut{position:relative;display:flex;inset:auto;min-height:100svh;padding-top:96px}
+html.stack .pick{position:fixed}
+html.stack .big .w>span{transform:none!important;transition:none!important}
+html.stack .cut.on .big{animation:none}
+html.stack .cut.open .detail{display:block}
+
+@media (max-width:767px){
+  :root{--rail:10px;--gut:40px}
+  .logo{left:var(--gut)}.rail span{display:none}.rail{gap:5px}
+  .pill{top:auto;bottom:16px;right:16px}
+  .cut{padding:0 20px 196px var(--gut)}
+  .pick{left:var(--gut);right:14px;bottom:76px;gap:6px 14px;flex-direction:column;align-items:flex-start}
+  .pick button{height:32px;padding:0 11px}
+  .note{display:none}
+  .suits{display:none}.detail .sx{display:list-item}
+  .big{max-width:none}
+  html.t0 #act{padding-left:20px}
+  html.t0 .grid,html.t0 .grid.act3{grid-template-columns:minmax(0,1fr)}
+  html.t0 .logo{left:20px}
+}
+@media (prefers-reduced-motion:reduce){.big .w>span{transform:none!important;transition:none!important}.cut.on .big{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="tint" id="tint"></div>
+<div class="fx vignette"></div><div class="fx grain"></div>
+<a class="logo" href="#"><img src="brand/vic-logo-white.svg" alt="Vision & Innovation Club"></a>
+<nav class="rail" id="rail" aria-label="Departments">
+  <div class="wp"><i></i><span>Departments</span></div>
+</nav>
+<a class="pill" href="#"><span class="chip">Applications open 25 Oct</span><span class="go"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+
+<main>
+<section class="edge" aria-hidden="true">Act 2 stand-in<b>What VIC is, in numbers.</b></section>
+
+<section id="act" aria-label="Departments">
+<div class="stick">
+  <h2 class="t0head">Seven departments. You pick one main and one activity.</h2>
+  <div class="grid">
+  <!-- 1 -->
+  <article class="cut" data-f="hr" data-c="#69C4AF" style="--c:#69C4AF" data-g="main">
+    <p class="lbl">HR <em>· main 1 of 4</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Run the community.</h3>
+    <p class="sub">HR is the heart of the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration.</p>
+    <div class="chips"><span>People management</span><span>Organization</span><span>Reporting</span><span>Event operations</span></div>
+    <p class="suits">Suits organized people who care about the community.</p>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in HR</h3><ul><li>Recruit and welcome new members</li><li>Follow up on members' engagement and motivation</li><li>Run VIC Entertainment, the fun side of the club</li><li>Organize logistics on event day</li></ul></div>
+  </article>
+  <article class="cut" data-f="fler" data-c="#3BA6E8" style="--c:#3BA6E8" data-g="main">
+    <p class="lbl">FLER <em>· main 2 of 4</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Win the sponsors.</h3>
+    <p class="sub">FLER is the club's link to companies, associations and guests, plus its logistics and budget.</p>
+    <div class="chips"><span>Negotiation</span><span>Sponsorship</span><span>Budgeting</span><span>Logistics</span></div>
+    <p class="suits">Suits confident communicators who want hands-on experience with the professional world.</p>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in FLER</h3><ul><li>Contact companies and secure sponsorships for events</li><li>Build relationships with partners, institutions and alumni</li><li>Manage venues, sound, screens, catering and printables</li><li>Look for TV, radio and press appearances</li></ul></div>
+  </article>
+  <article class="cut" data-f="it" data-c="#69C4AF" style="--c:#69C4AF" data-g="main">
+    <p class="lbl">IT <em>· main 3 of 4</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Design the club.</h3>
+    <p class="sub">IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo.</p>
+    <div class="chips"><span class="flag">Design and media, not coding</span><span>Branding</span><span>Photography</span><span>Videography</span></div>
+    <p class="suits">Suits creatives, designers, photographers and anyone who wants to learn.</p>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in IT</h3><ul><li>Design posts, stories, posters and flyers</li><li>Build a full visual identity for each event</li><li>Join the Photography and Videography team</li><li>Join FARI9 TI9NI, the tech crew on event day</li></ul></div>
+  </article>
+  <article class="cut" data-f="comm" data-c="#3BA6E8" style="--c:#3BA6E8" data-g="main">
+    <p class="lbl">COMM <em>· main 4 of 4</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Tell the story.</h3>
+    <p class="sub">COMM is the bridge between the club and its audience: its public image, its events and its reach.</p>
+    <div class="chips"><span>Copywriting</span><span>Content strategy</span><span>Social media</span><span>Storytelling</span></div>
+    <p class="suits">Suits writers, storytellers and natural communicators.</p>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in COMM</h3><ul><li>Plan the communication for each event</li><li>Write captions, slogans, scripts and emails</li><li>Run VIC's social media</li><li>Build media partnerships and join the TikTok Content Team</li></ul></div>
+  </article>
+  </div>
+  <div class="grid act3">
+  <article class="cut" data-f="spark" data-c="#F29A09" style="--c:#F29A09;--rule:linear-gradient(90deg,#F29A09,#F24407)" data-g="act">
+    <p class="lbl">SPARK <em>· activity 1 of 3</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Build robots.</h3>
+    <p class="sub">SPARK is science, tech and robotics: hands-on workshops, competitions and a free learning platform.</p>
+    <div class="chips"><span>Workshops</span><span>Competitions</span><span>Free learning platform</span></div>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in SPARK</h3><ul><li>Join workshops chosen from members' needs</li><li>Compete under SPARK's name, with technical support</li><li>Work on internal projects and research</li><li>Learn from free courses that fill curriculum gaps</li></ul></div>
+  </article>
+  <article class="cut" data-f="train" data-c="#6A9CF0" style="--c:#6A9CF0;--rule:linear-gradient(90deg,#1A52A2,#6A9CF0)" data-g="act">
+    <p class="lbl">Training <em>· activity 2 of 3</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Choose your skills.</h3>
+    <p class="sub">At the start of the year you pick the skills you want to learn. The yearly plan is built around your answers.</p>
+    <div class="chips"><span>Soft skills</span><span>Technical skills</span><span>Peer-to-peer sessions</span></div>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in Training</h3><ul><li>Attend sessions led by internal and external trainers</li><li>Teach what you are good at, peer to peer</li><li>Join learning groups with practical tasks and progress tracking</li></ul></div>
+  </article>
+  <article class="cut" data-f="eb" data-c="#69C4AF" style="--c:#69C4AF;--rule:var(--grad)" data-g="act">
+    <p class="lbl">English Bubble <em>· activity 3 of 3</em></p>
+    <div class="ico"></div>
+    <h3 class="big">Speak with confidence.</h3>
+    <p class="sub">English Bubble is a relaxed place to practice English: debates, games, book discussions and social nights.</p>
+    <div class="chips"><span>Debates</span><span>Games</span><span>Book discussions</span><span>Social nights</span></div>
+    <button class="more" aria-expanded="false"><span>What you'd do</span><i></i></button>
+    <div class="detail"><h3>What you'd do in English Bubble</h3><ul><li>Talk and share ideas in a relaxed setting</li><li>Build confidence, public speaking and leadership</li><li>Try new things in a safe space</li></ul></div>
+  </article>
+  </div>
+  <div class="note" id="note">You pick one main and one activity department when you apply.</div>
+  <div class="pick" id="pick" aria-label="Jump to a department">
+    <div class="grp"><small>Main</small></div>
+    <div class="grp"><small>Activity</small></div>
+  </div>
+</div>
+</section>
+
+<section class="edge end" aria-hidden="true">Act 4 stand-in<b>Club life, the peak.</b></section>
+</main>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const q = new URLSearchParams(location.search), root = document.documentElement;
+const phone = () => innerWidth < 768;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || q.get('mode') === 'stack';
+let gl = null; try { const c = document.createElement('canvas'); gl = c.getContext('webgl2') || c.getContext('webgl'); } catch (e) {}
+const tier0 = q.get('mode') === 't0' || !gl;
+if (tier0) root.classList.add('t0'); else if (reduced) root.classList.add('stack');
+const pinned = !tier0 && !reduced;
+
+const cuts = $$('.cut'), act = $('#act');
+// steps: door, 7 cuts, tunnel. Weights are viewport heights of scroll per step.
+const STEPS = [{ f: 'door', c: '#69C4AF' }, ...cuts.map((e) => ({ f: e.dataset.f, c: e.dataset.c, el: e })), { f: 'tunnel', c: '#69C4AF' }];
+const W = [0.6, ...cuts.map(() => 0.65), 0.6], TOTAL = W.reduce((a, b) => a + b, 0);
+if (pinned) act.style.height = `${(TOTAL + 1) * 100}vh`;
+
+// split headlines into peel-in strips
+$$('.big').forEach((h) => { h.innerHTML = h.textContent.split(' ').map((w, i) => `<span class="w"><span style="--i:${i}">${w}</span></span>`).join(''); });
+
+// rail ticks + picker
+const rail = $('#rail'); const ticks = cuts.map(() => { const b = document.createElement('b'); rail.append(b); return b; });
+const grps = $$('.pick .grp'), btns = cuts.map((el, i) => {
+  const b = document.createElement('button'); b.textContent = $('.lbl', el).firstChild.textContent.trim().replace('English Bubble', 'English Bubble');
+  b.style.setProperty('--bc', el.dataset.c); b.onclick = () => go(i + 1);
+  grps[el.dataset.g === 'main' ? 0 : 1].append(b); return b;
+});
+function go(stepIdx) {
+  if (pinned) { const before = W.slice(0, stepIdx).reduce((a, b) => a + b, 0); scrollTo({ top: act.offsetTop + (before + W[stepIdx] / 2) * innerHeight, behavior: reduced ? 'auto' : 'smooth' }); }
+  else cuts[stepIdx - 1].scrollIntoView({ behavior: 'auto' });
+}
+$$('.cut').forEach((c) => { const t = $('.suits', c); if (t) { const li = document.createElement('li'); li.className = 'sx'; li.textContent = t.textContent; $('.detail ul', c).append(li); } });
+$$('.more').forEach((m) => m.onclick = () => { const c = m.closest('.cut'); const o = c.classList.toggle('open'); m.setAttribute('aria-expanded', o); });
+
+if (tier0) { cuts.forEach((c) => c.classList.add('on', 'open')); $$('.grid').forEach((g) => g.append(...$$('.cut', g))); }
+if (tier0) throw 0; // the rest needs WebGL; the cards above are the whole tier-0 composition
+
+// ---------- the world ----------
+const N = phone() ? 10000 : 16000, DPR = Math.min(devicePixelRatio, phone() ? 1.5 : 2);
+const renderer = new THREE.WebGLRenderer({ canvas: $('#field'), antialias: false });
+renderer.setPixelRatio(DPR); renderer.setClearColor(0x141e27, 1);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(45, 1, .1, 300);
+const group = new THREE.Group(); scene.add(group);
+const R = (a, b) => a + Math.random() * (b - a);
+const g = () => { let u = 0; for (let i = 0; i < 4; i++) u += Math.random(); return (u - 2) / 1.15; };
+const dust = () => [R(-80, 80), R(-46, 46), R(-70, 10)];
+const ell = (cx, cy, rx, ry, j) => { const a = R(0, 6.283); return [cx + Math.cos(a) * rx + g() * j, cy + Math.sin(a) * ry + g() * j, g() * 1.2]; };
+const F = {
+  // passages: wordless
+  door: (i) => { const s = i % 2 ? 1 : -1; if (i % 11 === 0) return [g() * .35, R(-24, 24), g() * 1.5]; return [s * (2.4 + Math.pow(Math.random(), 1.6) * 34), R(-24, 24), R(-8, 8)]; },
+  tunnel: (i) => { const a = R(0, 6.283), z = R(-90, 40), r = 9 + (z + 90) * .02 + g() * .35; return [Math.cos(a) * r, Math.sin(a) * r, z]; },
+  // main four
+  hr: (i) => { const k = i % 6, a = k * Math.PI / 3, cx = Math.cos(a) * 14, cy = Math.sin(a) * 10; if (i % 7 === 0) { const b = (k + 1) * Math.PI / 3, t = Math.random(); return [cx + (Math.cos(b) * 14 - cx) * t + g() * .5, cy + (Math.sin(b) * 10 - cy) * t + g() * .5, g() * .8]; } return [cx + g() * 3.4, cy + g() * 3.4, g() * 3]; },
+  fler: (i) => { const col = i % 7, h = 4 + col * 3.4; return [(col - 3) * 5.6 + R(-1.4, 1.4), -12 + Math.pow(Math.random(), .8) * h, R(-1.5, 1.5)]; },
+  it: (i) => { const W = 34, H = 22, m = i % 10; if (m < 5) { const e = Math.random() * 2 * (W + H), t = e < W ? [e - W / 2, -H / 2] : e < W + H ? [W / 2, e - W - H / 2] : e < 2 * W + H ? [W / 2 - (e - W - H), H / 2] : [-W / 2, H / 2 - (e - 2 * W - H)]; return [t[0] + g() * .25, t[1] + g() * .25, g() * .6]; }
+    if (m < 8) return Math.random() < .5 ? [(Math.random() < .5 ? -1 : 1) * W / 6 + g() * .15, R(-H / 2, H / 2), 0] : [R(-W / 2, W / 2), (Math.random() < .5 ? -1 : 1) * H / 6 + g() * .15, 0];
+    return ell(0, 0, 5.2, 5.2, .25); },
+  comm: (i) => { if (i % 9 === 0) return [g() * 1.4, g() * 1.4, g() * 1.4]; const r = (1 + (i % 6)) * 5.4; const a = R(0, 6.283); return [Math.cos(a) * r + g() * .22, Math.sin(a) * r * .7 + g() * .22, (i % 6) * -1.2]; },
+  // activity three
+  spark: (i) => { const k = i % 18, a = (k / 18) * 6.283 + Math.sin(k * 7.3) * .25, L = 8 + (Math.sin(k * 12.9) * .5 + .5) * 18, t = Math.pow(Math.random(), .75) * L + 2; return [Math.cos(a) * t + g() * .3, Math.sin(a) * t + g() * .3, g() * .8]; },
+  train: (i) => { const s = i % 5, x0 = (s - 2) * 7.4, top = -11 + s * 4.6; if (i % 10 < 7) return [x0 + R(-3.7, 3.7), top + g() * .15, R(-9, 9)]; return [x0 - 3.7 + g() * .15, R(top - 4.6, top), R(-9, 9)]; },
+  eb: (i) => { const m = i % 10; if (m < 9) return i % 2 ? ell(-6, 4, 13, 9, .3) : ell(7, -3, 13, 9, .3); return [R(-2, 7), R(-14, -8), g() * .6]; },
+};
+const pos = new Float32Array(N * 3), geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+const U = { uC: { value: new THREE.Color('#69C4AF') }, uPx: { value: DPR }, uFlash: { value: 0 }, uDim: { value: 1 } };
+const mat = new THREE.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `uniform float uPx; varying float vA; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.); float d = -mv.z; vA = 1. - smoothstep(120., 230., d); gl_PointSize = clamp(150. / d, 2.2, 3.8) * uPx; gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 uC; uniform float uFlash, uDim; varying float vA; void main(){ float a = smoothstep(.5,.1,length(gl_PointCoord-.5)); gl_FragColor = vec4(mix(uC, vec3(1.), uFlash) * vA * a * uDim, 1.); }` });
+const pts = new THREE.Points(geo, mat); group.add(pts);
+// your point: one lit point in the world that no cut moves
+const yg = new THREE.BufferGeometry(); yg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3));
+const ym = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uPx: { value: DPR } },
+  vertexShader: `uniform float uPx; void main(){ gl_PointSize = 34. * uPx; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }`,
+  fragmentShader: `void main(){ float d = length(gl_PointCoord-.5); float a = smoothstep(.5,.0,d); gl_FragColor = vec4(mix(vec3(.41,.77,.69), vec3(1.), smoothstep(.12,.0,d)) * a * a * 1.3, 1.); }` });
+const you = new THREE.Points(yg, ym); scene.add(you);
+
+function layout() {
+  const p = phone(), a = innerWidth / innerHeight;
+  renderer.setSize(innerWidth, innerHeight, false); camera.aspect = a; camera.position.set(0, 0, p ? 92 : 60); camera.updateProjectionMatrix();
+  group.position.set(p ? 0 : 17, p ? 23 : 0, 0); group.scale.setScalar(p ? .5 : 1);
+  camera.updateMatrixWorld(); const ndc = p ? [.9, .08] : [.93, .74]; // lower right, clear of the headline and the pill
+  const v = new THREE.Vector3(ndc[0] * 2 - 1, 1 - ndc[1] * 2, .5).unproject(camera).sub(camera.position).normalize();
+  you.position.copy(camera.position).addScaledVector(v, (camera.position.z - 20) / -v.z);
+}
+addEventListener('resize', layout); layout();
+renderer.compile(scene, camera);
+
+function snap(s) {
+  const fn = F[s.f];
+  for (let i = 0; i < N; i++) pos.set(i % 10 >= 8 ? dust() : fn(i), i * 3);
+  geo.attributes.position.needsUpdate = true; U.uC.value.set(s.c); U.uFlash.value = 1; U.uDim.value = s.f === 'tunnel' ? .4 : 1;
+  group.rotation.set(s.f === 'train' ? -.3 : s.f === 'fler' ? -.18 : s.f === 'comm' ? -.5 : 0, s.f === 'train' ? .75 : 0, 0);
+  group.userData.base = [group.rotation.x, group.rotation.y];
+}
+
+// ---------- scroll: step from progress ----------
+let cur = -1;
+function stepNow() {
+  if (pinned) {
+    const r = act.getBoundingClientRect(), span = act.offsetHeight - innerHeight, p = Math.min(Math.max(-r.top / span, 0), .9999);
+    let acc = 0; for (let i = 0; i < W.length; i++) { acc += W[i] / TOTAL; if (p < acc) return r.top > 0 ? -1 : i; }
+    return W.length - 1;
+  }
+  const mid = innerHeight * .5, i = cuts.findIndex((c) => { const r = c.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+  return i < 0 ? -1 : i + 1;
+}
+function pick() {
+  const i = stepNow(); if (i === cur) return; cur = i;
+  cuts.forEach((c, k) => { const on = k + 1 === i; if (pinned) c.classList.toggle('on', on); else c.classList.toggle('on', on); if (!on) { c.classList.remove('open'); $('.more', c).setAttribute('aria-expanded', false); } });
+  if (i < 0) { $('#tint').classList.remove('on'); return; }
+  snap(STEPS[i]);
+  $('#tint').classList.toggle('on', i % 2 === 0); // the ground steps between night and a lift of it
+  ticks.forEach((t, k) => { t.classList.toggle('on', k + 1 <= i); t.classList.toggle('now', k + 1 === i); });
+  btns.forEach((b, k) => b.setAttribute('aria-current', k + 1 === i));
+  $('#pick').style.opacity = i >= 1 && i <= 7 ? 1 : 0; $('#note').style.opacity = i === 1 ? 1 : 0;
+}
+addEventListener('scroll', pick, { passive: true }); pick();
+if (cur < 0) snap(STEPS[0]);
+
+// ---------- pointer / touch: the field leans; a tap on the cluster pulses and opens the detail ----------
+let lx = 0, ly = 0, tx = 0, ty = 0;
+addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
+addEventListener('pointerdown', (e) => {
+  if (e.target.closest('button,a,.pick,.detail')) return;
+  const el = cuts[cur - 1]; if (!el) return;
+  U.uFlash.value = .7; el.classList.add('open'); $('.more', el).setAttribute('aria-expanded', true);
+});
+
+let last = performance.now();
+renderer.setAnimationLoop((now) => {
+  const dt = Math.min((now - last) / 1000, .1); last = now;
+  U.uFlash.value = Math.max(0, U.uFlash.value - dt * 6);
+  if (!reduced) {
+    lx += (tx - lx) * Math.min(dt * 3, 1); ly += (ty - ly) * Math.min(dt * 3, 1);
+    const b = group.userData.base || [0, 0];
+    group.rotation.y = b[1] + lx * .14 + Math.sin(now / 5000) * .04; group.rotation.x = b[0] + ly * .08;
+  }
+  renderer.render(scene, camera);
+});
+document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

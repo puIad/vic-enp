@@ -187,10 +187,10 @@ is in [content.md](content.md).
 |---|---|---|
 | 1 | `IMG_8658` group in front of ENP | resolves from the points |
 | 2 | `IMG_0645` forest group | slit opens from the centre line |
-| 3 | `IMG_2757` hall, speaker, VIC ring | pan from the left 60% out to the whole hall |
+| 3 | `IMG_2757` full hall, speakers on stage | pan from the left 60% out to the whole hall |
 | 4 | `IMG_9072` night courtyard (portrait) | rises from below with a slight rotation; the phone's portrait moment |
 | 5 | `IMG_9159` night selfie | lens pull back from 2x |
-| 6 | `IMG_8641` trophy | split: two halves close in from the sides |
+| 6 | `IMG_8641` bottle rocket lifted overhead | split: two halves close in from the sides |
 | 7 | `IMG_7544` banner around the table | dealt from a pile, lower right |
 | 8 | `IMG_8759` outdoor group | flies in from far back |
 

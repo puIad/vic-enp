@@ -69,6 +69,10 @@
       scroll-behavior: auto;
     }
   }
+  /* Lenis owns the smoothing once it starts; native smooth scroll would fight it */
+  html.lenis {
+    scroll-behavior: auto;
+  }
   body {
     background: var(--color-night);
     font-size: var(--t-body);
@@ -88,6 +92,14 @@
   h2,
   h3 {
     text-wrap: balance;
+  }
+  /* <picture> only picks the source; the <img> inside is the box that lays out */
+  picture {
+    display: contents;
+  }
+  /* otherwise the sources become empty grid and flex items; the browser still picks from them */
+  picture source {
+    display: none;
   }
 }
 
@@ -570,6 +582,273 @@
     color: var(--color-link);
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  /* ---------- act 4, the peak (#14): six screens pinned, photos under the grain, words over it ---------- */
+  .peak {
+    position: relative;
+    height: 700lvh;
+  }
+  .peak-stage {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    height: 100lvh;
+    overflow: hidden;
+  }
+  .peak-words {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: 100lvh;
+    margin-top: -100lvh;
+    pointer-events: none;
+  }
+  .peak-frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: #0c141b;
+  }
+  .peak-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .peak-one {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(96vw, 120lvh);
+    aspect-ratio: 3 / 2;
+    translate: -50% -50%;
+    opacity: 0;
+  }
+  .peak-one .peak-frame {
+    border-radius: calc(var(--radius) * var(--round, 1));
+  }
+  .peak-dim {
+    position: absolute;
+    inset: 0;
+    background: #0b1218;
+    opacity: 0;
+  }
+  .peak-stack {
+    position: absolute;
+    inset: 0;
+    perspective: 1000px;
+  }
+  .peak-slot {
+    position: absolute;
+    left: calc(var(--x) * 100%);
+    top: calc(var(--y) * 100%);
+    width: var(--w);
+    transform-style: preserve-3d;
+    translate: calc(-50% + var(--px, 0px) * var(--k)) calc(-50% + var(--py, 0px) * var(--k));
+    transition: translate 0.8s var(--ease-out-expo);
+  }
+  .peak-card {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .half-l {
+    clip-path: inset(0 50% 0 0);
+  }
+  .half-r {
+    clip-path: inset(0 0 0 50%);
+  }
+  .peak-title,
+  .peak-ledger {
+    position: absolute;
+    left: var(--gut);
+    opacity: 0; /* faded, never hidden: screen readers still read the act */
+  }
+  .peak-title {
+    bottom: 12vh;
+    max-width: min(640px, 60vw);
+  }
+  .peak-ledger {
+    bottom: 11vh;
+    width: min(360px, 30vw);
+  }
+  /* a soft pool of night under the words, so they read over any photo */
+  .peak-title::before,
+  .peak-ledger::before {
+    content: '';
+    position: absolute;
+    inset: -14vh -8vw;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgb(14 22 29 / 0.8), transparent);
+  }
+  .peak-ledger li {
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    opacity: 0.38;
+    transition: opacity 0.5s var(--ease-out-expo);
+  }
+  .peak-ledger li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .peak-ledger li.on {
+    opacity: 1;
+  }
+  .peak-ledger h3 {
+    font-size: var(--t-ui);
+    font-weight: 700;
+    color: #fff;
+  }
+  .peak-ledger li.on h3::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: 0 9px 2px 0;
+    border-radius: 50%;
+    background: var(--color-aqua);
+    box-shadow: 0 0 10px var(--color-aqua);
+  }
+  .peak-ledger p {
+    font-size: var(--t-cap);
+    line-height: 1.5;
+    color: var(--color-mute);
+  }
+  .peak-ticks {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .peak-one {
+      top: 30%;
+      width: calc(100vw - 2 * var(--edge));
+    }
+    .peak-slot {
+      left: calc(var(--mx) * 100%);
+      top: calc(var(--my) * 100%);
+      width: var(--mw);
+    }
+    .peak-title {
+      right: var(--edge);
+      bottom: 10vh;
+      max-width: none;
+    }
+    /* phones show only the lit row, just above the Apply pill, with five ticks */
+    .peak-ledger {
+      right: var(--edge);
+      bottom: 84px;
+      width: auto;
+    }
+    .peak-ledger::before {
+      inset: -8vh -40px -70px -40px;
+    }
+    /* the unlit rows leave the screen but stay readable, like sr-only */
+    .peak-ledger li {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      padding: 0;
+      border: 0;
+      opacity: 1;
+    }
+    .peak-ledger li.on {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+    }
+    .peak-ledger li:last-child {
+      border: 0;
+    }
+    .peak-ledger h3 {
+      font-size: 17px;
+    }
+    .peak-ledger p {
+      font-size: 14px;
+      color: var(--color-gray);
+    }
+    .peak-ticks {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .peak-ticks i {
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--line);
+    }
+    .peak-ticks i.on {
+      background: var(--color-aqua);
+    }
+  }
+
+  /* the same eight photos as one still, art-directed grid (tier 0 and reduced motion) */
+  .peak-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(6vw, auto);
+    gap: 14px;
+  }
+  .peak-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius);
+    contain: size; /* the cell sets the size, not the photo */
+  }
+  .peak-grid .a { grid-area: 1 / 1 / 6 / 9; }
+  .peak-grid .b { grid-area: 1 / 9 / 8 / 13; }
+  .peak-grid .c { grid-area: 6 / 1 / 9 / 5; }
+  .peak-grid .d { grid-area: 6 / 5 / 9 / 9; }
+  .peak-grid .e { grid-area: 8 / 9 / 11 / 13; }
+  .peak-grid .f { grid-area: 9 / 1 / 12 / 5; }
+  .peak-grid .h { grid-area: 9 / 5 / 12 / 9; }
+  .peak-grid .i { grid-area: 11 / 9 / 14 / 13; }
+  .peak-grid ol {
+    grid-area: 12 / 1 / 15 / 9;
+    align-self: start;
+    padding-top: 20px;
+  }
+  .peak-grid li {
+    padding: 11px 0;
+    border-top: 1px solid var(--line);
+  }
+  .peak-grid h3 {
+    font-size: var(--t-ui);
+    font-weight: 700;
+    color: #fff;
+  }
+  .peak-grid p {
+    font-size: var(--t-cap);
+    line-height: 1.5;
+    color: var(--color-mute);
+  }
+  @media (max-width: 767px) {
+    .peak-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: minmax(30vw, auto);
+      gap: 10px;
+    }
+    .peak-grid .a { grid-area: 1 / 1 / 3 / 3; }
+    .peak-grid .b { grid-area: 3 / 1 / 6 / 2; }
+    .peak-grid .c { grid-area: 3 / 2 / 5 / 3; }
+    .peak-grid .d { grid-area: 5 / 2 / 6 / 3; }
+    .peak-grid .e { grid-area: 6 / 1 / 8 / 3; }
+    .peak-grid .f { grid-area: 8 / 1 / 9 / 2; }
+    .peak-grid .h { grid-area: 8 / 2 / 9 / 3; }
+    .peak-grid .i { grid-area: 9 / 1 / 11 / 3; }
+    .peak-grid ol {
+      grid-area: 11 / 1 / 12 / 3;
+      padding-top: 14px;
+    }
   }
 }
 

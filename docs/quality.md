@@ -66,7 +66,9 @@ Per slice, before its PR merges:
    and with reduced motion on; no console errors; read the page for content and order.
 3. scroll-craft's `shoot.mjs` on the preview: desktop, mobile (`--width 390 --height 844`) and `--reduced-motion`.
    It walks every act at six positions and reports dead scroll and cues that never land. The screenshots go in
-   the PR.
+   the PR. It needs `npm i --no-save playwright-core` and `SCROLLCRAFT_CHROME` pointing at the Chrome for Testing
+   headless shell. It samples only acts marked `data-sc-act`, and reads a hand-built act through its
+   `data-sc-verify-state` (published only when `navigator.webdriver` is true).
 4. Lighthouse mobile on the preview against the budgets above.
 
 Before launch, once:

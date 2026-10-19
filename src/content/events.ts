@@ -9,6 +9,8 @@ export type Event = {
   cities?: string[]
   /** Gala gold and Ignite red are the owner's values; the rest use aquamarine (#15). */
   accent: string
+  /** an id from content/photos.ts; AEC waits for the owner's photos */
+  photo?: string
 }
 
 export const EVENTS: Event[] = [
@@ -19,6 +21,7 @@ export const EVENTS: Event[] = [
     lead: 'National and international business leaders and researchers meet newly graduated engineers, to open the professional world and grow their network.',
     chips: ['Guest talks', 'Roundtables with CEOs', 'Networking'],
     accent: '#D4A843',
+    photo: 'dscf7405',
   },
   {
     id: 'ignite',
@@ -27,6 +30,7 @@ export const EVENTS: Event[] = [
     lead: 'Short, powerful talks from industry leaders, innovators and thought leaders.',
     chips: ['Short talks', 'Innovators', 'Thought leaders'],
     accent: '#E0313F',
+    photo: 't2a6297',
   },
   {
     id: 'polymaze',
@@ -35,6 +39,7 @@ export const EVENTS: Event[] = [
     lead: 'Line-follower and maze-solving robots. Registered participants prepare in workshops, then compete on a day at ENP.',
     chips: ['Line followers', 'Maze solvers', 'Prep workshops'],
     accent: '#69C4AF',
+    photo: 'img-8026',
   },
   {
     id: 'aec',

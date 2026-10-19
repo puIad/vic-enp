@@ -1,0 +1,3 @@
+node_modules/
+# Gilroy is commercial (no web licence yet): copy Gilroy-{Regular,Bold,Heavy}.woff2 from VIC-Recruitment-2026/frontend/src/assets/fonts/
+fonts/

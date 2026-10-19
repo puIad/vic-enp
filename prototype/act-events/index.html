@@ -1,0 +1,382 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #15, vic-enp). Act 5, events and projects: sideways cuts of the same 600-point world between the peak and C's horizon. Never merged. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Act: events and projects (comp)</title>
+<link rel="preload" href="fonts/Gilroy-Heavy.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900;font-display:swap}
+:root{
+  --night:#141E27; --lift:#1C2A37; --blue:#127DBB; --aqua:#69C4AF; --gray:#EFEFEF;
+  --night-up:#1A2733; --line:rgba(239,239,239,.14); --mute:#A3AFBA;
+  --grad:linear-gradient(135deg,#127DBB,#69C4AF);
+  --t-cut:clamp(40px,6.4vw,96px); --t-lead:clamp(18px,1.5vw,22px); --t-body:clamp(16px,1.15vw,17px); --t-ui:15px; --t-cap:13px;
+  --rail:max(10px,2.4vw); --gut:calc(var(--rail) + 132px);
+  --radius:20px;--gala:#D4A843;--ignite:#E0313F;--hoc:#2F80ED;--ease:cubic-bezier(.16,1,.3,1);
+  --c:#69C4AF; --rule:linear-gradient(90deg,var(--c),var(--c));
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--night);color:var(--gray);font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased;scrollbar-color:#2b3a47 var(--night);scrollbar-width:thin}
+body{background:var(--night);font-size:var(--t-body);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--aqua);color:var(--night)}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:999px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+#field{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
+.tint{position:fixed;inset:0;z-index:1;pointer-events:none;background:var(--lift);opacity:0}
+.tint.on{opacity:.72}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:6}
+.vignette{background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(8,12,17,.85) 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* chrome stand-ins from the system sheet */
+.logo{position:fixed;top:22px;left:var(--gut);height:34px;z-index:10}.logo img{height:100%;display:block}
+.rail{position:fixed;left:var(--rail);top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.rail .wp{display:flex;align-items:center;gap:12px;font-size:var(--t-cap);line-height:1;color:#fff;margin-bottom:8px}
+.rail .wp i{width:9px;height:9px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 4px rgba(105,196,175,.18),0 0 14px var(--aqua)}
+.rail .wp span{white-space:nowrap}
+.rail b{display:block;width:3px;height:3px;border-radius:50%;background:rgba(239,239,239,.3);margin-left:3px;transition:background .2s,box-shadow .2s}
+.rail b.on{background:var(--aqua)}
+.rail b.now{box-shadow:0 0 0 3px rgba(105,196,175,.22),0 0 8px var(--aqua);transform:scale(1.5)}
+.pill{position:fixed;top:78px;right:24px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 8px 0 20px;border-radius:999px;font-weight:700;font-size:var(--t-ui);color:#fff;text-decoration:none;white-space:nowrap;
+  background:linear-gradient(var(--night),var(--night)) padding-box,var(--grad) border-box;border:1.5px solid transparent;box-shadow:0 8px 32px -8px rgba(18,125,187,.55)}
+.pill .chip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(105,196,175,.14);color:var(--aqua);font-size:14px}
+.go{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:var(--night)}.go svg{width:16px;height:16px}
+
+/* standing stand-ins for the acts either side */
+.edge{position:relative;z-index:2;min-height:90svh;display:grid;align-content:center;padding:0 24px 0 var(--gut);color:var(--mute)}
+.edge b{display:block;color:#fff;font-weight:900;font-size:clamp(28px,4vw,56px);line-height:1;letter-spacing:-.02em;margin-top:8px}
+.edge.end{align-content:start;padding-top:18svh}
+
+.edge.peak{padding:0;min-height:100svh;background:#0c1319 url(pics/enp.jpg) center/cover;position:relative}
+.edge.peak::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,30,39,.6),transparent 40%)}
+.edge.peak span{position:absolute;left:var(--gut);bottom:40px;z-index:1;font-size:var(--t-cap);color:#fff}
+
+/* the act: one pinned stage, a hard sideways cut per event */
+#act{position:relative;z-index:2}
+.stick{position:sticky;top:0;height:100svh;overflow:hidden}
+.cut{position:absolute;inset:0;display:none;padding:0 24px 0 var(--gut)}
+.cut.on{display:block}
+.cut::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--c);box-shadow:0 0 18px var(--c);opacity:.95}
+.txt{position:absolute;left:var(--gut);bottom:112px;width:min(46vw,640px)}
+.lbl{font-weight:700;font-size:15px;color:var(--c);margin-bottom:16px;display:flex;gap:12px;align-items:center}
+.lbl::before{content:"";width:28px;height:3px;border-radius:2px;background:var(--c);flex:none}
+.lbl em{font-style:normal;color:var(--mute);font-weight:400}
+.big{font-weight:900;font-size:var(--t-cut);line-height:.92;letter-spacing:-.03em;color:#fff;text-wrap:balance}
+.big .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.04em .02em .08em 0;margin-right:.16em}
+.big .w>span{display:inline-block;transform:translateY(105%) skewY(8deg);transform-origin:0 100%}
+.cut.on .big .w>span{transform:none;transition:transform .36s cubic-bezier(.15,.9,.2,1) calc(var(--i)*45ms)}
+.sub{margin-top:20px;font-size:var(--t-lead);line-height:1.45;color:var(--gray);max-width:36ch}
+.chips{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;max-width:44ch}
+.chips span{font-weight:700;font-size:var(--t-cap);padding:7px 14px;border-radius:999px;border:1.5px solid rgba(239,239,239,.3);color:var(--gray)}
+.chips span.id{border-color:var(--c);color:#fff;background:color-mix(in srgb,var(--c) 18%,transparent)}
+.hist{margin-top:14px;font-size:var(--t-cap);color:var(--mute);max-width:46ch;line-height:1.5}
+.ig{margin-top:16px;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 16px 0 18px;border-radius:999px;border:1px solid var(--c);background:rgba(20,30,39,.6);font-weight:700;font-size:var(--t-ui);color:#fff;text-decoration:none}
+.ig:hover{background:color-mix(in srgb,var(--c) 22%,rgba(20,30,39,.6))}
+.ig svg{width:14px;height:14px}
+/* the photo: rounded to the page radius, tinted toward the event colour, pans inside its frame */
+.ph{position:absolute;right:24px;top:15vh;width:calc(54vw - var(--gut) + 40px);max-width:760px;height:62vh;border-radius:var(--radius);overflow:hidden;background:#0c1319;box-shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent),0 0 60px -12px color-mix(in srgb,var(--c) 55%,transparent);transform:translate3d(calc(var(--px,0)*-10px),calc(var(--py,0)*-6px),0)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:70% 40%}
+.ph::after{content:"";position:absolute;inset:0;background:var(--c);mix-blend-mode:color;opacity:.28;pointer-events:none}
+.cut.on .ph{animation:phin .5s var(--ease) both}
+.cut.on .ph img{animation:phpan 7s cubic-bezier(.2,.6,.2,1) both}
+@keyframes phin{from{clip-path:inset(0 0 0 100%);opacity:.4}to{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes phpan{from{transform:scale(1.16) translateX(5%)}to{transform:scale(1.02) translateX(-1%)}}
+/* AEC: the six cities as a quiet list over the formation */
+.cities{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;color:#fff;font-weight:700}
+.cities span{display:flex;gap:12px;align-items:center}.cities span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c)}
+/* the four more: rows */
+.rows{position:absolute;right:24px;top:15vh;width:calc(54vw - var(--gut) + 40px);max-width:700px;display:grid;gap:0}
+.rows div{padding:18px 0;border-top:1px solid var(--line)}
+.rows div:last-child{border-bottom:1px solid var(--line)}
+.rows b{font-weight:900;font-size:clamp(26px,2.6vw,40px);letter-spacing:-.02em;color:#fff;line-height:1}
+.rows p{margin-top:8px;font-size:15px;line-height:1.45;color:var(--gray);max-width:52ch}
+/* the pan streak on every cut */
+.streak{position:fixed;top:0;bottom:0;left:0;width:22vw;z-index:5;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--sc,#69C4AF) 70%,#fff);mix-blend-mode:screen}
+.streak.go{animation:streak .3s cubic-bezier(.5,0,.2,1) 1}
+@keyframes streak{0%{transform:translateX(-30vw);opacity:.9}100%{transform:translateX(112vw);opacity:.9}}
+
+.pick{position:absolute;z-index:3;left:var(--gut);right:24px;bottom:28px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pick button{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);font-weight:700;font-size:var(--t-cap);color:var(--mute);background:rgba(20,30,39,.55);transition:color .2s,border-color .2s,background .2s}
+.pick button:hover{color:#fff}
+.pick button[aria-current=true]{color:#fff;border-color:var(--bc);background:rgba(20,30,39,.85);box-shadow:0 0 18px -4px var(--bc)}
+.note{position:absolute;left:var(--gut);bottom:70px;font-size:var(--t-cap);color:var(--mute);z-index:3}
+.t0head{display:none}
+
+/* tier 0 (no WebGL): the events as a list with photos, no canvas, no pin */
+html.t0 #field,html.t0 .tint,html.t0 .pick,html.t0 .note,html.t0 .rail,html.t0 .streak{display:none}
+html.t0 .stick,html.stack .stick{position:static;height:auto;overflow:visible}
+html.t0 #act,html.stack #act{height:auto!important}
+html.t0 #act{padding:0 24px 80px var(--gut)}
+html.t0 .t0head{display:block;margin:0 0 28px;font-weight:900;font-size:clamp(32px,4.4vw,64px);line-height:1;letter-spacing:-.025em;color:#fff;max-width:18ch}
+html.t0 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+html.t0 .cut{position:relative;display:block;inset:auto;padding:24px;border:1.5px solid var(--c);border-radius:16px;background:var(--night-up)}
+html.t0 .cut::before{display:none}
+html.t0 .txt{position:static;width:auto}
+html.t0 .ph,html.t0 .rows,html.t0 .cities{position:relative;inset:auto;width:100%;max-width:none;height:auto;margin-bottom:18px}
+html.t0 .ph{aspect-ratio:3/2}
+html.t0 .ph img,html.t0 .cut.on .ph,html.t0 .cut.on .ph img{animation:none}
+html.t0 .big{font-size:clamp(30px,3vw,44px);line-height:1}
+html.t0 .big .w>span{transform:none!important;transition:none!important}
+html.t0 .cut.span2{grid-column:1/-1}
+html.t0 .cities{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
+
+/* reduced motion with WebGL: the cuts stack, nothing pins, nothing pans */
+html.stack .cut{position:relative;display:block;inset:auto;min-height:100svh;padding-top:96px}
+html.stack .pick,html.stack .note{display:none}
+html.stack .big .w>span{transform:none!important;transition:none!important}
+html.stack .cut .ph,html.stack .cut .ph img{animation:none}
+html.stack .streak{display:none}
+
+@media (max-width:767px){
+  :root{--rail:10px;--gut:40px;--radius:16px}
+  .logo{left:var(--gut)}.rail span{display:none}.rail{gap:5px}
+  .pill{top:auto;bottom:16px;right:16px}
+  .cut{padding:0 20px 0 var(--gut)}
+  .ph{left:var(--gut);right:20px;top:84px;width:auto;height:27svh}
+  .txt{left:var(--gut);right:20px;width:auto;bottom:150px}
+  .cut.photo .txt{bottom:132px}.cut.photo .chips{display:none}
+  .ph{height:25svh}
+  .big{font-size:clamp(40px,12vw,56px)}
+  .sub{font-size:16px;margin-top:12px}
+  .chips{margin-top:12px}.chips span{padding:5px 11px}
+  .hist{font-size:12px}
+  .pick{left:var(--gut);right:0;bottom:76px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-right:14px}.pick button{flex:none}
+  .pick button{height:30px;padding:0 10px}
+  .note{display:none}
+    .rows{left:var(--gut);right:20px;top:84px;width:auto}
+  .rows div{padding:9px 0}.rows b{font-size:22px}.rows p{font-size:13px;margin-top:3px}
+  html.t0 #act{padding-left:20px}html.t0 .grid{grid-template-columns:minmax(0,1fr)}html.t0 .logo{left:20px}
+  html.t0 .ph{height:auto;left:auto;top:auto}
+}
+@media (prefers-reduced-motion:reduce){.big .w>span{transform:none!important;transition:none!important}.cut.on .ph,.cut.on .ph img{animation:none}.streak{display:none}}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="tint" id="tint"></div>
+<div class="streak" id="streak"></div>
+<div class="fx vignette"></div><div class="fx grain"></div>
+<a class="logo" href="#"><img src="brand/vic-logo-white.svg" alt="Vision & Innovation Club"></a>
+<nav class="rail" id="rail" aria-label="Events">
+  <div class="wp"><i></i><span>Events</span></div>
+</nav>
+<a class="pill" href="#"><span class="chip">Applications open 25 Oct</span><span class="go"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></a>
+
+<main>
+<section class="edge peak" aria-hidden="true"><span>Act 4 stand-in: the peak hands over, the ENP photo full frame</span></section>
+
+<section id="act" aria-label="Events and projects">
+<div class="stick">
+  <h2 class="t0head">Events and projects, organized by the whole club.</h2>
+  <div class="grid">
+  <article class="cut photo" data-f="gala" data-c="#D4A843" data-n="Engineers' Gala" style="--c:#D4A843">
+    <div class="ph"><img src="pics/gala.jpg" alt="A large group in formal dress in a draped hall, Engineers' Gala"></div>
+    <div class="txt">
+      <p class="lbl">Prestige event <em>· 9th edition coming this year</em></p>
+      <h3 class="big">Engineers' Gala.</h3>
+      <p class="sub">National and international business leaders and researchers meet newly graduated engineers, to open the professional world and grow their network.</p>
+      <div class="chips"><span class="id">Guest talks</span><span>Roundtables with CEOs</span><span>Networking</span></div>
+      <p class="hist">Past editions: 3rd in 2019, 4th in July 2021, 5th in July 2022, and one in autumn 2024.</p>
+      <a class="ig" href="https://www.instagram.com/vic.enp/" target="_blank" rel="noopener">Gala teasers on Instagram @vic.enp <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    </div>
+  </article>
+  <article class="cut photo" data-f="ignite" data-c="#E0313F" data-n="Ignite Algiers" style="--c:#E0313F">
+    <div class="ph"><img src="pics/ignite.jpg" alt="A large group on a theatre stage with a red screen behind them, Ignite Algiers"></div>
+    <div class="txt">
+      <p class="lbl">International format <em>· Ignite</em></p>
+      <h3 class="big">Ignite Algiers.</h3>
+      <p class="sub">Short, powerful talks from industry leaders, innovators and thought leaders.</p>
+      <div class="chips"><span class="id">Short talks</span><span>Innovators</span><span>Thought leaders</span></div>
+      <p class="hist">4th edition in 2024. The 5th edition was announced in November 2025.</p>
+    </div>
+  </article>
+  <article class="cut photo" data-f="poly" data-c="#69C4AF" data-n="Polymaze" style="--c:#69C4AF">
+    <div class="ph"><img src="pics/polymaze.jpg" alt="A crowd gathered around a robot maze on the floor, Polymaze"></div>
+    <div class="txt">
+      <p class="lbl">Robotics competition <em>· 2026</em></p>
+      <h3 class="big">Polymaze.</h3>
+      <p class="sub">Line-follower and maze-solving robots. Registered participants prepare in workshops, then compete on a day at ENP.</p>
+      <div class="chips"><span>Line followers</span><span>Maze solvers</span><span>Prep workshops</span></div>
+    </div>
+  </article>
+  <article class="cut" data-f="aec" data-c="#69C4AF" data-n="AEC" style="--c:#69C4AF">
+    <div class="txt">
+      <p class="lbl">Algerian Engineering Competition <em>· latest edition 2026</em></p>
+      <h3 class="big">AEC.</h3>
+      <p class="sub">A national engineering competition. The first edition, in December 2018, ran in six cities at once.</p>
+      <div class="cities" aria-label="Cities of the first edition"><span>Algiers</span><span>Oran</span><span>Tlemcen</span><span>Constantine</span><span>Annaba</span><span>Ouargla</span></div>
+    </div>
+  </article>
+  <article class="cut span2" data-f="more" data-c="#69C4AF" data-n="Four more" style="--c:#69C4AF">
+    <div class="rows">
+      <div><b>CPSP</b><p>A starter pack for ENP newcomers: discover the school and get tips for the Prepa Cycle, with guests who were class majors. The 2026 edition was held in September.</p></div>
+      <div><b>STEPS</b><p>Studying abroad, language tests and scholarships, with workshops and the "STEPS Abroad" YouTube series.</p></div>
+      <div><b>Anglosphere</b><p>A celebration of the English language, with conferences, workshops and stands.</p></div>
+      <div><b>VICra</b><p>VIC's Ramadan project: a series of Islamic reminders, each followed by a quiz open to everyone, with prizes.</p></div>
+    </div>
+    <div class="txt">
+      <p class="lbl">Projects <em>· CPSP, STEPS, Anglosphere, VICra</em></p>
+      <h3 class="big">Four more projects.</h3>
+    </div>
+  </article>
+  <article class="cut" data-f="hoc" data-c="#2F80ED" data-n="Hour of Code" style="--c:#2F80ED">
+    <div class="txt">
+      <p class="lbl">Part of our history</p>
+      <h3 class="big">Hour of Code.</h3>
+      <p class="sub">An international event with its own blue identity. VIC's latest edition was in 2023.</p>
+    </div>
+  </article>
+  </div>
+  <div class="note" id="note">Every event is organized by the whole club. Every department plays a part.</div>
+  <div class="pick" id="pick" aria-label="Jump to an event"></div>
+</div>
+</section>
+
+<section class="edge end" aria-hidden="true">Act 6 stand-in<b>How to join.</b></section>
+</main>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const q = new URLSearchParams(location.search), root = document.documentElement;
+const phone = () => innerWidth < 768;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || q.get('mode') === 'stack';
+let gl = null; try { const c = document.createElement('canvas'); gl = c.getContext('webgl2') || c.getContext('webgl'); } catch (e) {}
+const tier0 = q.get('mode') === 't0' || !gl;
+if (tier0) root.classList.add('t0'); else if (reduced) root.classList.add('stack');
+const pinned = !tier0 && !reduced;
+
+const cuts = $$('.cut'), act = $('#act');
+// steps: six event cuts, then C's horizon. Weights are viewport heights of scroll per step (~3.2 vh of cuts).
+const STEPS = [...cuts.map((e) => ({ f: e.dataset.f, c: e.dataset.c })), { f: 'horizon', c: '#69C4AF' }];
+const W = [0.7, 0.5, 0.5, 0.45, 0.65, 0.4, 0.6], TOTAL = W.reduce((a, b) => a + b, 0);
+if (pinned) act.style.height = `${(TOTAL + 1) * 100}vh`;
+root.style.setProperty('--radius', '20px');
+
+$$('.big').forEach((h) => { h.innerHTML = h.textContent.split(' ').map((w, i) => `<span class="w"><span style="--i:${i}">${w}</span></span>`).join(''); });
+
+const rail = $('#rail'); const ticks = cuts.map(() => { const b = document.createElement('b'); rail.append(b); return b; });
+const btns = cuts.map((el, i) => {
+  const b = document.createElement('button'); b.textContent = el.dataset.n; b.style.setProperty('--bc', el.dataset.c); b.onclick = () => go(i);
+  $('#pick').append(b); return b;
+});
+function go(i) {
+  if (pinned) { const before = W.slice(0, i).reduce((a, b) => a + b, 0); scrollTo({ top: act.offsetTop + (before + W[i] / 2) * innerHeight, behavior: 'auto' }); }
+  else cuts[i].scrollIntoView({ behavior: 'auto' });
+}
+if (tier0) { cuts.forEach((c) => c.classList.add('on')); throw 0; } // the cards are the whole tier-0 composition
+if (!pinned) cuts.forEach((c) => c.classList.add('on'));
+
+// ---------- the world ----------
+const N = phone() ? 10000 : 16000, DPR = Math.min(devicePixelRatio, phone() ? 1.5 : 2);
+const renderer = new THREE.WebGLRenderer({ canvas: $('#field'), antialias: false });
+renderer.setPixelRatio(DPR); renderer.setClearColor(0x141e27, 1);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(45, 1, .1, 300);
+const group = new THREE.Group(); scene.add(group);
+const R = (a, b) => a + Math.random() * (b - a);
+const g = () => { let u = 0; for (let i = 0; i < 4; i++) u += Math.random(); return (u - 2) / 1.15; };
+const dust = () => [R(-80, 80), R(-46, 46), R(-70, 10)];
+const ell = (cx, cy, rx, ry, j) => { const a = R(0, 6.283); return [cx + Math.cos(a) * rx + g() * j, cy + Math.sin(a) * ry + g() * j, g() * 1.2]; };
+// a polyline of points: t in [0,1] along the path
+const along = (P, t, j) => { const n = P.length - 1, f = t * n, k = Math.min(Math.floor(f), n - 1), u = f - k; return [P[k][0] + (P[k + 1][0] - P[k][0]) * u + g() * j, P[k][1] + (P[k + 1][1] - P[k][1]) * u + g() * j, g() * .5]; };
+const MAZE = [[-17, -11], [-17, 9], [-9, 9], [-9, -5], [-1, -5], [-1, 5], [7, 5], [7, -9], [15, -9], [15, 11]];
+const CITY = [[-1, 6], [-12, 3], [-17, 0], [8, 5], [16, 7], [4, -12]]; // Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla (stylised)
+const F = {
+  // Gala: tiers of seats facing a lit stage line
+  gala: (i) => { if (i % 9 === 0) return [R(-9, 9), 9 + g() * .12, 0]; const row = i % 7, r = 10 + row * 3.2, a = R(.12, Math.PI - .12); return [Math.cos(a) * r * 1.5, -9 + Math.sin(a) * r * .55 - row * .1, row * -.6 + g() * .2]; },
+  // Ignite: columns that rise and thin out, sparks above
+  ignite: (i) => { const col = i % 11, h = 6 + (Math.sin(col * 3.1) * .5 + .5) * 20, t = Math.pow(Math.random(), 1.6); return [(col - 5) * 3.4 + g() * (.2 + t * 1.3), -13 + t * h, g() * .8]; },
+  // Polymaze: one maze path, a runner lit near its end
+  poly: (i) => (i % 25 === 0 ? ell(15, 11, .9, .9, .1) : along(MAZE, Math.random(), .2)),
+  // AEC: six city clusters tied by thin lines
+  aec: (i) => { if (i % 5 === 0) { const a = Math.floor(R(0, 5.99)), b = (a + 1) % 6, t = Math.random(); return [CITY[a][0] + (CITY[b][0] - CITY[a][0]) * t + g() * .15, CITY[a][1] + (CITY[b][1] - CITY[a][1]) * t + g() * .15, 0]; } const c = CITY[i % 6]; return [c[0] + g() * 1.5, c[1] + g() * 1.5, g() * 1.2]; },
+  // four more: four small rings
+  more: (i) => { const k = i % 4, c = [[-13, 7], [13, 7], [-13, -8], [13, -8]][k]; return ell(c[0], c[1], 5.5, 5.5, .22); },
+  // Hour of Code: rows of dim code lines
+  hoc: (i) => { const row = Math.floor(R(0, 9)), x0 = -14 + (row % 3) * 3, len = 8 + (row * 7 % 13); return [x0 + Math.random() * len, 11 - row * 2.7 + g() * .08, g() * .3]; },
+  horizon: (i) => { const s = i % 2 ? 1 : -1; return [s * Math.pow(Math.random(), 1.8) * 70, g() * .14 + (i % 17 === 0 ? R(-6, 6) : 0), R(-14, 6)]; },
+};
+const pos = new Float32Array(N * 3), geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+const U = { uC: { value: new THREE.Color('#69C4AF') }, uPx: { value: DPR }, uFlash: { value: 0 }, uDim: { value: 1 } };
+const mat = new THREE.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `uniform float uPx; varying float vA; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.); float d = -mv.z; vA = 1. - smoothstep(120., 230., d); gl_PointSize = clamp(150. / d, 2.2, 3.8) * uPx; gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 uC; uniform float uFlash, uDim; varying float vA; void main(){ float a = smoothstep(.5,.1,length(gl_PointCoord-.5)); gl_FragColor = vec4(mix(uC, vec3(1.), uFlash) * vA * a * uDim, 1.); }` });
+group.add(new THREE.Points(geo, mat));
+const yg = new THREE.BufferGeometry(); yg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3));
+const ym = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uPx: { value: DPR } },
+  vertexShader: `uniform float uPx; void main(){ gl_PointSize = 34. * uPx; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }`,
+  fragmentShader: `void main(){ float d = length(gl_PointCoord-.5); float a = smoothstep(.5,.0,d); gl_FragColor = vec4(mix(vec3(.41,.77,.69), vec3(1.), smoothstep(.12,.0,d)) * a * a * 1.3, 1.); }` });
+const you = new THREE.Points(yg, ym); scene.add(you);
+
+function layout() {
+  const p = phone(), a = innerWidth / innerHeight;
+  renderer.setSize(innerWidth, innerHeight, false); camera.aspect = a; camera.position.set(0, 0, p ? 92 : 60); camera.updateProjectionMatrix();
+  group.position.set(p ? 0 : 17, p ? (group.userData.py || 0) : 0, 0); group.scale.setScalar(p ? .5 : 1);
+  camera.updateMatrixWorld(); const ndc = p ? [.9, .06] : [.95, .9];
+  const v = new THREE.Vector3(ndc[0] * 2 - 1, 1 - ndc[1] * 2, .5).unproject(camera).sub(camera.position).normalize();
+  you.position.copy(camera.position).addScaledVector(v, (camera.position.z - 20) / -v.z);
+}
+addEventListener('resize', layout); layout();
+renderer.compile(scene, camera);
+
+const PY = { gala: 1, ignite: 1, poly: 1, aec: 1, more: -12, hoc: 0, horizon: 0 };
+function snap(s) {
+  const fn = F[s.f]; group.userData.py = PY[s.f]; if (phone()) group.position.y = PY[s.f];
+  for (let i = 0; i < N; i++) pos.set(i % 10 >= 8 ? dust() : fn(i), i * 3);
+  geo.attributes.position.needsUpdate = true; U.uC.value.set(s.c); U.uFlash.value = 1; U.uDim.value = s.f === 'hoc' ? .55 : 1;
+  group.rotation.set(s.f === 'gala' ? -.35 : 0, 0, 0);
+  group.userData.base = [group.rotation.x, group.rotation.y];
+}
+
+// ---------- scroll: step from progress ----------
+let cur = -2;
+function stepNow() {
+  if (pinned) {
+    const r = act.getBoundingClientRect(), span = act.offsetHeight - innerHeight, p = Math.min(Math.max(-r.top / span, 0), .9999);
+    if (r.top > 0) return -1;
+    let acc = 0; for (let i = 0; i < W.length; i++) { acc += W[i] / TOTAL; if (p < acc) return i; }
+    return W.length - 1;
+  }
+  const mid = innerHeight * .5, i = cuts.findIndex((c) => { const r = c.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+  return i < 0 ? -1 : i;
+}
+const streak = $('#streak');
+function pick() {
+  const i = stepNow(); if (i === cur) return; const was = cur; cur = i;
+  if (pinned) cuts.forEach((c, k) => c.classList.toggle('on', k === i));
+  if (i < 0) { $('#tint').classList.remove('on'); snap(STEPS[0]); return; }
+  snap(STEPS[i]);
+  if (pinned && was !== -2) { streak.style.setProperty('--sc', STEPS[i].c); streak.classList.remove('go'); void streak.offsetWidth; streak.classList.add('go'); }
+  $('#tint').classList.toggle('on', i % 2 === 0); // the ground steps between a lift of the night and the night
+  ticks.forEach((t, k) => { t.classList.toggle('on', k <= i); t.classList.toggle('now', k === i); });
+  btns.forEach((b, k) => b.setAttribute('aria-current', k === i));
+  $('#pick').style.opacity = i <= 5 ? 1 : 0; $('#note').style.opacity = i === 0 ? 1 : 0;
+}
+addEventListener('scroll', pick, { passive: true }); pick();
+if (cur < 0) snap(STEPS[0]);
+
+// ---------- pointer / touch: the field leans, the photo parallaxes ----------
+let lx = 0, ly = 0, tx = 0, ty = 0;
+addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
+let last = performance.now();
+renderer.setAnimationLoop((now) => {
+  const dt = Math.min((now - last) / 1000, .1); last = now;
+  U.uFlash.value = Math.max(0, U.uFlash.value - dt * 6);
+  if (!reduced) {
+    lx += (tx - lx) * Math.min(dt * 3, 1); ly += (ty - ly) * Math.min(dt * 3, 1);
+    const b = group.userData.base || [0, 0];
+    group.rotation.y = b[1] + lx * .14 + Math.sin(now / 5000) * .04; group.rotation.x = b[0] + ly * .08;
+    root.style.setProperty('--px', lx.toFixed(3)); root.style.setProperty('--py', ly.toFixed(3));
+  }
+  renderer.render(scene, camera);
+});
+document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

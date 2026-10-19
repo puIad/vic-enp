@@ -1,0 +1,424 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #16, vic-enp). Act 6: how to join, growing after joining, FAQ. Never merged. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Act 6: how to join and the FAQ (comp)</title>
+<link rel="preload" href="fonts/Gilroy-Heavy.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900;font-display:swap}
+
+:root{
+  --night:#141E27; --blue:#127DBB; --aqua:#69C4AF; --gray:#EFEFEF;
+  --line:rgba(239,239,239,.14); --mute:#A3AFBA;
+  --ink2:#2c3a46; --ink3:#3b4954; --hair:rgba(20,30,39,.16); --link:oklch(0.54 0.129 242.2);
+  --grad:linear-gradient(135deg,#127DBB,#69C4AF);
+  --t-act:clamp(36px,5vw,72px); --t-lead:clamp(18px,1.5vw,22px); --t-body:clamp(16px,1.15vw,17px); --t-ui:15px; --t-cap:13px;
+  --rail:max(20px,2.4vw); --gut:calc(var(--rail) + 132px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--night);color:var(--gray);font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased;scrollbar-color:#2b3a47 var(--night);scrollbar-width:thin}
+body{background:var(--night);font-size:var(--t-body);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--aqua);color:var(--night)}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:6px}
+a{color:inherit}
+
+/* ---------- the world ---------- */
+#world,#poster{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
+#poster{display:none}.t0 #poster{display:block;opacity:.7}.t0 #world{display:none}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:1}
+.vignette{background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(8,12,17,.85) 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- chrome (from the #10 system sheet) ---------- */
+.logo{position:fixed;top:22px;left:var(--gut);height:34px;z-index:10}.logo img{height:100%;display:block}
+.readout{position:fixed;top:22px;right:24px;z-index:10;text-align:right;font-size:var(--t-cap);line-height:1.4;color:var(--mute)}
+.readout b{display:block;font-weight:400;font-size:22px;color:#fff;font-variant-numeric:tabular-nums}
+.rail{position:fixed;left:var(--rail);top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:20px}
+.rail::before,.rail::after{content:"";position:absolute;left:4px;top:6px;width:1px;bottom:6px;background:var(--line)}
+.rail::after{background:var(--grad);bottom:auto;height:var(--fill,0%);box-shadow:0 0 8px rgba(105,196,175,.6)}
+.rail a{position:relative;z-index:1;display:flex;align-items:center;gap:12px;text-decoration:none;color:rgba(239,239,239,.45);font-size:var(--t-cap);line-height:1;border-radius:4px}
+.rail i{flex:none;width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;background:var(--night);transition:background .5s var(--ease),border-color .5s var(--ease),box-shadow .5s var(--ease)}
+.rail span{opacity:0;transform:translateX(-6px);transition:opacity .4s var(--ease),transform .4s var(--ease);white-space:nowrap}
+.rail a.on{color:#fff}.rail a.on i{background:var(--aqua);border-color:var(--aqua)}
+.rail a.now i{box-shadow:0 0 0 4px rgba(105,196,175,.18),0 0 14px var(--aqua)}
+.rail a.now span,.rail:hover span,.rail a:focus-visible span{opacity:1;transform:none}
+.pill{position:fixed;top:78px;right:24px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 8px 0 20px;border-radius:999px;font-weight:700;font-size:var(--t-ui);color:#fff;text-decoration:none;white-space:nowrap;
+  background:linear-gradient(var(--night),var(--night)) padding-box,var(--grad) border-box;border:1.5px solid transparent;box-shadow:0 8px 32px -8px rgba(18,125,187,.55);transition:box-shadow .4s var(--ease),transform .4s var(--ease),opacity .5s var(--ease)}
+.pill .chip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(105,196,175,.14);color:var(--aqua);font-variant-numeric:tabular-nums;font-size:14px}
+.pill svg{width:16px;height:16px;flex:none}
+.go{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:var(--night);transition:transform .4s var(--ease)}
+.pill.open{padding:0 6px 0 22px}.pill:hover{box-shadow:0 10px 40px -6px rgba(105,196,175,.6);transform:translateY(-1px)}.pill:hover .go{transform:rotate(45deg)}
+.pill.hide{opacity:0;pointer-events:none;transform:translateY(-6px)}
+.sound{position:fixed;left:calc(var(--rail) - 12px);bottom:20px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px 0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(20,30,39,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--mute);font:inherit;font-weight:700;font-size:var(--t-cap);cursor:pointer}
+.sound .bars{display:flex;align-items:flex-end;gap:2px;height:14px}.sound .bars i{display:block;width:2px;height:6px;border-radius:1px;background:currentColor}.sound .bars i:nth-child(2){height:10px}.sound .bars i:nth-child(3){height:4px}
+.logo,.readout,.rail a,.sound{transition:color .35s var(--ease),opacity .35s var(--ease),background .35s var(--ease),border-color .35s var(--ease)}
+.logo.lit{opacity:0;pointer-events:none}
+.readout.lit{color:#4a5762}.readout.lit b{color:var(--night)}
+.rail a.lit{color:rgba(20,30,39,.4)}.rail a.lit.on{color:var(--night)}.rail a.lit i{background:var(--gray)}.rail a.lit.on i{background:var(--night);border-color:var(--night)}.rail a.lit.now i{box-shadow:0 0 0 4px rgba(20,30,39,.12)}
+.sound.lit{background:rgba(239,239,239,.8);color:#4a5762;border-color:rgba(20,30,39,.16)}
+
+/* ---------- stand-ins for the neighbouring acts (night) ---------- */
+main{position:relative;z-index:2}
+.stand{min-height:78vh;display:grid;align-content:end;padding:0 24px 56px var(--gut)}
+.stand p{max-width:44ch;color:var(--mute);font-size:var(--t-cap);line-height:1.5}.stand p b{color:#fff;font-weight:700}
+.stand.end{min-height:92vh;align-content:center;position:relative}
+.slot{position:absolute;right:max(24px,14vw);top:36%;width:64px;height:64px;border-radius:50%;border:1.5px dashed rgba(105,196,175,.8);box-shadow:inset 0 0 30px rgba(105,196,175,.25)}
+
+/* ---------- the light act ---------- */
+.lightact{position:relative;z-index:2;color:var(--night)}
+.horizon{position:relative;height:46vh;background:linear-gradient(180deg,transparent 0%,rgba(29,43,55,.55) 34%,rgba(93,107,119,.9) 66%,var(--gray) 100%)}
+.horizon::after{content:"";position:absolute;left:0;right:0;top:52%;height:1px;background:linear-gradient(90deg,transparent,#127DBB 30%,#69C4AF 70%,transparent);box-shadow:0 0 24px 2px rgba(105,196,175,.45)}
+.horizon.down{background:linear-gradient(0deg,transparent 0%,rgba(29,43,55,.55) 34%,rgba(93,107,119,.9) 66%,var(--gray) 100%)}.horizon.down::after{top:48%}
+.body{background:var(--gray);padding:24px 150px 0 var(--gut)}
+.wrap{max-width:1240px}
+.block{padding:clamp(56px,9vh,104px) 0;border-top:1px solid var(--hair)}.block:first-child{border-top:0;padding-top:0}
+h2{font-weight:900;font-size:var(--t-act);line-height:.98;letter-spacing:-.02em;text-wrap:balance}
+.lead{font-size:var(--t-lead);line-height:1.45;color:var(--ink2);max-width:34ch;margin-top:18px}
+.lightact ::selection{background:var(--night);color:var(--gray)}.lightact :focus-visible{outline-color:var(--link)}
+.lightact a{color:var(--link);text-underline-offset:3px}
+
+/* steps: ghost numerals on a hairline your point walks */
+.steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0 36px;margin-top:64px;list-style:none;padding:0}
+.steps::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--hair)}
+.steps .walk{position:absolute;top:0;left:0;width:100%;height:1px;background:var(--night);transform-origin:left;transform:scaleX(var(--k,0));opacity:.55}
+.me{position:absolute;top:-8px;left:calc(var(--k,0) * 100%);width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--aqua);border:2px solid var(--night);box-shadow:0 0 0 5px rgba(105,196,175,.28),0 0 16px rgba(105,196,175,.7);z-index:2}
+.step{position:relative;padding-top:34px}
+.step::before{content:"";position:absolute;top:-4px;left:0;width:8px;height:8px;border-radius:50%;background:var(--gray);border:1.5px solid var(--night);transition:background .4s var(--ease)}
+.step.on::before{background:var(--night)}
+.step em{display:block;font-style:normal;font-weight:900;font-size:clamp(84px,8.4vw,120px);line-height:.9;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px rgba(20,30,39,.2);margin-left:-4px;transition:-webkit-text-stroke-color .4s var(--ease),color .4s var(--ease)}
+.step.on em{-webkit-text-stroke-color:rgba(20,30,39,.42)}
+.step:hover em{color:rgba(20,30,39,.06);-webkit-text-stroke-color:var(--night)}
+.step h3{font-weight:900;font-size:clamp(22px,1.9vw,27px);line-height:1.05;letter-spacing:-.01em;margin:18px 0 10px}
+.step p{font-size:15px;line-height:1.55;color:var(--ink3);max-width:30ch}
+.step p strong{color:var(--night);font-weight:700}
+
+/* grow: a staircase, each rung higher than the last */
+.grow{display:grid;grid-template-columns:repeat(6,1fr);gap:0 22px;margin-top:56px;list-style:none;padding:0;align-items:start}
+.rung{border-top:2px solid var(--night);padding-top:16px;position:relative;margin-top:calc((5 - var(--r)) * 34px)}
+.rung::before{content:"";position:absolute;top:-6px;left:0;width:10px;height:10px;border-radius:50%;background:var(--night)}
+.rung b{display:block;font-weight:900;font-size:19px;line-height:1.1;margin-bottom:8px}
+.rung span{display:block;font-size:14.5px;line-height:1.5;color:var(--ink3)}
+.rung:last-child::before{background:var(--aqua);box-shadow:0 0 0 1.5px var(--night),0 0 12px rgba(105,196,175,.8)}
+
+/* faq: hairline rows, real buttons */
+.faqgrid{display:grid;grid-template-columns:minmax(240px,4fr) 8fr;gap:56px}
+.faqside{position:sticky;top:120px;align-self:start}
+.faq{list-style:none;padding:0}
+.faq li{border-top:1px solid var(--hair)}.faq li:last-child{border-bottom:1px solid var(--hair)}
+.faq h3{font:inherit}
+.faq button{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:20px 0;cursor:pointer;font-weight:700;font-size:19px;line-height:1.3;color:var(--night)}
+.faq button:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:6px}
+.faq button::after{content:"";width:10px;height:10px;flex:none;margin-top:7px;border-right:1.5px solid;border-bottom:1.5px solid;transform:rotate(45deg);transition:transform .3s var(--ease)}
+.faq button:hover::after{translate:0 2px}
+.faq button[aria-expanded="true"]::after{transform:rotate(-135deg)}.faq button[aria-expanded="true"]:hover::after{translate:0 -2px}
+.panel{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .4s var(--ease),visibility 0s .4s}
+.panel.open{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .4s var(--ease),visibility 0s}
+.panel > div{overflow:hidden}
+.panel p{padding:0 40px 22px 0;max-width:62ch;color:var(--ink3);font-size:16px}
+
+/* reveal */
+.js .rv{opacity:0;translate:0 22px;transition:opacity .7s var(--ease),translate .7s var(--ease)}
+.js .rv.in{opacity:1;translate:0 0}
+
+/* tier 0 / reduced motion: one composition, nothing travels */
+.rm .rv,.t0 .rv{opacity:1!important;translate:none!important;transition:none!important}
+.rm .panel,.t0 .panel,.rm *,.t0 *{transition:none!important}
+.rm .me,.t0 .me{display:none}
+
+footer{position:relative;z-index:2;padding:30px 24px 40px var(--gut);font-size:var(--t-cap);color:var(--mute)}
+
+@media (max-width:1100px){
+  .body{padding-right:24px}
+  .steps{grid-template-columns:1fr 1fr;gap:56px 28px}.steps::before,.steps .walk,.me{display:none}
+  .grow{grid-template-columns:repeat(3,1fr);gap:40px 22px}.rung{margin-top:0}
+}
+@media (max-width:900px){.faqgrid{grid-template-columns:1fr;gap:32px}.faqside{position:static}}
+@media (max-width:767px){
+  :root{--rail:10px;--gut:40px}
+  .logo{top:18px;height:26px}.readout{top:16px;right:16px;font-size:11px}.readout b{font-size:17px}
+  .rail{gap:16px}.rail span{display:none}.rail a{padding:6px}.rail::before,.rail::after{left:10px}
+  .pill{top:auto;bottom:16px;right:16px}
+  .sound{left:12px;bottom:16px;width:46px;height:46px;padding:0;justify-content:center}.sound .lbl{display:none}
+  .stand{padding:0 16px 40px var(--gut)}.body{padding:8px 16px 0 var(--gut)}.horizon{height:34vh}
+  /* steps: a vertical hairline on the left, your point walks down it */
+  .steps{display:block;margin-top:44px;padding-left:28px}
+  .steps::before,.steps .walk,.me{display:block}
+  .steps::before{left:6px;right:auto;top:0;bottom:0;width:1px;height:auto}
+  .steps .walk{left:6px;top:0;width:1px;height:100%;transform-origin:top;transform:scaleY(var(--k,0))}
+  .me{left:-1px;top:calc(var(--k,0) * 100%);margin:-8px 0 0}
+  .step{padding:0 0 40px;margin-left:0}.step:last-child{padding-bottom:0}
+  .step::before{left:-26px;top:20px}
+  .step em{font-size:76px}
+  .step p{max-width:none}
+  /* grow: the staircase becomes a vertical ladder */
+  .grow{display:block;margin-top:40px;padding-left:28px;position:relative}
+  .grow::before{content:"";position:absolute;left:6px;top:4px;bottom:4px;width:1px;background:var(--night)}
+  .rung{border-top:0;padding:0 0 26px;margin:0}.rung:last-child{padding-bottom:0}
+  .rung::before{left:-28px;top:6px}
+  .faq button{font-size:17px;padding:18px 0}
+  footer{padding:30px 16px 110px var(--gut)}
+}
+@media (max-width:767px){.js .rv{translate:0 16px}}
+</style>
+</head>
+<body>
+<canvas id="world" aria-hidden="true"></canvas>
+<svg id="poster" aria-hidden="true" preserveAspectRatio="xMidYMid slice"></svg>
+<div class="fx vignette"></div><div class="fx grain"></div>
+
+<a class="logo" href="#top" aria-label="Vision &amp; Innovation Club, back to top"><img src="brand/vic-logo-white.svg" alt="Vision &amp; Innovation Club"></a>
+<div class="readout">Distance to the 600<b id="dist">12.0</b></div>
+<nav class="rail" id="rail" aria-label="Waypoints">
+  <a href="#top"><i></i><span>Start</span></a>
+  <a href="#top"><i></i><span>The 600</span></a>
+  <a href="#top"><i></i><span>Departments</span></a>
+  <a href="#top"><i></i><span>Club life</span></a>
+  <a href="#events"><i></i><span>Events</span></a>
+  <a href="#join"><i></i><span>How to join</span></a>
+  <a href="#end"><i></i><span>Your place</span></a>
+</nav>
+<button class="sound" id="sound" type="button" aria-pressed="false" aria-label="Sound"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Sound off</span></button>
+<a class="pill" id="pill" href="https://www.instagram.com/vic.enp/"></a>
+
+<main id="top">
+<section class="stand" id="events" aria-label="Stand-in for the events act">
+  <p><b>Stand-in, act 5 (events, #15).</b> Its last cut holds one beat, then the formation relaxes into the far field and the horizon rises under it. Night, the world alive, your point at top right.</p>
+</section>
+
+<section class="lightact" id="join" aria-labelledby="h-join">
+  <div class="horizon in" aria-hidden="true"></div>
+  <div class="body"><div class="wrap">
+
+    <div class="block" id="steps-block">
+      <h2 id="h-join" class="rv">How to join.</h2>
+      <p class="lead rv">Every ENP student can apply, in any year and any specialty. Applications open 25 October 2026.</p>
+      <ol class="steps" id="steps">
+        <li class="walk" aria-hidden="true"></li><li class="me" aria-hidden="true"></li>
+        <li class="step rv"><em aria-hidden="true">01</em><h3>Fill in the form.</h3><p>Pick your first and second choice among the four main departments: HR, FLER, IT and COMM.</p></li>
+        <li class="step rv"><em aria-hidden="true">02</em><h3>Check your inbox.</h3><p>You get a confirmation email with your registration code.</p></li>
+        <li class="step rv"><em aria-hidden="true">03</em><h3>Set up your interview.</h3><p>If your application is accepted, two club members contact you within a day to set up your interview. You choose your <strong>activity department</strong> there: SPARK, Training or English Bubble.</p></li>
+        <li class="step rv"><em aria-hidden="true">04</em><h3>Join your teams.</h3><p>Get your result and start with your departments.</p></li>
+      </ol>
+    </div>
+
+    <div class="block" id="grow">
+      <h2 class="rv">Then grow.</h2>
+      <p class="lead rv">Joining is the start. Members move on in many directions.</p>
+      <ol class="grow">
+        <li class="rung rv" style="--r:0"><b>Organising teams</b><span>Join the organising team of an event.</span></li>
+        <li class="rung rv" style="--r:1"><b>Across departments</b><span>Help in other departments once you have experience.</span></li>
+        <li class="rung rv" style="--r:2"><b>Project manager</b><span>Apply to be a Project Manager or take on a responsibility role.</span></li>
+        <li class="rung rv" style="--r:3"><b>Specialised teams</b><span>P&amp;V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew.</span></li>
+        <li class="rung rv" style="--r:4"><b>Elections</b><span>Run for Head of Department or President.</span></li>
+        <li class="rung rv" style="--r:5"><b>R&amp;D Squad</b><span>Review and improve the club's charters. Open to members with experience.</span></li>
+      </ol>
+    </div>
+
+    <div class="block" id="faq">
+      <div class="faqgrid">
+        <div class="faqside">
+          <h2 class="rv">Questions.</h2>
+          <p class="lead rv">Still unsure? Message us on Instagram, <a href="https://www.instagram.com/vic.enp/">@vic.enp</a>.</p>
+        </div>
+        <ul class="faq rv" id="faqlist"></ul>
+      </div>
+    </div>
+
+  </div></div>
+  <div class="horizon down" aria-hidden="true"></div>
+</section>
+
+<section class="stand end" id="end" aria-label="Stand-in for the close">
+  <span class="slot" aria-hidden="true"></span>
+  <p><b>Stand-in, act 7 (close, #17).</b> Night again, the world alive. Your point is already back at top right and lit; the close sends it into the empty place (dashed ring).</p>
+</section>
+</main>
+<footer>Prototype for ticket #16 on vic-enp, never merged. Gilroy loaded locally; no web licence yet (open question 11). Flags: ?tier0, ?rm, ?open.</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const qs = new URLSearchParams(location.search);
+const phone = innerWidth < 768;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || qs.has('rm');
+const saveData = navigator.connection && navigator.connection.saveData;
+const root = document.documentElement;
+root.classList.add('js');
+if (reduce) root.classList.add('rm');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const sm = x => x * x * (3 - 2 * x);
+
+/* ---------- FAQ: nine questions, real buttons ---------- */
+const FAQ = [
+  ['Do I need experience?', 'No. Trainings and workshops are part of membership, and VIC’s whole purpose is to help you learn. (For P&V specifically, interest is enough, though owning a camera is a plus.)'],
+  ['I’m in first year. Can I join?', 'Yes. Any ENP student can join.'],
+  ['Is the club only in English?', 'English is the club’s official language. English Bubble exists precisely to help you get comfortable speaking it.'],
+  ['Can I join more than one department?', 'On the form you pick your first and second choice among the four main departments, and you choose your activity department at your interview. Once you have experience, you can help with tasks across departments.'],
+  ['I’m in another club. Can I still join?', 'Yes, with one exception: if you’re in another club’s external-relations team, you can’t join FLER (and vice versa). Committee members of other clubs also can’t be on VIC’s committee.'],
+  ['Is the IT department about coding?', 'No. IT at VIC means design, visual identity, photography and video. No coding required. <a href="#top">See the departments</a>.'],
+  ['Do I get a certificate?', 'Yes. Active members can request a membership certificate, and organizing-team members receive event certificates.'],
+  ['When does recruitment open, and how fast is the process?', 'Applications open on 25 October 2026. If your application is accepted, two club members contact you within a day to set up your interview.'],
+  ['What happens after I graduate?', 'You become an alumnus and stay part of the VIC community. Once a VICer, always a VICer.']
+];
+const list = document.getElementById('faqlist');
+list.innerHTML = FAQ.map(([q, a], i) => `<li><h3><button type="button" id="q${i}" aria-expanded="${i === 0}" aria-controls="a${i}">${q}</button></h3><div class="panel${i === 0 ? ' open' : ''}" id="a${i}" role="region" aria-labelledby="q${i}"><div><p>${a}</p></div></div></li>`).join('');
+const btns = [...list.querySelectorAll('button')];
+function toggle(b, to){ const open = to ?? b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', open); document.getElementById(b.getAttribute('aria-controls')).classList.toggle('open', open); }
+btns.forEach((b, i) => {
+  b.addEventListener('click', () => toggle(b));
+  b.addEventListener('keydown', e => {   // optional arrow-key roving between question headers
+    const to = e.key === 'ArrowDown' ? i + 1 : e.key === 'ArrowUp' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? btns.length - 1 : null;
+    if (to === null) return; e.preventDefault(); btns[(to + btns.length) % btns.length].focus();
+  });
+});
+if (qs.has('q')) btns.forEach((b, i) => toggle(b, qs.get('q').split(',').includes(String(i))));
+
+/* ---------- Apply pill ---------- */
+const OPENS_AT = new Date('2026-10-25T00:00:00+01:00');
+const now = () => qs.has('open') ? new Date(OPENS_AT.getTime() + 1) : new Date(OPENS_AT.getTime() - (qs.has('d') ? +qs.get('d') : 5.5 * 864e5));
+const arrow = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11 11 5M6 5h5v5"/></svg>';
+function left(){ const ms = Math.max(0, OPENS_AT - now()), d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60; return d ? `${d}d ${String(h).padStart(2,'0')}h` : `${h}h ${String(m).padStart(2,'0')}m`; }
+const pill = document.getElementById('pill');
+function paint(){ const open = now() >= OPENS_AT; pill.innerHTML = open ? `Apply <span class="go">${arrow}</span>` : `Applications open 25 Oct <span class="chip">${left()}</span>`; pill.classList.toggle('open', open); pill.href = open ? '#apply-url' : 'https://www.instagram.com/vic.enp/'; }
+paint(); setInterval(paint, 30000);
+
+/* ---------- tier 0 (no WebGL, reduced motion, Save-Data, low memory): static poster ---------- */
+function webgl(){ try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } }
+let tier0 = qs.has('tier0') || reduce || saveData || (navigator.deviceMemory && navigator.deviceMemory <= 2) || !webgl();
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+function constellation(n){ const out = []; for (let i = 0; i < n; i++) { const r = Math.pow(rnd(), 1.15) * 7.5, arm = (i % 3) * 2.094, a = arm + r * .55 + (rnd() - .5) * .9; out.push([Math.cos(a) * r * 1.15, Math.sin(a) * r * .62 + (rnd() - .5) * .5, (rnd() - .5) * 11 * (1 - r / 10)]); } return out; }
+function poster(){
+  const svg = document.getElementById('poster'), W = innerWidth, H = innerHeight; svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const sc = phone ? Math.min(W, H) * .045 : Math.min(W, H) * .075, cx = phone ? W * .5 : W * .66, cy = phone ? H * .34 : H * .42;
+  seed = 7; const pts = constellation(phone ? 600 : 900); let s = '<defs><radialGradient id="g"><stop offset="0" stop-color="#fff"/><stop offset=".18" stop-color="#69C4AF"/><stop offset="1" stop-color="#69C4AF" stop-opacity="0"/></radialGradient></defs>';
+  pts.forEach((p, i) => { const near = (p[2] + 5.5) / 11, member = i < 600; s += `<circle cx="${(cx + p[0] * sc).toFixed(1)}" cy="${(cy + p[1] * sc).toFixed(1)}" r="${(member ? .8 + near : .5 + near * .5).toFixed(2)}" fill="${near > .55 ? '#69C4AF' : '#127DBB'}" opacity="${(member ? .4 + near * .35 : .2 + near * .2).toFixed(2)}"/>`; });
+  const yx = phone ? W * .8 : W * .92, yy = phone ? H * .17 : H * .2;
+  s += `<circle cx="${yx}" cy="${yy}" r="30" fill="url(#g)"/><circle cx="${yx}" cy="${yy}" r="3" fill="#fff"/>`; svg.innerHTML = s;
+}
+function goTier0(){ tier0 = true; root.classList.add('t0'); poster(); addEventListener('resize', poster); }
+if (tier0) goTier0();
+
+/* ---------- geometry of the act, read each frame ---------- */
+const $ = id => document.getElementById(id);
+const join = $('join'), hIn = join.querySelector('.horizon.in'), hOut = join.querySelector('.horizon.down'), endEl = $('end');
+const links = [...$('rail').querySelectorAll('a')], rail = $('rail'), dist = $('dist');
+const chrome = [document.querySelector('.logo'), document.querySelector('.readout'), $('sound'), ...links];
+const steps = [...document.querySelectorAll('.step')], stepsEl = $('steps');
+const S = { flat: 0, lineNDC: 0, covered: false, exit: false, e: 0 };
+function measure(){
+  const vh = innerHeight, ri = hIn.getBoundingClientRect(), ro = hOut.getBoundingClientRect();
+  const yIn = ri.top + ri.height * .52, yOut = ro.top + ro.height * .48;
+  S.exit = ro.top < vh;
+  const hi = clamp(1 - (yIn - vh * .25) / (vh * .75)), e = clamp((vh * .95 - yOut) / (vh * .9));
+  S.e = e; S.flat = S.exit ? 1 - e : hi;
+  S.lineNDC = 1 - 2 * (S.exit ? yOut : yIn) / vh;
+  S.covered = ri.bottom < 0 && ro.top > vh;                      // Bright Gray fills the screen: the world sleeps, no frames drawn
+  return { vh };
+}
+function onScroll(){
+  const { vh } = measure();
+  /* rail, readout, pill, chrome flip */
+  const cur = endEl.getBoundingClientRect().top < vh * .45 ? 6 : join.getBoundingClientRect().top < vh * .45 ? 5 : 4;
+  links.forEach((a, i) => { a.classList.toggle('on', i <= cur); a.classList.toggle('now', i === cur); a.toggleAttribute('aria-current', i === cur); });
+  const r = rail.getBoundingClientRect(), dot = links[cur].querySelector('i').getBoundingClientRect(); rail.style.setProperty('--fill', (dot.top + dot.height / 2 - r.top - 6) + 'px');
+  const p = scrollY / Math.max(1, document.documentElement.scrollHeight - vh); dist.textContent = (12 * (1 - p)).toFixed(1);
+  pill.classList.toggle('hide', endEl.getBoundingClientRect().top < vh * .5);
+  const lb = join.getBoundingClientRect(), top = lb.top + hIn.offsetHeight * .85, bot = lb.bottom - hOut.offsetHeight * .85;
+  for (const el of chrome) { const b = el.getBoundingClientRect(), c = b.top + b.height / 2; el.classList.toggle('lit', c > top && c < bot); }
+  /* your point walks the steps hairline */
+  const sr = stepsEl.getBoundingClientRect(), k = clamp((vh * .72 - sr.top) / (sr.height + vh * .1));
+  stepsEl.style.setProperty('--k', k.toFixed(3));
+  steps.forEach((s, i) => s.classList.toggle('on', k >= (i + .15) / steps.length || reduce));
+}
+addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+
+/* reveal once */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rv').forEach(el => { if (reduce) el.classList.add('in'); else io.observe(el); });
+
+/* sound toggle: a stand-in, the real bed belongs to the system */
+$('sound').onclick = function(){ const on = this.getAttribute('aria-pressed') !== 'true'; this.setAttribute('aria-pressed', on); this.querySelector('.lbl').textContent = on ? 'Sound on' : 'Sound off'; };
+
+/* ---------- the world: far, dim and asleep under the light ---------- */
+if (!tier0) {
+  const cv = $('world'); let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, powerPreference: 'high-performance', alpha: true }); } catch { goTier0(); }
+  if (renderer) {
+    const DPR = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+    renderer.setPixelRatio(DPR); renderer.setClearColor(0x141E27, 0);
+    cv.addEventListener('webglcontextlost', e => { e.preventDefault(); goTier0(); });
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(45, 1, .1, 120);
+    const N = phone ? 3500 : 6500, M = 600;
+    seed = 7; const base = constellation(N), pos = new Float32Array(N * 3), R = new Float32Array(N * 4), mem = new Float32Array(N);
+    for (let i = 0; i < N; i++) { pos.set(base[i], i * 3); R.set([rnd(), rnd(), rnd(), rnd()], i * 4); mem[i] = i < M ? 1 : 0; }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aR', new THREE.BufferAttribute(R, 4)); g.setAttribute('aM', new THREE.BufferAttribute(mem, 1));
+    const U = { uTime: { value: 0 }, uFlat: { value: 0 }, uDim: { value: .55 }, uPx: { value: DPR }, uPtr: { value: new THREE.Vector2(99, 99) }, uLean: { value: 0 }, uScale: { value: 600 } };
+    const mat = new THREE.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `
+        attribute vec4 aR; attribute float aM; uniform float uTime,uFlat,uDim,uPx,uLean,uScale; uniform vec2 uPtr; varying vec3 vC; varying float vA;
+        void main(){
+          vec3 p = position + vec3(sin(uTime*.2+aR.y*6.28), cos(uTime*.17+aR.z*6.28), sin(uTime*.13+aR.w*6.28))*.12;
+          p.y *= 1. - .97*uFlat; p.z *= 1. - .6*uFlat;                       // the horizon: the field lies down into a lit line
+          float near = clamp((p.z+6.)/12., 0., 1.);
+          vec2 dv = uPtr - p.xy; p.xy += dv * exp(-dot(dv,dv)/9.68) * .22 * uLean * (1.-uFlat);
+          vec4 mv = modelViewMatrix * vec4(p,1.); gl_Position = projectionMatrix * mv;
+          float sz = (aM > .5 ? 5.2 : 1.3 + aR.y*.7) * (.55+near*.9);
+          gl_PointSize = clamp(sz * uPx * (uScale / -mv.z) * .09, 1., (aM > .5 ? 6. : 3.) * uPx);
+          vC = mix(vec3(.071,.49,.733), vec3(.412,.769,.686), near*(1.-.5*uFlat));
+          vA = (aM > .5 ? 1. : .3) * (.35+near*.65) * uDim * (1.-.55*uFlat);
+        }`,
+      fragmentShader: `varying vec3 vC; varying float vA; void main(){ float d = length(gl_PointCoord-.5)*2.; if(d>1.) discard; gl_FragColor = vec4(vC, vA*(1.-d*d)); }` });
+    const field = new THREE.Points(g, mat); field.frustumCulled = false; scene.add(field);
+    const yg = new THREE.BufferGeometry(); yg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3));
+    const YU = { uA: { value: 1 }, uPx: { value: DPR }, uSz: { value: 1 } };
+    const you = new THREE.Points(yg, new THREE.ShaderMaterial({ uniforms: YU, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `uniform float uPx,uSz; void main(){ gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); gl_PointSize = 130.*uPx*uSz; }`,
+      fragmentShader: `uniform float uA; void main(){ float d = length(gl_PointCoord-.5)*2.; if(d>1.) discard; float core = smoothstep(.09,.0,d), halo = pow(1.-d,3.); gl_FragColor = vec4(mix(vec3(.412,.769,.686),vec3(1.),core), (halo*.7+core)*uA); }` }));
+    you.frustumCulled = false; scene.add(you);
+
+    const D = 20, T = Math.tan(22.5 * Math.PI / 180), YN = phone ? [.6, .66] : [.84, .6];
+    const tgt = new THREE.Vector2(), v = new THREE.Vector3(), ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const baseRot = () => phone ? [.9, -.75] : [.45, -.35];
+    function size(){ const w = innerWidth, h = Math.max(innerHeight, document.documentElement.clientHeight); renderer.setSize(w, h, false); cv.style.width = w + 'px'; camera.aspect = w / h; camera.updateProjectionMatrix(); U.uScale.value = h; }
+    addEventListener('resize', size); size();
+    let lean = 0, leanS = 0, held = false;
+    addEventListener('pointermove', e => { if (e.pointerType === 'touch' && !held) return; tgt.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)); lean = 1; });
+    addEventListener('pointerdown', e => { if (e.pointerType === 'touch') { held = true; tgt.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)); lean = 1; } });
+    const rel = () => { held = false; lean = 0; }; addEventListener('pointerup', rel); addEventListener('pointercancel', rel); document.addEventListener('pointerleave', () => lean = 0);
+
+    let tm = 0, last = performance.now(), fl = 0, pulse = 0, lastE = 0;
+    function frame(t){
+      requestAnimationFrame(frame);
+      const dt = Math.min(.05, (t - last) / 1000); last = t;
+      measure();
+      if (S.covered) return;                                      // asleep: nothing drawn under the Bright Gray
+      tm += dt; U.uTime.value = tm;
+      fl += (S.flat - fl) * .2; U.uFlat.value = fl;
+      leanS += (lean - leanS) * .06; U.uLean.value = leanS;
+      const [rx, rz] = baseRot();
+      field.rotation.set(rx * (1 - fl), 0, rz * (1 - fl));
+      field.scale.setScalar((phone ? .3 : .6) * (1 + .25 * fl) * (phone ? 1 : 1)); if (fl > .01) field.scale.x = (phone ? .3 : .6) * (1 + .6 * fl);
+      camera.position.set(0, 0, D); camera.updateMatrixWorld();
+      const baseY = phone ? 2.2 : .2, lineY = S.lineNDC * D * T;
+      field.position.set(phone ? 0 : 3.4 * (1 - fl), baseY + (lineY - baseY) * fl, 0);
+      ray.setFromCamera(lean ? tgt : new THREE.Vector2(9, 9), camera);
+      const hit = new THREE.Vector3(); if (ray.ray.intersectPlane(plane, hit)) { field.updateMatrixWorld(); field.worldToLocal(hit); U.uPtr.value.set(hit.x, hit.y); }
+      /* your point: still at its place; the horizon carries it off on the way in, it lights again on the way out */
+      let ny = YN[1]; if (!S.exit) ny = Math.min(ny, S.lineNDC);
+      v.set(YN[0], ny, .5).unproject(camera).sub(camera.position).normalize().multiplyScalar(D).add(camera.position); you.position.copy(v);
+      if (S.exit && S.e > .55 && lastE <= .55) pulse = 1; lastE = S.e; pulse *= .94;
+      YU.uA.value = (S.exit ? sm(clamp((S.e - .55) / .35)) : 1) * (1 + .12 * Math.sin(tm * 1.6) + pulse * .8); YU.uSz.value = 1 + pulse * .5;
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(frame);
+    window.__world = { ready: true, N };
+  }
+}
+</script>
+</body>
+</html>

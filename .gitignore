@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vercel/
+.env*
+!.env.example
+# local agent tooling (skills, agents, rules junction, MCP paths): machine-specific, like VIC-Recruitment-2026
+.claude/
+.mcp.json
+.playwright-mcp/
+graphify-out/cache
+*.log
+# photo originals: the pipeline commits resized copies to public/photos
+assets/pics/

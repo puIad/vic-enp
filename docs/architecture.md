@@ -19,6 +19,27 @@ Versions and APIs get checked against current docs (Context7) when scaffolding, 
 drei, GSAP and Lenis all changed APIs in the last two years. GSAP is free for this use since its 2025 licence
 change; confirm at scaffold time.
 
+## Third-party code
+
+Settled 2026-10-19 in [#19](https://github.com/puIad/vic-enp/issues/19) (research on
+[`research/third-party-code`](https://github.com/puIad/vic-enp/blob/research/third-party-code/research/third-party-code/README.md)).
+Every comp shares one points shader, one photo shader and your point's sprite on three 0.169.0, so porting them
+to R3F is translation, not design.
+
+| Pattern | Source | Licence | Account |
+|---|---|---|---|
+| Point field and formations | Port the comps into one shared `Field` component (geometry and shader; formations as plain functions returning positions; uniforms mutated by ref in `useFrame`) | Ours | None |
+| Photo resolve | Port the comp, inside the shared `Field` (sampling helper plus the photo plane) | Ours | None |
+| Depth stack (the seven photos after the resolve) | Start from Meng To's [Gallery](https://21st.dev/@mengto/components/gallery) on 21st.dev, merged into the page's one canvas and reworked to [#14](https://github.com/puIad/vic-enp/issues/14)'s entrances, timings, radius and tier 1 limit | MIT, keep the notice | The owner's 21st.dev account, acting for the club; the owner installs it |
+| Door, tunnel, horizon | Port the comps. 21st.dev's [Warp Tunnel](https://21st.dev/@ln-dev7/components/warp-tunnel) is a shading reference only | Ours (Warp Tunnel MIT, notice kept if any of its code is used) | None |
+| Snap cuts and the light act | Port the comps on GSAP ScrollTrigger; each formation may be baked to a small point cloud (under 50 KB) | Ours | None |
+
+- **One context.** The Gallery ships its own renderer, camera and loop. They go: it renders into the shared canvas
+  like everything else. No third-party piece may add a second WebGL context.
+- **Notice.** The Gallery's MIT notice stays at the top of its source file, with a comment linking its 21st.dev
+  page, and a row in the [asset ledger](assets.md#asset-ledger). Re-check its licence on the day it is installed.
+- **No Originkit.** No Originkit account or plan is needed.
+
 Not added unless a slice proves the need: a state library (a plain mutable store read in `useFrame` is enough), a
 router (one page), postprocessing beyond one bloom pass, `detect-gpu` (try plain heuristics first), a light and
 dark theme switch (the page has one designed look, night with light sections).
@@ -66,10 +87,13 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
                                              useFrame reads the store, blends formations, renders
 ```
 
-- Each act in [experience.md](experience.md#score-proposed) registers one ScrollTrigger over its section and
+- Each act in [experience.md](experience.md#the-journey) registers one ScrollTrigger over its section and
   writes its progress into the store. No React state updates per frame.
-- The world blends between the current and next formation by progress. Formations are target positions for the
-  same set of points, computed once at load (and the photo formation computed when its photo has loaded).
+- In A's acts the world blends between the current and next formation by progress. In B's acts (departments,
+  events) it snaps to the cut's formation at each step boundary, with no blend. Formations are target positions
+  for the same set of points, computed once at load or baked (the photo formation computed when its photo has
+  loaded).
+- Under the light act the canvas is covered, so the render loop idles.
 - `gsap.ticker` drives Lenis's `raf`, and Lenis's scroll events update ScrollTrigger, so the two share one clock.
 - Under reduced motion, Lenis is not started and every act jumps to its resting formation (still images per
   section), no scrubbing.
@@ -81,8 +105,11 @@ Chosen at load, stepped down at runtime if the frame rate drops (drei's `Perform
 | Tier | Who | World |
 |---|---|---|
 | 0 | No WebGL, `prefers-reduced-motion`, Save-Data on, or `deviceMemory` ≤ 2 | No canvas. Static compositions per act (CSS, SVG, poster images). Same content. |
-| 1 | Most phones, low-end laptops | Pixel ratio capped at 1.5, about 10k to 15k points for the photo resolve, no postprocessing |
-| 2 | Desktops, recent phones | Pixel ratio capped at 2, 30k to 40k points, one bloom pass |
+| 1 | Phones (every phone starts here and may step up) | Pixel ratio capped at 1.5, 3.5k to 12k points depending on the act (hero 5k, cuts 10k, peak 12k), no postprocessing |
+| 2 | Desktops, recent phones | Pixel ratio capped at 2, 6.5k to 24k points (hero 9k, cuts 16k, peak 24k). One bloom pass and one low-res glass object are allowed by [#5](https://github.com/puIad/vic-enp/issues/5), but the signed comps use neither |
+
+Context loss falls back to tier 0 (iOS in-app browsers can kill the page with no context-lost event, so keep GPU
+memory low). Every point count is unmeasured on a real phone until open question 25.
 
 Phone browsers resize the viewport as the toolbar shows and hides. The canvas is sized to the large viewport
 (`lvh`) so it doesn't re-allocate on every scroll; sections use `svh`/`dvh` where height matters.

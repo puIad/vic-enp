@@ -7,28 +7,29 @@ Every file the page uses, where it comes from, and how it gets to the browser.
 17 originals in `assets/pics/` (about 50 MB), added by the owner on 2026-10-19. Mostly group photos. Different
 sizes, formats and orientations; the pipeline below normalises them.
 
-What each shows is read off the images, not confirmed. "Event?" is a guess for the owner to confirm before any
-caption ships ([content.md](content.md#checks-before-the-copy-is-final)).
+What each shows is read off the images, not confirmed. The page ships no captions (alt text only), so "Event?"
+only guides the alt text. Use per photo as signed in [#14](https://github.com/puIad/vic-enp/issues/14) and
+[#15](https://github.com/puIad/vic-enp/issues/15).
 
 | File | Size | Shape | What it shows | Event? | Proposed use |
 |---|---|---|---|---|---|
-| `IMG_8658.JPG` | 5472×3648 | 3:2 | Large group in front of the ENP building's arches | | The peak: the photo the points resolve into |
-| `DSCF7405.jpg` | 6240×4160 | 3:2 | Large formal group in a draped hall, suits and dresses | Engineers' Gala | Photo sequence, Events (Gala) |
-| `_T2A6297.jpg` | 6160×4640 | 4:3 | Group on a stage with a red backdrop | Ignite Algiers | Photo sequence, Events (Ignite) |
-| `IMG_8026.JPG` | 6000×4000 | 3:2 | Crowd around a robot maze on the floor | Polymaze | Photo sequence, Events (Polymaze) |
-| `IMG_2757.JPG` | 3456×2304 | 3:2 | Full conference hall, speaker on stage, VIC ring on the back wall | A talk or training | Photo sequence |
-| `IMG_0645.jpg` | 6000×4000 | 3:2 | Large group outdoors in a forest | A club outing | Photo sequence (club life) |
-| `IMG_9072.jpg` | 4000×6000 | 2:3 portrait | Night, long lit tables in a courtyard | A Ramadan iftar? | Photo sequence, portrait moment on phones |
-| `IMG_9159.jpg` | 6000×4000 | 3:2 | Night selfie, a close group of friends | | Photo sequence (warmth, close-up) |
-| `IMG_8641.JPG` | 5472×3648 | 3:2 | A student lifting a trophy in front of the ENP building | A competition win | Photo sequence or SPARK |
-| `IMG_0257.JPG` | 6000×4000 | 3:2 | Close-up of a small robot in a white maze | Polymaze | SPARK act |
-| `IMG_6141.jpg` | 6000×4000 | 3:2 | A hand holding a small robot in front of a laptop with code | SPARK workshop | SPARK act |
-| `IMG_6171.jpg` | 5472×3072 | 16:9 | Casual group indoors | | Closing mosaic |
-| `IMG_7517.jpg` | 5472×3072 | 16:9 | Group on steps in a blue room, holding a paper | | Closing mosaic |
-| `IMG_7544.jpg` | 5472×3072 | 16:9 | Very large group around a long table, holding a banner | | Closing mosaic |
-| `IMG_8759.JPG` | 6000×4000 | 3:2 | Large group outdoors in front of a building | | Closing mosaic |
-| `IMG_9215-2.JPG` | 6000×4000 | 3:2 | Large group in a hall with logos on the back wall | A partner event? | Closing mosaic |
-| `IMG_8095.HEIC` | ? | ? | Not previewed: HEIC can't be read by the tools here | | Owner exports it as JPEG, or it's dropped |
+| `IMG_8658.JPG` | 5472×3648 | 3:2 | Large group in front of the ENP building's arches | | Peak photo 1: the points resolve into it |
+| `DSCF7405.jpg` | 6240×4160 | 3:2 | Large formal group in a draped hall, suits and dresses | Engineers' Gala | Events, Gala cut |
+| `_T2A6297.jpg` | 6160×4640 | 4:3 | Group on a stage with a red backdrop | Ignite Algiers | Events, Ignite cut |
+| `IMG_8026.JPG` | 6000×4000 | 3:2 | Crowd around a robot maze on the floor | Polymaze | Events, Polymaze cut |
+| `IMG_2757.JPG` | 3456×2304 | 3:2 | Full conference hall, speaker on stage, VIC ring on the back wall | A talk or training | Peak photo 3 (pan) |
+| `IMG_0645.jpg` | 6000×4000 | 3:2 | Large group outdoors in a forest | A club outing | Peak photo 2 (slit) |
+| `IMG_9072.jpg` | 4000×6000 | 2:3 portrait | Night, long lit tables in a courtyard | A Ramadan iftar? | Peak photo 4 (rise), the portrait moment on phones |
+| `IMG_9159.jpg` | 6000×4000 | 3:2 | Night selfie, a close group of friends | | Peak photo 5 (lens pull) |
+| `IMG_8641.JPG` | 5472×3648 | 3:2 | A student lifting a trophy in front of the ENP building | A competition win | Peak photo 6 (split) |
+| `IMG_0257.JPG` | 6000×4000 | 3:2 | Close-up of a small robot in a white maze | Polymaze | Spare (not placed) |
+| `IMG_6141.jpg` | 6000×4000 | 3:2 | A hand holding a small robot in front of a laptop with code | SPARK workshop | Spare (not placed) |
+| `IMG_6171.jpg` | 5472×3072 | 16:9 | Casual group indoors | | Spare, tier 0 grid or close |
+| `IMG_7517.jpg` | 5472×3072 | 16:9 | Group on steps in a blue room, holding a paper | | Spare, tier 0 grid or close |
+| `IMG_7544.jpg` | 5472×3072 | 16:9 | Very large group around a long table, holding a banner | | Peak photo 7 (dealt) |
+| `IMG_8759.JPG` | 6000×4000 | 3:2 | Large group outdoors in front of a building | | Peak photo 8 (flies in) |
+| `IMG_9215-2.JPG` | 6000×4000 | 3:2 | Large group in a hall with logos on the back wall | A partner event? | Spare, tier 0 grid or close |
+| `IMG_8095.HEIC` | ? | ? | Not previewed: HEIC can't be read by the tools here | | Left out (decided 2026-10-19) |
 
 ### Pipeline
 
@@ -56,16 +57,23 @@ Copied from `VIC-Recruitment-2026` at scaffold time, unchanged:
 
 ## 3D assets
 
-Depends on the concept ([experience.md](experience.md#the-3d-world-three-concepts)):
+Procedural, no models: the point field, its formations and the photo resolve are computed in code (formations may
+be baked to point clouds under 50 KB each). The depth stack starts from an MIT component
+([architecture.md](architecture.md#third-party-code)). Any third-party model, texture or HDRI would need a licence
+that allows public use (CC0 preferred) and a row in the ledger below.
 
-- **A. Network of 600:** procedural. No models. A small sprite or a shader for the point, formations computed
-  in code, the photo formation sampled from a photo.
-- **B. Glass maze:** a modelled maze and robot (Blender, exported as glTF), compressed with meshopt or Draco,
-  textures as KTX2, total under 1.5 MB. Original models only.
-- **C. Light and glass:** procedural geometry plus one environment map (HDR or a generated equirectangular PNG).
+## Missing
 
-Any third-party model, texture or HDRI needs a licence that allows public use (CC0 preferred, for example Poly
-Haven) and a line in the ledger below.
+Needed by the signed acts and not made yet:
+
+| Asset | For | From |
+|---|---|---|
+| `hero-poster-d.webp`, `hero-poster-m.webp` | Hero tier 0, reduced motion and first paint ([#11](https://github.com/puIad/vic-enp/issues/11)) | Baked from the real scene in the build |
+| `close-poster-d.webp`, `close-poster-m.webp` | Close tier 0 and reduced motion ([#17](https://github.com/puIad/vic-enp/issues/17)) | Baked from the real scene in the build |
+| Seven outlined department icons | Departments tier 0 cards only ([#13](https://github.com/puIad/vic-enp/issues/13)) | Drawn in the build |
+| One ambient sound loop, under 300 KB | The optional sound toggle ([#10](https://github.com/puIad/vic-enp/issues/10)) | To find, with a licence for public use |
+| One photo for AEC, one each for CPSP, STEPS, Anglosphere, VICra (3:2) | Events cuts 4 and 5 ([#15](https://github.com/puIad/vic-enp/issues/15)) | The owner |
+| `og.png` and the favicon | Share tags (open question 26) | Slice 1 |
 
 ## Generated assets (agy)
 
@@ -86,4 +94,5 @@ Every file in `public/` that isn't code, one row each, filled during the build.
 | File | Source | Licence or owner | Used in |
 |---|---|---|---|
 | `public/brand/*` | VIC charter files via `VIC-Recruitment-2026` | VIC | Header, footer, share image |
-| `public/photos/*` | `assets/pics/` (club photos) | VIC | Photo sequence, departments, events |
+| `public/photos/*` | `assets/pics/` (club photos) | VIC | Peak, events |
+| `src/world/` depth stack (code) | [Gallery](https://21st.dev/@mengto/components/gallery) by Meng To on 21st.dev, installed on the owner's account | MIT, notice kept in the file | Peak photo sequence |

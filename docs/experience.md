@@ -1,199 +1,289 @@
 # Experience
 
-How the page feels and moves: the 3D world, the visitor's journey, the feeling curve, the one moment people
-remember, and the signature move. Planned with the `scroll-craft` method (its BRIEF, journey, grammar, feeling
-curve, score and fingerprint gate), built in React Three Fiber.
+How the page feels and moves: the direction, the 3D world, the visitor's journey, the feeling curve, the peak and
+the signature move, then the spec of each act. Planned with the `scroll-craft` method, built in React Three Fiber.
 
-Everything below marked **proposed** is Claude's draft for the owner to accept, change or replace once the
-inspirations in [inspiration.md](inspiration.md) are in. Nothing here is decided until it is in
+This is the signed spec. Every act was comped and signed off by the owner on 2026-10-19 on the wayfinder map
+([issue #1](https://github.com/puIad/vic-enp/issues/1)); each act below gives the essentials and links its ticket,
+which holds the full spec (layout numbers, timings, shots). The comps are throwaway HTML and three.js on
+never-merged branches: learn from them, port them, never merge them. Decisions are dated in
 [decisions.md](decisions.md).
 
 ## The scroll-craft interview
 
-The eight questions scroll-craft asks before planning. Answers are the owner's words where given.
-
-| # | Question | Status | Answer |
+| # | Question | Answer | Where settled |
 |---|---|---|---|
-| 1 | Vibe in three to five words, plus up to three references from any medium (film, album, game, shop; not websites) | Open (owner) | Proposed: "bright, ambitious, warm, made by students". References: the owner's inspiration list. |
-| 2 | The scroll journey, section by section, in the owner's words | Proposed | [The journey](#the-journey) below. |
-| 3 | The energy curve: where calm, where intense | Proposed | Intense open, calm explanation, a rising middle, the peak in club life, calm reassurance, a warm close. |
-| 4 | How someone should feel stage by stage, and the ONE moment they remember | Proposed | [Feeling curve](#feeling-curve) and [the peak](#the-peak). |
-| 5 | One thing this site does that no site they've seen does | Open (owner) | Proposed seed: "Every dot of light is a real VICer, and at the end one of them is you." |
-| 6 | How far from premium-minimal (brutalist, maximalist, playful, retro, dense, editorial, premium-minimal) | Open (owner) | Proposed: playful-premium. Bold charter colour and big Gilroy type, generous space, motion with weight. |
-| 7 | One unbroken world, or distinct scenes? | Open (owner) | Proposed: one world that **re-forms** per section, without a continuous camera flight. See [grammar](#grammar). |
-| 8 | Assets already owned | Answered | 17 photos in `assets/pics/` (mostly group photos), the charter PDF, logo files, Gilroy. See [assets.md](assets.md). |
+| 1 | Vibe | **Dark, cinematic, electric**: charter blue and aquamarine glowing against Dark Jungle Green `#141E27`. | [#6](https://github.com/puIad/vic-enp/issues/6) |
+| 2 | The journey | [Seven acts](#the-journey) | [#9](https://github.com/puIad/vic-enp/issues/9) |
+| 3 | The energy curve | Wonder, recognition, agency, then the peak (belonging), excitement, calm trust, warm resolve | [#9](https://github.com/puIad/vic-enp/issues/9) |
+| 4 | Feeling stage by stage, and the one moment | [Feeling curve](#the-journey) and [the peak](#the-peak) | [#9](https://github.com/puIad/vic-enp/issues/9) |
+| 5 | The one thing no other site does | **Your point**: the visitor's own point of light travels down the page with them and flies into the Apply pill at the close. | [#6](https://github.com/puIad/vic-enp/issues/6), [#17](https://github.com/puIad/vic-enp/issues/17) |
+| 6 | Distance from premium-minimal | **The middle**: a premium dark base, with dense, dramatic acts (full-screen scenes, heavy light and particles). | [#6](https://github.com/puIad/vic-enp/issues/6) |
+| 7 | One world or distinct scenes | **One world at two speeds** ([grammar](#grammar-one-world-two-speeds)) | [#9](https://github.com/puIad/vic-enp/issues/9) |
+| 8 | Assets already owned | 17 photos in `assets/pics/`, the charter PDF, logo files, Gilroy ([assets.md](assets.md)) | |
 
-The tell-someone sentence (proposed): **"It's the site where 600 dots of light turn into the real club photo,
-and then one of them is you."**
+The belief the page installs: **"Once you are a VICer, you are always a VICer, and I can be one this season."**
+([brief.md](brief.md#what-the-visitor-should-believe-by-the-end))
 
-## The 3D world: three concepts
+The tell-someone sentence: **"It's the site where 600 dots of light turn into the real club photo, and then one
+of them is you."**
 
-The charter forbids a 3D logo or using its bulb and iris as shapes ([brand.md](brand.md#logo-in-a-3d-world)), so
-the world has to be original. Three candidates, from the source brief's own suggestions (§12) and the club's real
-events. The owner picks one after the inspiration round.
+## The direction: a named merge, A as the page
 
-### A. The network of 600 (recommended)
+Three directions were comped ([#7](https://github.com/puIad/vic-enp/issues/7)); the owner merged them
+([#8](https://github.com/puIad/vic-enp/issues/8), comps on
+[`prototype/directions`](https://github.com/puIad/vic-enp/tree/prototype/directions/prototype/directions)):
 
-A field of 600 points of light, one per member (§11: 600 members), in the charter gradient. The field
-**re-forms** as the visitor scrolls: a loose constellation in the hero, four clusters for the main departments,
-three for the activity departments, a dense crowd that resolves into a real VIC group photo, the rings of event
-identities (gold for the Gala, red for Ignite), and finally a network again, now with one new point: the visitor.
+- **A, Constellation map, is the page.** One continuous world of 600 points, one per member (brief §11). The
+  waypoint rail, the headline over the field, the "Distance to the 600" readout, the change of scale as hand-over,
+  the peak (the crowd resolves into the group photo in front of ENP) and the close (your point flies into the
+  empty place in the Apply pill).
+- **B, Cutlist, runs the departments and the events.** Short hard cuts, one Gilroy Heavy line per cut, a
+  formation per cut that snaps instead of morphing, accents only inside their own cut.
+- **C, Thresholds, gives the passages.** The door, the tunnel and the horizon are how the page moves between A's
+  speed and B's.
+- Not carried over: B's loud full-width bar, C's chaptered editorial layout and margin folio.
 
-- **Why it fits.** It's the club's own idea ("Your network is your net worth", "Once a VICer, Always a VICer"),
-  it uses a real number, and it carries the real photos instead of competing with them.
-- **Signature move.** "Your point": the visitor's pointer or finger carries one point of light the whole way down.
-  The network leans towards it and links to it. Pressing Apply sends that point into the network.
-- **Cost.** Procedural: no 3D models to make or download. GPU points with a custom shader, morph targets
-  between formations computed once. The photo formation samples a photo's pixels into points (around 20k to 40k
-  on desktop, fewer on phones). Cheapest of the three to build and to run.
-- **Risk.** Particle fields are common on the web; the bar is the formations being meaningful (each one says
-  something true) and the photo resolve being genuinely good.
+The world is the network of 600 (concept A in the first draft). The glass maze and light-and-glass concepts were
+not chosen; nothing modelled, no glass, no transmission.
 
-### B. The glass maze (Polymaze)
+## Grammar: one world, two speeds
 
-The visitor descends into a maze seen from above, like the line-follower mazes of Polymaze (photos `IMG_0257`
-and `IMG_8026` are of it). Each turn opens a chamber: a department, club life, an event. The exit is the Apply
-door. "Find your path."
+The page is one continuous world of points the whole way down: one WebGL context, no chapters or headings over it
+([#9](https://github.com/puIad/vic-enp/issues/9)).
 
-- **Why it fits.** A real VIC event, a strong visual (the source brief suggests it for a 3D hero), and a
-  natural way to say "four doors, pick yours".
-- **Signature move.** A small robot (original model, not the logo) follows the visitor's scroll through the maze
-  and stops at the department they hover.
-- **Cost.** Modelled scene (maze, robot, materials), camera path, baked lighting. Heaviest to build in six days
-  and to download (models plus textures). Close to a continuous camera flight, which scroll-craft warns is the most
-  fragile structure.
-- **Risk.** A maze can read as "confusing" for a recruitment page, and it centres SPARK over the other six
-  departments.
+- **A's speed:** the field morphs slowly and lingers (hero, what VIC is, the peak, the light act's night ends,
+  the close).
+- **B's speed:** the same points snap into a new formation on every cut, no morph, a one or two frame white flash,
+  and the ground steps hard between night and a lifted tint (departments, events).
+- **Passages:** C's door, tunnel and horizon switch between the speeds. Each is used once. No passage may read
+  as a dark disc around a lit point (the charter's iris rule).
 
-### C. Light and glass
-
-Abstract glass forms that bend light into the charter gradient (blue to aquamarine). As the visitor scrolls the
-light splits into the colours of the departments and events. Vision (light) and Innovation (making), without
-touching the logo's shapes.
-
-- **Why it fits.** The most premium-looking, closest to the charter's own gradients.
-- **Signature move.** The pointer is a light source; the glass refracts it.
-- **Cost.** Transmission materials and an environment map; heavy on phone GPUs (transmission renders the scene
-  twice). Needs careful tiering.
-- **Risk.** Has to stay well clear of anything that reads as a bulb or an iris (charter rule), and abstract glass
-  says little about what the club does.
-
-### Comparison
-
-| | A. Network of 600 | B. Glass maze | C. Light and glass |
-|---|---|---|---|
-| Says something true about VIC | Strong (members, network, photos) | Medium (one event) | Weak (abstract) |
-| Uses the real photos | Built in (photo resolve) | Separate section | Separate section |
-| Build time in 6 days | Fits | Tight to not fitting | Fits, tuning-heavy |
-| Download on a phone | Smallest (procedural) | Largest (models, textures) | Medium (env map) |
-| Phone GPU cost | Low to medium, scales by point count | Medium | High (transmission) |
-| Charter risk | Low | Low | Medium (bulb or iris look) |
-
-Concepts can mix: B's maze could be one formation of A (the points trace a maze for the SPARK and Polymaze
-moments) instead of a whole world.
+Because the cuts are the same world snapping, this is not a chaptered page with a world underneath (which
+scroll-craft bans), and it is the cheapest option on a phone: no scene is disposed and rebuilt.
 
 ## The journey
 
-Proposed beats, each a shift in what the visitor knows or feels. Sections serve beats; a section that serves no
-beat gets cut.
+Seven acts. Two neighbours never share a feeling or a device family. The peak is the largest act by a clear
+margin, and the tunnel before it is quiet. The page lands near 22 to 24 screens on a phone.
 
-| # | Beat | The visitor... | Sections ([content.md](content.md)) |
-|---|---|---|---|
-| 1 | Arrival | ...sees something they've never seen on a club page, and the club's name. | Hero |
-| 2 | Recognition | ...learns this is a real club of 600 ENP students, since 2014. | What VIC is, Numbers |
-| 3 | Range | ...sees the two homes they could have: a main department and an activity department. | Why join, Main departments, Activity departments |
-| 4 | Proof | ...sees the people, the places and the events. It's real. | Club life (photo sequence), Events |
-| 5 | Reassurance | ...learns it's open to them, now, with no experience. | How to join, Grow after joining, FAQ |
-| 6 | Commitment | ...presses Apply. | Final CTA, footer |
+| # | Act | Content ([content.md](content.md)) | Speed | Feeling | Device | Span (approx.) | Spec |
+|---|---|---|---|---|---|---|---|
+| 1 | Hero | 1 | A | Wonder | pointer + `parallax` | 0.7 screen of hand-over (170 svh) | [#11](https://github.com/puIad/vic-enp/issues/11) |
+| 2 | What VIC is, numbers, why join | 2, 3, 4 | A | Recognition | `kinetic` + `count`, then `flow` | 3.5 phone, 3 desktop | [#12](https://github.com/puIad/vic-enp/issues/12) |
+| | *Door* | | C | | | 0.6 | [#13](https://github.com/puIad/vic-enp/issues/13) |
+| 3 | Departments: 4 main, then 3 activity | 5, 6 | B, 7 cuts | Agency | `pin`, a snap per cut, + pointer | 4.55 (0.65 per cut) | [#13](https://github.com/puIad/vic-enp/issues/13) |
+| | *Tunnel*: dim, wordless, the silence before the peak | | C | | | 0.6 | [#13](https://github.com/puIad/vic-enp/issues/13) |
+| 4 | **Club life and photos (the peak)** | 7 | A | **Belonging** | `pin` for the resolve, then a depth stack | **about 6** | [#14](https://github.com/puIad/vic-enp/issues/14) |
+| | *Hard cut*: the resolved photo cuts straight into the first event | | B | | | | [#14](https://github.com/puIad/vic-enp/issues/14) |
+| 5 | Events and projects | 8 | B, 5 cuts | Excitement | `pin` with a sideways cut per event | 3.0 | [#15](https://github.com/puIad/vic-enp/issues/15) |
+| | *Horizon in*: the night lifts into Bright Gray | | C | | | 0.46 desktop, 0.34 phone (measured) | [#16](https://github.com/puIad/vic-enp/issues/16) |
+| 6 | How to join, grow after joining, FAQ | 9, 10, 12 | the light act | Calm trust | `flow` | 3.4 desktop, 4.2 phone with both horizons | [#16](https://github.com/puIad/vic-enp/issues/16) |
+| | *Horizon out*: gray falls back to night | | C | | | as above | [#16](https://github.com/puIad/vic-enp/issues/16) |
+| 7 | Close and footer | 13 | A | Warm resolve | pointer + `reveal`, pinned | 1.3 after a half-screen entry (230 svh) | [#17](https://github.com/puIad/vic-enp/issues/17) |
 
-## Grammar
-
-scroll-craft names eight page grammars. Proposed: **continuous world** for the 3D layer (one persistent world
-that re-forms) combined with the **chaptered** rhythm for the content (each beat a chapter with its own device),
-so the page is one place without being one camera flight. Its rules hold: at least four device families, never the
-same device twice in a row, at most two video-weight acts, one peak with the largest span.
-
-Concept B would push towards a filmic one-shot (a camera path), which scroll-craft asks to justify against the
-other seven grammars.
-
-## Feeling curve
-
-Proposed, written before the score so each act has a reason. Two adjacent acts never carry the same feeling.
-
-| Act | Feeling | What on screen causes it |
-|---|---|---|
-| Hero | Wonder | The field of light moves under the visitor's hand; the name sits in it. |
-| What VIC is | Curiosity | The field settles; three plain sentences and the four numbers land. |
-| Departments | Agency | Four clusters, then three: tapping one brings it forward, and it's theirs to pick. |
-| Club life | Belonging (the peak) | The crowd of points resolves into a real VIC group photo, then the photo sequence. |
-| Events | Pride, ambition | The world takes the colour of each event (Gala gold, Ignite red); scale shifts up. |
-| How to join, FAQ | Calm, trust | The world goes quiet and far; plain steps and answers in the foreground. |
-| Close | Warm resolve | The network returns with the visitor's point in it; one button. |
+Testimonials (content section 11) stay cut until real quotes arrive.
 
 ## The peak
 
-Proposed: **the resolve.** Hundreds of points that have been abstract the whole way down rush together and become
-a real photo of VIC members, faces and all, and hold still long enough to look. Said by a visitor: "the dots
-turned into the actual club." It lives in Club life, gets the longest span on the page, and the act before it
-(Departments) is quieter so the resolve lands.
+**The resolve.** The crowd of points rushes together into the group photo in front of ENP (`IMG_8658`) and holds
+still long enough to look. Then seven more photos arrive in a depth stack, each in its own way, and the ENP photo
+returns full frame before a hard cut to the first event ([#14](https://github.com/puIad/vic-enp/issues/14)).
 
-## Score (proposed)
+## The signature move: your point
 
-Device names are scroll-craft's (`scrub`, `pin`, `pan`, `reveal`, `kinetic`, `parallax`, `count`, `flow`, pointer,
-`drift`), plus the 3D state the world is in for each act.
+The visitor's own point of light: its own sprite, aquamarine glow with a white core, lit when "Gathering the 600"
+reaches 600 in the hero. It is the one thing on screen that never cuts.
 
-| Act | Device | 3D world state | Why this device |
+- Hero and act 2: fixed on screen top right, outside the cloud. It never leans, drifts or parallaxes. It grows
+  35% across the hero's hand-over.
+- Departments, peak, events: fixed in the world, still, off to one side (bottom right on desktop, top right on
+  phones). It grows 55% across the peak.
+- The light act: the horizon line carries it up and away; it relights with one pulse on the way out.
+- The close: it swoops from top right along a curve with a light trail into an empty slot in the Apply pill.
+  Pressing Apply (after opening) sends a wave of light through the 600.
+
+How it moves from top right to bottom right on desktop between act 2 and the departments is not specified by the
+comps; the build settles it ([open-questions.md](open-questions.md), row 28).
+
+## Fingerprint
+
+The plan's row for scroll-craft's fingerprint registry (empty for this workspace, so this is the first row):
+
+| Grammar | Nav | Hero | Act sequence | Close | Signature |
+|---|---|---|---|---|---|
+| One continuous world at two speeds, with three passages | Waypoint rail with a tick per cut, no menu | Headline over a tilted cloud of 600, your point lit top right | 7 acts, 2 cut runs (7 and 5 cuts), 3 passages, 1 hard cut | Your point flies into a slot in the Apply pill inside a clearing of the 600 | Your point |
+
+## The acts
+
+Shared by every act: Gilroy Heavy, Bold and Regular; night `#141E27` except the light act; static grain and
+vignette over canvas and photos; the waypoint rail as navigation and progress; the Apply pill from the second
+waypoint; the optional sound toggle; the logo on its own night plate ([brand.md](brand.md),
+[#10](https://github.com/puIad/vic-enp/issues/10), comp on
+[`prototype/system`](https://github.com/puIad/vic-enp/tree/prototype/system/prototype/system)). Copy for every act
+is in [content.md](content.md).
+
+### 1. Hero
+
+[#11](https://github.com/puIad/vic-enp/issues/11), comp
+[`prototype/act-hero`](https://github.com/puIad/vic-enp/tree/prototype/act-hero/prototype/act-hero).
+
+- **World:** a loose, tilted cloud of three arms with a dense core, so it never reads as a ring with a bright
+  centre (eye-free). 600 member points (larger, up to 7 px) plus dust: 9,000 points desktop, 5,000 phone. Blue far,
+  aquamarine near. Slow idle drift.
+- **Layout:** desktop, copy bottom left at the rail gutter, headline capped at 128 px running over the cloud's left
+  edge, cloud on the right two thirds. Phone, field in the top 40%, copy in the bottom 60%, headline 52 px.
+- **Arrival:** night, then the words (HTML, first paint), then points stream in over 3.2 s while "Gathering the
+  600" climbs; at 600 the counter fades and your point lights.
+- **Scroll:** over 0.7 screen the headline lifts and fades, the camera dollies into the field, the field tightens
+  38%, the sticky pill appears at 92%.
+- **Pointer:** the field leans toward the pointer or a held finger and swings by depth. Bonus only.
+- **Hand-over:** A to A, no passage. Act 2's first line arrives into the cleared left side.
+
+### 2. What VIC is, the numbers, why join
+
+[#12](https://github.com/puIad/vic-enp/issues/12), comp
+[`prototype/act-what-vic`](https://github.com/puIad/vic-enp/tree/prototype/act-what-vic/prototype/act-what-vic).
+
+- **Pinned span, 2 screens:** the title and three sentences scrub in word by word (`kinetic`), then the values
+  line; at about 56% they fade and the four numbers rise. Counters run once over 1.5 s and never reset; when 600
+  lands the member points pulse once from the centre.
+- **Flow, about 1.3 screens (2 on a phone):** "What you get." and ten benefits in three groups, items rising in
+  once.
+- **World:** the hero's field, tightened and far, keeps turning slowly with scroll. Dims to 50% under the
+  benefits, back to full before the door.
+- **Layout:** numbers as a four-column row under gradient hairlines on desktop, a 2x2 grid on a phone.
+
+### 3. Departments
+
+[#13](https://github.com/puIad/vic-enp/issues/13), comp
+[`prototype/act-departments`](https://github.com/puIad/vic-enp/tree/prototype/act-departments/prototype/act-departments).
+
+- **Device:** one pinned stage, a hard cut per department: HR, FLER, IT, COMM, then SPARK, Training, English
+  Bubble. Entered through the door, left through the tunnel.
+- **Each cut:** an accent rule and label ("HR · main 1 of 4"), one Heavy line peeling in with a three-step
+  chromatic split, a lead, skill chips, a "Suits" line (main four only) and a "What you'd do" button.
+- **World:** 16k points desktop, 10k phone. Each cut snaps every point into the department's formation (HR six
+  joined clumps, FLER rising bars, IT a viewfinder, COMM broadcast rings, SPARK an orange burst, Training ascending
+  treads, English Bubble two open speech circles). The main four use blue and aquamarine; only the three activity
+  departments carry their own accents.
+- **Pointer:** the formation leans toward the pointer; a tap on the cluster or the button opens "What you'd do" in
+  place (`aria-expanded`). A picker row jumps to any cut; the rail grows one tick per cut.
+- **Reduced motion:** cuts stack as normal sections. **Tier 0:** seven outlined cards, everything open.
+
+### 4. Club life and the photo sequence (the peak)
+
+[#14](https://github.com/puIad/vic-enp/issues/14), comp
+[`prototype/act-peak`](https://github.com/puIad/vic-enp/tree/prototype/act-peak/prototype/act-peak).
+
+- **Span about 6 screens:** resolve about 2, hold about 0.7, sequence about 3.3.
+- **Resolve:** from the tunnel's dim galaxy, the camera comes in while the points (12k phone, 24k desktop) rush
+  into a sampled copy of `IMG_8658`. The real photo fades in under them and only then rounds its corners. The hold
+  has no text and nothing moves.
+- **Sequence:** seven photos in a depth stack, no two neighbours with the same entrance, at most two stack planes
+  on screen at once on a phone:
+
+| # | Photo | Entrance |
+|---|---|---|
+| 1 | `IMG_8658` group in front of ENP | resolves from the points |
+| 2 | `IMG_0645` forest group | slit opens from the centre line |
+| 3 | `IMG_2757` hall, speaker, VIC ring | pan from the left 60% out to the whole hall |
+| 4 | `IMG_9072` night courtyard (portrait) | rises from below with a slight rotation; the phone's portrait moment |
+| 5 | `IMG_9159` night selfie | lens pull back from 2x |
+| 6 | `IMG_8641` trophy | split: two halves close in from the sides |
+| 7 | `IMG_7544` banner around the table | dealt from a pile, lower right |
+| 8 | `IMG_8759` outdoor group | flies in from far back |
+
+- **Copy:** the title and lead over the points, then a five-row ledger of club life, one row lit at a time. No
+  captions, alt text only.
+- **Hand-over:** the ENP photo returns full frame, then a hard cut (no passage, no fade) to the Gala cut.
+- **Tier 0 and reduced motion:** one art-directed grid of the same eight photos.
+
+### 5. Events and projects
+
+[#15](https://github.com/puIad/vic-enp/issues/15), comp
+[`prototype/act-events`](https://github.com/puIad/vic-enp/tree/prototype/act-events/prototype/act-events).
+
+- **Device:** one pinned stage, five sideways hard cuts, photo-led: Gala 0.7, Ignite 0.55, Polymaze 0.55, AEC 0.5,
+  four more projects 0.7. An event-coloured streak sweeps over each cut; each photo pans slowly inside its frame.
+- **Cut line is the event's own name.** No edition numbers, no dates. Hour of Code is not on the page.
+- **Colour:** Gala gold `#D4A843`, Ignite red `#E0313F`, only inside their cut. Polymaze, AEC and the projects use
+  aquamarine.
+- **World:** snaps per cut: tiered seat arcs (Gala), eleven rising columns (Ignite), a maze path with a lit runner
+  (Polymaze), six city clusters (AEC), four small rings (projects), then the flat line of the horizon.
+- **Photos:** `DSCF7405` (Gala), `_T2A6297` (Ignite), `IMG_8026` (Polymaze). AEC and the four projects wait for
+  photos from the owner ([assets.md](assets.md#missing)).
+- **Tier 0:** a two-column card grid. **Reduced motion:** cuts stack.
+
+### 6. How to join, grow after joining, FAQ (the light act)
+
+[#16](https://github.com/puIad/vic-enp/issues/16), comp
+[`prototype/act-join-faq`](https://github.com/puIad/vic-enp/tree/prototype/act-join-faq/prototype/act-join-faq).
+
+- **Ground:** Bright Gray `#EFEFEF`, entered and left through the horizon. The only light act on the page.
+- **Horizon in:** the field lies down into the lit horizon line and becomes it; the line carries your point up
+  and away. Under the gray nothing is rendered (the render loop idles).
+- **Device `flow`:** ordinary reading scroll, no pin, no snap. Blocks reveal once.
+- **Steps:** four, as ghost numerals on a hairline your point walks (left to right on desktop, top to bottom on a
+  phone). **Growth:** a six-rung staircase. **FAQ:** nine hairline rows, real buttons, first row open, arrow keys
+  move between questions.
+- **Horizon out:** the line rises, the field stands back up as night returns, and your point relights with one
+  pulse.
+
+### 7. Close and footer
+
+[#17](https://github.com/puIad/vic-enp/issues/17), comp
+[`prototype/act-close`](https://github.com/puIad/vic-enp/tree/prototype/act-close/prototype/act-close).
+
+- **Stage:** centred, the only centred act. Headline "Your point is on its way.", then the Apply pill (64 px high,
+  19 px label) with an empty 40 px slot at its left, set in a soft irregular clearing of the 600, about 36 px wider
+  than the pill on desktop. No ring around the slot.
+- **Travel:** headline wipes up, the clearing opens, the pill rises, the readout counts to 0.0, your point swoops
+  into the slot and breathes there.
+- **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
+  then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
+- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px.
+
+## Passages
+
+| Passage | Where | State | Span |
 |---|---|---|---|
-| Hero | pointer + `parallax` | Loose constellation following the pointer; name and tagline between depth planes | The page responds before anything is read |
-| What VIC is | `kinetic` + `count` | Field settles into a slow drift | Type that assembles, numbers that land: facts, not spectacle |
-| Main departments | `pin` + pointer | Four clusters, the active one forward | The frame holds while the choice advances |
-| Activity departments | `pan` | Three clusters travelling sideways, in their own colours | Lateral travel reads as options |
-| Club life (peak) | `pin` (long) then `reveal` | Points resolve into a group photo, then hand over to the photo sequence | The largest span, the stillest frame |
-| Events | `drift` + `parallax` | World recoloured per event, larger scale | Movement with weight, different from the acts around it |
-| How to join, FAQ | `flow` | World far back and dim | Reading time; motion steps aside |
-| Close | pointer + `reveal` | Network with the visitor's point; Apply sends it in | The page ends by responding to them |
-
-Checks before building: the fingerprint gate (the plan must differ from every row in scroll-craft's
-`FINGERPRINTS.md` on at least four of six dimensions; the registry is empty for this workspace, so this build sets
-the first row), and the device rules above.
-
-## The photo sequence
-
-The owner's ask: the photos appear in a scroll-driven section, each in its own way. Proposal:
-
-- Seven to nine photos in the sequence (picked in [assets.md](assets.md#photos)), the rest in a closing mosaic.
-- No two neighbours use the same entrance. A pool to pick from: resolve from points (the first, as the peak);
-  a mask that opens from the centre; a slow pan across a wide group shot; a split where two photos slide apart to
-  reveal a third; a depth stack where photos fly in from far back; a stacked deck the scroll deals out; a
-  horizontal strip that travels sideways.
-- Each photo carries one short caption with the event or place, only where the owner confirms what it shows.
-- The portrait photo (`IMG_9072`, a night scene) gets a portrait-first moment on phones.
-- Reduced motion: the photos sit in a still, art-directed grid, same captions.
+| Door | act 2 to departments | two slabs of points with a lit slit, aquamarine, wordless | 0.6 |
+| Tunnel | departments to the peak | a tube of points receding, dimmed to 40%, wordless | 0.6 |
+| Horizon | events to the light act and back, light act to the close | a CSS gradient with a 1 px lit line; the field lies down into it and stands back up | 0.46 desktop, 0.34 phone each way |
 
 ## Motion rules
 
-- Scroll drives everything, damped (Lenis). One speed for the whole page, slower than feels natural while
-  building.
-- Never trap the scroll: no section that needs a gesture to escape, keyboard and screen readers move normally,
-  anchor links work.
-- The CTA is always one tap away: a sticky pill after the hero, out of the way of the content.
+- Scroll drives everything, damped (Lenis). One speed for the whole page.
+- Never trap the scroll: no section needs a gesture to escape, keyboard and screen readers move normally, anchor
+  links work (the rail is real anchor links).
+- The Apply pill is one tap away from the second waypoint (top right on desktop, bottom right on phones), hidden
+  in the hero and at the close, where their own CTA takes over.
 - Text never moves while it's being read. It arrives, then holds.
-- Pointer and touch reactions are a bonus, never required to read anything.
-- No sound by default. (Open question if the owner wants an optional sound toggle.)
-- `prefers-reduced-motion`: Lenis off, no scrubbed transitions, the 3D world becomes still compositions per
-  section, the photo sequence becomes a grid.
+- Pointer and touch reactions are a bonus, never required to read anything. Native cursor, no custom cursor.
+- Sound: an optional toggle, off on arrival, bottom left. Never starts by itself ([#10](https://github.com/puIad/vic-enp/issues/10)).
+- No full-screen loader: "Gathering the 600" under the hero headline is the loader.
+
+## Tiers and reduced motion
+
+Budgets are tier 1 from [#5](https://github.com/puIad/vic-enp/issues/5): DPR cap 1.5 on phones and 2 on desktop,
+points only, scene fog, CSS grain and vignette, no bloom, glass, volumetrics or depth of field. Point counts per
+act are in each act above. Tiers are in [architecture.md](architecture.md#device-tiers).
+
+- **Tier 0** (no WebGL, Save-Data, `deviceMemory` at most 2, context lost) and **reduced motion** share one
+  composition per act: no canvas, a baked poster of the same scene, all copy and controls visible, nothing pinned
+  or scrubbed. The department and event acts give tier 0 cards; reduced motion with WebGL on stacks their cuts.
 
 ## Phones first
 
-Most visitors are on a phone in portrait, inside Instagram's browser. Each act is composed for 390×844 on its
-own, not squeezed from desktop: the world's formations are taller than wide, type sits in the top or bottom
-third, clusters stack instead of spreading. Fewer points, lower resolution, the same story. Device tiers are in
-[architecture.md](architecture.md#device-tiers).
+Most visitors are on a phone in portrait, inside Instagram's browser. Each act is composed for 390x844 on its own:
+the field sits in the top 40% with type below, formations are scaled down, rail shows dots only, the pill sits
+bottom right. Fewer points, the same story.
 
 ## Before and after opening
 
-- Before 25 Oct (opening time to confirm): the hero shows "Applications open in 5d 12h" with a live countdown, and
-  the CTA reads "Applications open 25 Oct" and links to `@vic.enp` on Instagram.
-- From the opening: the countdown is gone and every CTA reads Apply and opens `APPLY_URL`.
-- The switch happens in the browser by date, so no redeploy is needed at midnight. The date and time live in one
-  config value.
+- Before `OPENS_AT`: every CTA reads "Applications open 25 Oct" with a live countdown chip ("5d 12h", then
+  "9h 05m" in the last day) and links to `@vic.enp` on Instagram. The close has no sub line.
+- From `OPENS_AT`: every CTA reads "Apply" with a round gradient arrow and opens `APPLY_URL`; the close shows its
+  sub line and the Apply wave.
+- The switch happens in the browser by date, so no redeploy is needed. The date lives in one config value.

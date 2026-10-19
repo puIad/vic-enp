@@ -20,11 +20,11 @@ ships and the rest becomes v1.1 during the recruitment window.
 
 No scaffolding, no installs, no code until all of this is true and recorded in [decisions.md](decisions.md):
 
-- [ ] The owner has read the docs and accepted them, or the changes are made.
-- [ ] The 3D concept is chosen (A, B, C or a mix) after the inspiration round ([experience.md](experience.md#the-3d-world-three-concepts)).
-- [ ] scroll-craft questions 1, 5, 6 and 7 are answered ([experience.md](experience.md#the-scroll-craft-interview)).
-- [ ] The journey, feeling curve and peak are accepted or rewritten.
-- [ ] The answers in [open-questions.md](open-questions.md) marked "Gate 0" are in, or their defaults accepted.
+- [x] The owner has read the docs and accepted them, or the changes are made.
+- [x] The 3D concept is chosen: the A+B+C merge ([experience.md](experience.md#the-direction-a-named-merge-a-as-the-page)).
+- [x] scroll-craft questions 1, 5, 6 and 7 are answered ([experience.md](experience.md#the-scroll-craft-interview)).
+- [x] The journey, feeling curve and peak are accepted or rewritten.
+- [x] The answers in [open-questions.md](open-questions.md) marked "Gate 0" are in, or their defaults accepted.
 
 The other open questions can be answered during the build, by the date in their row.
 
@@ -46,7 +46,7 @@ opening (tested by overriding the date), the preview builds from a clean clone. 
 ### Slice 2: photos and scroll
 
 `scripts/photos.mjs` and the committed output, focal points, alt text. Lenis and ScrollTrigger wired with the act
-structure. The photo sequence with its entrances ([experience.md](experience.md#the-photo-sequence)), and its
+structure. The photo sequence with its entrances ([experience.md](experience.md#4-club-life-and-the-photo-sequence-the-peak)), and its
 reduced-motion grid.
 
 Done: the photo sequence scrolls smoothly on the phone emulation, `shoot.mjs` shows no dead scroll, photo weights
@@ -57,12 +57,12 @@ inside the budget.
 The canvas layer, lazy loading after first paint, tier detection and step-down, the world store fed by the act
 triggers, the hero formation and the pointer reaction (the signature move's first half).
 
-Done: the hero looks like the approved concept on tier 1 and 2, tier 0 is unchanged, the content's LCP is not
+Done: the hero looks like the signed comp on tier 1 and 2, tier 0 is unchanged, the content's LCP is not
 slowed by the world (Lighthouse before and after).
 
 ### Slice 4: the formations and the peak
 
-A formation per act, the transitions between them, the peak (for concept A, the photo resolve), the close (the
+A formation per act, the transitions between them, the passages, the peak (the photo resolve and the depth stack), the close (the
 visitor's point joins the network on Apply).
 
 Done: `shoot.mjs` shows every act landing, the peak has the largest span and reads in a phone screenshot, frame
@@ -81,8 +81,8 @@ Friday 23 Oct, evening. Whatever isn't working then is cut from the launch, in t
 first):
 
 1. Bloom and other postprocessing.
-2. Formations for the less important acts (FAQ, how to join): they keep a quiet drift.
-3. The close's "your point joins the network" moment: the close becomes a still network and the button.
+2. The per-cut formations in the departments and events: every cut keeps the field's last formation and only the copy cuts.
+3. The close's flight and Apply wave: your point is already in the slot, the field is still.
 4. The peak's photo resolve: the photo sequence opens with its first photo instead.
 5. The world entirely: slice 1 and 2 launch, the world follows in v1.1.
 
@@ -100,8 +100,7 @@ Content and the CTA are never cut.
 
 | Task | By |
 |---|---|
-| Read the docs, answer the Gate 0 questions, choose the concept | 20 Oct morning |
-| Inspirations in [inspiration.md](inspiration.md) | 20 Oct morning |
+| Read the docs and sign Gate 0 | 20 Oct |
 | Content checks 1 to 9 in [content.md](content.md#checks-before-the-copy-is-final) | 22 Oct (copy freeze) |
 | Approve the new-copy list (open question 27) | 22 Oct (copy freeze) |
 | Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |

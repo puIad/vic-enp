@@ -22,10 +22,9 @@ opens the registration.
 
 ## What the visitor should believe by the end
 
-To settle with the owner (scroll-craft's "one sentence the page exists to install"). Proposal:
+Settled by the owner on 2026-10-19 ([#6](https://github.com/puIad/vic-enp/issues/6)):
 
-> VIC is where ENP students get real responsibility, real skills and a community that lasts, and I can start now
-> with no experience.
+> Once you are a VICer, you are always a VICer, and I can be one this season.
 
 ## Scope
 

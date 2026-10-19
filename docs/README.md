@@ -4,11 +4,13 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 
 ## Where it stands
 
-- Phase: **docs**. No build until the gate in [build-plan.md](build-plan.md#gate-0-docs-signed-off) passes.
+- Phase: **build, from slice 1**. The wayfinder map ([issue #1](https://github.com/puIad/vic-enp/issues/1)) settled
+  the direction, the journey, the page-wide system and all seven acts on 2026-10-19, and the spec is folded into
+  these docs. Gate 0 signed on 2026-10-19 ([decisions.md](decisions.md), 38): the build starts at slice 1.
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
-- Waiting on the owner: inspirations for the 3D world and motion ([inspiration.md](inspiration.md)), the choices
-  marked "owner" in [open-questions.md](open-questions.md), and the content checks in [content.md](content.md#checks-before-the-copy-is-final).
+- Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)
+  by their dates (the new-copy list and the faces check by the 22 Oct copy freeze, the form link by 23 Oct).
 
 ## Reading order
 
@@ -17,8 +19,8 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 | 1 | [brief.md](brief.md) | Goal, audience, scope, success, constraints, timeline |
 | 2 | [decisions.md](decisions.md) | Every decision so far, dated, with who made it |
 | 3 | [content.md](content.md) | What the page says, section by section, mapped to the source brief |
-| 4 | [experience.md](experience.md) | The 3D world, the visitor's journey, the feeling curve, the peak, the signature move |
-| 5 | [inspiration.md](inspiration.md) | The owner's references for assets and motion (to fill) |
+| 4 | [experience.md](experience.md) | The direction, the journey, the peak, your point, and the spec of each act |
+| 5 | [inspiration.md](inspiration.md) | The chosen references and what to take from each |
 | 6 | [brand.md](brand.md) | The VIC charter applied to a 3D web page |
 | 7 | [assets.md](assets.md) | Photos, brand files, 3D and generated assets, and the pipeline for each |
 | 8 | [architecture.md](architecture.md) | Stack, structure, scene and scroll architecture, device tiers, hosting |
@@ -31,6 +33,7 @@ Other folders:
 - [source/landing-content-brief.md](source/landing-content-brief.md): the owner's content brief, copied in
   unchanged on 2026-10-19. The only source of facts for the page.
 - [agents/](agents/): how agent skills use the issue tracker and these docs.
+- [../GLOSSARY.md](../GLOSSARY.md): the page's terms (direction, your point, speed, passage, cut sequence).
 
 ## Related, outside this repo
 

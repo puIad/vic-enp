@@ -44,8 +44,6 @@ needed. See `docs/agents/domain.md`.
 
 - `scroll-craft` (nateherk-design plugin): the planning method (brief, journey, grammar, feeling curve, score,
   signature move) and its `shoot.mjs` scroll verifier. Its HTML engine is not used; the build is React Three Fiber.
-- `impeccable` and its four agents: design critique, polish and the finish review. Its entry `SKILL.md` is a
-  46-byte stub in the library right now (see `docs/open-questions.md`); its `reference/` files are intact and can
-  be read directly.
+- `impeccable` and its four agents: design critique, polish and the finish review.
 - Agents in `.claude/agents/`: Frontend Developer, UI Designer, Brand Guardian, Content Creator, Evidence
   Collector, Reality Checker, Code Reviewer, plus the four `impeccable-*` agents.

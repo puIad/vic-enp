@@ -39,5 +39,4 @@ delete the row here. "Default" is what the build does if no answer arrives by th
 
 | # | Issue | Owner | Note |
 |---|---|---|---|
-| 23 | The `impeccable` skill's `SKILL.md` is a 46-byte stub (`description: fixture`) in `~/.claude-library` and every project copy since 2026-10-14. Its `reference/` files are intact. | Owner (AI-OS) | Restore from the upstream v4.5.0 package, and find what overwrote it (probably a test writing to the real library path). Until then, read `reference/*.md` directly. |
 | 24 | `VIC-Recruitment-2026/docs/registration-app.md` still plans the landing page in `site/` (its slice 1). | Claude | Add a line there pointing here; held back while the load test runs on that repo. |

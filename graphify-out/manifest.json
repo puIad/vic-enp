@@ -1,0 +1,104 @@
+{
+  "CLAUDE.md": {
+    "mtime": 1792433585.6880293,
+    "seen": 1792434054.8677394,
+    "ast_hash": "da7021d6fba390258013d4b8c39a752d",
+    "semantic_hash": ""
+  },
+  "docs/README.md": {
+    "mtime": 1792433597.660975,
+    "seen": 1792434054.867753,
+    "ast_hash": "8d619050da96b9a7d7178ded6454a13d",
+    "semantic_hash": ""
+  },
+  "docs/agents/domain.md": {
+    "mtime": 1792433574.3289428,
+    "seen": 1792434054.8677585,
+    "ast_hash": "86f6032b7d94eadd066d2dc8ba2a3454",
+    "semantic_hash": ""
+  },
+  "docs/agents/issue-tracker.md": {
+    "mtime": 1792433574.3415544,
+    "seen": 1792434054.8677614,
+    "ast_hash": "c7311b7eb3995eeb8cfaddd158b9c128",
+    "semantic_hash": ""
+  },
+  "docs/agents/triage-labels.md": {
+    "mtime": 1792433574.353557,
+    "seen": 1792434054.867764,
+    "ast_hash": "d7e50dac17098ccade780750b97517a1",
+    "semantic_hash": ""
+  },
+  "docs/architecture.md": {
+    "mtime": 1792433931.0719957,
+    "seen": 1792434054.867766,
+    "ast_hash": "227cbf34b531fecfceb2b10a9d96743d",
+    "semantic_hash": ""
+  },
+  "docs/assets.md": {
+    "mtime": 1792433833.4300044,
+    "seen": 1792434054.8677683,
+    "ast_hash": "cb820636c4625978131b844fa7a10089",
+    "semantic_hash": ""
+  },
+  "docs/brand.md": {
+    "mtime": 1792433793.160243,
+    "seen": 1792434054.8677702,
+    "ast_hash": "2a99b1a3da01222e384f06749ef15c7b",
+    "semantic_hash": ""
+  },
+  "docs/brief.md": {
+    "mtime": 1792433626.5180986,
+    "seen": 1792434054.8677723,
+    "ast_hash": "444118d02c52bfc067a37b0bd38e6e72",
+    "semantic_hash": ""
+  },
+  "docs/build-plan.md": {
+    "mtime": 1792433969.7994106,
+    "seen": 1792434054.8677747,
+    "ast_hash": "fba015fa094788f75858bb82f960cf1a",
+    "semantic_hash": ""
+  },
+  "docs/content.md": {
+    "mtime": 1792433667.793488,
+    "seen": 1792434054.867777,
+    "ast_hash": "3489d304a1a4f554eb4ceb7ebf0686ed",
+    "semantic_hash": ""
+  },
+  "docs/decisions.md": {
+    "mtime": 1792433626.8493683,
+    "seen": 1792434054.8677793,
+    "ast_hash": "96ee50671ec238fbdf88c373a1df7444",
+    "semantic_hash": ""
+  },
+  "docs/experience.md": {
+    "mtime": 1792433729.5815613,
+    "seen": 1792434054.8677812,
+    "ast_hash": "aea9f0aeee40b73bd74b3526da9a34dd",
+    "semantic_hash": ""
+  },
+  "docs/inspiration.md": {
+    "mtime": 1792433742.7485027,
+    "seen": 1792434054.867783,
+    "ast_hash": "9ad9479583293b3692fd507050366a8d",
+    "semantic_hash": ""
+  },
+  "docs/open-questions.md": {
+    "mtime": 1792433970.2761996,
+    "seen": 1792434054.8677857,
+    "ast_hash": "0db5a9f3b3f8c70f23cad38889d14393",
+    "semantic_hash": ""
+  },
+  "docs/quality.md": {
+    "mtime": 1792433930.7129898,
+    "seen": 1792434054.8677878,
+    "ast_hash": "e767cedb381c4e2a565690f583b5bf89",
+    "semantic_hash": ""
+  },
+  "docs/source/landing-content-brief.md": {
+    "mtime": 1792433569.5992885,
+    "seen": 1792434054.86779,
+    "ast_hash": "d6bfc9b643ed9ba43f94e39d78404953",
+    "semantic_hash": ""
+  }
+}

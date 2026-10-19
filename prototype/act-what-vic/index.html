@@ -1,0 +1,479 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #12, vic-enp). Act 2: what VIC is, the numbers, why join. Built on the #11 hero. Never merged. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Act 2: what VIC is (comp)</title>
+<link rel="preload" href="fonts/Gilroy-Heavy.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900;font-display:swap}
+:root{
+  --night:#141E27; --blue:#127DBB; --aqua:#69C4AF; --gray:#EFEFEF;
+  --line:rgba(239,239,239,.14); --mute:#A3AFBA;
+  --grad:linear-gradient(135deg,#127DBB,#69C4AF);
+  --t-display:clamp(52px,9vw,128px); --t-lead:clamp(18px,1.5vw,22px); --t-ui:15px; --t-cap:13px;
+  --rail:max(20px,2.4vw); --gut:calc(var(--rail) + 132px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--night);color:var(--gray);font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased;scrollbar-color:#2b3a47 var(--night);scrollbar-width:thin}
+body{background:var(--night);font-size:17px;line-height:1.6;overflow-x:hidden}
+::selection{background:var(--aqua);color:var(--night)}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:999px}
+a{color:inherit}
+
+/* the world: one fixed canvas at the large viewport, under everything */
+#world{position:fixed;left:0;top:0;width:100vw;height:100lvh;display:block;z-index:0}
+.poster{position:fixed;left:0;top:0;width:100vw;height:100lvh;z-index:0;display:none}
+.t0 .poster{display:block}.t0 #world{display:none}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:1}
+.vignette{background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(8,12,17,.85) 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* logo: flat DOM, on its own night plate. The plate hides the canvas under and around it, so the world never passes over or under the logo. */
+.logoplate{position:fixed;left:0;top:0;z-index:9;width:calc(var(--gut) + 260px);height:96px;pointer-events:none;
+  background:radial-gradient(ellipse 100% 100% at 0 0,var(--night) 0,var(--night) 58%,rgba(20,30,39,0) 100%)}
+.logo{position:fixed;top:22px;left:var(--gut);height:34px;z-index:10}
+.logo img{height:100%;display:block}
+.readout{position:fixed;top:22px;right:24px;z-index:10;text-align:right;font-size:var(--t-cap);line-height:1.4;color:var(--mute)}
+.readout b{display:block;font-weight:400;font-size:22px;color:#fff;font-variant-numeric:tabular-nums}
+
+.rail{position:fixed;left:var(--rail);top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:20px}
+.rail::before,.rail::after{content:"";position:absolute;left:4px;top:6px;width:1px;bottom:6px;background:var(--line)}
+.rail::after{background:var(--grad);bottom:auto;height:var(--fill,0px);box-shadow:0 0 8px rgba(105,196,175,.6)}
+.rail a{position:relative;z-index:1;display:flex;align-items:center;gap:12px;text-decoration:none;color:rgba(239,239,239,.45);font-size:var(--t-cap);line-height:1;border-radius:4px}
+.rail i{flex:none;width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;background:var(--night)}
+.rail span{opacity:0;transform:translateX(-6px);transition:opacity .4s var(--ease),transform .4s var(--ease);white-space:nowrap}
+.rail a.on{color:#fff}.rail a.on i{background:var(--aqua);border-color:var(--aqua)}
+.rail a.now i{box-shadow:0 0 0 4px rgba(105,196,175,.18),0 0 14px var(--aqua)}
+.rail a.now span,.rail:hover span,.rail a:focus-visible span{opacity:1;transform:none}
+
+.pill{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 8px 0 20px;border-radius:999px;font-weight:700;font-size:var(--t-ui);color:#fff;text-decoration:none;white-space:nowrap;
+  background:linear-gradient(var(--night),var(--night)) padding-box,var(--grad) border-box;border:1.5px solid transparent;
+  box-shadow:0 8px 32px -8px rgba(18,125,187,.55);transition:box-shadow .4s var(--ease),transform .4s var(--ease),opacity .5s var(--ease)}
+.pill .chip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(105,196,175,.14);color:var(--aqua);font-variant-numeric:tabular-nums;font-size:14px}
+.pill.open{padding:0 6px 0 22px}
+.go{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:var(--night);transition:transform .4s var(--ease)}
+.go svg{width:16px;height:16px}
+.pill:hover{box-shadow:0 10px 40px -6px rgba(105,196,175,.6);transform:translateY(-1px)}
+.pill:hover .go{transform:rotate(45deg)}
+.pill:active{transform:scale(.98)}
+.pill.sticky{position:fixed;top:78px;right:24px;z-index:10}
+.pill.sticky.hide{opacity:0;pointer-events:none;transform:translateY(-6px)}
+
+.sound{position:fixed;left:calc(var(--rail) - 12px);bottom:20px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px 0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(20,30,39,.7);backdrop-filter:blur(8px);color:var(--mute);font:inherit;font-weight:700;font-size:var(--t-cap);cursor:pointer}
+.sound .bars{display:flex;align-items:flex-end;gap:2px;height:14px}
+.sound .bars i{display:block;width:2px;height:6px;border-radius:1px;background:currentColor}
+.sound .bars i:nth-child(2){height:10px}.sound .bars i:nth-child(3){height:4px}
+
+/* ---------- the hero ---------- */
+main{position:relative;z-index:2}
+.hero{height:170svh}
+.stick{position:sticky;top:0;height:100svh;display:grid;align-content:end;padding:140px 24px 12vh var(--gut)}
+.copy{will-change:transform,opacity;transform:translateY(calc(var(--p,0) * -64px));opacity:calc(1 - var(--fade,0))}
+h1{font-weight:900;font-size:var(--t-display);line-height:.92;letter-spacing:-.03em;color:#fff;max-width:11.5ch;text-wrap:balance}
+.lead{margin-top:26px;font-size:var(--t-lead);line-height:1.45;color:var(--gray);max-width:34ch}
+.lead b{font-weight:700;color:#fff}
+.cta{display:flex;align-items:center;gap:22px;margin-top:34px;flex-wrap:wrap}
+.cta .pill{height:54px;font-size:16px;padding-left:24px}
+.cta .pill.open{padding-left:26px}
+.cta .pill .go{width:38px;height:38px}
+.gather{display:flex;gap:8px;align-items:baseline;font-size:var(--t-cap);color:var(--mute);transition:opacity .8s var(--ease)}
+.gather b{color:#fff;font-weight:700;font-variant-numeric:tabular-nums;min-width:3ch}
+.gather.done{opacity:0}
+.t0 .gather{display:none}
+.since{margin-top:18px;font-size:var(--t-cap);color:var(--mute)}
+
+
+/* ---------- act 2: what VIC is, the numbers, why join ---------- */
+.act2{position:relative}
+.pin{height:calc(100svh + 200svh)}                      /* pinned span: 2 screens of scroll (kinetic, then count) */
+.stick2{position:sticky;top:0;height:100svh;display:grid;align-content:center;padding:110px 24px 64px var(--gut);overflow:hidden}
+.a2-text{grid-area:1/1;align-self:center;max-width:62rem;transition:opacity .6s var(--ease)}
+h2.a2h{font-weight:900;font-size:clamp(36px,5vw,72px);line-height:.98;letter-spacing:-.02em;color:#fff;max-width:13ch;text-wrap:balance}
+.sent{margin-top:28px;display:grid;gap:14px;max-width:34ch;font-size:var(--t-lead);line-height:1.45;color:var(--gray)}
+.sent b{font-weight:700;color:#fff}
+.w{display:inline-block;opacity:var(--wo,0);transform:translateY(calc((1 - var(--wo,0)) * 14px));will-change:transform,opacity}
+.values{margin-top:26px;font-size:var(--t-cap);color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 18px;max-width:46ch;opacity:var(--vo,0)}
+.values b{font-weight:700;color:var(--gray);letter-spacing:.02em}
+.a2-text .sent,.a2-text .values,.a2h{transition:opacity .6s var(--ease)}
+.a2-text.recede .sent,.a2-text.recede .values{opacity:0}.a2-text.recede .a2h{opacity:.3}
+.nums{grid-area:1/1;align-self:end;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:0;padding:0;pointer-events:none}
+.nums>div{padding:22px 20px 0 0;border-top:1px solid var(--line);position:relative;opacity:var(--no,0);transform:translateY(calc((1 - var(--no,0)) * 28px))}
+.nums>div::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:calc(var(--no,0) * 100%);background:var(--grad);box-shadow:0 0 10px rgba(105,196,175,.55)}
+.nums dd{margin:0;font-weight:900;font-size:clamp(44px,5.6vw,80px);line-height:1;letter-spacing:-.03em;color:#fff;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px}
+.nums dd small{font-size:.3em;font-weight:700;letter-spacing:0;color:var(--aqua)}
+.nums .plus{color:var(--aqua)}
+.nums dt{margin-top:10px;font-size:var(--t-cap);line-height:1.4;color:var(--mute);max-width:20ch}
+.why{position:relative;padding:18vh 24px 22vh var(--gut)}
+.why h2{font-weight:900;font-size:clamp(36px,5vw,72px);line-height:.98;letter-spacing:-.02em;color:#fff;margin-bottom:64px;max-width:12ch}
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:48px 40px;max-width:1180px}
+.group h3{font-weight:900;font-size:clamp(24px,2.2vw,32px);letter-spacing:-.01em;color:#fff;line-height:1.05;padding-bottom:16px;border-bottom:1px solid var(--line);position:relative;margin-bottom:6px}
+.group h3::after{content:"";position:absolute;left:0;bottom:-1px;width:44px;height:1px;background:var(--grad);box-shadow:0 0 10px rgba(105,196,175,.55)}
+.group ul{list-style:none;padding:0;display:grid}
+.group li{padding:18px 0 17px;border-bottom:1px solid var(--line);opacity:var(--ro,1);transform:translateY(calc((1 - var(--ro,1)) * 22px))}
+.group li b{display:block;font-weight:700;font-size:16px;color:#fff;line-height:1.3;margin-bottom:4px}
+.group li p{font-size:16px;line-height:1.5;color:var(--gray);opacity:.86;max-width:38ch}
+.js .group li{--ro:0;transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.js .group li.in{--ro:1}
+.door{position:relative;min-height:70svh;display:grid;align-content:center;padding:60px 24px 60px var(--gut)}
+.door p{max-width:44ch;font-size:var(--t-cap);color:var(--mute)}
+.door h2{font-weight:900;font-size:clamp(28px,3vw,40px);color:#fff;margin-bottom:12px}
+/* tier 0 and reduced motion: no pin, no scrub, final state shown */
+.t0 .pin,.rm .pin{height:auto}
+.t0 .stick2,.rm .stick2{position:static;height:auto;display:block;padding-top:16vh;padding-bottom:10vh;overflow:visible}
+.t0 .a2-text,.rm .a2-text{transition:none}
+.t0 .w,.rm .w{--wo:1;transform:none}.t0 .values,.rm .values{--vo:1}
+.t0 .nums,.rm .nums{margin-top:64px}.t0 .nums>div,.rm .nums>div{--no:1;transform:none}
+.t0 .js .group li,.rm .js .group li,.t0 .group li,.rm .group li{--ro:1;transform:none}
+
+footer{position:relative;z-index:2;padding:40px 24px 120px var(--gut);font-size:var(--t-cap);color:var(--mute);border-top:1px solid var(--line)}
+
+@media (max-width:767px){
+  :root{--rail:10px;--gut:40px}
+  .logo{top:18px;height:26px}
+  .logoplate{height:76px;width:calc(var(--gut) + 200px)}
+  .readout{top:16px;right:16px;font-size:11px}.readout b{font-size:17px}
+  .rail{gap:16px}.rail span{display:none}.rail a{padding:6px}.rail::before,.rail::after{left:10px}
+  .pill.sticky{top:auto;bottom:16px;right:16px}
+  .stick{padding:110px 16px 14svh var(--gut)}
+  h1{max-width:8ch}
+  .cta{margin-top:26px;gap:14px}
+  .sound{left:12px;bottom:16px;width:46px;height:46px;padding:0;justify-content:center}.sound .lbl{display:none}
+  .stick2{padding:104px 16px 96px var(--gut)}
+  .sent{font-size:17px;gap:11px;margin-top:20px}
+  .values{margin-top:18px}
+  .nums{grid-template-columns:1fr 1fr;row-gap:22px;column-gap:16px;align-self:center}
+  .nums>div{padding-top:16px}
+  .nums dt{font-size:12px}
+  .a2-text.recede .a2h{opacity:0}
+  .why{padding:14vh 16px 16vh var(--gut)}
+  .why h2{margin-bottom:40px}
+  .groups{grid-template-columns:1fr;gap:44px}
+  .door{padding:60px 16px 60px var(--gut)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.copy{transform:none!important;opacity:1!important}}
+.rm .copy{transform:none!important;opacity:1!important}
+</style>
+</head>
+<body>
+<canvas id="world" aria-hidden="true"></canvas>
+<svg class="poster" id="poster" aria-hidden="true" preserveAspectRatio="xMidYMid slice"></svg>
+<div class="fx vignette"></div><div class="fx grain"></div>
+
+<div class="logoplate" aria-hidden="true"></div>
+<a class="logo" href="#top" aria-label="Vision &amp; Innovation Club, back to top"><img src="brand/vic-logo-white.svg" alt="Vision &amp; Innovation Club"></a>
+<div class="readout">Distance to the 600<b id="dist">48.0</b></div>
+<nav class="rail" id="rail" aria-label="Waypoints">
+  <a href="#top" class="on now"><i></i><span>Start</span></a>
+  <a href="#world2"><i></i><span>The 600</span></a>
+  <a href="#world2"><i></i><span>Departments</span></a>
+  <a href="#world2"><i></i><span>Club life</span></a>
+  <a href="#world2"><i></i><span>Events</span></a>
+  <a href="#world2"><i></i><span>How to join</span></a>
+  <a href="#world2"><i></i><span>Your place</span></a>
+</nav>
+<button class="sound" type="button" aria-pressed="false" aria-label="Sound"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Sound off</span></button>
+<a class="pill sticky hide" id="spill" href="#"></a>
+
+<main id="top">
+<section class="hero" id="hero">
+  <div class="stick">
+    <div class="copy" id="copy">
+      <h1>Engineer more than your degree.</h1>
+      <p class="lead"><b>Vision &amp; Innovation Club.</b> A nonprofit, English-speaking scientific club at ENP.</p>
+      <div class="cta">
+        <a class="pill" id="hpill" href="#"></a>
+        <p class="gather" id="gather" aria-hidden="true">Gathering the 600 <b id="gnum">0</b></p>
+      </div>
+      <p class="since">Since 2014 · Once a VICer, always a VICer.</p>
+    </div>
+  </div>
+</section>
+<section class="act2" id="world2">
+  <div class="pin" id="pin">
+    <div class="stick2">
+      <div class="a2-text" id="a2t">
+        <h2 class="a2h" id="a2h">Run by ENP students, for ENP students.</h2>
+        <div class="sent" id="sent">
+          <p><b>VIC</b> is a nonprofit, English-speaking scientific club at ENP, a branch of the El-Maarifa Scientific Association.</p>
+          <p>Our mission: help members and ENP students build soft and hard skills and a network, through events that are genuinely enjoyable.</p>
+          <p>Our vision: a lasting community you are proud to belong to.</p>
+        </div>
+        <p class="values" id="values"><b>What we hold to</b> <span>Respect</span> <span>Diversity</span> <span>Contribution and creativity</span> <span>Legacy</span></p>
+      </div>
+      <dl class="nums" id="nums">
+        <div><dd><span data-to="600">600</span></dd><dt>members at ENP</dt></div>
+        <div><dd><span data-to="40">40</span><span class="plus">+</span></dd><dt>trainings a year</dt></div>
+        <div><dd><span data-to="9">9</span></dd><dt>Engineers' Galas, the 9th in 2026</dt></div>
+        <div><dd><small>since</small><span data-to="2014" data-from="2000">2014</span></dd><dt>founded by ENP students</dt></div>
+      </dl>
+    </div>
+  </div>
+  <div class="why" id="why">
+    <h2>What you get.</h2>
+    <div class="groups">
+      <section class="group"><h3>Lead early</h3><ul>
+        <li><b>Real responsibility, early</b><p>Organize large events with corporate guests, sponsors and hundreds of attendees.</p></li>
+        <li><b>Organizing-team experience</b><p>Work on the club's projects and events.</p></li>
+        <li><b>A path to leadership</b><p>Active members can become Project Managers, Department Heads, or run for President.</p></li>
+        <li><b>A voice</b><p>Propose ideas to the committee and vote in elections.</p></li>
+      </ul></section>
+      <section class="group"><h3>Grow your skills</h3><ul>
+        <li><b>Free internal trainings</b><p>Technical and soft skills.</p></li>
+        <li><b>Two homes in the club</b><p>One main department for your work, one activity department for your learning.</p></li>
+        <li><b>Certificates</b><p>A membership certificate, plus event certificates for organizing teams.</p></li>
+      </ul></section>
+      <section class="group"><h3>Belong for good</h3><ul>
+        <li><b>A network</b><p>Sponsors, industry leaders, alumni and members from every ENP specialty.</p></li>
+        <li><b>The Local</b><p>The club's headquarters at ENP. Every VICer is welcome, without exception.</p></li>
+        <li><b>A lifelong community</b><p>Graduates stay in VIC as alumni.</p></li>
+      </ul></section>
+    </div>
+  </div>
+</section>
+<section class="door" id="world3">
+  <h2>The door starts here.</h2>
+  <p>Hand-over only. Act 3 is ticket #13: the field brightens, parts into two slabs with a lit slit, and cut 1 (HR) snaps in.</p>
+</section>
+</main>
+<footer>Prototype for ticket #12 on vic-enp, never merged. Gilroy loaded locally; no web licence yet (open question 11).</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const qs = new URLSearchParams(location.search);
+const shot = qs.has('shot');
+const phone = innerWidth < 768;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || qs.has('rm');
+const saveData = navigator.connection && navigator.connection.saveData;
+const root = document.documentElement;
+
+/* ---------- Apply state, switched in the browser at OPENS_AT ---------- */
+const OPENS_AT = new Date('2026-10-25T00:00:00+01:00');   // open question 16
+const now = () => qs.has('open') ? new Date(OPENS_AT.getTime() + 1) : new Date(OPENS_AT.getTime() - (qs.has('d') ? +qs.get('d') : 5.5 * 864e5));
+const arrow = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11 11 5M6 5h5v5"/></svg>';
+function left(){ const ms = Math.max(0, OPENS_AT - now()), d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60; return d ? `${d}d ${String(h).padStart(2,'0')}h` : `${h}h ${String(m).padStart(2,'0')}m`; }
+function paint(){
+  const open = now() >= OPENS_AT;
+  for (const el of [document.getElementById('hpill'), document.getElementById('spill')]) {
+    el.innerHTML = open ? `Apply <span class="go">${arrow}</span>` : `Applications open 25 Oct <span class="chip">${left()}</span>`;
+    el.classList.toggle('open', open);
+    el.href = open ? '#apply-url' : 'https://www.instagram.com/vic.enp/';   // APPLY_URL in the build
+  }
+}
+paint(); setInterval(paint, 30000);
+
+/* ---------- tier 0: static composition (no WebGL, reduced motion, Save-Data, low memory) ---------- */
+function webgl(){ try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } }
+let tier0 = qs.has('tier0') || reduce || saveData || (navigator.deviceMemory && navigator.deviceMemory <= 2) || !webgl();
+if (reduce) root.classList.add('rm');
+
+/* one seeded constellation, shared by the WebGL field and the tier 0 poster */
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+function constellation(n){
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const r = Math.pow(rnd(), 1.15) * 7.5, arm = (i % 3) * 2.094, a = arm + r * .55 + (rnd() - .5) * .9;
+    out.push([Math.cos(a) * r * 1.15, Math.sin(a) * r * .62 + (rnd() - .5) * .5, (rnd() - .5) * 11 * (1 - r / 10)]);
+  }
+  return out;
+}
+function poster(){
+  const svg = document.getElementById('poster'), W = innerWidth, H = innerHeight;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const sc = phone ? Math.min(W, H) * .062 : Math.min(W, H) * .105, cx = phone ? W * .5 : W * .66, cy = phone ? H * .34 : H * .42;
+  seed = 7; const pts = constellation(phone ? 700 : 1100); let s = '<defs><radialGradient id="g"><stop offset="0" stop-color="#fff"/><stop offset=".18" stop-color="#69C4AF"/><stop offset="1" stop-color="#69C4AF" stop-opacity="0"/></radialGradient></defs>';
+  pts.forEach((p, i) => {
+    const near = (p[2] + 5.5) / 11, x = cx + p[0] * sc, y = cy + p[1] * sc, member = i < 600;
+    const r = member ? .9 + near * 1.3 : .5 + near * .7, col = near > .55 ? '#69C4AF' : '#127DBB';
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}" fill="${col}" opacity="${(member ? .55 + near * .4 : .25 + near * .3).toFixed(2)}"/>`;
+  });
+  const yx = phone ? W * .8 : W * .92, yy = phone ? H * .17 : H * .2;
+  s += `<circle cx="${yx}" cy="${yy}" r="30" fill="url(#g)"/><circle cx="${yx}" cy="${yy}" r="3" fill="#fff"/>`;
+  svg.innerHTML = s;
+}
+if (tier0) { root.classList.add('t0'); poster(); addEventListener('resize', poster); }
+
+/* ---------- rail, readout, sticky pill, hand-over ---------- */
+const hero = document.getElementById('hero'), copy = document.getElementById('copy'), spill = document.getElementById('spill'), dist = document.getElementById('dist'), rail = document.getElementById('rail');
+const links = [...rail.querySelectorAll('a')];
+let P = 0;   // hero progress 0..1 across the sticky span, then 1
+function onScroll(){
+  const span = hero.offsetHeight - innerHeight, y = Math.min(scrollY, span * 1.6);
+  P = qs.has('p') ? +qs.get('p') : Math.max(0, Math.min(1, scrollY / span));
+  root.style.setProperty('--p', P.toFixed(3));
+  const f = Math.max(0, Math.min(1, (P - .3) / .5)); root.style.setProperty('--fade', (f * f * (3 - 2 * f)).toFixed(3));
+  dist.textContent = (48 * (1 - scrollY / (innerHeight * 24))).toFixed(1);
+  const second = P > .92 || qs.has('pill');
+  spill.classList.toggle('hide', !second);
+  const cur = document.getElementById('world3').getBoundingClientRect().top < innerHeight * .5 ? 2 : scrollY > hero.offsetHeight - innerHeight * .5 ? 1 : 0;
+  links.forEach((a, i) => { a.classList.toggle('on', i <= cur); a.classList.toggle('now', i === cur); });
+  const r = rail.getBoundingClientRect(), dot = links[cur].querySelector('i').getBoundingClientRect();
+  rail.style.setProperty('--fill', (dot.top + dot.height / 2 - r.top - 6) + 'px');
+}
+addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+
+
+/* ---------- act 2: kinetic words, counters that land once, why-join reveal ---------- */
+const sm = (a, b, x) => { x = Math.max(0, Math.min(1, (x - a) / (b - a))); return x * x * (3 - 2 * x); };
+const pinEl = document.getElementById('pin'), a2t = document.getElementById('a2t'), valuesEl = document.getElementById('values'), nums = [...document.querySelectorAll('#nums>div')];
+const whyEl = document.getElementById('why'), doorEl = document.getElementById('world3');
+const wrap = el => { const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), list = []; while (w.nextNode()) list.push(w.currentNode);
+  list.forEach(n => { if (!n.nodeValue.trim()) return; const f = document.createDocumentFragment();
+    n.nodeValue.split(/(\s+)/).forEach(t => { if (!t) return; if (/^\s+$/.test(t)) f.append(' '); else { const s = document.createElement('span'); s.className = 'w'; s.textContent = t; f.append(s); } });
+    n.replaceWith(f); }); };
+const still = tier0 || reduce;                                   // no scrub, no count: final state shown
+if (!still) root.classList.add('js');
+let words = [];
+if (!still) { wrap(document.getElementById('a2h')); wrap(document.getElementById('sent')); words = [...document.querySelectorAll('#a2h .w, #sent .w')]; }
+let A2 = 0, counted = false, numT = 0, wave = 0, waveOn = false;       // A2: act progress; counters run once, then hold
+const fmt = (el, v) => el.textContent = Math.round(v);
+function runCount(){
+  counted = true; const t0c = performance.now();
+  (function step(t){
+    const k = (t - t0c) / 1000; let all = true;
+    nums.forEach((d, i) => { const e = Math.max(0, Math.min(1, (k - i * .18) / 1.5)), ease = 1 - Math.pow(1 - e, 4), span = d.querySelector('[data-to]');
+      numT = k; const to = +span.dataset.to, from = +(span.dataset.from || 0); fmt(span, from + (to - from) * ease);
+      d.dataset.anim = Math.min(1, (k - i * .18) / .8); if (e < 1) all = false; });
+    if (k > .9 && !waveOn) { waveOn = true; waveStart = performance.now(); }   // the 600 lands: members pulse once
+    if (!all) requestAnimationFrame(step);
+  })(t0c);
+}
+let waveStart = 0;
+function act2(){
+  if (still) return;
+  const top = pinEl.getBoundingClientRect().top + scrollY, span = pinEl.offsetHeight - innerHeight;
+  A2 = qs.has('a') ? +qs.get('a') : Math.max(0, Math.min(1, (scrollY - (top - innerHeight * .5)) / (span + innerHeight * .5)));
+  const hw = words.length, hN = document.querySelectorAll('#a2h .w').length;
+  words.forEach((w, i) => { const a = i < hN ? .05 + i / hN * .14 : .17 + (i - hN) / (hw - hN) * .34; w.style.setProperty('--wo', sm(a, a + .05, A2).toFixed(3)); });
+  valuesEl.style.setProperty('--vo', sm(.5, .56, A2).toFixed(3));
+  const recede = sm(.56, .66, A2); a2t.classList.toggle('recede', recede > .5);
+  const gate = sm(.58, .7, A2);
+  if (gate > .02 && !counted) runCount();
+  nums.forEach(d => d.style.setProperty('--no', (gate * (counted ? +d.dataset.anim || 0 : 0)).toFixed(3)));
+  const wr = whyEl.getBoundingClientRect(), dr = doorEl.getBoundingClientRect();
+  dimT = 1 - .5 * sm(innerHeight * .9, innerHeight * .2, wr.top) * (1 - sm(innerHeight, innerHeight * .3, dr.top));
+}
+let dimT = 1;
+addEventListener('scroll', act2, { passive: true }); addEventListener('resize', act2); act2();
+if (!still) {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .3 });
+  document.querySelectorAll('.group li').forEach((li, i) => { li.style.transitionDelay = (i % 4) * 90 + 'ms'; shot ? li.classList.add('in') : io.observe(li); });
+}
+if (shot && !still) { counted = true; nums.forEach(d => { const s = d.querySelector('[data-to]'); fmt(s, +s.dataset.to); d.dataset.anim = 1; }); waveStart = -1; }
+
+/* ---------- the loader: the 600 gathering, then your point ---------- */
+const gather = document.getElementById('gather'), gnum = document.getElementById('gnum');
+const GATHER_MS = 3200, t0 = performance.now();
+let gk = shot || tier0 ? 1 : 0, youA = shot || tier0 ? 1 : 0;
+function loaderTick(t){
+  if (shot || tier0) { gnum.textContent = 600; gather.style.display = 'none'; return; }
+  gk = Math.min(1, (t - t0) / GATHER_MS); gnum.textContent = Math.round(600 * gk);
+  if (gk >= 1) { gather.classList.add('done'); youA = Math.min(1, (t - t0 - GATHER_MS) / 900); }
+}
+
+/* ---------- the world ---------- */
+if (!tier0) {
+  const cv = document.getElementById('world');
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, powerPreference: 'high-performance', alpha: true }); }
+  catch { tier0 = true; root.classList.add('t0'); poster(); addEventListener('resize', poster); }
+  if (renderer) {
+    const DPR = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+    renderer.setPixelRatio(DPR); renderer.setClearColor(0x141E27, 0);
+    cv.addEventListener('webglcontextlost', e => { e.preventDefault(); root.classList.add('t0'); poster(); });
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(45, 1, .1, 120);
+    const N = phone ? 5000 : 9000, M = 600;                       // tier 1 phone / desktop; the first 600 are the members
+    seed = 7; const base = constellation(N), from = new Float32Array(N * 3), pos = new Float32Array(N * 3), R = new Float32Array(N * 4), mem = new Float32Array(N);
+    for (let i = 0; i < N; i++) {
+      pos.set(base[i], i * 3);
+      const b = base[i], d = Math.hypot(b[0], b[1]) || 1, k = 2.6 + rnd() * 2;
+      from.set([b[0] / d * 16 * k / 3 + (rnd() - .5) * 6, b[1] / d * 10 * k / 3 + (rnd() - .5) * 6, b[2] - 14 - rnd() * 8], i * 3);
+      R.set([rnd(), rnd(), rnd(), rnd()], i * 4); mem[i] = i < M ? 1 : 0;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aFrom', new THREE.BufferAttribute(from, 3));
+    g.setAttribute('aR', new THREE.BufferAttribute(R, 4)); g.setAttribute('aM', new THREE.BufferAttribute(mem, 1));
+    const U = { uGather: { value: 0 }, uTime: { value: 0 }, uHand: { value: 0 }, uPx: { value: DPR }, uPar: { value: new THREE.Vector2() }, uPtr: { value: new THREE.Vector2(99, 99) }, uLean: { value: 0 }, uScale: { value: 600 }, uDim: { value: 1 }, uWave: { value: -1 } };
+    const mat = new THREE.ShaderMaterial({
+      uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `
+        attribute vec3 aFrom; attribute vec4 aR; attribute float aM;
+        uniform float uGather,uTime,uHand,uPx,uLean,uScale,uDim,uWave; uniform vec2 uPar,uPtr;
+        varying vec3 vC; varying float vA;
+        void main(){
+          float st = aR.x*.55, gg = smoothstep(st, st+.45, uGather); gg = gg*gg*(3.-2.*gg);
+          vec3 p = mix(aFrom, position, gg);
+          p += vec3(sin(uTime*.3+aR.y*6.28), cos(uTime*.25+aR.z*6.28), sin(uTime*.2+aR.w*6.28))*.12;
+          p.xy *= 1. - .38*uHand;                                   // the hand-over: the field tightens toward the 600
+          float near = clamp((p.z+6.)/12., 0., 1.);
+          p.xy += uPar * (near-.4) * 1.4;                            // parallax: near points swing more than far ones
+          vec2 dv = uPtr - p.xy; p.xy += dv * exp(-dot(dv,dv)/9.68) * .3 * uLean;   // the field leans toward the pointer or touch
+          vec4 mv = modelViewMatrix * vec4(p,1.); gl_Position = projectionMatrix * mv;
+          float wv = aM * exp(-pow((length(position.xy)/9. - uWave)*4.5, 2.));   // the 600 land: members pulse once, centre outward
+          float sz = (aM > .5 ? 5.2 : 1.3 + aR.y*.7) * (.55+near*.9) * (1. + wv*.8);
+          gl_PointSize = clamp(sz * uPx * (uScale / -mv.z) * .09, 1., (aM > .5 ? 7. : 3.) * uPx);
+          vC = mix(vec3(.071,.49,.733), vec3(.412,.769,.686), near);
+          vA = ((aM > .5 ? 1. : .3) * (.35+near*.65) * uDim + wv*.9) * gg;
+        }`,
+      fragmentShader: `varying vec3 vC; varying float vA; void main(){ float d = length(gl_PointCoord-.5)*2.; if(d>1.) discard; gl_FragColor = vec4(vC, vA*(1.-d*d)); }`
+    });
+    const field = new THREE.Points(g, mat); field.frustumCulled = false; scene.add(field);
+
+    /* your point: its own sprite, fixed on screen, never part of the field's motion */
+    const yg = new THREE.BufferGeometry(); yg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3));
+    const YU = { uA: { value: 0 }, uPx: { value: DPR }, uSz: { value: 1 } };
+    const you = new THREE.Points(yg, new THREE.ShaderMaterial({ uniforms: YU, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      vertexShader: `uniform float uPx,uSz; void main(){ gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); gl_PointSize = 130.*uPx*uSz; }`,
+      fragmentShader: `uniform float uA; void main(){ float d = length(gl_PointCoord-.5)*2.; if(d>1.) discard; float core = smoothstep(.09,.0,d), halo = pow(1.-d,3.); gl_FragColor = vec4(mix(vec3(.412,.769,.686),vec3(1.),core), (halo*.7+core)*uA); }` }));
+    you.frustumCulled = false; scene.add(you);
+
+    const YN = () => phone ? [.6, .66] : [.84, .6];                // your point, in NDC: off to one side, above the headline
+    const tgt = new THREE.Vector2(), par = new THREE.Vector2(), v = new THREE.Vector3();
+    let lean = 0, held = false;
+    function size(){
+      const w = innerWidth, h = Math.max(innerHeight, document.documentElement.clientHeight);
+      renderer.setSize(w, h, false); cv.style.width = w + 'px'; camera.aspect = w / h; camera.updateProjectionMatrix();
+      U.uScale.value = h * 1.0;
+      /* desktop: field sits right of the headline; phone: field sits in the top half, headline in the bottom third */
+      field.scale.setScalar(phone ? .36 : .85); field.rotation.set(phone ? .9 : .45, 0, phone ? -.75 : -.35); field.position.set(phone ? 0 : 4.3, phone ? 2.5 : .3, 0);
+    }
+    addEventListener('resize', size); size();
+    addEventListener('pointermove', e => { if (e.pointerType === 'touch' && !held) return; tgt.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)); lean = 1; });
+    addEventListener('pointerdown', e => { if (e.pointerType === 'touch') { held = true; tgt.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight * 2 - 1)); lean = 1; } });
+    const rel = () => { held = false; lean = 0; };
+    addEventListener('pointerup', rel); addEventListener('pointercancel', rel); document.addEventListener('pointerleave', () => lean = 0);
+
+    let dimS = 1, hand = 0, leanS = 0, tm = 0, last = performance.now();
+    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), ray = new THREE.Raycaster();
+    function frame(t){
+      const dt = Math.min(.05, (t - last) / 1000); last = t; tm += dt;
+      loaderTick(t); U.uGather.value = gk; U.uTime.value = tm;
+      par.lerp(tgt, .06); U.uPar.value.set(lean || par.lengthSq() > .0001 ? par.x : 0, lean || par.lengthSq() > .0001 ? par.y : 0);
+      if (!lean) par.multiplyScalar(.97);
+      leanS += (lean - leanS) * .06; U.uLean.value = leanS;
+      hand += (P - hand) * .08; U.uHand.value = hand;
+      camera.position.set(0, 0, 14 - hand * 5.5);                  // dolly: the camera moves into the field as you scroll
+      camera.updateMatrixWorld();
+      /* pointer in field space */
+      ray.setFromCamera(par.lengthSq() ? tgt : new THREE.Vector2(9, 9), camera);
+      const hit = new THREE.Vector3(); if (ray.ray.intersectPlane(plane, hit)) { field.updateMatrixWorld(); field.worldToLocal(hit); U.uPtr.value.set(hit.x, hit.y); }
+      /* your point: a fixed spot in the view (unprojected at a constant distance), lit when the counter reaches 600 */
+      const [nx, ny] = YN(); v.set(nx, ny, .5).unproject(camera).sub(camera.position).normalize().multiplyScalar(14).add(camera.position); you.position.copy(v);
+      YU.uA.value = youA * (1 + .12 * Math.sin(tm * 1.6)); YU.uSz.value = 1 + hand * .35;
+      dimS += (dimT - dimS) * .06; U.uDim.value = dimS;
+      U.uWave.value = waveStart === -1 ? -1 : waveOn ? Math.min(1.6, (t - waveStart) / 1100 * 1.4) : -1;
+      field.rotation.z = (phone ? -.75 : -.35) + scrollY * .00012;          // the slow morph: the cloud keeps turning, never snaps (world A speed)
+      renderer.render(scene, camera); requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    window.__hero = { renderer, ready: true };
+  }
+}
+</script>
+</body>
+</html>

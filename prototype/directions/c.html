@@ -1,0 +1,205 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #8, vic-enp). Direction C: Thresholds. Dark chaptered editorial; each chapter ends at a passage of points. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C · Thresholds (comp)</title>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Light.woff2) format('woff2');font-weight:300}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900}
+:root{--night:#141E27;--deep:#0E161D;--blue:#127DBB;--aqua:#69C4AF;--gray:#EFEFEF;--margin:clamp(150px,14vw,220px)}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--night);color:#fff;font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block;opacity:0;transition:opacity .3s;z-index:0}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:8;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* the folio: chapter number and title in the margin */
+.folio{position:fixed;left:28px;top:50%;transform:translateY(-50%);z-index:7;width:calc(var(--margin) - 48px);font-size:13px;line-height:1.5;color:rgba(239,239,239,.6);transition:opacity .3s}
+.folio b{display:block;font-weight:900;font-size:34px;color:#fff;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+#you{position:fixed;z-index:7;left:var(--yx);top:var(--yy);width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;pointer-events:none;transform:scale(var(--ys,2.6));
+  background:radial-gradient(circle,#fff 0 18%,#bff5e8 30%,rgba(105,196,175,.5) 48%,rgba(18,125,187,.15) 64%,transparent 72%);transition:left .9s cubic-bezier(.3,.7,.2,1),top .9s cubic-bezier(.3,.7,.2,1),transform .9s}
+
+section{position:relative;z-index:2}
+.title{height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 12vh var(--margin)}
+.title h1{font-weight:900;font-size:clamp(52px,8.6vw,150px);line-height:.9;letter-spacing:-.03em;max-width:9ch}
+.title p{font-weight:300;font-size:18px;color:rgba(239,239,239,.75);margin-top:20px}
+
+.inter{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 6vw 0 var(--margin);background:var(--g,var(--night))}
+.inter small{font-weight:700;font-size:15px;color:var(--aqua)}
+.inter h2{font-weight:900;font-size:clamp(64px,13vw,240px);line-height:.86;letter-spacing:-.04em;margin-top:18px}
+
+.spread{display:grid;grid-template-columns:minmax(0,62ch) minmax(0,1fr);gap:6vw;padding:16vh 6vw 20vh var(--margin);background:var(--g,var(--night));align-items:start}
+.spread .txt p{font-weight:300;font-size:clamp(18px,1.35vw,21px);line-height:1.6;color:var(--gray);margin-bottom:1.2em}
+.spread .txt h3{font-weight:700;font-size:21px;margin:1.6em 0 .4em}
+.spread .txt .lead{font-size:clamp(22px,1.9vw,30px);line-height:1.35;color:#fff;font-weight:300}
+.spread .txt a{color:#fff;text-decoration-color:var(--aqua);text-underline-offset:4px;text-decoration-thickness:2px}
+.col{display:flex;flex-direction:column;gap:9vh}
+figure img{display:block;width:100%;filter:blur(16px) brightness(.7);transform:scale(1.04);transition:filter 1.4s cubic-bezier(.2,.7,.2,1),transform 1.4s}
+figure.in img{filter:none;transform:none}
+figcaption{font-weight:300;font-size:14px;color:rgba(239,239,239,.65);margin-top:12px}
+figure.tall{width:62%;margin-left:auto}
+
+.threshold{height:180vh;position:relative;z-index:1}
+.threshold .cue{position:sticky;top:0;height:100vh;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9vh;font-weight:300;font-size:14px;color:rgba(239,239,239,.6)}
+
+.logo{position:fixed;top:22px;left:28px;height:30px;z-index:7}
+.cta{position:fixed;top:24px;right:24px;z-index:7;font-weight:700;font-size:15px;color:#fff;text-decoration:underline;text-decoration-color:var(--aqua);text-underline-offset:5px;text-decoration-thickness:2px}
+.spread.wide{grid-template-columns:minmax(0,40ch) minmax(0,1fr);align-items:center}
+.colophon{min-height:100vh;display:flex;align-items:center;padding:0 6vw 0 var(--margin);background:var(--deep)}
+.colophon div{max-width:52ch;font-weight:300;font-size:clamp(18px,1.4vw,22px);line-height:1.7;color:var(--gray)}
+.colophon h2{font-weight:900;font-size:clamp(40px,5vw,80px);line-height:.95;letter-spacing:-.025em;color:#fff;margin-bottom:28px}
+.colophon a{color:#fff;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#127DBB,#69C4AF);padding:.12em .55em .18em;border-radius:999px;white-space:nowrap}
+.colophon small{display:block;margin-top:44px;font-size:13px;color:rgba(239,239,239,.55)}
+
+@media (max-width:767px){
+  :root{--margin:20px}
+  .folio{top:auto;bottom:18px;left:16px;transform:none;width:auto;display:flex;gap:10px;align-items:baseline;font-size:12px;background:rgba(14,22,29,.85);padding:6px 12px;border-radius:999px}
+  .folio b{font-size:15px}
+  .title{padding:0 20px 18vh}
+  .inter{padding:0 20px}
+  .spread{grid-template-columns:1fr;padding:12vh 20px 16vh;gap:8vh}
+  figure.tall{width:80%}
+  .colophon{padding:0 20px}
+  .threshold{height:140vh}
+  .spread.wide{grid-template-columns:1fr}
+  .logo{left:20px}
+}
+@media (prefers-reduced-motion:reduce){figure img{transition:none;filter:none;transform:none}#you{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-hidden="true"></canvas>
+<div class="grain"></div>
+<div class="folio" id="folio" aria-live="off"><b>00</b><span>Vision &amp; Innovation Club</span></div>
+<div id="you" aria-hidden="true"></div>
+<img class="logo" src="brand/vic-logo-white.svg" alt="Vision &amp; Innovation Club">
+<a class="cta" href="#">Apply</a>
+
+<section class="title" data-folio="00|Vision &amp; Innovation Club" data-you="title">
+  <h1>Vision &amp; Innovation Club</h1>
+  <p>ENP, Algiers. Since 2014.</p>
+</section>
+
+<section class="inter" data-folio="01|The club"><small>Chapter 01</small><h2>The club.</h2></section>
+<section class="spread" data-folio="01|The club">
+  <div class="txt">
+    <p class="lead">A nonprofit, English-speaking scientific club at ENP, founded in 2014 by a group of ENP students.</p>
+    <p>VIC gives polytechnic students a place to gain real experience in leading and managing, to be creative and to contribute, and to learn what the curriculum doesn't cover.</p>
+    <p>The mission: help members, and ENP students in general, develop their soft and hard skills and build their network through events and activities that are genuinely enjoyable. The vision: a lasting community its members are proud to belong to.</p>
+  </div>
+  <div class="col"><figure><img src="pics/img_2757.jpg" alt="A full conference hall with a speaker on stage"><figcaption>A talk at ENP.</figcaption></figure></div>
+</section>
+<section class="threshold" data-shape="door" data-folio="01|The club"><div class="cue">Through the door</div></section>
+
+<section class="inter" data-folio="02|Two homes" style="--g:var(--deep)"><small>Chapter 02</small><h2>Two homes.</h2></section>
+<section class="spread" data-folio="02|Two homes" style="--g:var(--deep)">
+  <div class="txt">
+    <p class="lead">Your work side is one of four main departments. Your learning side is one of three activity departments.</p>
+    <h3>HR</h3><p>The heart of the club's internal life. Keeps the community organized, connected and motivated.</p>
+    <h3>FLER</h3><p>VIC's link to the outside world: companies, sponsors, guests and suppliers, plus logistics and budget.</p>
+    <h3>IT</h3><p>Design, visual identity, photography and video. No coding required.</p>
+    <h3>COMM</h3><p>The bridge between the club and its audience: strategy, captions, social media and partnerships.</p>
+  </div>
+  <div class="col"><figure class="tall"><img src="pics/img_8641.jpg" alt="A student lifting a trophy in front of the ENP building"><figcaption>A competition win, in front of ENP.</figcaption></figure></div>
+</section>
+<section class="threshold" data-shape="tunnel" data-folio="02|Two homes"><div class="cue">Into club life</div></section>
+
+<section class="inter" data-folio="03|Club life"><small>Chapter 03</small><h2>Club life.</h2></section>
+<section class="spread wide" data-folio="03|Club life">
+  <div class="txt">
+    <p class="lead">The Local is VIC's headquarters inside ENP. Every VICer is welcome, without exception.</p>
+    <p>VIC Entertainment runs at least two community activities a month, built from members' own ideas. Any motivated member can join the team or pitch an activity.</p>
+    <p>At general assemblies the President keeps everyone updated on projects and progress. Graduates stay in the community as alumni and help with events.</p>
+  </div>
+  <div class="col">
+    <figure><img src="pics/img_8658.jpg" alt="A large group of VICers in front of the ENP building"><figcaption>VICers in front of ENP.</figcaption></figure>
+    <figure class="tall"><img src="pics/img_9159.jpg" alt="A close group of VICers at night"><figcaption>Club life, after dark.</figcaption></figure>
+  </div>
+</section>
+<section class="threshold" data-shape="horizon" data-folio="03|Club life"><div class="cue">To the horizon</div></section>
+
+<section class="colophon" data-folio="04|Colophon" data-you="close">
+  <div>
+    <h2>Once a VICer, always a VICer.</h2>
+    <p>Every ENP student can join, in any year and any specialty. On the form, pick your first and second choice among the four main departments. Applications open on 25 October; when they do, <a href="#">apply here</a> and your point joins the network of 600.</p>
+    <small>Vision &amp; Innovation Club, ENP, 10 Avenue Hassen Badi, El Harrach, Algiers. vic@g.enp.edu.dz</small>
+  </div>
+</section>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const phone = innerWidth < 768, N = phone ? 12000 : 15000, DPR = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+const renderer = new THREE.WebGLRenderer({ canvas: c, antialias: false });
+renderer.setPixelRatio(DPR); renderer.setClearColor(0x141e27, 1);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(55, 1, .1, 300);
+const g = () => { let u = 0; for (let i = 0; i < 4; i++) u += Math.random(); return (u - 2) / 1.15; };
+
+// one passage per threshold; aRim marks the lit edge (the gradient lives only there)
+const shapes = {
+  door: (i) => { // a doorway of points standing on a field
+    if (i < N * .35) { const t = Math.random(), side = i % 3; const p = side === 0 ? [-4, t * 11] : side === 1 ? [4, t * 11] : [-4 + t * 8, 11]; return [p[0] + g() * .08, p[1] - 4, -30 + g() * .08, 1]; }
+    return [(Math.random() - .5) * 120, -4 + Math.random() * .3 * (Math.random() < .2 ? 40 : 1), -30 + (Math.random() - .5) * 140, 0];
+  },
+  tunnel: (i) => { const z = -Math.random() * 160, a = Math.random() * 6.283, r = 3 + Math.random() * 9; return [Math.cos(a) * r, Math.sin(a) * r, z, (i % 9 === 0) ? 1 : .25]; },
+  horizon: (i) => { const x = (Math.random() - .5) * 260, z = -Math.pow(Math.random(), .6) * 180; const rim = z < -150 ? 1 : 0; return [x, -5 + (rim ? Math.random() * .6 : 0), z, rim]; },
+};
+const U = { uPx: { value: DPR }, uT: { value: 0 } };
+const mat = new THREE.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `attribute float aRim; uniform float uPx; varying vec3 vC; varying float vA;
+    void main(){ vec4 mv = modelViewMatrix * vec4(position,1.); float d = -mv.z;
+      vec3 rim = mix(vec3(.071,.490,.733), vec3(.412,.769,.686), clamp(position.y*.08+.5 + position.x*.02, 0., 1.));
+      vC = mix(vec3(.55,.62,.7), rim, aRim); vA = (1. - smoothstep(60., 180., d)) * mix(.5, 1.3, aRim);
+      gl_PointSize = clamp(90. / d, 1.2, 3.8) * uPx; gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `varying vec3 vC; varying float vA; void main(){ float a = smoothstep(.5,.1,length(gl_PointCoord-.5)); gl_FragColor = vec4(vC * vA * a, 1.); }` });
+const built = {};
+function scene1(name) { // build lazily, keep one threshold scene in the graph at a time
+  if (!built[name]) {
+    const p = new Float32Array(N * 3), r = new Float32Array(N);
+    for (let i = 0; i < N; i++) { const v = shapes[name](i); p.set(v.slice(0, 3), i * 3); r[i] = v[3]; }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(p, 3)); geo.setAttribute('aRim', new THREE.BufferAttribute(r, 1));
+    built[name] = new THREE.Points(geo, mat);
+  }
+  scene.clear(); scene.add(built[name]);
+}
+// camera through each passage, t = 0..1 across the threshold section
+const paths = {
+  door: (t) => [new THREE.Vector3(0, 1.5, 20 - t * 62), new THREE.Vector3(0, 1.5, -60)],
+  tunnel: (t) => [new THREE.Vector3(0, 0, 30 - t * 150), new THREE.Vector3(Math.sin(t * 3) * 2, Math.cos(t * 2) * 1.5, -200)],
+  horizon: (t) => [new THREE.Vector3(0, 2 + t * 10, 10 - t * 90), new THREE.Vector3(0, -2, -200)],
+};
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.fov = camera.aspect < 1 ? 70 : 55; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+
+const thr = [...document.querySelectorAll('.threshold')], secs = [...document.querySelectorAll('[data-folio]')];
+const folio = document.getElementById('folio'), you = document.getElementById('you').style;
+const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add('in')), { threshold: .35 });
+document.querySelectorAll('figure').forEach((f) => io.observe(f));
+
+let active = null;
+function tick() {
+  const mid = innerHeight / 2;
+  const s = secs.find((el) => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+  if (s) { const [n, t] = s.dataset.folio.split('|'); folio.innerHTML = `<b>${n}</b><span>${t}</span>`; }
+  let on = null, t = 0;
+  for (const el of thr) { const r = el.getBoundingClientRect(); if (r.top < innerHeight * .5 && r.bottom > innerHeight * .5) { on = el; t = THREE.MathUtils.clamp(-r.top / (r.height - innerHeight), 0, 1); } }
+  const title = !on && s?.dataset.you === 'title';
+  c.style.opacity = on ? 1 : title ? .4 : 0;
+  if (title) { if (active !== 'horizon') { active = 'horizon'; scene1(active); } const [p, l] = paths.horizon(0); camera.position.copy(p); camera.lookAt(l); }
+  if (on) { if (active !== on.dataset.shape) { active = on.dataset.shape; scene1(active); } const [p, l] = paths[active](t); camera.position.copy(p); camera.lookAt(l); }
+  // your point: alone on the title page, in the passage at each threshold, beside the folio in chapters
+  const where = on ? 'pass' : s?.dataset.you || 'margin';
+  const at = { title: phone ? ['72vw', '30vh', 3] : ['70vw', '38vh', 3.2], pass: ['62vw', '46vh', 2.2], close: phone ? ['50vw', '14vh', 2.6] : ['calc(100vw - 18vw)', '50vh', 3], margin: phone ? ['24px', 'calc(100vh - 34px)', 1.2] : ['40px', 'calc(50vh - 46px)', 1.4] }[where];
+  you.setProperty('--yx', at[0]); you.setProperty('--yy', at[1]); you.setProperty('--ys', at[2]);
+  folio.style.opacity = on ? .35 : 1;
+  if (on || title) renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+document.documentElement.dataset.ready = '1';
+</script>
+<script src="switcher.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #8, vic-enp). Direction A: Constellation map. One fixed world, waypoints, no sections. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A · Constellation map (comp)</title>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900}
+:root{--night:#141E27;--blue:#127DBB;--aqua:#69C4AF;--gray:#EFEFEF;--rail:max(20px,2.4vw)}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--night);color:#fff;font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{height:900vh}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+.fx{position:fixed;inset:0;pointer-events:none}
+.vignette{background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(8,12,17,.85) 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.logo{position:fixed;top:22px;left:calc(var(--rail) + 36px);height:34px;z-index:5}
+.logo img{height:100%;display:block}
+.readout{position:fixed;top:24px;right:24px;font-size:13px;line-height:1.5;color:rgba(239,239,239,.7);text-align:right;font-variant-numeric:tabular-nums;z-index:5}
+.readout b{display:block;font-weight:400;color:#fff;font-size:22px;letter-spacing:.01em}
+.rail{position:fixed;left:var(--rail);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:22px;z-index:6}
+.rail button{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;color:rgba(239,239,239,.45);font-size:13px}
+.rail i{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;transition:.4s}
+.rail span{opacity:0;transform:translateX(-6px);transition:.4s}
+.rail button.on{color:#fff}
+.rail button.on i{background:var(--aqua);border-color:var(--aqua);box-shadow:0 0 12px var(--aqua)}
+.rail button.now span,.rail:hover span{opacity:1;transform:none}
+.wp{position:fixed;opacity:0;pointer-events:none;z-index:4;will-change:opacity,transform}
+h1{font-weight:900;line-height:.92;letter-spacing:-.025em;font-size:clamp(46px,9.5vw,148px)}
+.h-top{top:96px;left:calc(var(--rail) + 36px)}
+.h-bot{right:24px;bottom:64px;text-align:right}
+.kick{font-size:14px;color:rgba(239,239,239,.75);margin-bottom:14px}
+.lead{font-size:clamp(17px,1.5vw,21px);line-height:1.45;color:var(--gray);max-width:30ch}
+.block{left:calc(var(--rail) + 36px);bottom:12vh;max-width:min(560px,80vw)}
+.block h2{font-weight:900;font-size:clamp(34px,5vw,72px);line-height:.98;letter-spacing:-.02em;margin-bottom:16px}
+.stats{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
+.stats div{font-size:13px;color:rgba(239,239,239,.7)}
+.stats b{display:block;font-weight:900;font-size:clamp(28px,3vw,44px);color:#fff;letter-spacing:-.02em}
+.tag{position:fixed;z-index:4;font-size:13px;color:#fff;transform:translate(-50%,-50%);white-space:nowrap;opacity:0;text-shadow:0 1px 8px #000}
+.tag small{display:block;color:rgba(239,239,239,.6);font-size:11px;text-align:center}
+.apply{position:fixed;z-index:6;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:14px;opacity:0;pointer-events:none}
+.apply .slot{width:58px;height:58px;border-radius:50%;border:1.5px dashed rgba(105,196,175,.8);box-shadow:0 0 30px rgba(105,196,175,.25) inset}
+.apply a{font-weight:700;font-size:17px;color:#fff;text-decoration:none;padding:15px 34px;border-radius:999px;background:linear-gradient(135deg,#127DBB,#69C4AF);box-shadow:0 10px 40px rgba(18,125,187,.35)}
+.apply small{font-size:13px;color:rgba(239,239,239,.75)}
+.cap{left:0;right:0;bottom:0;padding:18vh 24px 26px calc(var(--rail) + 36px);background:linear-gradient(transparent,rgba(14,22,29,.9));font-size:18px;color:#fff}.cap b{font-weight:900;font-size:clamp(26px,3vw,40px);display:block;letter-spacing:-.02em;margin-bottom:4px}
+.pill{position:fixed;right:24px;top:86px;z-index:6;font-weight:700;font-size:15px;color:#fff;text-decoration:none;padding:11px 22px;border-radius:999px;background:linear-gradient(135deg,#127DBB,#69C4AF);transition:opacity .4s}
+.block::before{content:"";position:absolute;inset:-8vh -6vw;background:radial-gradient(closest-side,rgba(14,22,29,.8),transparent);z-index:-1}
+.motto{right:24px;top:96px;text-align:right}
+.motto h2{font-weight:900;font-size:clamp(30px,4.4vw,64px);line-height:.98;letter-spacing:-.02em}
+@media (max-width:767px){
+  :root{--rail:10px}
+  .logo{left:42px;top:18px;height:26px}
+  .readout{top:18px;right:16px;font-size:11px}.readout b{font-size:17px}
+  .rail{gap:18px}.rail span{display:none}
+  .h-top{left:42px;top:84px}.h-bot{right:16px;bottom:56px}
+  .block{left:42px;right:16px;bottom:10vh}
+  .motto{right:16px;top:84px}
+  .rail button{padding:10px}.rail button.now span{display:block}
+  .pill{top:auto;bottom:18px;right:16px}
+  .cap{padding-left:42px}
+}
+@media (prefers-reduced-motion:reduce){.rail i,.rail span{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-hidden="true"></canvas>
+<div class="fx vignette"></div><div class="fx grain"></div>
+
+<a class="logo" href="#" aria-label="Vision & Innovation Club"><img src="brand/vic-logo-white.svg" alt="Vision & Innovation Club"></a>
+<div class="readout" aria-live="off">Distance to the 600<b id="dist">48.0</b></div>
+
+<nav class="rail" aria-label="Waypoints">
+  <button data-p="0"><i></i><span>Start</span></button>
+  <button data-p=".28"><i></i><span>The 600</span></button>
+  <button data-p=".49"><i></i><span>Two homes</span></button>
+  <button data-p=".74"><i></i><span>Club life</span></button>
+  <button data-p="1"><i></i><span>Your place</span></button>
+</nav>
+
+<!-- waypoint 0: hero, headline split around the field -->
+<div class="wp h-top" data-in="-1 -1" data-out=".07 .13"><p class="kick">Vision &amp; Innovation Club · ENP</p><h1>Engineer<br>more</h1></div>
+<div class="wp h-bot" data-in="-1 -1" data-out=".07 .13"><h1>than your<br>degree.</h1></div>
+
+<!-- waypoint 1: the 600 -->
+<div class="wp block" data-in=".19 .25" data-out=".33 .37">
+  <h2>600 members.<br>One network.</h2>
+  <p class="lead">A nonprofit, English-speaking scientific club at ENP since 2014.</p>
+  <div class="stats"><div><b>40+</b>trainings a year</div><div><b>9</b>Engineers' Galas</div><div><b>2014</b>founded</div></div>
+</div>
+
+<!-- waypoint 2: the seven departments -->
+<div class="wp block" data-in=".44 .48" data-out=".54 .58">
+  <h2>Two homes in the club.</h2>
+  <p class="lead">One main department for your work side. One activity department for your learning side.</p>
+</div>
+
+<!-- waypoint 3: the peak, club life -->
+<div class="wp block" data-in=".63 .67" data-out=".72 .75">
+  <h2>Every VICer is welcome.</h2>
+  <p class="lead">Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them.</p>
+</div>
+<div class="wp cap" data-in=".77 .8" data-out=".84 .87"><b>Every VICer is welcome.</b>VICers in front of ENP.</div>
+
+<!-- waypoint 4: the close -->
+<div class="wp motto" data-in=".9 .95" data-out="2 2"><h2>Once a VICer,<br>always a VICer.</h2></div>
+<a class="pill" id="pill" href="#">Apply</a>
+<div class="apply" id="apply"><div class="slot"></div><a href="#" id="go">Apply</a><small>Applications open 25 Oct</small></div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+const qs = new URLSearchParams(location.search);
+const phone = innerWidth < 768;
+const N = phone ? 12000 : 24000;           // tier 1 budget on phones (#5)
+const DPR = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+const instant = qs.has('shot');            // screenshots: no damping
+
+const renderer = new THREE.WebGLRenderer({ canvas: c, antialias: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(DPR);
+renderer.setClearColor(0x141e27, 1);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, .1, 400);
+
+// --- formations -------------------------------------------------------------
+const gauss = () => { let u = 0; for (let i = 0; i < 4; i++) u += Math.random(); return (u - 2) / 1.15; };
+const G = new Float32Array(N * 3), K = new Float32Array(N * 3), P = new Float32Array(N * 3), H = new Float32Array(N * 3);
+const COL = new Float32Array(N * 3), R = new Float32Array(N);
+const GAP = new THREE.Vector3(9, 1, 16);
+const clusters = [
+  ['HR', 'main', -21, 5, -6], ['FLER', 'main', -7, 7, -10], ['IT', 'main', 7, 7, -10], ['COMM', 'main', 21, 5, -6],
+  ['SPARK', 'activity', -13, -6, 8], ['Training', 'activity', 0, -8, 11], ['English Bubble', 'activity', 13, -6, 8],
+];
+for (let i = 0; i < N; i++) {
+  R[i] = Math.random();
+  const halo = Math.random() < .12;
+  const r = halo ? 10 + 60 * Math.random() : 1.5 + 40 * Math.pow(Math.random(), .75);
+  const arm = (i % 3) * Math.PI * 2 / 3;
+  const a = halo ? Math.random() * 6.283 : arm + r * .16 + gauss() * .32 * (1.2 - r / 50);
+  const y = gauss() * (halo ? 14 : 1.4 * (1.1 - r / 45));
+  G.set([Math.cos(a) * r, y, Math.sin(a) * r], i * 3);
+  // network: the same field with one empty place kept open for the visitor
+  const d = new THREE.Vector3(G[i * 3], G[i * 3 + 1], G[i * 3 + 2]).sub(GAP);
+  const push = d.length() < 4.5 ? (4.5 - d.length() + .3) / Math.max(d.length(), .01) : 0;
+  H.set([G[i * 3] + d.x * push, G[i * 3 + 1] + d.y * push, G[i * 3 + 2] + d.z * push], i * 3);
+  const k = clusters[i % 7], s = k[1] === 'main' ? 3.2 : 2.6;
+  K.set([k[2] + gauss() * s, k[3] + gauss() * s * .8, k[4] + gauss() * s], i * 3);
+}
+
+// photo formation: sample the peak photo (docs/assets.md: IMG_8658, the group in front of ENP)
+const img = await new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(Object.assign(document.createElement('canvas'), { width: 3, height: 2 })); im.src = 'pics/img_8658.jpg'; });
+const NP = Math.floor(N * .9), cols = Math.floor(Math.sqrt(NP * 1.5)), rows = Math.floor(NP / cols);
+const cv = Object.assign(document.createElement('canvas'), { width: cols, height: rows });
+const cx = cv.getContext('2d'); cx.drawImage(img, 0, 0, cols, rows);
+const px = cx.getImageData(0, 0, cols, rows).data;
+const PW = 32, PH = PW * rows / cols;
+for (let i = 0; i < N; i++) {
+  if (i < cols * rows) {
+    const x = i % cols, y = Math.floor(i / cols);
+    P.set([(x / cols - .5) * PW + (Math.random() - .5) * .05, (.5 - y / rows) * PH, (Math.random() - .5) * .3], i * 3);
+    COL.set([px[i * 4] / 255, px[i * 4 + 1] / 255, px[i * 4 + 2] / 255], i * 3);
+  } else {
+    P.set([(Math.random() - .5) * 120, (Math.random() - .5) * 70, -20 - Math.random() * 60], i * 3);
+    COL.set([.07, .49, .73], i * 3);
+  }
+}
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(G, 3));
+geo.setAttribute('aK', new THREE.BufferAttribute(K, 3));
+geo.setAttribute('aP', new THREE.BufferAttribute(P, 3));
+geo.setAttribute('aH', new THREE.BufferAttribute(H, 3));
+geo.setAttribute('aCol', new THREE.BufferAttribute(COL, 3));
+geo.setAttribute('aR', new THREE.BufferAttribute(R, 1));
+
+const U = { uS: { value: 0 }, uYou: { value: new THREE.Vector3() }, uLean: { value: 1 }, uPx: { value: DPR }, uT: { value: 0 }, uPhotoFade: { value: 0 } };
+const mat = new THREE.ShaderMaterial({
+  uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `
+    attribute vec3 aK, aP, aH, aCol; attribute float aR;
+    uniform float uS, uLean, uPx, uT, uPhotoFade; uniform vec3 uYou;
+    varying vec3 vC; varying float vA;
+    float ease(float s, float o){ float t = clamp((s - aR*.35) / .65, 0., 1.); return t*t*(3.-2.*t); }
+    void main(){
+      vec3 p = position;
+      float s = uS;
+      if (s < 1.) p = mix(position, aK, ease(s, 0.));
+      else if (s < 2.) p = mix(aK, aP, ease(s - 1., 0.));
+      else p = mix(aP, aH, ease(s - 2., 0.));
+      float photo = s < 1. ? 0. : s < 2. ? ease(s - 1., 0.) : 1. - ease(s - 2., 0.);
+      p += .25 * vec3(sin(uT*.4 + aR*40.), cos(uT*.33 + aR*31.), sin(uT*.27 + aR*17.)) * (1. - photo);
+      // the field leans toward the visitor's point
+      vec3 d = uYou - p; float k = exp(-dot(d,d) / 60.) * uLean;
+      p += d * k * .35;
+      vec4 mv = modelViewMatrix * vec4(p, 1.);
+      float depth = -mv.z;
+      vec3 grad = mix(vec3(.412,.769,.686), vec3(.071,.490,.733), smoothstep(10., 70., depth)); // near aqua, far blue
+      vC = mix(grad, aCol * 1.05, photo);
+      vA = (1. - smoothstep(90., 200., depth)) * mix(1., .95, photo) * (1. - uPhotoFade * .7);
+      vA += k * .6;
+      gl_PointSize = clamp(mix(40., 120., photo) / depth, 1.2, 3.8) * uPx;
+      gl_Position = projectionMatrix * mv;
+    }`,
+  fragmentShader: `
+    varying vec3 vC; varying float vA;
+    void main(){ vec2 q = gl_PointCoord - .5; float a = smoothstep(.5, .1, length(q)); gl_FragColor = vec4(vC * vA * a, 1.); }`,
+});
+scene.add(new THREE.Points(geo, mat));
+
+// the real photo, fading in where the points resolved
+const tex = new THREE.Texture(img); tex.colorSpace = THREE.SRGBColorSpace; tex.needsUpdate = true;
+const photoMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0, depthWrite: false });
+const photo = new THREE.Mesh(new THREE.PlaneGeometry(PW, PH), photoMat);
+photo.position.z = -.2; scene.add(photo);
+
+// your point: a sprite with a soft halo
+const youMat = new THREE.ShaderMaterial({
+  uniforms: { uPx: { value: DPR }, uPulse: { value: 0 } }, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+  vertexShader: `uniform float uPx, uPulse; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.); gl_PointSize = (46. + uPulse*30.) * uPx; gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `void main(){ float d = length(gl_PointCoord - .5); float core = smoothstep(.09, .02, d); float halo = exp(-d*d*38.) * .55; gl_FragColor = vec4(vec3(.75,1.,.95) * (core + halo), 1.); }`,
+});
+const you = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3)), youMat);
+you.renderOrder = 9; scene.add(you);
+
+// --- camera path --------------------------------------------------------------
+let photoDist = 30;
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const far = (pos, look) => look.clone().lerp(pos, phone ? 1.8 : 1); // phones pull back so wide formations fit
+const keys = () => [
+  [0, V(5, 1.6, 27), V(-6, 0, 0)],
+  [.12, V(3, 2.4, 23), V(-4, 0, 0)],
+  [.27, far(V(0, 46, 66), V(0, -2, 0)), V(0, -2, 0)],
+  [.38, far(V(0, 22, 70), V(0, 0, 0)), V(0, 0, 0)],
+  [.5, phone ? V(0, 12, 125) : V(-4, 8, 58), phone ? V(0, 0, 0) : V(-13, -1, 0)],
+  [.6, V(0, 0, photoDist + 18), V(0, 0, 0)],
+  [.72, V(0, 0, photoDist), V(0, 0, 0)],
+  [.82, V(0, 0, photoDist - 2), V(0, 0, 0)],
+  [.92, far(V(-6, 16, 72), V(4, 0, 6)), V(4, 0, 6)],
+  [1, V(-2, 7, 46), GAP],
+];
+const sm = (t) => t * t * (3 - 2 * t);
+function at(p) {
+  const k = keys();
+  let i = 0; while (i < k.length - 2 && p > k[i + 1][0]) i++;
+  const t = sm(THREE.MathUtils.clamp((p - k[i][0]) / (k[i + 1][0] - k[i][0]), 0, 1));
+  return [k[i][1].clone().lerp(k[i + 1][1], t), k[i][2].clone().lerp(k[i + 1][2], t)];
+}
+// formation index along the scroll: galaxy, then clusters, then photo, then the network with its empty place
+const stateAt = (p) => p < .36 ? 0 : p < .46 ? (p - .36) / .1 : p < .58 ? 1 : p < .7 ? 1 + (p - .58) / .12 : p < .84 ? 2 : p < .92 ? 2 + (p - .84) / .08 : 3;
+
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const fitH = PH / 2 / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.12;
+  const fitW = (PW * (w < h ? .34 : 1)) / 2 / Math.tan(THREE.MathUtils.degToRad(22.5)) / camera.aspect * 1.08;
+  photoDist = Math.max(fitH, fitW);
+}
+addEventListener('resize', resize); resize();
+
+// --- DOM ----------------------------------------------------------------------
+const wps = [...document.querySelectorAll('.wp')].map((el) => ({ el, i: el.dataset.in.split(' ').map(Number), o: el.dataset.out.split(' ').map(Number) }));
+const railBtns = [...document.querySelectorAll('.rail button')];
+railBtns.forEach((b) => b.onclick = () => scrollTo({ top: +b.dataset.p * (document.body.scrollHeight - innerHeight), behavior: 'smooth' }));
+const tags = clusters.map(([n, kind]) => { const el = document.createElement('div'); el.className = 'tag'; el.innerHTML = `${n}<small>${kind}</small>`; document.body.append(el); return el; });
+const applyEl = document.getElementById('apply');
+let joined = 0;
+document.getElementById('go').onclick = (e) => { e.preventDefault(); joined = performance.now(); };
+
+const ss = (a, b, x) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+let p = 0, last = performance.now();
+const target = () => scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
+if (instant) p = target();
+
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  p = instant ? target() : p + (target() - p) * (1 - Math.exp(-dt * 3.2)); // weighted, Lenis-like damping
+  const [pos, look] = at(p);
+  camera.position.copy(pos); camera.lookAt(look);
+  U.uS.value = stateAt(p); U.uT.value = now / 1000;
+  const photoIn = ss(.72, .78, p) * (1 - ss(.84, .88, p));
+  photoMat.opacity = photoIn * .85; U.uPhotoFade.value = photoIn * .6;
+  U.uLean.value = 1 - ss(.6, .7, p) * (1 - ss(.84, .9, p));
+
+  // your point rides just below the centre of view; at the close it settles into the empty place
+  const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+  const down = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+  const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+  const atPeak = ss(.7, .76, p) * (1 - ss(.84, .88, p));
+  const ride = camera.position.clone().addScaledVector(fwd, 9).addScaledVector(down, (phone ? -1.4 : -1.9) - atPeak * (phone ? 1.6 : 1.2)).addScaledVector(right, atPeak * (phone ? 1.4 : 4.2));
+  // at the close the point rises onto the line of sight to the empty place, so it sits in the slot on screen
+  ride.lerp(camera.position.clone().addScaledVector(GAP.clone().sub(camera.position).normalize(), 9), ss(.92, 1, p));
+  const fly = joined ? ss(0, 1600, now - joined) : 0;
+  ride.lerp(GAP, fly);
+  you.geometry.attributes.position.array.set(ride.toArray()); you.geometry.attributes.position.needsUpdate = true;
+  U.uYou.value.copy(ride);
+  youMat.uniforms.uPulse.value = joined ? Math.max(0, 1 - Math.abs((now - joined - 1600) / 500)) : 0;
+
+  for (const w of wps) {
+    const v = (w.i[0] < 0 ? 1 : ss(w.i[0], w.i[1], p)) * (1 - ss(w.o[0], w.o[1], p));
+    w.el.style.opacity = v; w.el.style.translate = `0 ${(1 - v) * 18}px`;
+  }
+  const kIn = ss(.45, .5, p) * (1 - ss(.56, .6, p));
+  clusters.forEach((k, i) => {
+    const s = new THREE.Vector3(k[2], k[3] - (k[1] === 'main' ? 5.5 : 4.5), k[4]).project(camera);
+    tags[i].style.left = `${(s.x + 1) / 2 * innerWidth}px`; tags[i].style.top = `${(1 - s.y) / 2 * innerHeight}px`; tags[i].style.opacity = kIn;
+  });
+  const g = GAP.clone().project(camera), ap = ss(.94, .99, p);
+  applyEl.style.left = `${(g.x + 1) / 2 * innerWidth}px`; applyEl.style.top = `${(1 - g.y) / 2 * innerHeight + 52}px`;
+  pill.style.opacity = ss(.1, .14, p) * (1 - ss(.9, .93, p)); pill.style.pointerEvents = p > .12 && p < .92 ? 'auto' : 'none';
+  applyEl.style.opacity = ap; applyEl.style.pointerEvents = ap > .5 ? 'auto' : 'none';
+  document.getElementById('dist').textContent = ((1 - ss(0, 1, p)) * 48 * (1 - fly)).toFixed(1);
+  const marks = [0, .28, .49, .74, 1];
+  railBtns.forEach((b, i) => { b.classList.toggle('on', p >= marks[i] - .02); b.classList.toggle('now', Math.abs(p - marks[i]) < .07); });
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+document.documentElement.dataset.ready = '1';
+</script>
+<script src="switcher.js"></script>
+</body>
+</html>

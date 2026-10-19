@@ -1,0 +1,194 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #8, vic-enp). Direction B: Cutlist. Short hard-cut scenes, no pinning; "Your point" lives in the fixed chrome. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B · Cutlist (comp)</title>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900}
+:root{--night:#141E27;--lift:#1C2A37;--blue:#127DBB;--aqua:#69C4AF;--gray:#EFEFEF;--accent:#69C4AF}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--night);color:#fff;font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.08;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* the loud bar: Apply weighs as much as the logo */
+.bar{position:fixed;top:0;left:0;right:0;height:76px;z-index:10;display:flex;align-items:center;gap:28px;padding:0 24px;background:#0E161D;border-bottom:1px solid rgba(239,239,239,.08)}
+.bar img{height:40px}
+.bar nav{display:flex;gap:26px;margin-left:auto;font-weight:700;font-size:15px}
+.bar nav a{color:var(--gray);text-decoration:none}
+.bar .apply{font-weight:900;font-size:20px;color:#fff;text-decoration:none;padding:0 30px;height:48px;display:flex;align-items:center;border-radius:999px;background:linear-gradient(135deg,#127DBB,#69C4AF)}
+.bar .count{font-size:13px;color:rgba(239,239,239,.6);font-variant-numeric:tabular-nums;min-width:52px}
+
+/* your point, in the chrome layer */
+#you{position:fixed;z-index:9;left:var(--yx,78vw);top:var(--yy,60vh);width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#fff 0 18%,#bff5e8 30%,rgba(105,196,175,.55) 48%,rgba(18,125,187,.18) 64%,transparent 72%);
+  transform:scale(var(--ys,2.4));transition:transform .5s cubic-bezier(.2,.8,.2,1),left .5s cubic-bezier(.2,.8,.2,1),top .5s cubic-bezier(.2,.8,.2,1)}
+
+main{position:relative;z-index:2}
+.cut{position:relative;min-height:100vh;max-height:140vh;display:flex;flex-direction:column;justify-content:center;padding:110px 24px 48px;overflow:hidden}
+.cut.lift{background:rgba(28,42,55,.86)}
+.cut::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--blue) 0 50%,var(--aqua) 50%);transform:translateX(-4px);box-shadow:4px 0 0 var(--aqua),-4px 0 0 var(--blue);opacity:.9}
+.lbl{font-weight:700;font-size:15px;color:var(--c,var(--aqua));margin-bottom:18px;display:flex;gap:12px;align-items:center}
+.lbl::before{content:"";width:28px;height:3px;background:currentColor}
+.big{font-weight:900;font-size:clamp(56px,12.5vw,220px);line-height:.86;letter-spacing:-.035em}
+.big .w{display:inline-block;overflow:hidden;vertical-align:top;padding:.04em .02em .08em 0;margin-right:.18em}
+.big .w>span{display:inline-block;transform:translateY(105%) skewY(8deg);transform-origin:0 100%}
+.cut.in .big .w>span{transform:none;transition:transform .42s cubic-bezier(.15,.9,.2,1) calc(var(--i)*55ms)}
+.cut.in .big{animation:split .38s steps(3) 1}
+@keyframes split{0%{text-shadow:-9px 0 var(--blue),9px 0 var(--aqua)}60%{text-shadow:-3px 0 var(--blue),3px 0 var(--aqua)}100%{text-shadow:none}}
+.sub{margin-top:22px;font-size:clamp(17px,1.6vw,22px);line-height:1.4;color:var(--gray);max-width:34ch}
+.chips{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.chips span{font-weight:700;font-size:15px;padding:9px 16px;border-radius:999px;border:1.5px solid rgba(239,239,239,.3)}
+
+/* photo cuts: captioned photos scattered at depth */
+.stage{position:absolute;inset:0;perspective:1200px;pointer-events:none}
+.ph{position:absolute;margin:0;transform-style:preserve-3d;opacity:0;transition:opacity .25s,transform .6s cubic-bezier(.15,.9,.2,1)}
+.ph img{display:block;width:100%;height:100%;object-fit:cover}
+.ph figcaption{font-size:13px;color:rgba(239,239,239,.75);margin-top:8px}
+.cut.in .ph{opacity:1}
+.ph.a{right:4vw;top:16vh;width:min(52vw,760px);aspect-ratio:3/2;transform:translateZ(-160px) rotateY(-10deg)}
+.ph.b{left:56vw;bottom:3vh;width:min(18vw,260px);aspect-ratio:3/2;transform:translateZ(80px) rotateY(-6deg)}
+.cut.in .ph.a{transform:translateZ(-60px) rotateY(-6deg)}
+.cut.in .ph.b{transform:translateZ(120px) rotateY(-3deg)}
+.photo .big,.photo .lbl,.photo .sub{position:relative;z-index:2;max-width:44vw}
+.photo .big{font-size:clamp(48px,8.4vw,150px)}
+
+.final{background:var(--night);min-height:100vh;align-items:center;text-align:center}
+.final::before{display:none}
+.final a{display:block;padding:.06em .32em .16em;border-radius:.28em;background:linear-gradient(135deg,#127DBB,#69C4AF);color:#fff;text-decoration:none;font-weight:900;font-size:clamp(110px,26vw,420px);letter-spacing:-.05em;line-height:.8}
+.final p{font-weight:700;font-size:clamp(17px,1.8vw,24px);margin-top:26px}
+footer{position:relative;z-index:2;padding:22px 24px 80px;background:var(--night);color:rgba(239,239,239,.6);font-size:13px}
+
+@media (max-width:767px){
+  .bar{height:60px;gap:12px;padding:0 14px}.bar img{height:28px}.bar nav{display:none}.bar .count{margin-left:auto}
+  .bar .apply{font-size:17px;height:40px;padding:0 20px}
+  #you{--yx:88vw;--yy:96px}
+  .cut{padding:90px 16px 40px}
+  .big{font-size:clamp(50px,15.5vw,120px)}
+  .photo .big,.photo .lbl,.photo .sub{max-width:none}
+  .photo .big{font-size:clamp(44px,13vw,90px)}
+  .ph.a{left:16px;right:16px;width:auto;top:auto;bottom:12vh}
+  .ph.b{display:none}
+  .photo{justify-content:flex-start;padding-top:96px}
+}
+@media (prefers-reduced-motion:reduce){.big .w>span{transform:none!important;transition:none!important}.cut.in .big{animation:none}#you{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-hidden="true"></canvas>
+<div class="grain"></div>
+<header class="bar">
+  <img src="brand/vic-logo-white.svg" alt="Vision & Innovation Club">
+  <nav><a href="#d">Departments</a><a href="#l">Club life</a><a href="#e">Events</a><a href="#j">Join</a></nav>
+  <span class="count" id="count">01 / 15</span>
+  <a class="apply" href="#apply">Apply</a>
+</header>
+<div id="you" aria-hidden="true"></div>
+
+<main>
+  <section class="cut" data-f="burst" data-c="#69C4AF"><p class="lbl">Vision &amp; Innovation Club · ENP</p><h1 class="big">Engineer more than your degree.</h1></section>
+  <section class="cut lift" data-f="six" data-c="#69C4AF"><p class="lbl">Since 2014</p><h2 class="big">600 members.</h2></section>
+  <section class="cut" data-f="sheet" data-c="#4F86D9" style="--c:#4F86D9"><p class="lbl">Training</p><h2 class="big">40+ trainings a year.</h2><p class="sub">You choose the skills. The yearly plan is built around your answers.</p></section>
+  <section class="cut lift" id="d" data-f="four" data-c="#69C4AF"><p class="lbl">Your work side</p><h2 class="big">Four main departments.</h2><div class="chips"><span>HR</span><span>FLER</span><span>IT</span><span>COMM</span></div></section>
+  <section class="cut" data-f="grid" data-c="#127DBB"><p class="lbl">IT</p><h2 class="big">No coding required.</h2><p class="sub">IT at VIC means design, visual identity, photography and video.</p></section>
+  <section class="cut lift" data-f="maze" data-c="#F29A09" style="--c:#F29A09"><p class="lbl">SPARK</p><h2 class="big">Build robots.</h2><p class="sub">Science, tech and robotics: workshops, competitions and a free learning platform.</p></section>
+  <section class="cut" data-f="wave" data-c="#69C4AF"><p class="lbl">English Bubble</p><h2 class="big">Speak with confidence.</h2><p class="sub">Debates, games, book discussions and social nights.</p></section>
+
+  <section class="cut photo lift" id="l" data-f="dust" data-c="#69C4AF" data-peak="5"><div class="stage"><figure class="ph a"><img src="pics/img_9159.jpg" alt="A close group of VICers at night"><figcaption>Club life</figcaption></figure></div><p class="lbl">Club life</p><h2 class="big">The Local.</h2><p class="sub">VIC's headquarters inside ENP. Every VICer is welcome.</p></section>
+  <section class="cut photo" data-f="dust" data-c="#69C4AF" data-peak="7"><div class="stage"><figure class="ph a"><img src="pics/img_0645.jpg" alt="A large group of VICers outdoors in a forest"><figcaption>VIC Entertainment</figcaption></figure><figure class="ph b"><img src="pics/img_9072.jpg" alt="Long lit tables at night"></figure></div><p class="lbl">VIC Entertainment</p><h2 class="big">Two a month, at least.</h2><p class="sub">Community activities built from members' own ideas.</p></section>
+  <section class="cut photo lift" data-f="dust" data-c="#69C4AF" data-peak="9"><div class="stage"><figure class="ph a"><img src="pics/img_2757.jpg" alt="A full conference hall with a speaker on stage"><figcaption>A talk at ENP</figcaption></figure></div><p class="lbl">Club life</p><h2 class="big">Your voice.</h2><p class="sub">Propose ideas to the committee and vote in elections.</p></section>
+  <section class="cut photo" data-f="dust" data-c="#69C4AF" data-peak="12"><div class="stage"><figure class="ph a"><img src="pics/img_8658.jpg" alt="A large group of VICers in front of the ENP building"><figcaption>VICers in front of ENP</figcaption></figure></div><p class="lbl">Alumni</p><h2 class="big">Once a VICer, always a VICer.</h2></section>
+
+  <section class="cut photo lift" id="e" data-f="ring" data-c="#D4A72C" style="--c:#D4A72C"><div class="stage"><figure class="ph a"><img src="pics/dscf7405.jpg" alt="A formal group at the Engineers' Gala"><figcaption>Engineers' Gala</figcaption></figure></div><p class="lbl">Engineers' Gala</p><h2 class="big">9th edition, this year.</h2></section>
+  <section class="cut photo" data-f="ring" data-c="#E0412F" style="--c:#E0412F"><div class="stage"><figure class="ph a"><img src="pics/_t2a6297.jpg" alt="A group on stage at Ignite Algiers"><figcaption>Ignite Algiers</figcaption></figure></div><p class="lbl">Ignite Algiers</p><h2 class="big">Short, powerful talks.</h2></section>
+  <section class="cut lift" id="j" data-f="six" data-c="#69C4AF"><p class="lbl">How to join</p><h2 class="big">Every ENP student.</h2><p class="sub">Any year, any specialty. Pick your first and second choice among the four main departments.</p></section>
+  <section class="cut final" id="apply" data-f="burst" data-c="#ffffff"><a href="#">Apply</a><p>Applications open 25 Oct</p></section>
+</main>
+<footer>vic@g.enp.edu.dz · ENP, 10 Avenue Hassen Badi, El Harrach, Algiers</footer>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const phone = innerWidth < 768, N = phone ? 10000 : 18000, DPR = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+const renderer = new THREE.WebGLRenderer({ canvas: c, antialias: false });
+renderer.setPixelRatio(DPR); renderer.setClearColor(0x141e27, 1);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(45, 1, .1, 300);
+camera.position.set(0, 0, 60);
+
+// one formation per cut: snapped, never morphed
+const g = () => { let u = 0; for (let i = 0; i < 4; i++) u += Math.random(); return (u - 2) / 1.15; };
+const F = {
+  burst: (i) => { const r = 6 + 34 * Math.pow(Math.random(), 2.2), a = Math.random() * 6.283, b = Math.acos(2 * Math.random() - 1); return [r * Math.sin(b) * Math.cos(a) + 14, r * Math.cos(b), r * Math.sin(b) * Math.sin(a)]; },
+  six: (i) => { if (i < 600) { const k = i + .5, phi = Math.acos(1 - 2 * k / 600), th = Math.PI * (1 + Math.sqrt(5)) * k; return [16 + 15 * Math.cos(th) * Math.sin(phi), 15 * Math.cos(phi), 15 * Math.sin(th) * Math.sin(phi)]; } return [(Math.random() - .5) * 160, (Math.random() - .5) * 90, -30 - Math.random() * 60]; },
+  sheet: (i) => { const x = (i % 150) / 150 - .5, z = Math.floor(i / 150) / (N / 150) - .5; return [x * 110 + 10, -14 + Math.sin(x * 9) * 3, z * 90 - 10]; },
+  four: (i) => { const k = i % 4; return [-12 + k * 14 + 8 + g() * 3, g() * 3 + (k % 2 ? 5 : -5), g() * 3]; },
+  grid: (i) => { const s = Math.round(Math.cbrt(N)); return [((i % s) / s - .5) * 44 + 14, ((Math.floor(i / s) % s) / s - .5) * 44, (Math.floor(i / s / s) / s - .5) * 44]; },
+  maze: (i) => { // concept B: a maze of point walls, seen from above at an angle
+    const cells = 12, w = 4, seg = MAZE[i % MAZE.length], t = Math.random();
+    return [(seg[0] + (seg[2] - seg[0]) * t) * w - cells * w / 2 + 12, Math.random() * 2.2 - 8, (seg[1] + (seg[3] - seg[1]) * t) * w - cells * w / 2];
+  },
+  wave: (i) => { const x = (i % 160) / 160 - .5, z = Math.floor(i / 160) / (N / 160) - .5; return [x * 120, Math.sin(x * 12 + z * 6) * 5 - 4, z * 60]; },
+  dust: () => [(Math.random() - .5) * 170, (Math.random() - .5) * 100, -20 - Math.random() * 80],
+  ring: (i) => { const a = Math.random() * 6.283, r = 20 + g() * 1.2; return [Math.cos(a) * r + 12, Math.sin(a) * r, g() * 2]; },
+};
+// a 12x12 maze from a seeded depth-first carve
+const MAZE = (() => {
+  const n = 12, seen = new Set(), walls = new Set(); let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let x = 0; x < n; x++) for (let y = 0; y <= n; y++) { walls.add(`h${x},${y}`); walls.add(`v${y},${x}`); }
+  const st = [[0, 0]]; seen.add('0,0');
+  while (st.length) { const [x, y] = st[st.length - 1]; const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [x + dx, y + dy, dx, dy]).filter(([a, b]) => a >= 0 && b >= 0 && a < n && b < n && !seen.has(`${a},${b}`));
+    if (!nb.length) { st.pop(); continue; } const [a, b, dx, dy] = nb[Math.floor(rnd() * nb.length)];
+    if (dx) walls.delete(`v${Math.max(x, a)},${y}`); else walls.delete(`h${x},${Math.max(y, b)}`); seen.add(`${a},${b}`); st.push([a, b]); }
+  return [...walls].map((w) => { const [p, q] = w.slice(1).split(',').map(Number); return w[0] === 'h' ? [p, q, p + 1, q] : [p, q, p, q + 1]; });
+})();
+const pos = new Float32Array(N * 3), geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+const U = { uC: { value: new THREE.Color('#69C4AF') }, uPx: { value: DPR }, uFlash: { value: 0 } };
+const mat = new THREE.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `uniform float uPx; varying float vA; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.); float d = -mv.z; vA = 1. - smoothstep(120., 230., d); gl_PointSize = clamp(150. / d, 2.2, 3.8) * uPx; gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 uC; uniform float uFlash; varying float vA; void main(){ float a = smoothstep(.5,.1,length(gl_PointCoord-.5)); gl_FragColor = vec4(mix(uC, vec3(1.), uFlash) * vA * a, 1.); }` });
+const pts = new THREE.Points(geo, mat); scene.add(pts);
+renderer.compile(scene, camera); // shaders ready before the first cut
+
+function snap(name, color) {
+  for (let i = 0; i < N; i++) pos.set(F[name](i), i * 3);
+  geo.attributes.position.needsUpdate = true; U.uC.value.set(color); U.uFlash.value = 1;
+  pts.rotation.set(name === 'maze' ? .75 : name === 'sheet' || name === 'wave' ? .35 : 0, 0, 0);
+}
+function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.position.z = camera.aspect < 1 ? 92 : 60; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+
+// split headlines into peel-in strips
+document.querySelectorAll('.big').forEach((h) => { h.innerHTML = h.textContent.split(' ').map((w, i) => `<span class="w"><span style="--i:${i}">${w}</span></span>`).join(''); });
+
+const cuts = [...document.querySelectorAll('.cut')], count = document.getElementById('count'), you = document.getElementById('you').style;
+let cur = -1;
+function pick() {
+  const mid = innerHeight * .5;
+  const i = cuts.findIndex((s) => { const r = s.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+  cuts.forEach((s) => { const r = s.getBoundingClientRect(); if (r.top < innerHeight * .8 && r.bottom > innerHeight * .2) s.classList.add('in'); });
+  if (i < 0 || i === cur) return; cur = i;
+  const s = cuts[i]; snap(s.dataset.f, s.dataset.c);
+  count.textContent = `${String(i + 1).padStart(2, '0')} / ${cuts.length}`;
+  // your point grows and holds through the club-life peak, then shrinks back into the Apply cut
+  if (s.hasAttribute('data-peak')) { you.setProperty('--ys', (phone ? .6 : 1) * +s.dataset.peak); you.setProperty('--yx', phone ? '78vw' : '86vw'); you.setProperty('--yy', phone ? '44vh' : '86vh'); }
+  else if (s.classList.contains('final')) { you.setProperty('--ys', 3); you.setProperty('--yx', '50vw'); you.setProperty('--yy', '28vh'); }
+  else { you.setProperty('--ys', 2.4); you.removeProperty('--yx'); you.removeProperty('--yy'); }
+}
+addEventListener('scroll', pick, { passive: true }); pick();
+
+let last = performance.now();
+renderer.setAnimationLoop((now) => {
+  const dt = (now - last) / 1000; last = now;
+  pts.rotation.y += dt * .08; U.uFlash.value = Math.max(0, U.uFlash.value - dt * 6);
+  renderer.render(scene, camera);
+});
+document.documentElement.dataset.ready = '1';
+</script>
+<script src="switcher.js"></script>
+</body>
+</html>

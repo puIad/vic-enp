@@ -16,7 +16,8 @@ export function countdown(ms: number): string {
 
 export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL): Cta {
   if (now < opensAt) {
-    return { open: false, label: 'Applications open 25\u00a0Oct', chip: countdown(+opensAt - +now), href: INSTAGRAM }
+    const day = opensAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Africa/Algiers' })
+    return { open: false, label: `Applications open ${day.replace(' ', '\u00a0')}`, chip: countdown(+opensAt - +now), href: INSTAGRAM }
   }
   // shortcut: without VITE_APPLY_URL the open CTA falls back to Instagram; open question 15 blocks launch until it is set.
   return { open: true, label: 'Apply', href: applyUrl || INSTAGRAM }

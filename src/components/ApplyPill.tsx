@@ -1,4 +1,3 @@
-import type { Ref } from 'react'
 import type { Cta } from '../lib/opening'
 
 export function Arrow() {
@@ -10,9 +9,9 @@ export function Arrow() {
 }
 
 /** "Applications open 25 Oct" with the countdown chip, then "Apply" with the round gradient arrow (#10, #11). */
-export function ApplyPill({ cta, className = '', inert, ref }: { cta: Cta; className?: string; inert?: boolean; ref?: Ref<HTMLAnchorElement> }) {
+export function ApplyPill({ cta, className = '', inert }: { cta: Cta; className?: string; inert?: boolean }) {
   return (
-    <a ref={ref} className={`pill ${cta.open ? 'is-open' : ''} ${className}`} href={cta.href} inert={inert}>
+    <a className={`pill ${cta.open ? 'is-open' : ''} ${className}`} href={cta.href} inert={inert}>
       {cta.open ? (
         <>
           {cta.label}

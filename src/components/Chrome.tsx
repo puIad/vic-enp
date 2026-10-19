@@ -53,7 +53,9 @@ export function Chrome({ cta }: { cta: Cta }) {
       if (dist.current) dist.current.textContent = (START * (1 - p)).toFixed(1)
 
       const footerIn = footer ? footer.getBoundingClientRect().top < vh * 0.9 : false
-      setLit({ rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn })
+      const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn }
+      // keep the same object when nothing changed, so React skips the re-render on most scroll frames
+      setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo ? l : next))
       setPillHidden(ctas.some((c) => c && c.getBoundingClientRect().bottom > 0 && c.getBoundingClientRect().top < vh))
     }
     const onScroll = () => {

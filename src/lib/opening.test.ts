@@ -42,3 +42,11 @@ describe('clockOffset', () => {
     expect(clockOffset('')).toBe(0)
   })
 })
+
+describe('label date', () => {
+  it('follows opensAt in Algiers time', () => {
+    const later = new Date('2026-11-02T00:00:00+01:00')
+    expect(cta(new Date('2026-10-30T12:00:00+01:00'), later, '').open).toBe(false)
+    expect((cta(new Date('2026-10-30T12:00:00+01:00'), later, '') as { label: string }).label).toBe('Applications open 2\u00a0Nov')
+  })
+})

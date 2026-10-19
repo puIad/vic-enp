@@ -108,7 +108,7 @@ function outsideClearing(cx: number, cy: number, rx: number, ry: number) {
 export function ClosePoster({ clearW, clearH }: { clearW: number; clearH: number }) {
   const phone = usePhone()
   const W = phone ? 900 : 1900
-  const H = phone ? 1200 : 1200
+  const H = 1200
   const list = useMemo(() => {
     const cx = W / 2
     const cy = H / 2

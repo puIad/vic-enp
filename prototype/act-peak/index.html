@@ -1,0 +1,382 @@
+<!doctype html>
+<!-- PROTOTYPE, throwaway (ticket #14, vic-enp). Act 4, club life and the photo sequence (the peak). Never merged. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Act 4, club life (comp)</title>
+<style>
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Gilroy;src:url(fonts/Gilroy-Heavy.woff2) format('woff2');font-weight:900;font-display:swap}
+:root{
+  --night:#141E27; --blue:#127DBB; --aqua:#69C4AF; --gray:#EFEFEF; --lift:#1A2833;
+  --line:rgba(239,239,239,.14); --mute:#A3AFBA; --grad:linear-gradient(135deg,#127DBB,#69C4AF);
+  --t-act:clamp(36px,5vw,72px); --t-cut:clamp(40px,7vw,104px); --t-lead:clamp(18px,1.5vw,22px); --t-body:clamp(16px,1.15vw,17px);
+  --t-ui:15px; --t-cap:13px;
+  --rail:max(20px,2.4vw); --gut:calc(var(--rail) + 132px);
+  --radius:20px;               /* photo corner radius, proposed page-wide value for #10 */
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--night);color:var(--gray);font-family:Gilroy,system-ui,sans-serif;-webkit-font-smoothing:antialiased;scrollbar-color:#2b3a47 var(--night);scrollbar-width:thin}
+body{background:var(--night);font-size:var(--t-body);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--aqua);color:var(--night)}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:999px}
+a{color:inherit}
+#field{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0}
+.fx{position:fixed;inset:0;pointer-events:none;z-index:6}
+.vignette{background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(8,12,17,.85) 100%)}
+.grain{opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* chrome (from the system sheet, #10): logo, rail, Apply pill */
+.logo{position:fixed;top:22px;left:var(--gut);height:34px;z-index:10}.logo img{height:100%;display:block}
+.rail{position:fixed;left:var(--rail);top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:20px}
+.rail::before,.rail::after{content:"";position:absolute;left:4px;top:6px;width:1px;bottom:6px;background:var(--line)}
+.rail::after{background:var(--grad);bottom:auto;height:var(--fill,0%);box-shadow:0 0 8px rgba(105,196,175,.6)}
+.rail a{position:relative;z-index:1;display:flex;align-items:center;gap:12px;text-decoration:none;color:rgba(239,239,239,.45);font-size:var(--t-cap);line-height:1}
+.rail i{flex:none;width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;background:var(--night)}
+.rail span{opacity:0;white-space:nowrap}
+.rail a.on{color:#fff}.rail a.on i{background:var(--aqua);border-color:var(--aqua)}
+.rail a.now i{box-shadow:0 0 0 4px rgba(105,196,175,.18),0 0 14px var(--aqua)}
+.rail a.now span{opacity:1}
+.pill{position:fixed;top:78px;right:24px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 8px 0 20px;border-radius:999px;font-weight:700;font-size:var(--t-ui);color:#fff;text-decoration:none;white-space:nowrap;
+  background:linear-gradient(var(--night),var(--night)) padding-box,var(--grad) border-box;border:1.5px solid transparent;box-shadow:0 8px 32px -8px rgba(18,125,187,.55)}
+.pill .chip{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(105,196,175,.14);color:var(--aqua);font-variant-numeric:tabular-nums;font-size:14px}
+.go{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--grad);color:var(--night)}.go svg{width:16px;height:16px}
+
+/* the act's words */
+main{position:relative;z-index:2}
+.pre{height:60vh}
+#peak{height:700vh}
+.post{height:100vh}
+.words{position:fixed;z-index:4;pointer-events:none;opacity:0;will-change:opacity}
+.title{left:var(--gut);bottom:12vh;max-width:min(640px,60vw)}
+.title::before{content:"";position:absolute;inset:-14vh -8vw;background:radial-gradient(closest-side,rgba(14,22,29,.8),transparent);z-index:-1}
+.title h2{font-weight:900;font-size:var(--t-act);line-height:.98;letter-spacing:-.02em;color:#fff;margin-bottom:18px;text-wrap:balance}
+.title p{font-size:var(--t-lead);line-height:1.45;max-width:34ch}
+.ledger{left:var(--gut);bottom:11vh;width:min(360px,30vw)}
+.ledger::before{content:"";position:absolute;inset:-12vh -5vw -6vh -6vw;background:radial-gradient(closest-side,rgba(14,22,29,.78),transparent);z-index:-1}
+.ledger li{list-style:none;padding:12px 0;border-top:1px solid var(--line);opacity:.38;transition:opacity .5s var(--ease)}
+.ledger li:last-child{border-bottom:1px solid var(--line)}
+.ledger li.on{opacity:1}
+.ledger b{display:block;font-weight:700;font-size:var(--t-ui);color:#fff}
+.ledger span{display:block;font-size:var(--t-cap);line-height:1.5;color:var(--mute)}
+.ledger li.on b::before{content:"";display:inline-block;width:6px;height:6px;margin:0 9px 2px 0;border-radius:50%;background:var(--aqua);box-shadow:0 0 10px var(--aqua)}
+.ticks{display:none}
+
+/* hard cut into act 5 (stub for #15) */
+.cut{position:fixed;inset:0;z-index:5;background:var(--lift);display:none;align-content:center;padding:0 24px 0 var(--gut)}
+.cut.on{display:grid}
+.cut h3{font-weight:900;font-size:var(--t-cut);line-height:.95;letter-spacing:-.025em;color:#fff}
+.cut i{display:block;width:72px;height:4px;border-radius:999px;margin-top:22px;background:linear-gradient(135deg,#F2C14E,#B5882C)}
+.cut p{margin-top:14px;color:var(--mute);font-size:var(--t-cap)}
+
+/* tier 0 and reduced motion: a still, art-directed grid, no canvas */
+#grid{display:none;position:relative;z-index:2;padding:130px 24px 90px var(--gut);max-width:1500px}
+.t0 #grid{display:block}.t0 #field,.t0 .words,.t0 .pre,.t0 #peak,.t0 .post{display:none}
+.t0 .cut{position:relative;display:grid;min-height:70vh}
+#grid h2{font-weight:900;font-size:var(--t-act);line-height:.98;letter-spacing:-.02em;color:#fff;margin-bottom:16px;max-width:14ch;text-wrap:balance}
+#grid .lead{font-size:var(--t-lead);line-height:1.45;max-width:34ch;margin-bottom:56px}
+.g{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:6vw;gap:14px}
+.g img{width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);filter:saturate(.9)}
+.g .a{grid-area:1/1/6/9}.g .b{grid-area:1/9/8/13}.g .c{grid-area:6/1/9/5}.g .d{grid-area:6/5/9/9}
+.g .e{grid-area:8/9/11/13}.g .f{grid-area:9/1/12/5}.g .h{grid-area:9/5/12/9}.g .i{grid-area:11/9/14/13}
+.g ul{grid-area:12/1/17/9;align-self:start;padding-top:20px}
+.g li{list-style:none;padding:11px 0;border-top:1px solid var(--line)}
+.g li b{display:block;font-weight:700;font-size:var(--t-ui);color:#fff}.g li span{font-size:var(--t-cap);color:var(--mute)}
+.g .ph{background:#0c141b}
+
+@media (max-width:767px){
+  :root{--rail:10px;--gut:42px;--radius:16px}
+  .logo{left:42px;top:18px;height:26px}.rail{gap:18px}.rail span{display:none}
+  .pill{top:auto;bottom:18px;right:16px}
+  .title{left:42px;right:16px;bottom:10vh;max-width:none}.title p{font-size:17px}
+  .ledger{left:42px;right:16px;bottom:78px;width:auto}
+  .ledger li{display:none;border:0;padding:0;opacity:1}.ledger li.on{display:block}.ledger li:last-child{border:0}
+  .ledger b{font-size:17px}.ledger span{font-size:14px;color:var(--gray)}
+  .ledger::before{inset:-8vh -42px -70px -42px}
+  .ticks{display:flex;gap:6px;margin-top:12px}.ticks i{width:18px;height:2px;border-radius:2px;background:var(--line)}.ticks i.on{background:var(--aqua)}
+  .cut{padding-left:42px}
+  #grid{padding:96px 16px 80px 42px}
+  .g{grid-template-columns:repeat(2,1fr);grid-auto-rows:30vw;gap:10px}
+  .g .a{grid-area:1/1/3/3}.g .b{grid-area:3/1/6/2}.g .c{grid-area:3/2/5/3}.g .d{grid-area:5/2/6/3}.g .e{grid-area:6/1/8/3}
+  .g .f{grid-area:8/1/9/2}.g .h{grid-area:8/2/9/3}.g .i{grid-area:9/1/11/3}.g ul{grid-area:11/1/17/3;align-self:start;padding-top:14px}
+}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="fx vignette"></div><div class="fx grain"></div>
+
+<a class="logo" href="#" aria-label="Vision &amp; Innovation Club"><img src="brand/vic-logo-white.svg" alt="Vision &amp; Innovation Club"></a>
+<nav class="rail" aria-label="Waypoints" id="rail">
+  <a href="#"><i></i><span>Departments</span></a>
+  <a href="#" class="now"><i></i><span>Club life</span></a>
+  <a href="#"><i></i><span>Events</span></a>
+</nav>
+<a class="pill" href="#"><span>Applications open 25 Oct</span><span class="chip" id="chip">6 d</span><span class="go"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h9M8 4l4 4-4 4"/></svg></span></a>
+
+<div class="words title" id="title"><h2>Every VICer is welcome.</h2><p>Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them.</p></div>
+<div class="words ledger" id="ledger"><ul>
+  <li><b>VIC Entertainment</b><span>At least two community activities a month, built from members' own ideas.</span></li>
+  <li><b>The Local</b><span>VIC's headquarters inside ENP, a gathering place for every VICer.</span></li>
+  <li><b>General assemblies</b><span>The President keeps members updated on projects and progress.</span></li>
+  <li><b>Charity</b><span>A school-supplies drive for students in need.</span></li>
+  <li><b>Alumni</b><span>Graduates stay in the community and help with events.</span></li>
+</ul><div class="ticks"><i></i><i></i><i></i><i></i><i></i></div></div>
+
+<main>
+  <div class="pre"></div>
+  <section id="peak" aria-label="Club life"></section>
+  <div class="post"></div>
+  <section id="grid" aria-label="Club life">
+    <h2>Every VICer is welcome.</h2>
+    <p class="lead">Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them.</p>
+    <div class="g">
+      <img class="a" src="pics/img_8658.jpg" alt="Members of VIC in a large group in front of the ENP building's arches">
+      <img class="b" src="pics/img_9072.jpg" alt="Long lit tables in a courtyard at night">
+      <img class="c" src="pics/img_0645.jpg" alt="A large VIC group outdoors in a forest">
+      <img class="d" src="pics/img_2757.jpg" alt="A full conference hall with a speaker on stage and the VIC ring on the back wall">
+      <img class="e" src="pics/img_9159.jpg" alt="A close group of friends in a night selfie">
+      <img class="f" src="pics/img_8641.jpg" alt="A student lifting a trophy in front of the ENP building">
+      <img class="h" src="pics/img_7544.jpg" alt="A very large group around a long table holding a banner">
+      <img class="i" src="pics/img_8759.jpg" alt="A large group outdoors in front of a building">
+      <ul>
+        <li><b>VIC Entertainment</b><span>At least two community activities a month, built from members' own ideas.</span></li>
+        <li><b>The Local</b><span>VIC's headquarters inside ENP, a gathering place for every VICer.</span></li>
+        <li><b>General assemblies</b><span>The President keeps members updated on projects and progress.</span></li>
+        <li><b>Charity</b><span>A school-supplies drive for students in need.</span></li>
+        <li><b>Alumni</b><span>Graduates stay in the community and help with events.</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+<div class="cut" id="cut"><div><h3>Engineers' Gala</h3><i></i><p>Act 5 stub (#15). The resolved photo breaks straight into the first event with no passage.</p></div></div>
+
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}</script>
+<script type="module">
+const qs = new URLSearchParams(location.search);
+const days = Math.max(0, Math.ceil((Date.UTC(2026, 9, 24, 23) - Date.now()) / 864e5)); // 25 Oct 00:00 Algiers
+document.getElementById('chip').textContent = days + ' d';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || qs.has('reduced');
+function hasGL() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
+if (reduced || qs.has('tier0') || !hasGL()) {
+  document.documentElement.classList.add('t0');
+  document.getElementById('cut').classList.remove('on');
+  document.getElementById('cut').style.display = '';
+  document.documentElement.dataset.ready = 't0';
+} else {
+const THREE = await import('three');
+
+const phone = innerWidth < 768;
+const N = phone ? 12000 : 24000;                       // tier 1 budget on phones (#5)
+const DPR = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+const instant = qs.has('shot');
+const TAN = Math.tan(THREE.MathUtils.degToRad(22.5));
+
+const renderer = new THREE.WebGLRenderer({ canvas: field, antialias: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(DPR); renderer.setClearColor(0x141e27, 1);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, .1, 400); scene.add(camera);
+
+// ---- the photo sequence: 1 resolves from points, 2 to 8 each enter differently, no two neighbours alike
+// mode: 0 fly from far, 1 slit opens from centre, 2 pan then pull out, 3 rise and settle, 4 lens pull back, 5 split closes, 6 dealt from the pile
+const PH = [
+  { f: 'img_0645', asp: 1.5, mode: 1, d: [.66, .42, .40], m: [.5, .34, .86] },
+  { f: 'img_2757', asp: 1.5, mode: 2, d: [.55, .60, .36], m: [.5, .40, .86] },
+  { f: 'img_9072', asp: 2 / 3, mode: 3, d: [.72, .50, .74, 'h'], m: [.5, .34, .62, 'h'] },
+  { f: 'img_9159', asp: 1.5, mode: 4, d: [.48, .38, .34], m: [.5, .31, .86] },
+  { f: 'img_8641', asp: 1.5, mode: 5, d: [.70, .56, .38], m: [.5, .38, .86] },
+  { f: 'img_7544', asp: 1.7778, mode: 6, d: [.60, .48, .54], m: [.5, .33, .90] },
+  { f: 'img_8759', asp: 1.5, mode: 0, d: [.64, .46, .46], m: [.5, .35, .86] },
+];
+const START = .42, STEP = .07, LIFE = .13;               // fractions of the peak's 6 vh span
+const load = (u) => new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(Object.assign(document.createElement('canvas'), { width: 3, height: 2 })); im.src = u; });
+const [img0, ...imgs] = await Promise.all(['img_8658', ...PH.map((x) => x.f)].map((f) => load(`pics/${f}.jpg`)));
+
+// ---- the world: 600 points as a galaxy, and the same points as the photo
+const gauss = () => { let u = 0; for (let i = 0; i < 4; i++) u += Math.random(); return (u - 2) / 1.15; };
+const G = new Float32Array(N * 3), P = new Float32Array(N * 3), COL = new Float32Array(N * 3), R = new Float32Array(N);
+for (let i = 0; i < N; i++) {
+  R[i] = Math.random();
+  const halo = Math.random() < .12;
+  const r = halo ? 10 + 60 * Math.random() : 1.5 + 40 * Math.pow(Math.random(), .75);
+  const arm = (i % 3) * Math.PI * 2 / 3, a = halo ? Math.random() * 6.283 : arm + r * .16 + gauss() * .32 * (1.2 - r / 50);
+  G.set([Math.cos(a) * r, gauss() * (halo ? 14 : 1.4 * (1.1 - r / 45)), Math.sin(a) * r], i * 3);
+}
+const NP = Math.floor(N * .9), cols = Math.floor(Math.sqrt(NP * 1.5)), rows = Math.floor(NP / cols);
+const cv = Object.assign(document.createElement('canvas'), { width: cols, height: rows });
+const cx = cv.getContext('2d'); cx.drawImage(img0, 0, 0, cols, rows);
+const px = cx.getImageData(0, 0, cols, rows).data;
+const PW = 32, PHH = PW * rows / cols;
+for (let i = 0; i < N; i++) {
+  if (i < cols * rows) {
+    const x = i % cols, y = Math.floor(i / cols);
+    P.set([(x / cols - .5) * PW, (.5 - y / rows) * PHH, (Math.random() - .5) * .3], i * 3);
+    COL.set([px[i * 4] / 255, px[i * 4 + 1] / 255, px[i * 4 + 2] / 255], i * 3);
+  } else { P.set([(Math.random() - .5) * 120, (Math.random() - .5) * 70, -20 - Math.random() * 60], i * 3); COL.set([.07, .49, .73], i * 3); }
+}
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(G, 3)); geo.setAttribute('aP', new THREE.BufferAttribute(P, 3));
+geo.setAttribute('aCol', new THREE.BufferAttribute(COL, 3)); geo.setAttribute('aR', new THREE.BufferAttribute(R, 1));
+const U = { uS: { value: 0 }, uYou: { value: new THREE.Vector3() }, uLean: { value: 1 }, uPx: { value: DPR }, uT: { value: 0 }, uFade: { value: 1 }, uDim: { value: 1 } };
+const pointsMat = new THREE.ShaderMaterial({
+  uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+  vertexShader: `
+    attribute vec3 aP, aCol; attribute float aR;
+    uniform float uS, uLean, uPx, uT; uniform vec3 uYou;
+    varying vec3 vC; varying float vA;
+    void main(){
+      float t = clamp((uS - aR*.35) / .65, 0., 1.); t = t*t*(3.-2.*t);
+      vec3 p = mix(position, aP, t);
+      p += .25 * vec3(sin(uT*.4 + aR*40.), cos(uT*.33 + aR*31.), sin(uT*.27 + aR*17.)) * (1. - t);
+      vec3 d = uYou - p; float k = exp(-dot(d,d) / 60.) * uLean; p += d * k * .35;
+      vec4 mv = modelViewMatrix * vec4(p, 1.); float depth = -mv.z;
+      vec3 grad = mix(vec3(.412,.769,.686), vec3(.071,.490,.733), smoothstep(10., 70., depth));
+      vC = mix(grad, aCol * 1.05, t);
+      vA = (1. - smoothstep(90., 200., depth)) + k * .6;
+      gl_PointSize = clamp(mix(40., 120., t) / depth, 1.2, 3.8) * uPx;
+      gl_Position = projectionMatrix * mv;
+    }`,
+  fragmentShader: `uniform float uFade, uDim; varying vec3 vC; varying float vA;
+    void main(){ float a = smoothstep(.5, .1, length(gl_PointCoord - .5)); gl_FragColor = vec4(vC * vA * a * uFade * uDim, 1.); }`,
+});
+const world = new THREE.Group(); scene.add(world);
+world.add(new THREE.Points(geo, pointsMat));
+
+// ---- photo planes (rounded corners and the seven entrances live in one shader)
+const photoMat = (im, mode) => {
+  const t = new THREE.Texture(im); t.needsUpdate = true; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false;
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: false,
+    uniforms: { uMap: { value: t }, uAsp: { value: im.width / im.height }, uRad: { value: .04 }, uOp: { value: 1 }, uMode: { value: mode }, uE: { value: 1 }, uBr: { value: 1 } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }`,
+    fragmentShader: `uniform sampler2D uMap; uniform float uAsp, uRad, uOp, uMode, uE, uBr; varying vec2 vUv;
+      void main(){
+        vec2 p = (vUv - .5) * vec2(uAsp, 1.); vec2 uv = vUv; float a = 1.;
+        if (uMode == 1.) { a *= 1. - smoothstep(.5*uE - .012, .5*uE + .004, abs(p.y)); uv = .5 + (uv - .5) * mix(1.2, 1., uE); }
+        else if (uMode == 2.) { float z = mix(.6, 1., uE), c = mix(.3, .5, uE); uv = vec2(c + (uv.x - .5) * z, .5 + (uv.y - .5) * z); }
+        else if (uMode == 4.) { float z = mix(.5, 1., uE); uv = mix(vec2(.68,.5), vec2(.5), uE) + (uv - .5) * z; a *= smoothstep(0., .3, uE); }
+        else if (uMode == 5.) { float s = p.x < 0. ? -1. : 1.; float xs = p.x - s * (1. - uE) * uAsp * .5; if (xs * s < 0.) a = 0.; p.x = xs; uv.x = xs / uAsp + .5; }
+        vec2 q = abs(p) - vec2(uAsp * .5, .5) + uRad;
+        float d = length(max(q, 0.)) + min(max(q.x, q.y), 0.) - uRad;
+        a *= 1. - smoothstep(-.004, .004, d);
+        gl_FragColor = vec4(texture2D(uMap, uv).rgb * uBr, a * uOp);
+      }`,
+  });
+};
+const m0 = photoMat(img0, 9);
+const plane0 = new THREE.Mesh(new THREE.PlaneGeometry(PW, PHH), m0); plane0.position.z = -.2; plane0.renderOrder = 2; world.add(plane0);
+const stack = new THREE.Group(); camera.add(stack);
+const D = 10; // layout distance from the camera
+const cards = PH.map((s, i) => {
+  const m = photoMat(imgs[i], s.mode), mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), m);
+  mesh.renderOrder = 10 + i; mesh.visible = false; stack.add(mesh); return { s, m, mesh, asp: imgs[i].width / imgs[i].height };
+});
+
+// ---- your point: off to one side, still, grows through the peak
+const youMat = new THREE.ShaderMaterial({
+  uniforms: { uPx: { value: DPR }, uSize: { value: 46 } }, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+  vertexShader: `uniform float uPx, uSize; void main(){ gl_PointSize = uSize * uPx; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }`,
+  fragmentShader: `void main(){ float d = length(gl_PointCoord - .5); float core = smoothstep(.09, .02, d); float halo = exp(-d*d*38.) * .55; gl_FragColor = vec4(vec3(.75,1.,.95) * (core + halo), 1.); }`,
+});
+const you = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3)), youMat);
+you.renderOrder = 30; you.frustumCulled = false; camera.add(you);
+
+// ---- camera, sizing
+let photoDist = 30, visW = 1, visH = 1;
+function resize() {
+  const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const fitH = PHH / 2 / TAN * 1.25, fitW = PW / 2 * 1.04 / TAN / camera.aspect;
+  photoDist = Math.max(fitH, fitW);
+  visH = 2 * D * TAN; visW = visH * camera.aspect;
+  world.position.y = phone ? .2 * 2 * photoDist * TAN : 0; // phones lift the photo above the words
+  U.uPx.value = youMat.uniforms.uPx.value = Math.min(devicePixelRatio, phone ? 1.5 : 2);
+}
+addEventListener('resize', resize); resize();
+
+// ---- scroll, pointer
+const peak = document.getElementById('peak'), cutEl = document.getElementById('cut');
+const ss = (a, b, x) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const eo = (t) => 1 - Math.pow(1 - THREE.MathUtils.clamp(t, 0, 1), 3);
+const span = () => peak.offsetHeight - innerHeight;
+const target = () => (scrollY - peak.offsetTop) / span();
+const ptr = { x: 0, y: 0, sx: 0, sy: 0 };
+addEventListener('pointermove', (e) => { ptr.x = e.clientX / innerWidth * 2 - 1; ptr.y = e.clientY / innerHeight * 2 - 1; });
+const titleEl = document.getElementById('title'), ledgerEl = document.getElementById('ledger');
+const lis = [...ledgerEl.querySelectorAll('li')], ticks = [...ledgerEl.querySelectorAll('.ticks i')];
+const railA = [...document.querySelectorAll('#rail a')], rail = document.getElementById('rail');
+let p = target(), last = performance.now();
+const tmp = new THREE.Vector3(), cp = new THREE.Vector3(), look = new THREE.Vector3();
+
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  p = instant ? target() : p + (target() - p) * (1 - Math.exp(-dt * 3.2));
+  ptr.sx += (ptr.x - ptr.sx) * (1 - Math.exp(-dt * 4)); ptr.sy += (ptr.y - ptr.sy) * (1 - Math.exp(-dt * 4));
+
+  // 1. resolve (p 0 to .26): the camera comes in from the galaxy while the crowd rushes into the photo; then it holds still
+  const cam = ss(-.05, .26, p);
+  cp.set(0, 12, 42).lerp(tmp.set(0, 0, photoDist), cam);
+  camera.position.copy(cp); camera.lookAt(0, 0, 0);
+  U.uS.value = ss(.0, .27, p); U.uT.value = now / 1000;
+  const formed = ss(.24, .31, p);
+  U.uFade.value = 1 - formed * .85;
+  // photo 1 rounds once formed, dims behind the stack, and comes back to full at the end
+  const behind = ss(.40, .46, p) * (1 - ss(.93, .99, p));
+  m0.uniforms.uOp.value = formed; m0.uniforms.uBr.value = 1 - behind * .62; U.uDim.value = 1 - behind * .5;
+  const pxH0 = PHH / (2 * (camera.position.z - plane0.position.z) * TAN) * innerHeight;
+  m0.uniforms.uRad.value = Math.min(.12, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--radius')) / Math.max(1, pxH0));
+  U.uLean.value = 1 - formed;
+  // while the stack plays, the resolved photo steps to the right so the words keep the night
+  world.scale.setScalar(1 - (phone ? .08 : .22) * behind);
+  world.position.x = phone ? 0 : behind * 2 * photoDist * TAN * camera.aspect * .15;
+
+  // 2. the sequence
+  const maxPtrX = ptr.sx, maxPtrY = ptr.sy;
+  cards.forEach((c, i) => {
+    const t = (p - (START + i * STEP)) / LIFE, m = c.m;
+    c.mesh.visible = t > 0 && t < 1; if (!c.mesh.visible) return;
+    const e = eo(t / .45), x = THREE.MathUtils.clamp((t - .72) / .28, 0, 1), L = phone ? c.s.m : c.s.d;
+    const wW = L[3] === 'h' ? L[2] * visH * c.asp : L[2] * visW, hW = wW / c.asp;
+    let X = (L[0] - .5) * visW, Y = (.5 - L[1]) * visH, Z = -D, rz = 0, sc = 1, op = 1;
+    const par = (1 + (i % 3)) * .12; X += maxPtrX * par; Y -= maxPtrY * par * .6;
+    switch (c.s.mode) {
+      case 0: Z -= 38 * Math.pow(1 - e, 2); op = Math.min(1, e * 2.5); break;
+      case 3: Y -= (1 - e) * visH * .6; rz = (1 - e) * .18; op = Math.min(1, e * 2); break;
+      case 4: sc = 1 + (1 - e) * .08; break;
+      case 6: X += (1 - e) * visW * .35; Y -= (1 - e) * visH * .45; rz = (1 - e) * .55; sc = .75 + .25 * e; op = Math.min(1, e * 2.5); break;
+    }
+    Z += x * D * .55; op *= 1 - ss(0, 1, x) * 1; sc *= 1 + x * .25;
+    c.mesh.position.set(X, Y, Z); c.mesh.rotation.set(0, 0, rz); c.mesh.scale.set(wW * sc, hW * sc, 1);
+    m.uniforms.uE.value = e; m.uniforms.uOp.value = op;
+    const scrH = hW * sc / (visH * (-Z / D)) * innerHeight;
+    m.uniforms.uRad.value = Math.min(.12, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--radius')) / Math.max(1, scrH));
+  });
+
+  // your point: off to one side, still, a little larger every beat
+  const yx = phone ? .90 : .945, yy = phone ? .085 : .86;
+  you.position.set((yx - .5) * visW, (.5 - yy) * visH, -D);
+  youMat.uniforms.uSize.value = 46 * (1 + .55 * ss(.3, .97, p));
+  U.uYou.value.copy(camera.localToWorld(you.position.clone()));
+
+  // words
+  const tOp = ss(.01, .06, p) * (1 - ss(.2, .26, p)); titleEl.style.opacity = tOp; titleEl.style.translate = `0 ${(1 - tOp) * 14}px`;
+  const lOp = ss(.44, .5, p) * (1 - ss(.95, .98, p)); ledgerEl.style.opacity = lOp;
+  const k = THREE.MathUtils.clamp(Math.floor((p - .44) / (.53 / 5)), 0, 4);
+  lis.forEach((l, i) => l.classList.toggle('on', i === k)); ticks.forEach((t, i) => t.classList.toggle('on', i <= k));
+  // hard cut: the resolved photo goes straight to the first event
+  cutEl.classList.toggle('on', scrollY >= peak.offsetTop + span() + .25 * innerHeight);
+  rail.style.setProperty('--fill', `${50 + 25 * THREE.MathUtils.clamp(p, 0, 1)}%`);
+  railA.forEach((a, i) => { a.classList.toggle('on', i === 0 || p > -.02 && i <= 1); a.classList.toggle('now', i === 1 && p > -.02 && p < 1.02); });
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+renderer.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); document.documentElement.classList.add('t0'); });
+document.documentElement.dataset.ready = '1';
+}
+</script>
+</body>
+</html>

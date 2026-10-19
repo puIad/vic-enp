@@ -1,7 +1,7 @@
 # System sheet (ticket #10)
 
-Throwaway comp of what every act shares in the A+B+C merge from #8: type, colour, texture, the Apply pill,
-navigation and progress, the loader, the cursor and sound. One plain HTML file, no three.js (the field is a 2D
+Throwaway comp of what every act shares in the A+B+C merge from #8: type, colour, the light act, texture, the Apply pill,
+navigation and progress, the loader, the cursor and the optional sound toggle. One plain HTML file, no three.js (the field is a 2D
 stand-in for A's world). This branch is never merged.
 
 ## Run
@@ -19,7 +19,7 @@ Gilroy is loaded from `fonts/`, git-ignored (commercial font, no web licence yet
 ## Shots
 
 `shots/<plate>-<d|m>.jpg`: `d` is 1440x900, `m` is 390x844, headless Chrome for Testing through the
-playwright-chrome MCP server. `sheet-*.jpg` is the whole page. `open-state-d.jpg` is the pill after opening.
+playwright-chrome MCP server. `sheet-*.jpg` is the whole page. `open-state-d.jpg` is the pill after opening; `horizon-*`, `light-*`, `light2-*` the light act and the chrome over it; `sound-on-*` the toggle on.
 
 ## Detector
 

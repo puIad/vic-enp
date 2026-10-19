@@ -202,6 +202,56 @@ main{position:relative;z-index:2}
 .toggle svg{width:18px;height:18px}
 .strike{font-size:var(--t-cap);color:var(--mute)}
 
+/* the light act: FAQ and how to join turn Bright Gray, entered through C's horizon */
+.lightact{position:relative;z-index:2;background:var(--gray);color:var(--night)}
+.horizon{position:relative;height:46vh;background:linear-gradient(180deg,var(--night) 0%,#1d2b37 34%,#5d6b77 66%,var(--gray) 100%)}
+.horizon::after{content:"";position:absolute;left:0;right:0;top:52%;height:1px;background:linear-gradient(90deg,transparent,#127DBB 30%,#69C4AF 70%,transparent);box-shadow:0 0 24px 2px rgba(105,196,175,.45)}
+.horizon.down{background:linear-gradient(0deg,var(--night) 0%,#1d2b37 34%,#5d6b77 66%,var(--gray) 100%)}
+.horizon.down::after{top:48%}
+.horizon p{position:absolute;left:var(--gut);bottom:18px;font-size:var(--t-cap);color:#3b4954}
+.horizon.down p{top:18px;bottom:auto}
+.lplate{display:grid;grid-template-columns:minmax(260px,4fr) 8fr;gap:56px;padding:40px 24px 110px var(--gut);max-width:1500px}
+.lplate h2{font-weight:900;font-size:clamp(32px,3.4vw,52px);line-height:1;letter-spacing:-.02em;margin-bottom:18px;text-wrap:balance}
+.lplate .why{color:#2c3a46;max-width:38ch}.lplate .why + .why{margin-top:14px}
+.lplate .decide{margin-top:22px;padding-top:16px;border-top:1px solid rgba(20,30,39,.16);font-size:var(--t-cap);color:#4a5762;max-width:38ch}
+.lplate .decide b{color:var(--night)}
+.lact h3{font-weight:900;font-size:var(--t-act);line-height:.98;letter-spacing:-.02em;margin-bottom:28px}
+.lsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:72px}
+.lsteps div{position:relative;padding-top:64px;font-size:15px;line-height:1.5;color:#3b4954}
+.lsteps em{position:absolute;top:-18px;left:-4px;font-style:normal;font-weight:900;font-size:104px;line-height:1;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px rgba(20,30,39,.18)}
+.lsteps b{position:relative;display:block;font-weight:700;font-size:18px;color:var(--night);margin-bottom:6px}
+.lfaq details{border-top:1px solid rgba(20,30,39,.16);padding:20px 0}
+.lfaq details:last-child{border-bottom:1px solid rgba(20,30,39,.16)}
+.lfaq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:18px;font-weight:700;font-size:19px;color:var(--night)}
+.lfaq summary::-webkit-details-marker{display:none}
+.lfaq summary::after{content:"";width:10px;height:10px;flex:none;margin-top:6px;border-right:1.5px solid;border-bottom:1.5px solid;transform:rotate(45deg);transition:transform .3s var(--ease)}
+.lfaq details[open] summary::after{transform:rotate(-135deg)}
+.lfaq p{margin-top:10px;max-width:62ch;color:#3b4954;font-size:16px}
+.lfaq a{color:oklch(0.54 0.129 242.2);text-underline-offset:3px}
+.lightact ::selection{background:var(--night);color:var(--gray)}
+.lightact :focus-visible{outline-color:oklch(0.54 0.129 242.2)}
+
+/* chrome over a light act: each piece flips on its own as the light passes under it */
+.logo,.readout,.rail a,.sound{transition:color .35s var(--ease),opacity .35s var(--ease),background .35s var(--ease),border-color .35s var(--ease)}
+.logo.lit{opacity:0;pointer-events:none}
+.readout.lit{color:#4a5762}.readout.lit b{color:var(--night)}
+.rail a.lit{color:rgba(20,30,39,.4)}.rail a.lit.on{color:var(--night)}
+.rail a.lit i{background:var(--gray)}.rail a.lit.on i{background:var(--night);border-color:var(--night)}
+.rail a.lit.now i{box-shadow:0 0 0 4px rgba(20,30,39,.12)}
+
+/* the optional sound toggle: off on arrival */
+.sound{position:fixed;left:calc(var(--rail) - 12px);bottom:20px;z-index:10;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px 0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(20,30,39,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--mute);font:inherit;font-weight:700;font-size:var(--t-cap);cursor:pointer}
+.sound:hover{color:#fff;border-color:rgba(239,239,239,.3)}
+.sound .bars{display:flex;align-items:flex-end;gap:2px;height:14px}
+.sound .bars i{display:block;width:2px;height:6px;border-radius:1px;background:currentColor}
+.sound .bars i:nth-child(2){height:10px}.sound .bars i:nth-child(3){height:4px}
+.sound[aria-pressed="true"]{color:var(--aqua);border-color:rgba(105,196,175,.45)}
+.sound[aria-pressed="true"] .bars i{animation:eq 1.1s var(--ease) infinite alternate}
+.sound[aria-pressed="true"] .bars i:nth-child(2){animation-delay:-.4s}.sound[aria-pressed="true"] .bars i:nth-child(3){animation-delay:-.8s}
+@keyframes eq{from{height:3px}to{height:14px}}
+.sound.lit{background:rgba(239,239,239,.8);color:#4a5762;border-color:rgba(20,30,39,.16)}
+.sound.lit[aria-pressed="true"]{color:var(--night)}
+
 footer{position:relative;z-index:2;padding:80px 24px 120px var(--gut);font-size:var(--t-cap);color:var(--mute);border-top:1px solid var(--line)}
 footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9);z-index:-1}
 
@@ -212,6 +262,9 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
   .uses,.steps{grid-template-columns:1fr}
   .light-pair,.states{grid-template-columns:1fr}
   .navdemo{grid-template-columns:1fr;gap:28px}
+  .lplate{grid-template-columns:1fr;gap:36px;padding:28px 16px 84px var(--gut)}
+  .lsteps{grid-template-columns:1fr;gap:12px}
+  .lsteps em{font-size:84px}
 }
 @media (max-width:767px){
   :root{--rail:10px;--gut:40px}
@@ -229,8 +282,11 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
   .grains{grid-template-columns:1fr 1fr 1fr}
   .gr-wrap figcaption{left:8px;bottom:8px;font-size:11px}
   footer{padding:60px 16px 120px var(--gut)}
+  .sound{left:12px;bottom:16px;width:46px;height:46px;padding:0;justify-content:center}
+  .sound .lbl{display:none}
+  .horizon{height:34vh}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.sound[aria-pressed="true"] .bars i{animation:none;height:9px}}
 </style>
 </head>
 <body>
@@ -244,6 +300,7 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
   <a href="#top"><i></i><span>Start</span></a>
   <a href="#type"><i></i><span>Type</span></a>
   <a href="#colour"><i></i><span>Colour</span></a>
+  <a href="#light"><i></i><span>Light act</span></a>
   <a href="#texture"><i></i><span>Texture</span></a>
   <a href="#apply"><i></i><span>Apply</span></a>
   <div class="ticks" aria-hidden="true"><b></b><b></b><b></b></div>
@@ -251,6 +308,7 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
   <a href="#loader"><i></i><span>Loader</span></a>
   <a href="#cursor"><i></i><span>Cursor and sound</span></a>
 </nav>
+<button class="sound" id="sound" type="button" aria-pressed="false" aria-label="Sound"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Sound off</span></button>
 
 <!-- the sticky pill: state comes from OPENS_AT -->
 <a class="pill sticky hide" id="pill" href="https://www.instagram.com/vic.enp/"></a>
@@ -288,7 +346,7 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
     <h2>One night, one light.</h2>
     <p class="why">The page lives on Dark Jungle Green. Blue and aquamarine are light in the world, never paint on the page: the field, the rail, the point, the Apply ring.</p>
     <p class="why">Department and event colours appear only inside their own cut, as the formation's light and one short rule. They never colour text and never leave the cut.</p>
-    <p class="decide"><b>Decision.</b> No section turns light. FAQ and how to join sit on a raised night panel, so the world stays one world from hero to close. Bright Gray is for text only.</p>
+    <p class="decide"><b>Decision (owner).</b> Two acts turn light: how to join and the FAQ, on Bright Gray, entered and left through C's horizon. Every other act stays on the night.</p>
   </div>
   <div>
     <div class="swatches">
@@ -304,18 +362,46 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
       <div><b>Accents, own cut only</b><span class="accents"><i style="background:var(--spark)"></i><i style="background:var(--training)"></i><i style="background:var(--grad)"></i></span>SPARK, Training, English Bubble. Gala gold and Ignite red wait for their event charters.</div>
     </div>
     <div class="light-pair">
-      <div class="faq dark"><span class="tagline rec">Recommended · stays night</span>
+      <div class="faq dark"><span class="tagline">Not chosen · stays night</span>
         <h4>Questions</h4>
         <details open><summary>Who can apply?</summary><p>Every ENP student, from any year and any department.</p></details>
         <details><summary>When do applications open?</summary><p>25 October 2026.</p></details>
       </div>
-      <div class="faq lite"><span class="tagline">Alternative · turns light</span>
+      <div class="faq lite"><span class="tagline rec">Chosen · turns light</span>
         <h4>Questions</h4>
         <details open><summary>Who can apply?</summary><p>Every ENP student, from any year and any department.</p></details>
         <details><summary>When do applications open?</summary><p>25 October 2026.</p></details>
       </div>
     </div>
   </div>
+</section>
+
+<!-- LIGHT ACT -->
+<section class="lightact" id="light">
+  <div class="horizon" aria-hidden="true"><p>The horizon: C's passage lifts the night into the light.</p></div>
+  <div class="lplate">
+    <div class="side">
+      <h2>The calm acts turn light.</h2>
+      <p class="why">How to join and the FAQ are where the visitor stops being dazzled and starts checking facts. They sit on Bright Gray, night text at 14.7:1, the world asleep under them. Links use the nudged blue that clears 4.5:1 on light.</p>
+      <p class="why">The chrome follows piece by piece: the rail and readout turn night, the pill stays night and stands out more, the logo steps away (the charter keeps the full-colour logo for white or black only).</p>
+      <p class="decide"><b>Decision.</b> Bright Gray for exactly these two acts, entered and left through a horizon. Ghost numerals for the steps, hairline rows for the FAQ (#4). Step copy waits for the registration check in content.md.</p>
+    </div>
+    <div class="lact">
+      <h3>How to join.</h3>
+      <div class="lsteps">
+        <div><em>01</em><b>Fill in the form</b>Every ENP student, any year, any specialty. One main department, one activity department.</div>
+        <div><em>02</em><b>Meet two VICers</b>An interview with two club members, about your first-choice department.</div>
+        <div><em>03</em><b>Join your teams</b>Get your result and start with your departments.</div>
+      </div>
+      <h3>Questions.</h3>
+      <div class="lfaq">
+        <details open><summary>Do I need experience?</summary><p>No. Trainings and workshops are part of membership, and VIC's whole purpose is to help you learn.</p></details>
+        <details><summary>I'm in first year. Can I join?</summary><p>Yes. Any ENP student can join.</p></details>
+        <details><summary>Is the IT department about coding?</summary><p>No. IT at VIC means design, visual identity, photography and video. <a href="#light">See the departments</a>.</p></details>
+      </div>
+    </div>
+  </div>
+  <div class="horizon down" aria-hidden="true"><p>And back into the night.</p></div>
 </section>
 
 <!-- TEXTURE -->
@@ -399,14 +485,14 @@ footer::before{content:"";position:absolute;inset:0;background:rgba(20,30,39,.9)
 <!-- CURSOR + SOUND -->
 <section class="plate" id="cursor">
   <div class="side">
-    <h2>Your cursor stays yours. Silence by default.</h2>
+    <h2>Your cursor stays yours. Sound waits to be asked.</h2>
     <p class="why">The pointer is the system's own. Your point is the one thing, and a second dot chasing the mouse would compete with it. Instead the field leans gently toward the pointer on desktop; on phones it leans toward the touch while it lasts.</p>
-    <p class="why">No sound and no toggle. Most visitors are in Instagram's browser with the sound off, and a toggle is one more control in the corner for nobody.</p>
-    <p class="decide"><b>Decision.</b> Native cursor, field lean as a bonus. Open question 21 keeps its default: no sound.</p>
+    <p class="why">The page arrives silent. One small toggle sits bottom left, opposite the Apply pill: three still bars and "Sound off". Pressed, the bars move and a low ambient bed fades in over a second and a half. It never starts by itself.</p>
+    <p class="decide"><b>Decision (owner).</b> Native cursor, field lean as a bonus. Open question 21: an optional toggle, off on arrival. The bed here is a synthesized stand-in; the real one needs a sound asset (one loop, under 300 KB).</p>
   </div>
-  <div style="display:grid;gap:20px">
+  <div style="display:grid;gap:20px;align-content:start">
     <div class="lean"><canvas id="leanc"></canvas><p>Move the pointer here: the points lean, the cursor does not change.</p></div>
-    <div class="soundrow"><span class="toggle" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v4h3l4 3V4L6 7H3z"/><path d="M13 7l3 4M16 7l-3 4"/></svg>Sound</span><span class="strike">Not built. Shown only so you can say yes if you want it.</span></div>
+    <div class="soundrow"><span class="strike">The toggle is live, bottom left of this page. Off: still bars, "Sound off". On: aquamarine, moving bars, "Sound on". Phones show the bars only, in a 46 px circle.</span></div>
   </div>
 </section>
 </main>
@@ -458,6 +544,13 @@ function onScroll(){
   ticks.forEach((t, i) => t.classList.toggle('on', cur >= 4 && k > i / 3));
   dist.textContent = (48 * (1 - p)).toFixed(1);
   pill.classList.toggle('hide', y < innerHeight * .6 && !shot);
+  // each chrome piece flips when the light act's Bright Gray part is under its own centre
+  const L = document.getElementById('light'), hz = L.querySelectorAll('.horizon'), lb = L.getBoundingClientRect();
+  const top = lb.top + hz[0].offsetHeight * .85, bot = lb.bottom - hz[1].offsetHeight * .85;
+  for (const el of [document.querySelector('.logo'), document.querySelector('.readout'), document.getElementById('sound'), ...links]) {
+    const b = el.getBoundingClientRect(), c = b.top + b.height / 2;
+    el.classList.toggle('lit', c > top && c < bot);
+  }
 }
 addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
 if (shot) pill.classList.remove('hide');
@@ -515,6 +608,24 @@ field(document.getElementById('lc'), LN, {
   }
 });
 document.getElementById('replay').onclick = () => lt0 = performance.now();
+
+// optional sound: a synthesized stand-in bed, off on arrival
+let ac, bed;
+document.getElementById('sound').onclick = function(){
+  const on = this.getAttribute('aria-pressed') !== 'true';
+  this.setAttribute('aria-pressed', on); this.querySelector('.lbl').textContent = on ? 'Sound on' : 'Sound off';
+  if (!ac) {
+    ac = new AudioContext(); bed = ac.createGain(); bed.gain.value = 0;
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520; lp.connect(bed); bed.connect(ac.destination);
+    for (const [f, g] of [[55, .5], [82.4, .32], [110.3, .16], [164.8, .07]]) {
+      const o = ac.createOscillator(), v = ac.createGain(), lfo = ac.createOscillator(), lg = ac.createGain();
+      o.frequency.value = f; v.gain.value = g; lfo.frequency.value = .07 + f / 2000; lg.gain.value = g * .5;
+      lfo.connect(lg); lg.connect(v.gain); o.connect(v); v.connect(lp); o.start(); lfo.start();
+    }
+  }
+  ac.resume(); bed.gain.cancelScheduledValues(ac.currentTime);
+  bed.gain.setTargetAtTime(on ? .09 : 0, ac.currentTime, on ? .5 : .2);
+};
 
 // cursor demo
 field(document.getElementById('leanc'), 900, { cx: .5, cy: .5, scale: 1.1, alpha: .8, host: document.querySelector('.lean') });

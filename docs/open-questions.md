@@ -34,6 +34,9 @@ delete the row here. "Default" is what the build does if no answer arrives by th
 | 20 | El-Maarifa shown as a logo in the footer, or as text? | Owner | Text | 22 Oct |
 | 21 | An optional sound toggle? | Owner | No sound | 22 Oct |
 | 22 | PR reviews: add the claude GitHub Action like the recruitment repo, or local Code Reviewer agent only? | Owner | Local agent only | 20 Oct |
+| 25 | Performance proof: does the heaviest act fit [quality.md](quality.md)'s budgets on a real mid-range phone in Instagram's browser? The 10k to 80k point ramp from [#5](https://github.com/puIad/vic-enp/issues/5) runs on the owner's phones in slice 3 and again in slice 5. Moved to build time by the owner, 2026-10-19. | Claude, on the owner's phones | If a tier misses, step it down; the cut line in [build-plan.md](build-plan.md#the-cut-line) covers the rest | 23 Oct (cut line) |
+| 26 | Share image (`og.png`) and favicon in the chosen direction. Made in slice 1 with the share tags: a baked frame of the hero scene with the tagline, favicon from the charter's logo files. Moved to build time by the owner, 2026-10-19. | Claude, shown to the owner | As described | 21 Oct |
+| 27 | New copy written for the page (act titles, department lines and leads, step and rung titles, the close headline): one list for the owner's approval. Compiled into [content.md](content.md) when ticket #18 folds the spec in. Decided by the owner, 2026-10-19. | Owner | The lines as comped in tickets #11 to #17 | 22 Oct (copy freeze) |
 
 ## Tooling, not blocking
 

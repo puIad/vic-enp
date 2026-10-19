@@ -103,6 +103,8 @@ Content and the CTA are never cut.
 | Read the docs, answer the Gate 0 questions, choose the concept | 20 Oct morning |
 | Inspirations in [inspiration.md](inspiration.md) | 20 Oct morning |
 | Content checks 1 to 9 in [content.md](content.md#checks-before-the-copy-is-final) | 22 Oct (copy freeze) |
+| Approve the new-copy list (open question 27) | 22 Oct (copy freeze) |
+| Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |
 | Gilroy web licence answer | 22 Oct |
 | The Google Form's responder link for `VITE_APPLY_URL` | 23 Oct |
 | The exact opening time | 23 Oct |

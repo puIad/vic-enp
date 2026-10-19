@@ -117,6 +117,20 @@ The look, counts and timings are already settled in the specs, so this is transl
 - Someone has to sign in to copy. An agent must not, so it would be the owner, either on their own account stated as acting for the club, or on a club account (for example under vic@g.enp.edu.dz) that outlives the owner's term. Free covers 10 copies a day; Pro components need $79 a year.
 - Each piece would still be rewritten into our `Field` to keep one context, so the account buys a reference, not working code.
 
+## Owner's choices (2026-10-19)
+
+| Pattern | Choice | Licence | Account |
+|---|---|---|---|
+| Point field and formations | Port the comp into one shared R3F `Field` | Ours | None |
+| Photo resolve | Port the comp (stays in the shared field) | Ours | None |
+| Depth stack (7 photos after the resolve) | 21st.dev [Gallery](https://21st.dev/@mengto/components/gallery) by Meng To (ThreeUI) as the base, merged into the shared canvas so the page keeps one WebGL context, reworked to the #14 entrances, timings and radius | MIT; keep its notice in the source and a link to the 21st page in a source comment and `docs/assets.md` ([21st Terms](https://21st.dev/terms)) | The owner's 21st.dev account, acting for the club; the owner installs it (free tier) |
+| Door, tunnel, horizon passages | Port the comp; 21st.dev [Warp Tunnel](https://21st.dev/@ln-dev7/components/warp-tunnel) as a shading reference for the tunnel | Ours; Warp Tunnel MIT if any of its code is used (keep the notice) | None, unless Warp Tunnel code is copied (then the same owner account) |
+| Snap cuts and the horizon act | Port the comp on ScrollTrigger, with each formation baked to a small point cloud (under 50 KB) | Ours | None |
+
+No Originkit piece was chosen, so no Originkit account or plan is needed.
+
+Notes for the build: the Gallery's own renderer, camera and loop go; its plane layout and motion become a group under our camera, and it must pass the same tier 1 limit (at most two stack planes visible on a phone). Re-check its licence on the 21st page on the day the owner installs it.
+
 ## Not checked
 
 - Component source on either site (needs sign-in or an API key). Whether Originkit's WebGL pieces use three or raw WebGL is stated on Gallery Tunnel only ("built with three.js").

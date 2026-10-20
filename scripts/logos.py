@@ -5,6 +5,7 @@ transparent ground. Only whole parts of the artwork are left out (the words besi
 its ®), never recoloured or reshaped, and the result is trimmed to the artwork. The originals are opened read-only
 and never saved.
 
+    pip install pymupdf pillow
     python scripts/logos.py [path/to/assets/logos]
 """
 

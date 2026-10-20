@@ -433,7 +433,7 @@ export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: Logo
   const span = Math.max(...ls) - lo || 1
   let j = 0
   return build(n, count, (i) => {
-    if (!inShape(i) || !s.pts.length) return { p: place(c.dust(), pl), c: light, a: 0.3, s: 0.42 }
+    if (!inShape(i)) return { p: place(c.dust(), pl), c: light, a: 0.3, s: 0.42 }
     const k = j++ % s.pts.length
     const q = s.pts[k]
     const t = (ls[k] - lo) / span

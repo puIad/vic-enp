@@ -58,7 +58,8 @@ Copied from `VIC-Recruitment-2026` at scaffold time, unchanged:
 | `frontend/src/components/brand/*.tsx` | `src/components/brand/` | Charter motifs, if the design uses them. |
 
 The department, event and project logos ([#29](https://github.com/puIad/vic-enp/issues/29), decisions 59 and 60) come
-from the owner's `.ai` files in `assets/logos/`, which stay outside git. `python scripts/logos.py` renders each one
+from the owner's `.ai` files in `assets/logos/`, which stay outside git. `pip install pymupdf pillow`, then
+`python scripts/logos.py` renders each one
 with PyMuPDF into `public/logos/<name>.png`: transparent, 512 px on the long side, colours and proportions unchanged,
 trimmed to the artwork. It only leaves whole parts out: the words beside a symbol, and Ignite's "Algiers" and ®.
 

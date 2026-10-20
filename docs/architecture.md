@@ -108,6 +108,13 @@ Chosen at load, stepped down at runtime if the frame rate drops (drei's `Perform
 | 1 | Phones (every phone starts here and may step up) | Pixel ratio capped at 1.5, 3.5k to 12k points depending on the act (hero 5k, cuts 10k, peak 12k), no postprocessing |
 | 2 | Desktops, recent phones | Pixel ratio capped at 2, 6.5k to 24k points (hero 9k, cuts 16k, peak 24k). One bloom pass and one low-res glass object are allowed by [#5](https://github.com/puIad/vic-enp/issues/5), but the signed comps use neither |
 
+`?tier=0`, `?tier=1` or `?tier=2` forces a tier and holds it (no step-down), for the owner's phone checks and the
+verification runs. The tier is read before React's first render (`src/world/boot.ts`), so tier 1 and 2 arrive from
+night, then the words, then the world gathering, as in [#11](https://github.com/puIad/vic-enp/issues/11)'s arrival.
+The baked poster is shown on tier 0 and whenever the world fails (no context, the chunk fails to load, context lost);
+it is not shown under the canvas while the world loads, because a formed cloud that then dissolves into the gather reads
+as a glitch, and a late full-screen image would take over as the page's LCP element.
+
 Context loss falls back to tier 0 (iOS in-app browsers can kill the page with no context-lost event, so keep GPU
 memory low). Every point count is unmeasured on a real phone until open question 25.
 

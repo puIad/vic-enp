@@ -1,10 +1,12 @@
 import { ApplyPill } from '../components/ApplyPill'
 import type { Cta } from '../lib/opening'
+import { TIER } from '../world/boot'
 
-// Act 1 (#11), tier 0: copy bottom left at the rail gutter, the cloud on the right two thirds behind it.
+// Act 1 (#11): copy bottom left at the rail gutter, the cloud on the right two thirds behind it. On tier 1 and 2 the
+// world gathers behind the words, "Gathering the 600" is the loader, and the copy lifts away on the hand-over.
 export function Hero({ cta }: { cta: Cta }) {
   return (
-    <section id="top" aria-labelledby="h-hero" className="wrap grid min-h-svh content-end pt-[40svh] pb-[14svh] md:pt-36 md:pb-[12vh]">
+    <section id="top" aria-labelledby="h-hero" data-sc-act="flow" className="wrap grid min-h-svh content-end pt-[40svh] pb-[14svh] md:pt-36 md:pb-[12vh]">
       <h1 id="h-hero" className="t-display max-w-[8ch] md:max-w-[11.5ch]">
         Engineer more than your degree.
       </h1>
@@ -12,9 +14,16 @@ export function Hero({ cta }: { cta: Cta }) {
         <b className="font-bold text-white">Vision &amp; Innovation Club.</b> A nonprofit, English-speaking scientific club at ENP.
       </p>
       <div id="hero-cta" className="mt-7 flex md:mt-[34px]">
-        <ApplyPill cta={cta} className="pill-lg" />
+        <div className="relative">
+          <ApplyPill cta={cta} className="pill-lg" />
+          {TIER > 0 && (
+            <p id="gather" className="gather" aria-hidden="true">
+              Gathering the 600 <b id="gather-n">0</b>
+            </p>
+          )}
+        </div>
       </div>
-      <p className="t-cap mt-[18px]">Since 2014 · Once a VICer, always a VICer.</p>
+      <p className="since t-cap mt-[18px]">Since 2014 · Once a VICer, always a VICer.</p>
     </section>
   )
 }

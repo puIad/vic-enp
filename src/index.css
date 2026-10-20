@@ -242,6 +242,64 @@
     height: 38px;
   }
 
+  /* ---------- the world (slice 3): one canvas behind the hero and act 2, faded in on its first frame ---------- */
+  .world-canvas {
+    position: absolute !important;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out-expo);
+  }
+  .w-ready .world-canvas {
+    opacity: 1;
+  }
+  /* the hand-over (#11): the hero's copy lifts 64 px and fades between 30% and 80% of its 0.7 screen */
+  .w-ready #top > * {
+    translate: 0 calc(var(--hand, 0) * -64px);
+    opacity: calc(1 - var(--fade, 0));
+  }
+  /* "Gathering the 600": the loader, beside the pill on desktop, in place of the small line on a phone */
+  .gather {
+    position: absolute;
+    left: calc(100% + 22px);
+    top: 50%;
+    translate: 0 -50%;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    white-space: nowrap;
+    font-size: var(--t-cap);
+    line-height: 1.5;
+    color: var(--color-mute);
+    opacity: 0;
+    transition: opacity 0.8s var(--ease-out-expo);
+  }
+  .gather b {
+    min-width: 3ch;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .gather[data-state='on'] {
+    opacity: 1;
+  }
+  html:not(.w-on) .gather {
+    display: none;
+  }
+  .since {
+    transition: opacity 0.8s var(--ease-out-expo);
+  }
+  @media (max-width: 767px) {
+    .gather {
+      left: 0;
+      top: calc(100% + 18px);
+      translate: none;
+    }
+    .w-on #top:has(.gather[data-state='on']) .since {
+      opacity: 0;
+    }
+  }
+
   /* ---------- chrome ---------- */
   .logoplate {
     position: fixed;

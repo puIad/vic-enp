@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type PointerEvent } from 'react'
+import { useRef, useState, type CSSProperties, type MouseEvent } from 'react'
 import { ACTIVITY, MAIN, type Department } from '../content/departments'
 import { DEPT_STEPS, total } from '../world/steps'
 import { world } from '../world/store'
@@ -67,7 +67,8 @@ export default function DepartmentsStage() {
   }
 
   // a tap on the cluster (anywhere that is not a control) pulses the formation and opens the panel in place
-  const tap = (e: PointerEvent) => {
+  // a click, not a pointerdown: a finger that starts a scroll on the stage never fires one
+  const tap = (e: MouseEvent) => {
     if (cut < 0 || (e.target as Element).closest('button, a, .cut-panel, .cut-pick')) return
     world.pulse = performance.now()
     setOpen(cut)
@@ -83,7 +84,7 @@ export default function DepartmentsStage() {
       data-sc-act="pin"
       style={{ height: `${(total(DEPT_STEPS) + 1) * 100}lvh` }}
     >
-      <div className="cuts-stage" data-sc-stage onPointerDown={tap} data-step={step}>
+      <div className="cuts-stage" data-sc-stage onClick={tap} data-step={step}>
         <h2 id="h-dept" className="sr-only">
           Seven departments. You pick one main and one activity.
         </h2>

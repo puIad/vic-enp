@@ -290,7 +290,8 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     const l: Layout = { phone: size.width < 768, w: size.width, h: size.height }
 
     // the layout changed (a resize, a phone turning): every formation is rebuilt for the new view
-    const lkey = `${l.phone}:${l.w}:${l.h}:${JSON.stringify(world.photo)}:${JSON.stringify(world.slot)}`
+    // the photo sample too: a budget change resamples it, and the resolve must rebuild once the new grid lands
+    const lkey = `${l.phone}:${l.w}:${l.h}:${s.photo && s.photo.cols}:${JSON.stringify(world.photo)}:${JSON.stringify(world.slot)}`
     if (lkey !== K.layout) {
       K.layout = lkey
       cache.current.clear()

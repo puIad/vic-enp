@@ -1,5 +1,6 @@
 import { lazy, Suspense, type CSSProperties } from 'react'
 import { Arrow } from '../components/ApplyPill'
+import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { Mark } from '../components/Peel'
 import { EVENTS, PROJECTS } from '../content/events'
@@ -73,7 +74,10 @@ function Cards() {
             <ul className="md:col-span-8">
               {PROJECTS.map((p) => (
                 <li key={p.name} className="grid gap-1 border-t border-(--line) py-5 first:border-t-0 first:pt-0 md:grid-cols-[minmax(10rem,1fr)_2fr] md:gap-6 md:first:pt-1">
-                  <h4 className="text-[clamp(26px,2.4vw,40px)] leading-none font-black tracking-[-0.02em] text-white">{p.name}</h4>
+                  <h4 className="text-[clamp(26px,2.4vw,40px)] leading-none font-black tracking-[-0.02em] text-white">
+                    <LogoSymbol id={p.logo} />
+                    {p.name}
+                  </h4>
                   <p className="text-[15px] leading-normal text-gray">{p.text}</p>
                 </li>
               ))}

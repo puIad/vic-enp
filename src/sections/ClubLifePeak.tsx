@@ -128,14 +128,14 @@ export default function ClubLifePeak() {
           case 'iris': // a circle opens from the middle of the group
             tl.fromTo(card.querySelector('.peak-frame'), { clipPath: 'circle(0% at 50% 52%)' }, { clipPath: 'circle(75% at 50% 52%)', ease: 'power2.inOut', duration: d }, s)
             break
-          case 'wipe': // a diagonal edge sweeps across from the right while the photo drifts the other way
+          case 'wipe': // a diagonal edge sweeps across from the right while the photo drifts the other way (within its overhang)
             tl.fromTo(
               card.querySelector('.peak-frame'),
               { clipPath: 'polygon(100% 0%, 130% 0%, 130% 100%, 130% 100%)' },
               { clipPath: 'polygon(-30% 0%, 130% 0%, 130% 100%, 0% 100%)', ease: 'power3.out', duration: d },
               s,
             )
-            tl.fromTo(img, { xPercent: -8, scale: 1.1 }, { xPercent: 0, scale: 1, ease: 'power3.out', duration: d }, s)
+            tl.fromTo(img, { xPercent: -4, scale: 1.1 }, { xPercent: 0, scale: 1, ease: 'power3.out', duration: d }, s)
             break
           case 'pan': // opens on the left 60% of the hall and pulls out to the whole room
             tl.fromTo(img, { scale: 1 / 0.6, xPercent: 33.3 }, { scale: 1, xPercent: 0, ease: 'power3.out', duration: d }, s)

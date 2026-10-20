@@ -12,7 +12,8 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 - Short sentences, plain English, second person ("you"). Many readers read English as a second or third language.
 - Concrete over grand: "organise an event with sponsors and hundreds of guests" beats "unleash your potential".
 - Sentence case everywhere, never all caps (charter rule for Gilroy). Two names are the exception, as the events
-  write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46).
+  write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46). The footer's street name, Rue des
+  Frères OUDEK, is written as the owner gave it ([decisions.md](decisions.md), 58).
 - US spelling: organized, organizing, specialized.
 - No eyebrows over headings and no pills, except IT's "Design and media, not coding" ([decisions.md](decisions.md), 43, 44).
 - Proper names as the club writes them: VIC, VICer, ENP, HR, FLER, IT, COMM, SPARK, English Bubble, Training,
@@ -52,7 +53,8 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
   the El-Maarifa Scientific Association. / **Our mission:** help members and ENP students build soft and hard
   skills and a network, through events that are genuinely enjoyable. / **Our vision:** a lasting community you
   are proud to belong to. (The labels are bold.)
-- Values (label **new**: "What we hold to"): Respect, Diversity, Contribution and creativity, Legacy.
+- The values line ("What we hold to": Respect, Diversity, Contribution and creativity, Legacy) left the page on
+  2026-10-20 ([decisions.md](decisions.md), 54).
 - Numbers (owner, 2026-10-20): **600** members / **40+** trainings a year / **10+** major events / **since 2014**,
   no caption. "~20 sponsors" stays out. There is no count-up on the page, so "10+" renders as written.
 - Why join, title (**new**): What you get. Ten benefits from §3 in three groups (group names **new**):
@@ -89,11 +91,11 @@ FAQ, not on the card.
 ## Act 4: club life (the peak)
 
 - Title: Every VICer is welcome. Lead: Without exception.
-- Ledger, five rows from §6: VIC Entertainment ("At least two community activities a month, built from members'
+- Ledger, four rows from §6: VIC Entertainment ("At least two community activities a month, built from members'
   own ideas."), The Local ("VIC's headquarters inside ENP, a gathering place for every VICer."), General
-  assemblies ("The President keeps members updated on projects and progress."), VIC Charity ("A yearly project for
-  children and families in need, from school supplies to Quffat Ramadan."; owner, 2026-10-20), Alumni ("Graduates stay in the community and
-  help with events.").
+  assemblies ("The President keeps members updated on projects and progress."), Alumni ("Graduates stay in the
+  community and help with events."). VIC Charity's row left on 2026-10-20; VIC Charity stays among the projects in
+  act 5 ([decisions.md](decisions.md), 55).
 - Photos carry no captions, alt text only. The private VICers-only Instagram stays a "once you're in" detail, off
   the page.
 
@@ -106,12 +108,13 @@ their own descriptions and approved on 2026-10-20 ([decisions.md](decisions.md),
 | Cut | Line | Lead | Extra |
 |---|---|---|---|
 | 1 | Engineers' GALA | Emerging leaders of Algerian industry meet experts in their fields to share what they know and build lasting connections. Young graduates get a chance to stand out and find new career paths. | Link: gala.vic-enp.com |
-| 2 | Ignite® Algiers | An international public-speaking event: five minutes, 20 slides, each moving on by itself every 15 seconds. Speakers share their ideas and stories. | |
-| 3 | POLYMAZE | A two-day robotics competition. Teams design autonomous robots that solve a maze in record time, using mechanics, electronics and automation. | |
-| 4 | AEC | The Algerian Engineering Competition: a nationwide hackathon where students, startups and researchers take on real industry problems with expert companies. Regional rounds run across the wilayas, then the winners pitch to a professional jury at the national final in Algiers. | The six wilayas: Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla |
+| 2 | Ignite® Algiers | An international public-speaking event: five minutes, 20 slides, each moving on by itself every 15 seconds. Speakers share their ideas and stories. | Link: ignite.vic-enp.com |
+| 3 | POLYMAZE | A two-day robotics competition. Teams design autonomous robots that solve a maze in record time, using mechanics, electronics and automation. | Link: polymaze.vic-enp.com |
+| 4 | AEC | The Algerian Engineering Competition: a nationwide hackathon where students, startups and researchers take on real industry problems with expert companies. Regional rounds run across the wilayas, then the winners pitch to a professional jury at the national final in Algiers. | The six wilayas: Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla. Link: aec.vic-enp.com |
 | 5 | Four more projects. | CPSP: The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes. / VIC Charity: A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan. / MasterClass: A summer project: expert trainers teach practical skills on Discord while you build your own creative project. / VICra: VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts. | Logos in slice 5 |
 
-STEPS and Anglosphere left the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
+Each event links to its own site, last in its text, after the lead and AEC's cities ([decisions.md](decisions.md),
+47, 57). STEPS and Anglosphere left the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
 organizes every event, and every department plays a part." (§7). Tier 0 title (**new**): "Events and projects,
 organized by the whole club."
 
@@ -150,11 +153,10 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
 - Headline (**new**): Your point is on its way.
 - Sub line, after opening only: Every ENP student can apply, any year, any specialty. (§8)
 - CTA: as the hero, "Applications open 25 Oct" then "Apply".
-- Footer: white logo with "An English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch
-  of the El-Maarifa Scientific Association." (El-Maarifa as text; owner, 2026-10-20). Instagram: @vic.enp, @spark.enp (SPARK),
-  @english.bubble (English Bubble). Facebook: @vic.enpa, @spark.vic.6 (SPARK), English Bubble. More: TikTok
-  @vic.enp, YouTube @vic_enp, LinkedIn vicenp. Contact: vic@g.enp.edu.dz, ENP, 10 Avenue Hassen Badi, El Harrach,
-  Algiers. (§10)
+- Footer: the white logo, with no description line (act 2 has it; [decisions.md](decisions.md), 58). Instagram:
+  @vic.enp, @spark.enp (SPARK), @english.bubble (English Bubble). Facebook: @vic.enpa, @spark.vic.6 (SPARK),
+  English Bubble. More: TikTok @vic.enp, YouTube @vic_enp, LinkedIn vicenp. Contact: vic@g.enp.edu.dz,
+  10 Rue des Frères OUDEK, El Harrach (§10; the street's current name for the same place, owner, 2026-10-20).
 - Last line on the page: **Once a VICer, Always a VICer.**
 
 ## Chrome
@@ -168,7 +170,7 @@ build). All **new**.
 Every line written for the page, not quoted from §1 to §13 (open question 27, by the 22 Oct copy freeze):
 
 1. Run by ENP students, for ENP students.
-2. What we hold to
+2. What we hold to (left the page on 2026-10-20, [decisions.md](decisions.md), 54: nothing to approve)
 3. What you get.
 4. Lead early / Grow your skills / Belong for good
 5. You join one main and one activity department. (approved 2026-10-20)
@@ -198,7 +200,7 @@ The humanizer pass, each line shown to the owner before and after and approved (
 | Departments title | Seven departments. You pick one main and one activity. | Seven departments. You join one main and one activity. |
 | Events note | Every event is organized by the whole club. Every department plays a part. | The whole club organizes every event, and every department plays a part. |
 | Club life lead | Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them. | Without exception. |
-| Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. |
+| Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. (The row left the page later that day, [decisions.md](decisions.md), 55.) |
 | Then grow lead | Joining is the start. Members move on in many directions. | Joining is the start. Here is where members go next. |
 | Then grow rungs | Organising teams / Join the organising team of an event. / Specialised teams | Organizing teams / Join the organizing team of an event. / Specialized teams |
 

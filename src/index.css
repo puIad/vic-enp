@@ -859,7 +859,7 @@
       bottom: 10vh;
       max-width: none;
     }
-    /* phones show only the lit row, just above the Apply pill, with five ticks */
+    /* phones show only the lit row, just above the Apply pill, with a tick per row */
     .peak-ledger {
       right: var(--edge);
       bottom: 84px;

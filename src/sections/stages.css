@@ -566,4 +566,12 @@
   .ev .cut-lead {
     font-size: 15px;
   }
+  /* AEC's cities and site link clear the event picker on a 360x640 screen, the frame already at its minimum */
+  .ev-cities {
+    gap: 6px 16px;
+    margin-top: 12px;
+  }
+  .ev-ig {
+    margin-top: 12px;
+  }
 }

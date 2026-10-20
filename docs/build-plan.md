@@ -78,14 +78,14 @@ puIad/vic-enp with blocking edges, worked in the priority order below. Whatever 
 to [After launch](#after-launch-v11), starting from the bottom of this order. Content and the CTA are never cut.
 
 1. **Copy, layout and free fixes** (54 to 58, 64):
-   - "What we hold to" and its four values leave act 2.
-   - VIC Charity's row leaves the club life ledger. VIC Charity stays in the projects.
+   - "What we hold to" and its four values leave act 2 (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
+   - VIC Charity's row leaves the club life ledger. VIC Charity stays in the projects (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
    - Each event's name sits at the same height on every cut, on desktop and phone. The lead, cities and link flow
      down from it.
-   - Each event links to its own site: gala.vic-enp.com (built), ignite.vic-enp.com, polymaze.vic-enp.com and
-     aec.vic-enp.com.
+   - Each event links to its own site: gala.vic-enp.com, ignite.vic-enp.com, polymaze.vic-enp.com and
+     aec.vic-enp.com (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
    - The footer loses its description line (act 2 keeps it), and its address becomes "10 Rue des Frères OUDEK, El
-     Harrach".
+     Harrach" (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
    - The world pauses on a hidden tab. The font is preloaded ([quality.md](quality.md)), and the first visible photo
      gets fetch priority.
    - No orphan words: paragraphs use `text-wrap: pretty`, checked on a phone.

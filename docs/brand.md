@@ -48,7 +48,7 @@ they are: ring (`#5AB3B1` to `#127DBB`, 90°), cover (`#3997B4` to `#1F84B7`, 18
 | Department | Colours |
 |---|---|
 | SPARK | Orange `#F29A09` to Tangelo `#F24407` |
-| Training | Cyan Cobalt Blue `#1A52A2` (darker blue gradient). As additive light on night it is too dark, so the rule runs `#1A52A2` to `#6A9CF0` and the points use `#6A9CF0` ([#13](https://github.com/puIad/vic-enp/issues/13)) |
+| Training | Cyan Cobalt Blue `#1A52A2` (darker blue gradient). As additive light on night it is too dark, so the rule runs `#1A52A2` to `#6A9CF0` and the points use `#6A9CF0` ([#13](https://github.com/puIad/vic-enp/issues/13)). Its logo formation keeps the file's violet, lifted to `#7C34DC` to `#B17DF5` ([#31](https://github.com/puIad/vic-enp/issues/31)) |
 | English Bubble | The VIC gradient, `#127DBB` to `#69C4AF` |
 | Also in the charter | Dark Violet `#5700CF`, Medium Purple `#7849A8` |
 

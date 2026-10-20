@@ -120,11 +120,12 @@ describe("a department's logo formation", () => {
       }
   })
 
-  it("draws Training and English Bubble in their own pairs: the file's light parts in the cut's light, its dark parts in its shade", () => {
+  it("draws Training and English Bubble in their own pairs: the file's light parts in the light, its dark parts in the shade", () => {
     const shaded: LogoSample = { aspect: 1, pts: [{ x: 0, y: 0, c: [1, 1, 1] }, { x: 0.1, y: 0, c: [0.1, 0.1, 0.1] }] }
     const hex = (h: string) => rgb(h).map((v) => +v.toFixed(3))
     for (const [key, light, shade] of [
-      ['training', '#6A9CF0', '#1A52A2'],
+      // Training's figure keeps its file's violet, lifted to read on the night (the owner's call on #31)
+      ['training', '#B17DF5', '#7C34DC'],
       ['bubble', '#69C4AF', '#127DBB'],
     ] as const) {
       const f = logo(key, 10, 10, desk, shaded)
@@ -132,6 +133,11 @@ describe("a department's logo formation", () => {
       expect(at(0)).toEqual(hex(light))
       expect(at(1)).toEqual(hex(shade))
     }
+  })
+
+  it("keeps Training's comp shape, before its file lands, in the cut's blue", () => {
+    const f = shape('training', 10, 10, desk)
+    expect([...f.col.slice(0, 3)].map((v) => +v.toFixed(3))).toEqual(rgb('#6A9CF0').map((v) => +v.toFixed(3)))
   })
 
   it("draws Training's figure flat to the view, at the file's own proportions, though its comp shape is tilted", () => {

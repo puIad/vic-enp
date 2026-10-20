@@ -931,7 +931,7 @@
     }
   }
 
-  /* the same eight photos as one still, art-directed grid (tier 0 and reduced motion) */
+  /* the same eleven photos as one still, art-directed grid (tier 0 and reduced motion) */
   .peak-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -953,8 +953,11 @@
   .peak-grid .f { grid-area: 9 / 1 / 12 / 5; }
   .peak-grid .h { grid-area: 9 / 5 / 12 / 9; }
   .peak-grid .i { grid-area: 11 / 9 / 14 / 13; }
+  .peak-grid .j { grid-area: 12 / 1 / 17 / 9; }
+  .peak-grid .k { grid-area: 14 / 9 / 17 / 13; }
+  .peak-grid .l { grid-area: 17 / 9 / 20 / 13; }
   .peak-grid ol {
-    grid-area: 12 / 1 / 15 / 9;
+    grid-area: 17 / 1 / 20 / 9;
     align-self: start;
     padding-top: 20px;
   }
@@ -986,8 +989,11 @@
     .peak-grid .f { grid-area: 8 / 1 / 9 / 2; }
     .peak-grid .h { grid-area: 8 / 2 / 9 / 3; }
     .peak-grid .i { grid-area: 9 / 1 / 11 / 3; }
+    .peak-grid .k { grid-area: 11 / 1 / 12 / 2; }
+    .peak-grid .l { grid-area: 11 / 2 / 12 / 3; }
+    .peak-grid .j { grid-area: 12 / 1 / 14 / 3; }
     .peak-grid ol {
-      grid-area: 11 / 1 / 12 / 3;
+      grid-area: 14 / 1 / 15 / 3;
       padding-top: 14px;
     }
   }

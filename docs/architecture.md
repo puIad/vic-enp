@@ -30,7 +30,7 @@ to R3F is translation, not design.
 |---|---|---|---|
 | Point field and formations | Port the comps into one shared `Field` component (geometry and shader; formations as plain functions returning positions; uniforms mutated by ref in `useFrame`) | Ours | None |
 | Photo resolve | Port the comp, inside the shared `Field` (sampling helper plus the photo plane) | Ours | None |
-| Depth stack (the seven photos after the resolve) | Slice 2's DOM stack: the photos as DOM in CSS 3D, with [#14](https://github.com/puIad/vic-enp/issues/14)'s entrances, timings and radius. Meng To's Gallery was dropped on 2026-10-20 ([decisions.md](decisions.md), 40) | Ours | None |
+| Depth stack (the ten photos after the resolve) | Slice 2's DOM stack: the photos as DOM in CSS 3D, with [#14](https://github.com/puIad/vic-enp/issues/14)'s entrances, timings and radius. Meng To's Gallery was dropped on 2026-10-20 ([decisions.md](decisions.md), 40) | Ours | None |
 | Door, tunnel, horizon | Port the comps. 21st.dev's [Warp Tunnel](https://21st.dev/@ln-dev7/components/warp-tunnel) is a shading reference only | Ours (Warp Tunnel MIT, notice kept if any of its code is used) | None |
 | Snap cuts and the light act | Port the comps on GSAP ScrollTrigger; each formation may be baked to a small point cloud (under 50 KB) | Ours | None |
 

@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { useLayoutEffect, useSyncExternalStore, type RefObject } from 'react'
 import { stepAt, stepMiddle } from '../world/steps'
 import { world } from '../world/store'
 
@@ -23,4 +23,24 @@ export function jump(el: HTMLElement | null, weights: number[], i: number) {
   const y = el.getBoundingClientRect().top + scrollY + stepMiddle(weights, i) * (el.offsetHeight - innerHeight)
   if (world.go) world.go(y)
   else scrollTo({ top: y })
+}
+
+/** The height every events cut makes room for: its tallest copy, rounded up (56). */
+export const tallestCopy = (heights: number[]) => Math.ceil(Math.max(0, ...heights))
+
+/**
+ * Keeps `--ev-copy` on the stage at the height of the tallest copy among `selector`, so each cut can put its name on
+ * the same line and still fit the longest copy below it (56). Resizes and the font swap re-measure.
+ */
+export function useTallestCopy(root: RefObject<HTMLElement | null>, selector: string) {
+  useLayoutEffect(() => {
+    const stage = root.current
+    if (!stage) return
+    const copies = [...stage.querySelectorAll<HTMLElement>(selector)]
+    const measure = () => stage.style.setProperty('--ev-copy', `${tallestCopy(copies.map((c) => c.offsetHeight))}px`)
+    const ro = new ResizeObserver(measure)
+    copies.forEach((c) => ro.observe(c))
+    measure()
+    return () => ro.disconnect()
+  }, [root, selector])
 }

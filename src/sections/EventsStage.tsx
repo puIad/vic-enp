@@ -4,7 +4,7 @@ import { Photo } from '../components/Photo'
 import { EVENTS, PROJECTS } from '../content/events'
 import { EVENT_STEPS, total } from '../world/steps'
 import { Mark, Peel } from '../components/Peel'
-import { jump, useStep } from './stage'
+import { jump, useStep, useTallestCopy } from './stage'
 import './stages.css'
 
 // Act 5 with the world (#15): one pinned stage, five sideways hard cuts, then the horizon. It starts a screen early
@@ -18,6 +18,7 @@ export default function EventsStage() {
   const root = useRef<HTMLElement>(null)
   const step = useStep('events', EVENT_STEPS)
   const cut = step >= 0 && step < 5 ? step : -1
+  useTallestCopy(root, '.ev:not(.projects) .ev-text')
 
   return (
     <section

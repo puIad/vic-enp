@@ -2,6 +2,8 @@ import { useSyncExternalStore } from 'react'
 
 export const REDUCE = '(prefers-reduced-motion: reduce)'
 
+const reduced = () => matchMedia(REDUCE).matches
+
 /** Live: the acts swap to their still compositions when the OS setting changes. */
 export function useReducedMotion() {
   return useSyncExternalStore(
@@ -10,6 +12,8 @@ export function useReducedMotion() {
       m.addEventListener('change', cb)
       return () => m.removeEventListener('change', cb)
     },
-    () => matchMedia(REDUCE).matches,
+    reduced,
+    // the page is never server-rendered; the tests render sections statically (sections/copy.test.tsx)
+    reduced,
   )
 }

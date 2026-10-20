@@ -171,10 +171,8 @@ export function Footer() {
     <footer id="footer" className="relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) pb-[88px] pl-(--gut) md:pt-28 md:pb-24">
       <div className="grid gap-12 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4 lg:col-span-3">
+          {/* no description line: act 2 says it (decisions.md, 58) */}
           <img src="/brand/vic-logo-white.svg" alt="Vision & Innovation Club" width="110" height="44" className="h-11 w-auto" />
-          <p className="t-cap mt-5 max-w-[34ch] text-[14px]">
-            An English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch of the El-Maarifa Scientific Association.
-          </p>
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:col-span-8 md:grid-cols-3 lg:col-span-8 lg:col-start-5">
           <div className="space-y-10">
@@ -185,7 +183,7 @@ export function Footer() {
                 <a href={`mailto:${EMAIL}`} className="block text-white decoration-aqua underline-offset-4 hover:underline">
                   {EMAIL}
                 </a>
-                <p className="max-w-[24ch] text-gray">{ADDRESS}</p>
+                <p className="max-w-[24ch] text-balance text-gray">{ADDRESS}</p>
               </address>
             </div>
           </div>

@@ -213,13 +213,13 @@ the hero goes on scroll.
 | 7 | `IMG_7544` banner around the table | dealt from a pile, lower right |
 | 8 | `IMG_8759` outdoor group | flies in from far back |
 
-- **Copy:** the title and lead over the points, then a five-row ledger of club life, one row lit at a time. No
+- **Copy:** the title and lead over the points, then a four-row ledger of club life, one row lit at a time. No
   captions, alt text only.
 - **Hand-over:** the ENP photo returns full frame, then a hard cut (no passage, no fade) to the Gala cut.
 - **Tier 0 and reduced motion:** one art-directed grid of the same eight photos.
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20)):** `IMG_6171`, `IMG_7517` and `IMG_9215-2` join the stack, ten photos in
-  the same six screens, and the tier 0 grid. The ledger loses VIC Charity's row, and VIC Entertainment's row gets
-  its logo's symbol ([decisions.md](decisions.md), 55, 60, 65).
+  the same six screens, and the tier 0 grid. VIC Entertainment's row gets its logo's symbol. VIC Charity's row has
+  left the ledger (built) ([decisions.md](decisions.md), 55, 60, 65).
 
 ### 5. Events and projects
 
@@ -235,8 +235,8 @@ the hero goes on scroll.
   (Polymaze), six city clusters (AEC), four small rings (projects), then the flat line of the horizon.
 - **Photos:** `DSCF7405` (Gala), `_T2A6297` (Ignite), `IMG_8026` (Polymaze), `IMG_3223` (AEC, 2026-10-20). The
   four projects have none ([assets.md](assets.md#missing)).
-- **Copy (2026-10-20):** the name, a lead and, for the Gala, a link to gala.vic-enp.com. No eyebrow, no pills
-  ([decisions.md](decisions.md), 43 to 49).
+- **Copy (2026-10-20):** the name, a lead and a link to the event's own site (gala, ignite, polymaze and
+  aec.vic-enp.com). No eyebrow, no pills ([decisions.md](decisions.md), 43 to 49, 57).
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 14 and 17):** each event's logo
   formation (AEC's symbol; GALA, Ignite and POLYMAZE draw their names), left above its name on desktop with the
   formation kept behind the photo, the logo alone on a phone; the projects' logo symbols beside their names; every
@@ -274,9 +274,9 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
-- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. Slice 5 gives the motto the word
-  scrub ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19), drops the description line and sets the address to "10 Rue des Frères
-  OUDEK, El Harrach" ([decisions.md](decisions.md), 58, 62).
+- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. No description line, and the address reads "10 Rue
+  des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). Slice 5 gives the motto the word scrub
+  ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62).
 
 ## Passages
 

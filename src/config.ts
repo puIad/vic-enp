@@ -35,4 +35,5 @@ export const SOCIAL = {
 } as const
 
 export const EMAIL = 'vic@g.enp.edu.dz'
-export const ADDRESS = 'ENP, 10 Avenue Hassen Badi, El Harrach, Algiers'
+/** The street's current name for the same place, as the owner wrote it (decisions.md, 58). */
+export const ADDRESS = '10 Rue des Frères OUDEK, El Harrach'

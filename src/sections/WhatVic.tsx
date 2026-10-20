@@ -26,16 +26,6 @@ export function WhatVic() {
             <b className="font-bold text-white">Our vision:</b> a lasting community you are proud to belong to.
           </p>
         </div>
-        <div className="mt-8 flex flex-wrap items-baseline gap-x-5 gap-y-1">
-          <h3 className="text-[13px] font-bold text-white">What we hold to</h3>
-          <ul className="contents">
-            {['Respect', 'Diversity', 'Contribution and creativity', 'Legacy'].map((v) => (
-              <li key={v} className="t-cap">
-                {v}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
 
       <ul className="mt-20 grid grid-cols-2 gap-x-4 gap-y-8 md:mt-28 md:grid-cols-4 md:gap-0">

@@ -48,7 +48,7 @@ export default function ClubLifePeak() {
     const ticks = [...root.querySelectorAll('.peak-ticks i')]
     let lit = -1
     const ledger = (p: number) => {
-      const n = gsap.utils.clamp(0, 4, Math.floor((p - 0.44) / (0.53 / 5)))
+      const n = gsap.utils.clamp(0, rows.length - 1, Math.floor((p - 0.44) / (0.53 / rows.length)))
       if (n === lit) return
       lit = n
       rows.forEach((r, i) => r.classList.toggle('on', i === n))

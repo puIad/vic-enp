@@ -23,7 +23,7 @@ import { sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
 import { has } from './steps'
 import { world } from './store'
-import { BUDGET, LADDER, startRung, type Budget, type Tier } from './tier'
+import { BUDGET, LADDER, flatBudget, forcedPoints, startRung, type Budget, type Tier } from './tier'
 
 // The world layer (docs/architecture.md, Two layers): one canvas fixed behind the whole page, one WebGL context, one
 // field of points that holds a formation per act (formations.ts), driven by the score (score.ts), plus your point.
@@ -154,11 +154,39 @@ function makeYou() {
 
 type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | false }
 
+const RAMP = forcedPoints(location.search)
+const FPS = new URLSearchParams(location.search).has('fps')
+
+/** `?fps`: a small live readout of the frame rate, the points drawn and the pixel ratio, for the owner's phone checks. */
+function useFpsReadout() {
+  const el = useRef<HTMLElement | null>(null)
+  const k = useRef({ frames: 0, since: 0 })
+  useEffect(() => {
+    if (!FPS) return
+    const d = document.createElement('output')
+    d.className = 'fps'
+    d.setAttribute('aria-hidden', 'true')
+    document.body.append(d)
+    el.current = d
+    return () => d.remove()
+  }, [])
+  return (now: number, points: number, dpr: number) => {
+    if (!el.current) return
+    const c = k.current
+    c.frames++
+    if (now - c.since < 1) return
+    el.current.textContent = `${Math.round(c.frames / (now - c.since))} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`
+    c.frames = 0
+    c.since = now
+  }
+}
+
 function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onReady: () => void }) {
   const scene = useThree((s) => s.scene)
   const gl = useThree((s) => s.gl)
   const setFrameloop = useThree((s) => s.setFrameloop)
-  const B = BUDGET[budget]
+  const B = RAMP ? flatBudget(RAMP) : BUDGET[budget]
+  const fps = useFpsReadout()
   const field = useRef<ReturnType<typeof makeField> | null>(null)
   const you = useRef<ReturnType<typeof makeYou> | null>(null)
   const samples = useRef<Samples>({ icon: null, photo: null })
@@ -449,6 +477,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
         html.dataset.scVerifyHold = String(world.act === 'apply' && world.progress > 0.82)
       }
     }
+    fps(state.clock.elapsedTime, f.points.geometry.drawRange.count, viewport.dpr)
     // the canvas fades in once a frame of the gather has been drawn, never on an empty buffer or before the icon's sample
     if (K.start >= 0 && ++K.frames === 2) onReady()
   })
@@ -510,7 +539,7 @@ export default function World({ tier, forced, still, onReady, onLost }: WorldPro
         gl.domElement.addEventListener('webglcontextlost', onLost, { once: true })
       }}
     >
-      {!forced && !still && (
+      {!forced && !still && !RAMP && (
         <PerformanceMonitor
           flipflops={3}
           onDecline={() => setRung((r) => Math.min(LADDER.length - 1, r + 1))}

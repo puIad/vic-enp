@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BUDGET, LADDER, forcedTier, pickTier, startRung } from './tier'
+import { BUDGET, LADDER, forcedPoints, forcedTier, pickTier, startRung } from './tier'
 
 const base = { search: '', reduce: false, saveData: false, memory: 8, phone: false }
 
@@ -38,5 +38,15 @@ describe('the ladder', () => {
     expect(Math.min(...LADDER.map((r) => r.dpr))).toBe(1)
     expect(BUDGET[2].peak).toBe(24000)
     expect(BUDGET[1].peak).toBe(12000)
+  })
+})
+
+describe('the point ramp', () => {
+  it('reads ?points= within 1k to 200k, and nothing else', () => {
+    expect(forcedPoints('?points=40000')).toBe(40000)
+    expect(forcedPoints('?points=80000&fps')).toBe(80000)
+    expect(forcedPoints('?points=10')).toBeNull()
+    expect(forcedPoints('?points=abc')).toBeNull()
+    expect(forcedPoints('')).toBeNull()
   })
 })

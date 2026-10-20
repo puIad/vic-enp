@@ -46,7 +46,7 @@ export const BUDGET = {
   2: { hero: 9000, cuts: 16000, peak: 24000, light: 6500 },
   1: { hero: 5000, cuts: 10000, peak: 12000, light: 3500 },
 } as const
-export type Budget = (typeof BUDGET)[1 | 2]
+export type Budget = { hero: number; cuts: number; peak: number; light: number }
 
 /**
  * What the world draws: a budget and the pixel-ratio cap. The world starts on its tier's rung and PerformanceMonitor
@@ -60,3 +60,15 @@ export const LADDER = [
 ] as const
 
 export const startRung = (tier: Tier) => (tier === 2 ? 0 : 2)
+
+/**
+ * `?points=20000` draws that many points in every act and holds the rung: the owner's point ramp on a real phone (open
+ * question 25, #5's 10k, 20k, 40k, 80k). Debug only; nothing links to it.
+ */
+export function forcedPoints(search: string): number | null {
+  const n = Number(new URLSearchParams(search).get('points'))
+  return Number.isFinite(n) && n >= 1000 && n <= 200000 ? Math.round(n) : null
+}
+
+/** A budget with every act at the same count. */
+export const flatBudget = (n: number): Budget => ({ hero: n, cuts: n, peak: n, light: n })

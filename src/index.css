@@ -1034,3 +1034,19 @@
     transition: none !important;
   }
 }
+
+/* ?fps: the owner's phone checks read the frame rate here (World) */
+.fps {
+  position: fixed;
+  left: 50%;
+  top: 6px;
+  z-index: 30;
+  translate: -50% 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.75);
+  color: #9ef0d8;
+  font: 600 12px/1.4 ui-monospace, monospace;
+  white-space: nowrap;
+  pointer-events: none;
+}

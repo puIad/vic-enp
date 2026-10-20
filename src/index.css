@@ -713,6 +713,7 @@
     height: 100lvh;
     margin-top: -100lvh;
     pointer-events: none;
+    overflow-x: clip; /* the pools of night under the words reach past the screen's edge and widened the page */
   }
   .peak-frame {
     position: absolute;

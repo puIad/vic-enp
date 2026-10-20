@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import type { DeptIcon as Id } from '../content/departments'
 
 // Seven outlined icons for the tier 0 department cards (#13), each a flat echo of its cut's formation.
-// Outlines only: nothing here is a ring with a lit centre (the charter's iris rule).
+// Outlines only: nothing here is a ring with a lit centre. The iris belongs to the hero's icon and the close's slot
+// (ADR 0001); everywhere else the page stays eye-free by choice.
 const paths: Record<Id, ReactNode> = {
   // HR: six clumps on a ring, joined
   hr: (

@@ -1,13 +1,32 @@
 import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
-import { AdditiveBlending, BufferAttribute, BufferGeometry, Plane, Points, Raycaster, ShaderMaterial, Vector2, Vector3 } from 'three'
-import { MEMBERS, constellation, heroPlacement, random, yourPointNdc } from './cloud'
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  BufferGeometry,
+  Color,
+  DynamicDrawUsage,
+  Euler,
+  Matrix3,
+  Matrix4,
+  Plane,
+  Points,
+  Raycaster,
+  ShaderMaterial,
+  Vector2,
+  Vector3,
+} from 'three'
+import { MEMBERS, heroPlacement, random } from './cloud'
+import { CAM_Z, HH, arrive, close, cloud, halfWidth, icon, irisAt, photo, shape, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
+import { sampleIcon, samplePhoto } from './sample'
+import { score, topRight, type Frame, type Key } from './score'
+import { has } from './steps'
 import { world } from './store'
-import { LADDER, startRung, type Tier } from './tier'
+import { BUDGET, LADDER, flatBudget, forcedPoints, startRung, type Budget, type Tier } from './tier'
 
-// The world layer (docs/architecture.md, Two layers): one canvas, one WebGL context, the hero's field (#11) and your
-// point. Ported from prototype/act-hero: the same seeded cloud, the same shader, the same numbers.
+// The world layer (docs/architecture.md, Two layers): one canvas fixed behind the whole page, one WebGL context, one
+// field of points that holds a formation per act (formations.ts), driven by the score (score.ts), plus your point.
 
 export type WorldProps = {
   tier: Exclude<Tier, 0>
@@ -19,218 +38,449 @@ export type WorldProps = {
   onLost: () => void
 }
 
-const MAX = LADDER[0].points
 const GATHER = 3.2 // s, points stream in from the edges while the counter climbs to 600
 const LIGHT = 0.9 // s, your point lights once the counter lands
+const TRAIL = 16 // your point's light trail in flight (#17)
 /** frame-rate independent easing toward a target, `k` per second */
 const damp = (from: number, to: number, k: number, dt: number) => from + (to - from) * (1 - Math.exp(-k * dt))
 
 const fieldVertex = /* glsl */ `
-  attribute vec3 aFrom; attribute vec4 aR; attribute float aM;
-  uniform float uGather, uTime, uHand, uPx, uLean, uScale; uniform vec2 uPar, uPtr;
+  attribute vec4 aA, aB, cA, cB, aR;
+  uniform float uMix, uStag, uTime, uDrift, uPx, uScale, uLean, uFlash, uDim, uWave, uWaveR, uShift;
+  uniform vec2 uPar, uPtr; uniform vec3 uPivot, uWaveO; uniform mat3 uRot;
   varying vec3 vC; varying float vA;
   void main() {
-    float st = aR.x * .55, gg = smoothstep(st, st + .45, uGather); gg = gg * gg * (3. - 2. * gg);
-    vec3 p = mix(aFrom, position, gg);
-    p += vec3(sin(uTime * .3 + aR.y * 6.28), cos(uTime * .25 + aR.z * 6.28), sin(uTime * .2 + aR.w * 6.28)) * .12;
-    p.xy *= 1. - .38 * uHand;                                    // the hand-over: the field tightens toward the 600
+    float t = clamp((uMix - aR.x * uStag) / (1. - uStag + 1e-4), 0., 1.); t = t * t * (3. - 2. * t);
+    vec4 P = mix(aA, aB, t); vec4 C = mix(cA, cB, t);
+    vec3 p = P.xyz;
+    p += vec3(sin(uTime * .3 + aR.y * 6.28), cos(uTime * .25 + aR.z * 6.28), sin(uTime * .2 + aR.w * 6.28)) * .12 * uDrift;
+    p = uPivot + uRot * (p - uPivot);
     float near = clamp((p.z + 6.) / 12., 0., 1.);
-    p.xy += uPar * (near - .4) * 1.4;                             // parallax: near points swing more than far ones
+    p.xy += uPar * (near - .4) * 1.4 * uLean;                       // parallax: near points swing more than far ones
     vec2 dv = uPtr - p.xy; p.xy += dv * exp(-dot(dv, dv) / 9.68) * .3 * uLean;   // the lean toward the pointer
+    p.y += uShift;
+    float glow = uWave >= 0. ? exp(-pow((length(p.xy - uWaveO.xy) - uWave * uWaveR) * 1.6, 2.)) : 0.;
     vec4 mv = modelViewMatrix * vec4(p, 1.); gl_Position = projectionMatrix * mv;
-    float sz = (aM > .5 ? 5.2 : 1.3 + aR.y * .7) * (.55 + near * .9);
-    gl_PointSize = clamp(sz * uPx * (uScale / -mv.z) * .09, 1., (aM > .5 ? 7. : 3.) * uPx);
-    vC = mix(vec3(.071, .49, .733), vec3(.412, .769, .686), near);   // charter blue far, aquamarine near
-    vA = (aM > .5 ? 1. : .3) * (.35 + near * .65) * gg;
+    float cap = max(3., P.w * 1.35);
+    gl_PointSize = clamp(P.w * (1. + glow * .9) * uPx * (uScale / -mv.z) * .09, 1., (cap + glow * 4.) * uPx);
+    vC = mix(C.rgb, vec3(1.), max(uFlash, glow * .5));
+    vA = C.a * uDim * (1. + glow * 1.4);
+    if (vA < .003) gl_PointSize = 0.;
   }`
 const fieldFragment = /* glsl */ `
   varying vec3 vC; varying float vA;
   void main() { float d = length(gl_PointCoord - .5) * 2.; if (d > 1.) discard; gl_FragColor = vec4(vC, vA * (1. - d * d)); }`
 
+// your point: aquamarine glow with a white core; the halo falls off to nothing, never a ring or a dark disc. In flight,
+// vertices 1..15 are its light trail.
 const youVertex = /* glsl */ `
-  uniform float uPx, uSz;
-  void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); gl_PointSize = 130. * uPx * uSz; }`
-// aquamarine glow with a white core; the halo falls off to nothing, never a ring or a dark disc (iris rule)
+  attribute float aK; uniform float uPx, uSz, uMove; varying float vK;
+  void main() {
+    vK = aK; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+    float s = aK < .5 ? 1. : (1. - aK / 16.) * .55 * uMove;
+    gl_PointSize = 130. * uPx * uSz * s;
+  }`
 const youFragment = /* glsl */ `
-  uniform float uA;
+  uniform float uA, uMove; varying float vK;
   void main() {
     float d = length(gl_PointCoord - .5) * 2.; if (d > 1.) discard;
     float core = smoothstep(.09, .0, d), halo = pow(1. - d, 3.);
-    gl_FragColor = vec4(mix(vec3(.412, .769, .686), vec3(1.), core), (halo * .7 + core) * uA);
+    float a = vK < .5 ? halo * .7 + core : halo * .5 * pow(1. - vK / 16., 1.6) * uMove;
+    gl_FragColor = vec4(mix(vec3(.412, .769, .686), vec3(1.), vK < .5 ? core : 0.), a * uA);
   }`
-
-/** One buffer for the most points any tier draws; a lower rung draws a prefix of it (the members come first). */
-function fieldGeometry() {
-  const rnd = random(7)
-  const base = constellation(MAX, 7, rnd)
-  const pos = new Float32Array(MAX * 3)
-  const from = new Float32Array(MAX * 3)
-  const r4 = new Float32Array(MAX * 4)
-  const mem = new Float32Array(MAX)
-  base.forEach((b, i) => {
-    pos.set(b, i * 3)
-    // each point starts out past the edge of the screen, along its own arm, and behind the camera's focus
-    const d = Math.hypot(b[0], b[1]) || 1
-    const k = 2.6 + rnd() * 2
-    from.set([((b[0] / d) * 16 * k) / 3 + (rnd() - 0.5) * 6, ((b[1] / d) * 10 * k) / 3 + (rnd() - 0.5) * 6, b[2] - 14 - rnd() * 8], i * 3)
-    r4.set([rnd(), rnd(), rnd(), rnd()], i * 4)
-    mem[i] = i < MEMBERS ? 1 : 0
-  })
-  const g = new BufferGeometry()
-  g.setAttribute('position', new BufferAttribute(pos, 3))
-  g.setAttribute('aFrom', new BufferAttribute(from, 3))
-  g.setAttribute('aR', new BufferAttribute(r4, 4))
-  g.setAttribute('aM', new BufferAttribute(mem, 1))
-  return g
-}
 
 const material = (uniforms: Record<string, { value: unknown }>, vertexShader: string, fragmentShader: string) =>
   new ShaderMaterial({ uniforms, vertexShader, fragmentShader, transparent: true, depthWrite: false, blending: AdditiveBlending })
 
-/** The hero's scene as plain three objects, built once and mutated per frame outside React. */
-function makeHero(still: boolean) {
-  const geometry = fieldGeometry()
-  const fieldMat = material(
+/** How many points each formation draws on a budget. */
+const countOf = (k: Key, b: Budget) =>
+  k === 'photo' ? b.peak : k === 'horizon' ? b.light : k === 'arrive' || k === 'icon' || k === 'cloud' || k === 'tight' || k.startsWith('close') ? b.hero : b.cuts
+
+/** The field as plain three objects, built once per budget and mutated per frame outside React. */
+function makeField(n: number) {
+  const g = new BufferGeometry()
+  const attr = (name: string) => {
+    const a = new BufferAttribute(new Float32Array(n * 4), 4)
+    a.setUsage(DynamicDrawUsage)
+    g.setAttribute(name, a)
+    return a
+  }
+  const slots = { aA: attr('aA'), aB: attr('aB'), cA: attr('cA'), cB: attr('cB') }
+  // three needs a position attribute to count the points; the shader reads aA and aB instead
+  g.setAttribute('position', new BufferAttribute(new Float32Array(n * 3), 3))
+  const rnd = random(7)
+  const r4 = new Float32Array(n * 4).map(() => rnd())
+  g.setAttribute('aR', new BufferAttribute(r4, 4))
+  const mat = material(
     {
-      uGather: { value: 0 },
+      uMix: { value: 0 },
+      uStag: { value: 0 },
       uTime: { value: 0 },
-      uHand: { value: 0 },
+      uDrift: { value: 1 },
       uPx: { value: 1 },
+      uScale: { value: 600 },
+      uLean: { value: 0 },
+      uFlash: { value: 0 },
+      uDim: { value: 1 },
+      uWave: { value: -1 },
+      uWaveR: { value: 14 },
+      uShift: { value: 0 },
       uPar: { value: new Vector2() },
       uPtr: { value: new Vector2(99, 99) },
-      uLean: { value: 0 },
-      uScale: { value: 600 },
+      uPivot: { value: new Vector3() },
+      uWaveO: { value: new Vector3() },
+      uRot: { value: new Matrix3() },
     },
     fieldVertex,
     fieldFragment,
   )
-  const youGeometry = new BufferGeometry()
-  youGeometry.setAttribute('position', new BufferAttribute(new Float32Array(3), 3))
-  const youMat = material({ uA: { value: 0 }, uPx: { value: 1 }, uSz: { value: 1 } }, youVertex, youFragment)
-  const field = new Points(geometry, fieldMat)
-  const you = new Points(youGeometry, youMat)
-  field.frustumCulled = you.frustumCulled = false
-  you.renderOrder = 1
-  return {
-    field,
-    you,
-    fieldMat,
-    youMat,
-    dispose: () => [geometry, youGeometry, fieldMat, youMat].forEach((o) => o.dispose()),
-    // the loader under the hero's CTA (#11): "Gathering the 600 <n>", gone once the 600 have landed
-    gatherEl: document.getElementById('gather'),
-    countEl: document.getElementById('gather-n'),
-    // shoot.mjs (scroll-craft) reads the world's state here to tell a moving hand-over from dead scroll
-    sc: navigator.webdriver ? document.getElementById('top') : null,
-    k: { start: -1, time: 0, hand: still ? world.hero : 0, lean: 0, turn: 0, frames: 0, count: -1 },
+  const points = new Points(g, mat)
+  points.frustumCulled = false
+  return { points, mat, slots, n, keys: { a: '', b: '' }, dispose: () => (g.dispose(), mat.dispose()) }
+}
+
+function makeYou() {
+  const g = new BufferGeometry()
+  const pos = new BufferAttribute(new Float32Array(TRAIL * 3), 3)
+  pos.setUsage(DynamicDrawUsage)
+  g.setAttribute('position', pos)
+  g.setAttribute('aK', new BufferAttribute(Float32Array.from({ length: TRAIL }, (_, i) => i), 1))
+  const mat = material({ uA: { value: 0 }, uPx: { value: 1 }, uSz: { value: 1 }, uMove: { value: 0 } }, youVertex, youFragment)
+  const points = new Points(g, mat)
+  points.frustumCulled = false
+  points.renderOrder = 1
+  return { points, mat, pos, dispose: () => (g.dispose(), mat.dispose()) }
+}
+
+type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | false }
+
+const RAMP = forcedPoints(location.search)
+const FPS = new URLSearchParams(location.search).has('fps')
+
+/** `?fps`: a small live readout of the frame rate, the points drawn and the pixel ratio, for the owner's phone checks. */
+function useFpsReadout() {
+  const el = useRef<HTMLElement | null>(null)
+  const k = useRef({ frames: 0, since: 0 })
+  useEffect(() => {
+    if (!FPS) return
+    const d = document.createElement('output')
+    d.className = 'fps'
+    d.setAttribute('aria-hidden', 'true')
+    document.body.append(d)
+    el.current = d
+    return () => d.remove()
+  }, [])
+  return (now: number, points: number, dpr: number) => {
+    if (!el.current) return
+    const c = k.current
+    c.frames++
+    if (now - c.since < 1) return
+    el.current.textContent = `${Math.round(c.frames / (now - c.since))} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`
+    c.frames = 0
+    c.since = now
+  }
+}
+
+function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onReady: () => void }) {
+  const scene = useThree((s) => s.scene)
+  const gl = useThree((s) => s.gl)
+  const setFrameloop = useThree((s) => s.setFrameloop)
+  const B = RAMP ? flatBudget(RAMP) : BUDGET[budget]
+  const fps = useFpsReadout()
+  const field = useRef<ReturnType<typeof makeField> | null>(null)
+  const you = useRef<ReturnType<typeof makeYou> | null>(null)
+  const samples = useRef<Samples>({ icon: null, photo: null })
+  const cache = useRef(new Map<string, Formation>())
+
+  useEffect(() => {
+    const f = makeField(B.peak)
+    const y = makeYou()
+    field.current = f
+    you.current = y
+    scene.add(f.points, y.points)
+    cache.current.clear()
+    return () => {
+      scene.remove(f.points, y.points)
+      f.dispose()
+      y.dispose()
+      field.current = you.current = null
+    }
+  }, [scene, B.peak])
+
+  // the two formations drawn from files; either one failing leaves its fallback (the cloud, the photo's DOM entrance)
+  useEffect(() => {
+    let gone = false
+    sampleIcon(MEMBERS).then(
+      (s) => !gone && (samples.current.icon = s),
+      () => !gone && (samples.current.icon = false),
+    )
+    samplePhoto(Math.floor(B.peak * 0.9)).then(
+      (s) => {
+        if (gone) return
+        samples.current.photo = s
+        // the peak's photo 1 now waits for the points to form it (ClubLifePeak, index.css)
+        if (has('resolve')) document.documentElement.classList.add('w-resolve')
+      },
+      () => !gone && (samples.current.photo = false),
+    )
+    return () => {
+      gone = true
+      document.documentElement.classList.remove('w-resolve')
+    }
+  }, [B.peak])
+
+  // nothing is drawn while an opaque act covers the screen (the light act, the footer)
+  useEffect(() => {
+    let covered = false
+    const check = () => {
+      if (world.covered === covered) return
+      covered = world.covered
+      setFrameloop(covered ? 'never' : 'always')
+    }
+    world.listeners.add(check)
+    return () => void world.listeners.delete(check)
+  }, [setFrameloop])
+
+  const k = useRef({
+    start: -1,
+    time: 0,
+    frames: 0,
+    count: -1,
+    mix: 0,
+    flash: 0,
+    camZ: CAM_Z,
+    lean: 0,
+    sway: new Vector2(),
+    turn: 0,
+    shift: 0,
+    dim: 1,
+    snap: null as string | null,
+    ground: '',
+    fly: 0,
+    pulse: -1,
+    layout: '',
+    sc: '',
+    land: '',
+  })
+  const tmp = useRef({
     par: new Vector2(),
     tgt: new Vector2(9, 9),
     v: new Vector3(),
     hit: new Vector3(),
     ray: new Raycaster(),
     plane: new Plane(new Vector3(0, 0, 1), 0),
-  }
-}
-
-function Hero({ points, still, onReady }: { points: number; still: boolean; onReady: () => void }) {
-  const scene = useThree((s) => s.scene)
-  const phone = useThree((s) => s.size.width < 768)
-  const hero = useRef<ReturnType<typeof makeHero> | null>(null)
-
-  useEffect(() => {
-    const h = makeHero(still)
-    hero.current = h
-    scene.add(h.field, h.you)
-    return () => {
-      scene.remove(h.field, h.you)
-      h.dispose()
-      hero.current = null
-    }
-  }, [scene, still])
-
-  // the cloud's place: right two thirds on desktop, the top 40% on a phone
-  useEffect(() => {
-    const f = hero.current?.field
-    if (!f) return
-    const pl = heroPlacement(phone)
-    f.scale.setScalar(pl.scale)
-    const [rx, ry, rz] = pl.rotation
-    const [px, py, pz] = pl.position
-    f.rotation.set(rx, ry, rz)
-    f.position.set(px, py, pz)
-  }, [phone, still])
-
-  useEffect(() => {
-    hero.current?.field.geometry.setDrawRange(0, points)
-  }, [points, still])
+    m4: new Matrix4(),
+    e: new Euler(),
+    color: new Color(),
+    gatherEl: document.getElementById('gather'),
+    countEl: document.getElementById('gather-n'),
+    // shoot.mjs (scroll-craft) reads the world's state here to tell a moving act from dead scroll
+    sc: navigator.webdriver,
+  })
 
   useFrame((state, delta) => {
-    const h = hero.current
-    if (!h) return
-    const { k, par, tgt, field, fieldMat, youMat } = h
+    const f = field.current
+    const y = you.current
+    if (!f || !y) return
+    const K = k.current
+    const T = tmp.current
+    const s = samples.current
     const dt = Math.min(delta, 0.05)
     const { camera, size, viewport } = state
-    if (k.start < 0) k.start = state.clock.elapsedTime
-    const since = state.clock.elapsedTime - k.start
+    const l: Layout = { phone: size.width < 768, w: size.width, h: size.height }
 
-    // arrival: the points stream in, the counter climbs, then your point lights and breathes
+    // the layout changed (a resize, a phone turning): every formation is rebuilt for the new view
+    // the photo sample too: a budget change resamples it, and the resolve must rebuild once the new grid lands
+    const lkey = `${l.phone}:${l.w}:${l.h}:${s.photo && s.photo.cols}:${JSON.stringify(world.photo)}:${JSON.stringify(world.slot)}`
+    if (lkey !== K.layout) {
+      K.layout = lkey
+      cache.current.clear()
+      f.keys.a = f.keys.b = ''
+    }
+
+    // arrival: waits for the icon's sample (a few ms), then the points stream in and the counter climbs
+    if (K.start < 0 && s.icon !== null) K.start = state.clock.elapsedTime
+    const since = K.start < 0 ? 0 : state.clock.elapsedTime - K.start
     const gather = still ? 1 : Math.min(1, since / GATHER)
     const lit = still ? 1 : Math.min(1, Math.max(0, (since - GATHER) / LIGHT))
     const count = Math.round(MEMBERS * gather)
-    if (count !== k.count) {
-      k.count = count
-      if (h.countEl) h.countEl.textContent = String(count)
+    if (count !== K.count) {
+      K.count = count
+      if (T.countEl) T.countEl.textContent = String(count)
     }
     const shown = gather >= 1 ? 'done' : 'on'
-    if (h.gatherEl && h.gatherEl.dataset.state !== shown) h.gatherEl.dataset.state = shown
-    if (!still) k.time += dt
+    if (T.gatherEl && T.gatherEl.dataset.state !== shown) T.gatherEl.dataset.state = shown
+    if (!still) K.time += dt
 
-    // the pointer (or a held finger): the field leans toward it and swings by depth; eased out on release
+    const iris = s.icon ? irisAt(l, s.icon) : null
+    const fr: Frame = score({
+      act: world.act,
+      progress: world.progress,
+      hero: world.hero,
+      line: world.line,
+      entry: world.entry,
+      gather,
+      lit,
+      phone: l.phone,
+      ready: { icon: !!s.icon, photo: !!s.photo && !!world.photo, slot: !!world.slot },
+      // the iris in NDC, seen from the hero's resting camera
+      iris: iris ? [iris[0] / ((CAM_Z - iris[2]) * Math.tan(Math.PI / 8) * (l.w / l.h)), iris[1] / ((CAM_Z - iris[2]) * Math.tan(Math.PI / 8))] : null,
+    })
+
+    // the formations: built on first use for this layout, uploaded only when a slot changes
+    const get = (key: Key): Formation => {
+      let fm = cache.current.get(key)
+      if (fm) return fm
+      const n = f.n
+      const c = countOf(key, B)
+      if (key === 'arrive') fm = arrive(n, c, l)
+      else if (key === 'cloud') fm = cloud(n, c, l)
+      else if (key === 'tight') fm = cloud(n, c, l, 0.62)
+      else if (key === 'icon') fm = s.icon ? icon(n, c, l, s.icon) : cloud(n, c, l)
+      else if (key === 'photo') fm = s.photo && world.photo ? photo(n, c, l, s.photo, world.photo) : shape('tunnel', n, B.cuts, l)
+      else if (key === 'closeRest') fm = close(n, c, l, null)
+      else if (key === 'closeIris') fm = close(n, c, l, world.slot, has('cuts'))
+      else fm = shape(key as ShapeKey, n, c, l)
+      cache.current.set(key, fm)
+      return fm
+    }
+    const put = (slot: 'A' | 'B', key: Key) => {
+      const fm = get(key)
+      const p = slot === 'A' ? f.slots.aA : f.slots.aB
+      const c = slot === 'A' ? f.slots.cA : f.slots.cB
+      ;(p.array as Float32Array).set(fm.pos)
+      ;(c.array as Float32Array).set(fm.col)
+      p.needsUpdate = c.needsUpdate = true
+    }
+    const snapped = fr.a === fr.b
+    let changed = false
+    if (fr.b !== f.keys.b) {
+      put('B', fr.b)
+      f.keys.b = fr.b
+      changed = true
+    }
+    if (!snapped && fr.a !== f.keys.a) {
+      put('A', fr.a)
+      f.keys.a = fr.a
+      changed = true
+    }
+    const drawn = Math.max(countOf(fr.b, B), snapped ? 0 : countOf(fr.a, B))
+    f.points.geometry.setDrawRange(0, Math.min(f.n, drawn))
+
+    // B's cuts land at once with a white flash that decays in about 0.17 s; A's blends ease
+    if (fr.snap && fr.snap !== K.snap) K.flash = 1
+    K.snap = fr.snap
+    if (world.pulse > 0 && world.pulse !== K.pulse) {
+      K.pulse = world.pulse
+      K.flash = Math.max(K.flash, 0.7)
+    }
+    K.flash = Math.max(0, K.flash - dt * 6)
+    const m = snapped ? 1 : fr.mix
+    K.mix = changed || still ? m : damp(K.mix, m, 9, dt)
+    K.camZ = changed && fr.snap ? fr.camZ : damp(K.camZ, fr.camZ, 6, dt)
+    K.shift = damp(K.shift, fr.shift, 8, dt)
+    K.dim = damp(K.dim, fr.dim, 8, dt)
+    K.turn = damp(K.turn, fr.turn, 3, dt)
+    camera.position.set(0, 0, still ? fr.camZ : K.camZ)
+    camera.updateMatrixWorld()
+
+    // the pointer (or a held finger): A's field leans toward it and swings by depth; B's formation turns toward it
     const p = world.pointer
     if (p.on) {
-      tgt.set(p.x, p.y)
-      par.lerp(tgt, 1 - Math.exp(-3.7 * dt))
-    } else par.multiplyScalar(Math.pow(0.97, dt * 60))
-    k.lean = damp(k.lean, p.on ? 1 : 0, 3.7, dt)
+      T.tgt.set(p.x, p.y)
+      T.par.lerp(T.tgt, 1 - Math.exp(-3.7 * dt))
+    } else T.par.multiplyScalar(Math.pow(0.97, dt * 60))
+    K.lean = damp(K.lean, p.on ? fr.lean : 0, 3.7, dt)
+    K.sway.x = damp(K.sway.x, (p.on ? T.par.y * 0.08 : 0) * fr.sway, 3, dt)
+    K.sway.y = damp(K.sway.y, ((p.on ? T.par.x * 0.14 : 0) + Math.sin(K.time / 5) * 0.04) * fr.sway, 3, dt)
 
-    // the hand-over (0.7 screen): the camera dollies 5.5 units in and the field tightens 38%; then act 2 turns it slowly
-    k.hand = still ? world.hero : damp(k.hand, world.hero, 4.8, dt)
-    k.turn = damp(k.turn, world.act === 'the-600' ? world.progress : world.act && world.act !== 'top' ? 1 : 0, 3, dt)
-    camera.position.set(0, 0, 14 - k.hand * 5.5)
-    camera.updateMatrixWorld()
-    field.rotation.z = heroPlacement(size.width < 768).rotation[2] - k.turn * 0.28
-
-    const u = fieldMat.uniforms
-    u.uGather.value = gather
-    u.uTime.value = k.time
-    u.uHand.value = k.hand
+    const u = f.mat.uniforms
+    u.uMix.value = K.mix
+    u.uStag.value = fr.stag
+    u.uTime.value = K.time
+    u.uDrift.value = fr.drift
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height
-    u.uLean.value = k.lean
-    u.uPar.value.copy(par)
-    // the pointer in the field's own plane
-    if (p.on || par.lengthSq() > 1e-4) {
-      h.ray.setFromCamera(tgt, camera)
-      if (h.ray.ray.intersectPlane(h.plane, h.hit)) {
-        field.updateMatrixWorld()
-        field.worldToLocal(h.hit)
-        u.uPtr.value.set(h.hit.x, h.hit.y)
-      }
+    u.uLean.value = K.lean
+    u.uFlash.value = K.flash
+    u.uDim.value = K.dim
+    u.uShift.value = K.shift * HH
+    u.uPar.value.copy(T.par)
+    // the turn of act 2 about the cloud's centre, the sway of a cut about its formation
+    const pivot = fr.turn ? heroPlacement(l.phone).position : l.phone ? [0, 3.35, 0] : [17 * (CAM_Z / 60), 0, 0]
+    u.uPivot.value.set(pivot[0], pivot[1], pivot[2])
+    T.e.set(K.sway.x, K.sway.y, -K.turn)
+    u.uRot.value.setFromMatrix4(T.m4.makeRotationFromEuler(T.e))
+    if (p.on || T.par.lengthSq() > 1e-4) {
+      T.ray.setFromCamera(T.tgt, camera)
+      if (T.ray.ray.intersectPlane(T.plane, T.hit)) u.uPtr.value.set(T.hit.x, T.hit.y)
     }
 
-    // your point: a fixed spot in the view, unprojected at a constant distance, so it never leans, drifts or parallaxes.
-    // It grows 35% across the hand-over.
-    const [nx, ny] = yourPointNdc(size.width < 768)
-    h.v.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize().multiplyScalar(14).add(camera.position)
-    h.you.position.copy(h.v)
-    const yu = youMat.uniforms
-    yu.uA.value = lit * (1 + 0.12 * Math.sin(k.time * 1.6))
-    yu.uPx.value = viewport.dpr
-    yu.uSz.value = 1 + k.hand * 0.35
+    // the ground steps between night and a lift of it on every second cut, hard, no fade
+    const ground = fr.ground ? `${fr.ground.color}:${fr.ground.alpha}` : ''
+    if (ground !== K.ground) {
+      K.ground = ground
+      gl.setClearColor(T.color.set(fr.ground?.color ?? '#141E27'), fr.ground?.alpha ?? 0)
+    }
 
-    if (h.sc) h.sc.dataset.scVerifyState = `${world.act}:${k.hand.toFixed(2)}:${count}`
-    // the canvas fades in once a frame has been drawn, never on an empty buffer
-    if (++k.frames === 2) onReady()
+    // the Apply wave: a ring of light runs out through the 600 from the slot (#17)
+    const slotW = world.slot ? slotAt(l, world.slot.x, world.slot.y) : [0, 0, 0]
+    const wave = world.wave > 0 ? (performance.now() - world.wave) / 650 : -1
+    u.uWave.value = wave >= 0 && wave <= 1.3 ? wave : -1
+    u.uWaveO.value.set(slotW[0], slotW[1], 0)
+    u.uWaveR.value = halfWidth(l) * 1.6
+
+    // your point: a fixed spot in the view, unprojected at a constant distance, so it never leans, drifts or parallaxes
+    const yu = y.mat.uniforms
+    const arr = y.pos.array as Float32Array
+    const put3 = (i: number, nx: number, ny: number) => {
+      T.v.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize().multiplyScalar(CAM_Z).add(camera.position)
+      arr.set([T.v.x, T.v.y, T.v.z], i * 3)
+    }
+    if ('flight' in fr.you) {
+      // the close: a swoop from top right along a curve into the slot, with a light trail, shrinking as it lands
+      K.fly = still ? fr.you.flight : damp(K.fly, fr.you.flight, 6, dt)
+      const s0 = topRight(l.phone)
+      const s1: [number, number] = world.slot ? [(world.slot.x / l.w) * 2 - 1, 1 - (world.slot.y / l.h) * 2] : s0
+      const c = [(s0[0] + s1[0]) / 2 - 0.25, Math.max(s0[1], s1[1]) + 0.28]
+      for (let i = 0; i < TRAIL; i++) {
+        const t = Math.max(0, K.fly - i * 0.014)
+        const a = (1 - t) * (1 - t)
+        const b = 2 * (1 - t) * t
+        const d = t * t
+        put3(i, a * s0[0] + b * c[0] + d * s1[0], a * s0[1] + b * c[1] + d * s1[1])
+      }
+      const landed = Math.min(1, Math.max(0, (K.fly - 0.94) / 0.06))
+      yu.uMove.value = Math.min(1, K.fly * (1 - K.fly) * 4)
+      const press = wave > 0 && wave < 1 ? Math.sin(wave * Math.PI) * 0.6 : 0
+      yu.uSz.value = (1.35 - 0.6 * K.fly) * (1 + press)
+      // on landing the slot's own glow takes over (Close), so the sprite steps out
+      yu.uA.value = 1 - landed
+      const land = landed.toFixed(2)
+      if (land !== K.land) document.documentElement.style.setProperty('--land', (K.land = land))
+    } else {
+      for (let i = 0; i < TRAIL; i++) put3(i, fr.you.x, fr.you.y)
+      yu.uMove.value = 0
+      yu.uSz.value = fr.you.size
+      yu.uA.value = fr.you.alpha * (1 + 0.12 * Math.sin(K.time * 1.6))
+    }
+    y.pos.needsUpdate = true
+    yu.uPx.value = viewport.dpr
+
+    if (T.sc) {
+      // the whole world's state on the root, so every act (not only the hero) shows its motion to shoot.mjs; the close's
+      // landed point is an authored hold, as is the peak's (ClubLifePeak)
+      const sc = `${world.act}:${world.hero.toFixed(2)}:${fr.a}>${fr.b}:${K.mix.toFixed(2)}:${K.camZ.toFixed(1)}:${K.shift.toFixed(2)}:${K.fly.toFixed(2)}:${count}`
+      if (sc !== K.sc) {
+        K.sc = sc
+        const html = document.documentElement
+        html.dataset.scVerifyState = sc
+        html.dataset.scVerifyHold = String(world.act === 'apply' && world.progress > 0.82)
+      }
+    }
+    fps(state.clock.elapsedTime, f.points.geometry.drawRange.count, viewport.dpr)
+    // the canvas fades in once a frame of the gather has been drawn, never on an empty buffer or before the icon's sample
+    if (K.start >= 0 && ++K.frames === 2) onReady()
   })
 
   return null
@@ -266,21 +516,9 @@ function usePointer() {
   }, [])
 }
 
-/** Nothing renders while the canvas is scrolled out of view (the light act and below cover it). */
-function PauseOffscreen() {
-  const gl = useThree((s) => s.gl)
-  const setFrameloop = useThree((s) => s.setFrameloop)
-  useEffect(() => {
-    const io = new IntersectionObserver(([e]) => setFrameloop(e.isIntersecting ? 'always' : 'never'))
-    io.observe(gl.domElement)
-    return () => io.disconnect()
-  }, [gl, setFrameloop])
-  return null
-}
-
 export default function World({ tier, forced, still, onReady, onLost }: WorldProps) {
   const [rung, setRung] = useState(startRung(tier))
-  const { points, dpr } = LADDER[rung]
+  const { budget, dpr } = LADDER[rung]
   usePointer()
   useEffect(() => {
     document.documentElement.dataset.worldRung = String(rung)
@@ -295,22 +533,21 @@ export default function World({ tier, forced, still, onReady, onLost }: WorldPro
       linear
       dpr={Math.min(devicePixelRatio, dpr)}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', stencil: false, depth: false }}
-      camera={{ fov: 45, near: 0.1, far: 120, position: [0, 0, 14] }}
+      camera={{ fov: 45, near: 0.1, far: 120, position: [0, 0, CAM_Z] }}
       onCreated={({ gl }) => {
         gl.setClearColor(0x141e27, 0)
-        // context loss drops the page to tier 0 (#5): the poster comes back, the content never notices
+        // context loss drops the page to tier 0 (#5): the posters and the cards come back, the content never notices
         gl.domElement.addEventListener('webglcontextlost', onLost, { once: true })
       }}
     >
-      {!forced && !still && (
+      {!forced && !still && !RAMP && (
         <PerformanceMonitor
           flipflops={3}
           onDecline={() => setRung((r) => Math.min(LADDER.length - 1, r + 1))}
           onIncline={() => setRung((r) => Math.max(0, r - 1))}
         />
       )}
-      <PauseOffscreen />
-      <Hero points={points} still={still} onReady={onReady} />
+      <Field budget={budget} still={still} onReady={onReady} />
     </Canvas>
   )
 }

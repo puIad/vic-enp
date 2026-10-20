@@ -9,7 +9,8 @@ export function random(seed: number) {
 }
 
 /**
- * One cloud of three arms with a dense core, tilted so it never reads as a ring with a lit centre (the iris rule).
+ * One cloud of three arms with a dense core, tilted so it never reads as a ring with a lit centre: the iris belongs to
+ * the icon formation and the close's slot only, a design choice since ADR 0001 lifted the charter's 3D rule for the web.
  * The first 600 points are the members. A prefix of a longer cloud is the shorter cloud, so tiers share one buffer.
  */
 export function constellation(n: number, seed = 7, rnd = random(seed)): Pt[] {
@@ -30,5 +31,3 @@ export const heroPlacement = (phone: boolean) =>
     ? { scale: 0.36, rotation: [0.9, 0, -0.75] as const, position: [0, 2.5, 0] as const }
     : { scale: 0.85, rotation: [0.45, 0, -0.35] as const, position: [4.3, 0.3, 0] as const }
 
-/** Your point, in NDC: off to one side, outside the cloud, above the headline (#11; owner confirmed place and size). */
-export const yourPointNdc = (phone: boolean) => (phone ? [0.6, 0.66] : [0.84, 0.6])

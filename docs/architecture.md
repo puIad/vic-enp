@@ -30,14 +30,12 @@ to R3F is translation, not design.
 |---|---|---|---|
 | Point field and formations | Port the comps into one shared `Field` component (geometry and shader; formations as plain functions returning positions; uniforms mutated by ref in `useFrame`) | Ours | None |
 | Photo resolve | Port the comp, inside the shared `Field` (sampling helper plus the photo plane) | Ours | None |
-| Depth stack (the seven photos after the resolve) | Start from Meng To's [Gallery](https://21st.dev/@mengto/components/gallery) on 21st.dev, merged into the page's one canvas and reworked to [#14](https://github.com/puIad/vic-enp/issues/14)'s entrances, timings, radius and tier 1 limit | MIT, keep the notice | The owner's 21st.dev account, acting for the club; the owner installs it |
+| Depth stack (the seven photos after the resolve) | Slice 2's DOM stack: the photos as DOM in CSS 3D, with [#14](https://github.com/puIad/vic-enp/issues/14)'s entrances, timings and radius. Meng To's Gallery was dropped on 2026-10-20 ([decisions.md](decisions.md), 40) | Ours | None |
 | Door, tunnel, horizon | Port the comps. 21st.dev's [Warp Tunnel](https://21st.dev/@ln-dev7/components/warp-tunnel) is a shading reference only | Ours (Warp Tunnel MIT, notice kept if any of its code is used) | None |
 | Snap cuts and the light act | Port the comps on GSAP ScrollTrigger; each formation may be baked to a small point cloud (under 50 KB) | Ours | None |
 
-- **One context.** The Gallery ships its own renderer, camera and loop. They go: it renders into the shared canvas
-  like everything else. No third-party piece may add a second WebGL context.
-- **Notice.** The Gallery's MIT notice stays at the top of its source file, with a comment linking its 21st.dev
-  page, and a row in the [asset ledger](assets.md#asset-ledger). Re-check its licence on the day it is installed.
+- **One context.** No third-party piece may add a second WebGL context. The depth stack is DOM, so the peak keeps one
+  canvas and at most two stack photos on screen at once on a phone.
 - **No Originkit.** No Originkit account or plan is needed.
 
 Not added unless a slice proves the need: a state library (a plain mutable store read in `useFrame` is enough), a
@@ -87,8 +85,12 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
                                              useFrame reads the store, blends formations, renders
 ```
 
-- Each act in [experience.md](experience.md#the-journey) registers one ScrollTrigger over its section and
-  writes its progress into the store. No React state updates per frame.
+- Each act in [experience.md](experience.md#the-journey) has one scroll range (`src/scroll/smooth.ts`): a pinned act
+  owns the world from its pin to its release, a flowing act while it holds the centre line, and the close from a screen
+  before it pins (its entry). The act and its progress go into the store; no React state updates per frame.
+- `src/world/score.ts` turns the store into what the field holds: two formations and a blend, a flash on each cut, the
+  camera, the ground and your point. The formations are plain functions in `src/world/formations.ts`, one buffer for
+  all of them, sized to the peak's count on the current budget.
 - In A's acts the world blends between the current and next formation by progress. In B's acts (departments,
   events) it snaps to the cut's formation at each step boundary, with no blend. Formations are target positions
   for the same set of points, computed once at load or baked (the photo formation computed when its photo has

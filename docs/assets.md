@@ -69,7 +69,7 @@ Needed by the signed acts and not made yet:
 
 | Asset | For | From |
 |---|---|---|
-| `hero-poster-d.webp`, `hero-poster-m.webp` | Hero tier 0, reduced motion, and the fallback when the world fails ([#11](https://github.com/puIad/vic-enp/issues/11)) | Baked from the real scene by `npm run posters` (slice 3) into `public/posters/`: 1920x1200 at 35 KB, 585x1266 at 18 KB. Rebaked in slice 4 from the icon formation ([ADR 0001](adr/0001-the-icon-formation.md)) |
+| `hero-poster-d.webp`, `hero-poster-m.webp` | Hero tier 0, reduced motion, and the fallback when the world fails ([#11](https://github.com/puIad/vic-enp/issues/11)) | Baked from the real scene by `npm run posters` (slice 3) into `public/posters/`: Rebaked in slice 4 from the icon formation at rest ([ADR 0001](adr/0001-the-icon-formation.md)): 1920x1200 at 29 KB, 585x1266 at 18 KB |
 | `close-poster-d.webp`, `close-poster-m.webp` | Close tier 0 and reduced motion ([#17](https://github.com/puIad/vic-enp/issues/17)) | Baked from the real scene in the build |
 | Seven outlined department icons | Departments tier 0 cards only ([#13](https://github.com/puIad/vic-enp/issues/13)) | Drawn in the build |
 | One ambient sound loop, under 300 KB | The optional sound toggle ([#10](https://github.com/puIad/vic-enp/issues/10)) | To find, with a licence for public use |
@@ -98,4 +98,3 @@ Every file in `public/` that isn't code, one row each, filled during the build.
 | `public/apple-touch-icon.png` | `vic-icon-white.svg` on night, 180×180 | VIC | Home-screen icon |
 | Outfit (npm `@fontsource-variable/outfit`, bundled) | Google Fonts via Fontsource | SIL OFL 1.1 | Every word, until the Gilroy web licence is settled (open question 11) |
 | `public/photos/*` | `assets/pics/` (club photos) | VIC | Peak, events |
-| `src/world/` depth stack (code) | [Gallery](https://21st.dev/@mengto/components/gallery) by Meng To on 21st.dev, installed on the owner's account | MIT, notice kept in the file | Peak photo sequence |

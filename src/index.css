@@ -242,7 +242,16 @@
     height: 38px;
   }
 
-  /* ---------- the world (slice 3): one canvas behind the hero and act 2, faded in on its first frame ---------- */
+  /* ---------- the world: one canvas fixed behind the whole page, faded in on its first frame ---------- */
+  .world-layer {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100lvh;
+    pointer-events: none;
+  }
   .world-canvas {
     position: absolute !important;
     inset: 0;
@@ -459,6 +468,39 @@
     background: var(--line-dark);
   }
 
+  /* one tick per cut under the current cut run's waypoint (#13, #15) */
+  .rail-ticks {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin: -8px 0 -6px 3px;
+  }
+  .rail-ticks b {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgb(239 239 239 / 0.3);
+    transition:
+      background 0.2s,
+      box-shadow 0.2s;
+  }
+  .rail-ticks b.on {
+    background: var(--color-aqua);
+  }
+  .rail-ticks b.now {
+    box-shadow:
+      0 0 0 3px rgb(105 196 175 / 0.22),
+      0 0 8px var(--color-aqua);
+  }
+  @media (max-width: 767px) {
+    .rail-ticks {
+      margin-left: 9px;
+      gap: 5px;
+    }
+  }
+
   .pill.corner {
     position: fixed;
     top: 78px;
@@ -628,6 +670,14 @@
     }
   }
 
+  /* with the world, the night half of each horizon is open, so the field can lie down into the lit line (#16) */
+  .w-on .horizon {
+    background: linear-gradient(180deg, transparent 0%, rgb(29 43 55 / 0.35) 40%, #34424e 52%, #5d6b77 68%, var(--color-gray) 100%);
+  }
+  .w-on .horizon.down {
+    background: linear-gradient(0deg, transparent 0%, rgb(29 43 55 / 0.35) 40%, #34424e 48%, #5d6b77 64%, var(--color-gray) 100%);
+  }
+
   .lightact {
     position: relative;
     z-index: 2;
@@ -688,6 +738,20 @@
     width: min(96vw, 120lvh);
     aspect-ratio: 3 / 2;
     translate: -50% -50%;
+  }
+  .peak-enter {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+  /* with the world's resolve, the points form photo 1 and the real photo fades in under them, in place (#14) */
+  .w-ready.w-resolve .peak-enter {
+    opacity: var(--formed, 0) !important;
+    transform: none !important;
+  }
+  /* the hard cut (#14, #15): once the events pin, the peak's stage is gone, and back on scroll back */
+  html[data-act='events'] .peak-stage,
+  html[data-act='events'] .peak-words {
     opacity: 0;
   }
   .peak-one .peak-frame {
@@ -913,6 +977,54 @@
       padding-top: 14px;
     }
   }
+  /* ---------- the close with the world (#17): pinned 230svh, the travel in CSS vars from Close ---------- */
+  .close.staged {
+    height: 230svh;
+  }
+  .close-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+  }
+  .close.staged .close-l1,
+  .close.staged .close-l2 {
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .close.staged .close-l1 > span {
+    display: inline-block;
+    translate: 0 calc((1 - var(--l1, 0)) * 110%);
+  }
+  .close.staged .close-l2 > span {
+    display: inline-block;
+    translate: 0 calc((1 - var(--l2, 0)) * 110%);
+  }
+  .close.staged .close-sub {
+    opacity: var(--sub, 0);
+    translate: 0 calc((1 - var(--sub, 0)) * 14px);
+  }
+  .close.staged .close-cta {
+    opacity: var(--rise, 0);
+    translate: 0 calc((1 - var(--rise, 0)) * 40px);
+  }
+  /* the slot's own glow takes over from your point's sprite as it lands, then breathes */
+  .close.staged .close-slot > * {
+    opacity: var(--land, 0);
+  }
+  .close.staged .close-slot > :first-child {
+    animation: slot-breathe 3s ease-in-out infinite;
+  }
+  @keyframes slot-breathe {
+    50% {
+      scale: 1.18;
+    }
+  }
+  .close-pill.sent {
+    box-shadow:
+      0 0 0 10px rgb(105 196 175 / 0.12),
+      0 0 60px 6px rgb(105 196 175 / 0.55);
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -921,4 +1033,20 @@
   *::after {
     transition: none !important;
   }
+}
+
+/* ?fps: the owner's phone checks read the frame rate here (World) */
+.fps {
+  position: fixed;
+  left: 50%;
+  top: 6px;
+  z-index: 30;
+  translate: -50% 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.75);
+  color: #9ef0d8;
+  font: 600 12px/1.4 ui-monospace, monospace;
+  white-space: nowrap;
+  pointer-events: none;
 }

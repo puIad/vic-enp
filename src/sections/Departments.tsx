@@ -1,8 +1,10 @@
-import type { CSSProperties } from 'react'
+import { lazy, Suspense, type CSSProperties } from 'react'
 import { DeptIcon } from '../components/DeptIcon'
 import { ACTIVITY, MAIN, type Department } from '../content/departments'
 
-// Act 3 (#13), tier 0: a heading, then seven outlined cards with everything open. Four across, then three.
+// Act 3 (#13). With the world: the pinned stage of seven cuts (DepartmentsStage, its own chunk). Tier 0, reduced
+// motion and while that chunk loads: a heading, then seven outlined cards with everything open. Four across, then three.
+const Stage = lazy(() => import('./DepartmentsStage'))
 
 function Card({ d }: { d: Department }) {
   return (
@@ -41,7 +43,16 @@ function Card({ d }: { d: Department }) {
   )
 }
 
-export function Departments() {
+export function Departments({ staged }: { staged: boolean }) {
+  if (!staged) return <Cards />
+  return (
+    <Suspense fallback={<Cards />}>
+      <Stage />
+    </Suspense>
+  )
+}
+
+function Cards() {
   return (
     <section id="departments" aria-labelledby="h-dept" className="wrap pt-28 pb-32 md:pt-40 md:pb-44">
       <h2 id="h-dept" className="max-w-[18ch] text-[clamp(32px,4.4vw,64px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">

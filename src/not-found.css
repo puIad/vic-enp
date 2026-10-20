@@ -2,6 +2,7 @@
    Plain CSS, no Tailwind and no script: it ships on its own and keeps the CSP's style-src 'self'. */
 @import '@fontsource-variable/outfit';
 
+/* the charter's tokens, as index.css sets them: keep the two in step */
 :root {
   --night: #141e27;
   --blue: #127dbb;

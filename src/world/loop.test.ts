@@ -71,7 +71,6 @@ describe('meter', () => {
     m(0)
     m(0.5)
     m.pause()
-    // R3F's clock restarts at 0 when the loop starts again
     expect([0, 0.5, 1].map((t) => m(t))).toEqual([null, null, 2])
   })
 })

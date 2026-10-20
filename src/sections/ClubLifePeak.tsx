@@ -168,7 +168,7 @@ export default function ClubLifePeak() {
         <div className="peak-one">
           <div className="peak-enter">
             <div className="peak-frame">
-              <Photo id={PEAK_ONE} sizes="(max-width: 767px) 100vw, min(96vw, 120vh)" className="peak-img" />
+              <Photo id={PEAK_ONE} sizes="(max-width: 767px) 100vw, min(96vw, 120vh)" className="peak-img" first />
               <div className="peak-dim" />
             </div>
           </div>

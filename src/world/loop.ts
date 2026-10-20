@@ -25,7 +25,7 @@ export function watchLoop(doc: Tab, set: (loop: Loop) => void) {
 }
 
 /**
- * A frame-rate meter for the `?fps` readout: call it every frame with the clock's time; it returns the rate each time a
+ * A frame-rate meter for the `?fps` readout: call it every frame with the time in seconds; it returns the rate each time a
  * second has passed, null otherwise. `pause()` when the loop stops: the next frame starts a fresh second.
  */
 export function meter() {

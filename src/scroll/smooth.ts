@@ -3,7 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
-import { remember, remembered, whereAt, yAt, type Range } from './restore'
+import { restorer, whereAt, type Range } from './restore'
 
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
 gsap.registerPlugin(ScrollTrigger)
@@ -77,38 +77,15 @@ function follow() {
     })
     notify()
   }
-  // a reload lands where the visitor was (decision 64): the place is put back on every re-measure while the staged
-  // acts swap in and the page grows, until the visitor scrolls themselves or the page has long settled
-  const store = (() => {
-    try {
-      return sessionStorage
-    } catch {
-      return null
-    }
-  })()
-  const nav = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)?.type ?? 'navigate'
-  let back = store && remembered(store, nav)
-  const own = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const
-  const mine = () => {
-    back = null
-    own.forEach((e) => removeEventListener(e, mine))
-  }
-  own.forEach((e) => addEventListener(e, mine, { passive: true }))
-  const settled = setTimeout(mine, 6000)
-  const keep = () => {
-    if (!store || !ranges.length) return
-    try {
-      remember(store, whereAt(ranges, scrollY))
-    } catch {
-      // storage full or blocked: the next reload starts at the top
-    }
-  }
+  // a reload lands where the visitor was (decision 64), in the same act and step, however the page has grown
+  const back = restorer()
+  const keep = () => back.keep(ranges, scrollY)
   const hide = () => document.visibilityState === 'hidden' && keep()
 
   const refresh = () => {
     ranges = measure()
-    const y = back && yAt(ranges, back)
-    if (y != null && Math.abs(scrollY - y) > 1) scrollTo({ top: y, behavior: 'instant' })
+    const y = back.place(ranges)
+    if (y !== null && Math.abs(scrollY - y) > 1) scrollTo({ top: y, behavior: 'instant' })
     update()
   }
   // the staged acts swap in after first paint and change the page's height: measure again whenever it changes
@@ -122,8 +99,7 @@ function follow() {
   refresh()
   return () => {
     ro.disconnect()
-    mine()
-    clearTimeout(settled)
+    back.stop()
     removeEventListener('scroll', update)
     removeEventListener('resize', refresh)
     removeEventListener('pagehide', keep)

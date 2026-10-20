@@ -176,18 +176,22 @@ function useFpsReadout() {
   // one readout for the canvas's life, so the loop's watcher below never resubscribes
   const [read] = useState(() => {
     const m = meter()
-    const show = (text: string) => el.current && (el.current.textContent = text)
+    let rate = '…'
+    let line = ''
+    const show = (text: string) => el.current && text !== line && (el.current.textContent = line = text)
     return {
+      // the rate settles once a second; the act is read every frame, so it is never one the scroll has left
       frame(now: number, points: number, dpr: number) {
         if (!el.current) return
-        const rate = m(now)
-        if (rate !== null) show(`${Math.round(rate)} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`)
+        const r = m(now)
+        if (r !== null) rate = String(Math.round(r))
+        show(`${rate} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`)
       },
       idle() {
         m.pause()
+        rate = '…'
         show('idle · not drawing')
       },
-      resume: () => show(`measuring · ${world.act || 'top'}`),
     }
   })
   return read
@@ -246,7 +250,6 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     () =>
       watchLoop(document, (loop) => {
         if (loop === 'never') fps.idle()
-        else fps.resume()
         setFrameloop(loop)
       }),
     [fps, setFrameloop],
@@ -254,7 +257,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
 
   const k = useRef({
     start: -1,
-    /** the field's own clock, in clamped frame steps: a stopped loop (R3F resets its clock) or a hidden tab never jumps it */
+    /** the field's own clock: a stopped loop (R3F resets its clock) or a hidden tab never jumps it */
     age: 0,
     time: 0,
     frames: 0,
@@ -312,7 +315,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     }
 
     // arrival: waits for the icon's sample (a few ms), then the points stream in and the counter climbs
-    K.age += dt
+    K.age += Math.min(delta, 0.25)
     if (K.start < 0 && s.icon !== null) K.start = K.age
     const since = K.start < 0 ? 0 : K.age - K.start
     const gather = still ? 1 : Math.min(1, since / GATHER)

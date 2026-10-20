@@ -156,14 +156,17 @@ the hero goes on scroll.
 [#12](https://github.com/puIad/vic-enp/issues/12), comp
 [`prototype/act-what-vic`](https://github.com/puIad/vic-enp/tree/prototype/act-what-vic/prototype/act-what-vic).
 
-- **Pinned span, 2 screens:** the title and three sentences scrub in word by word (`kinetic`), then the values
-  line; at about 56% they fade and the four numbers rise. Counters run once over 1.5 s and never reset; when 600
+- **Pinned span, 2 screens:** the title and three sentences scrub in word by word (the
+  [word scrub](../GLOSSARY.md)); at about 56% they fade and the four numbers rise. The values line left the page on
+  2026-10-20 ([decisions.md](decisions.md), 54). Counters run once over 1.5 s and never reset; when 600
   lands the member points pulse once from the centre.
 - **Flow, about 1.3 screens (2 on a phone):** "What you get." and ten benefits in three groups, items rising in
   once.
 - **World:** the hero's field, tightened and far, keeps turning slowly with scroll. Dims to 50% under the
   benefits, back to full before the door.
 - **Layout:** numbers as a four-column row under gradient hairlines on desktop, a 2x2 grid on a phone.
+- **Slice 5 ([plan](build-plan.md#slice-5-polish-and-launch), group 3):** the word scrub, the dim, the counters and the pulse, none built in slices 1
+  to 4.
 
 ### 3. Departments
 
@@ -176,8 +179,9 @@ the hero goes on scroll.
   chromatic split, a lead, IT's "Design and media, not coding" pill (the only pill), a "Suits" line (main four
   only) and a "What you'd do" button. Eyebrows and skill pills were cut on 2026-10-20 ([decisions.md](decisions.md), 43, 44).
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 9 to 11):** the activity
-  departments' dots become their logos, IT's grid becomes a painting palette, and the dots carry over from
-  English Bubble instead of a hard cut.
+  departments get logo formations (each logo's symbol), IT's grid becomes a painting palette, and English Bubble's
+  points morph into the tunnel within the existing scroll instead of a hard cut. SPARK's cut gets a small frame
+  with `IMG_6141` above its copy, the logo formation behind it ([decisions.md](decisions.md), 59, 61, 65).
 - **World:** 16k points desktop, 10k phone. Each cut snaps every point into the department's formation (HR six
   joined clumps, FLER rising bars, IT a viewfinder, COMM broadcast rings, SPARK an orange burst, Training ascending
   treads, English Bubble two open speech circles). The main four use blue and aquamarine; only the three activity
@@ -213,6 +217,9 @@ the hero goes on scroll.
   captions, alt text only.
 - **Hand-over:** the ENP photo returns full frame, then a hard cut (no passage, no fade) to the Gala cut.
 - **Tier 0 and reduced motion:** one art-directed grid of the same eight photos.
+- **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20)):** `IMG_6171`, `IMG_7517` and `IMG_9215-2` join the stack, ten photos in
+  the same six screens, and the tier 0 grid. The ledger loses VIC Charity's row, and VIC Entertainment's row gets
+  its logo's symbol ([decisions.md](decisions.md), 55, 60, 65).
 
 ### 5. Events and projects
 
@@ -230,9 +237,11 @@ the hero goes on scroll.
   four projects have none ([assets.md](assets.md#missing)).
 - **Copy (2026-10-20):** the name, a lead and, for the Gala, a link to gala.vic-enp.com. No eyebrow, no pills
   ([decisions.md](decisions.md), 43 to 49).
-- **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 14 and 17):** each event's logo in
-  dots, left above its name on desktop with the formation kept behind the photo, the logo alone on a phone; the
-  projects' logos beside their names.
+- **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 14 and 17):** each event's logo
+  formation (AEC's symbol; GALA, Ignite and POLYMAZE draw their names), left above its name on desktop with the
+  formation kept behind the photo, the logo alone on a phone; the projects' logo symbols beside their names; every
+  event's name at the same height on every cut; ignite, polymaze and aec links; `IMG_0257` as a second frame in
+  POLYMAZE's cut ([decisions.md](decisions.md), 56, 57, 59, 60, 65).
 - **Tier 0:** a two-column card grid. **Reduced motion:** cuts stack.
 
 ### 6. How to join, grow after joining, FAQ (the light act)
@@ -249,6 +258,7 @@ the hero goes on scroll.
   move between questions.
 - **Horizon out:** the line rises, the field stands back up as night returns, and your point relights with one
   pulse.
+- **Slice 5 ([plan](build-plan.md#slice-5-polish-and-launch), group 4):** the walking point and the one-time reveals, not built in slices 1 to 4.
 
 ### 7. Close and footer
 
@@ -264,8 +274,9 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
-- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. Slice 5 gives the motto a text
-  animation ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19).
+- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. Slice 5 gives the motto the word
+  scrub ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19), drops the description line and sets the address to "10 Rue des Frères
+  OUDEK, El Harrach" ([decisions.md](decisions.md), 58, 62).
 
 ## Passages
 
@@ -286,6 +297,8 @@ the hero goes on scroll.
 - Pointer and touch reactions are a bonus, never required to read anything. Native cursor, no custom cursor.
 - Sound: an optional toggle, off on arrival, bottom left. Never starts by itself ([#10](https://github.com/puIad/vic-enp/issues/10)).
 - No full-screen loader: "Gathering the 600" under the hero headline is the loader.
+- Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
+  reduced motion and on the world's lowest rung ([decisions.md](decisions.md), 64).
 
 ## Tiers and reduced motion
 

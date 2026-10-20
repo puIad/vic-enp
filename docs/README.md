@@ -16,6 +16,10 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 - 2026-10-20: the copy declutter. The owner cut eyebrows, pills and spare lines, renamed the events, swapped two
   projects and approved a humanizer pass ([decisions.md](decisions.md), 43 to 53). Their logo and motion notes
   wait in slice 5 ([build-plan.md](build-plan.md#the-owners-notes-2026-10-20)).
+- 2026-10-20: slice 5's scope settled with the owner ([decisions.md](decisions.md), 54 to 66): six more copy and
+  layout items, the logo formations, the unbuilt parts of the spec, a few extras, then the performance pass,
+  reviews and launch, in one priority order ([build-plan.md](build-plan.md#slice-5-polish-and-launch)). Next: slice 5
+  as tickets.
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

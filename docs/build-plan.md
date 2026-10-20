@@ -73,26 +73,64 @@ has the largest span and reads in a phone screenshot, frame rate holds on the ow
 
 ### Slice 5: polish and launch
 
-Motion and type polish, the performance pass against the budgets, the finish review, Brand Guardian, Reality
-Checker, the owner's real-phone check, the domain, the production deploy, the share preview check.
+The scope was settled with the owner on 2026-10-20 ([decisions.md](decisions.md), 54 to 66). It runs as tickets on
+puIad/vic-enp with blocking edges, worked in the priority order below. Whatever isn't working at the cut line moves
+to [After launch](#after-launch-v11), starting from the bottom of this order. Content and the CTA are never cut.
+
+1. **Copy, layout and free fixes** (54 to 58, 64):
+   - "What we hold to" and its four values leave act 2.
+   - VIC Charity's row leaves the club life ledger. VIC Charity stays in the projects.
+   - Each event's name sits at the same height on every cut, on desktop and phone. The lead, cities and link flow
+     down from it.
+   - Each event links to its own site: gala.vic-enp.com (built), ignite.vic-enp.com, polymaze.vic-enp.com and
+     aec.vic-enp.com.
+   - The footer loses its description line (act 2 keeps it), and its address becomes "10 Rue des Frères OUDEK, El
+     Harrach".
+   - The world pauses on a hidden tab. The font is preloaded ([quality.md](quality.md)), and the first visible photo
+     gets fetch priority.
+   - No orphan words: paragraphs use `text-wrap: pretty`, checked on a phone.
+   - A 404 page on the night, with the logo and a link back.
+   - A reload in the middle of a pinned act lands in the right place; check it and fix it if not.
+2. **Logo formations and the departments' dots**: owner items 9, 10, 11 and 14 in the table below.
+3. **Logos beside names, photos, the word scrub, the counters**: owner items 17 and 19 and the photos, from
+   the table. Act 2's word scrub with the field's dim under the benefits; the four counters and the 600's pulse
+   ([experience.md](experience.md#2-what-vic-is-the-numbers-why-join)).
+4. **Reactions, the light act, grain, sound** (63, 64):
+   - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
+   - The light act: your point walks the steps' hairline, and the blocks reveal once.
+   - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's lowest rung.
+   - The sound toggle with a low ambient pad, off on arrival. Claude finds CC0 loops and the owner picks one,
+     with the owner's OK before each download. No toggle ships without a loop.
+5. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
+   question 25), and again once groups 2 to 4 are in.
+6. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
+   Instagram, the domain, the production deploy, the share preview check.
+
+The page lengths stay as signed: about 30 screens on a phone and 27.5 on desktop, against the 22 to 24 first
+planned. Offered and declined on 2026-10-20: your point following the cursor, scroll speed in the field, a magnetic
+Apply pill, depth haze.
 
 Done: [quality.md](quality.md#definition-of-done-launch) is met.
 
 #### The owner's notes (2026-10-20)
 
-From the owner's walk of the live page ([decisions.md](decisions.md), 43 to 53). The copy items are built; these
-wait for slice 5. The logos are in `assets/logos/` as Illustrator files: export each to SVG unchanged first
-([assets.md](assets.md#missing)). Anything not working by the cut line moves to [After launch](#after-launch-v11).
+From the owner's walk of the live page ([decisions.md](decisions.md), 43 to 53), with the details settled on the
+same evening (59 to 62, 65). The copy items are built; these are slice 5's groups 2 and 3.
 
 | Owner item | What | Act |
 |---|---|---|
-| 9 | The activity departments' dots become their own logos: SPARK, Training, English Bubble (`assets/logos/act-deps/`, which also holds VIC Entertainment's) | [3](experience.md#3-departments) |
+| 9 | The activity departments get [logo formations](../GLOSSARY.md), each logo's symbol without its words: SPARK's atom and flame, Training's figure, English Bubble's B | [3](experience.md#3-departments) |
 | 10 | IT's dots: a painting palette in place of the grid (the viewfinder) | [3](experience.md#3-departments) |
-| 11 | A transition for the dots from the English Bubble cut into what follows, in place of the hard cut | [3](experience.md#3-departments) |
-| 14 | Each event's logo in dots (`assets/logos/events/`). Desktop: the logo's dots sit left, above the event's name, and the current formation stays behind the photo. Phone: only the logo's dots | [5](experience.md#5-events-and-projects) |
-| 17 | The four projects' logos next to their names (`assets/logos/projects/`). The copy swap is done ([decisions.md](decisions.md), 49) | [5](experience.md#5-events-and-projects) |
-| 19 | A text animation on the last "Once a VICer, Always a VICer." | [7](experience.md#7-close-and-footer) |
-| (photos) | Place the five spare photos (`IMG_0257`, `IMG_6141`, `IMG_6171`, `IMG_7517`, `IMG_9215-2`, [assets.md](assets.md#photos)); proposed homes go to the owner first. `IMG_8095.HEIC` stays out until exported | 4, 5 |
+| 11 | English Bubble's points morph into the tunnel within the scroll that's already there, in place of the hard cut. The page doesn't grow | [3](experience.md#3-departments) |
+| 14 | Each event's logo formation. AEC draws its monument and gear. GALA, Ignite (its three nodes and "Ignite", without "Algiers" and ®) and POLYMAZE draw their names, since the name is the logo. Desktop: the logo's dots sit left, above the event's name, and the current formation stays behind the photo. Phone: only the logo's dots | [5](experience.md#5-events-and-projects) |
+| 17 | Beside each project's name, its logo's symbol, small and in full colour, otherwise unchanged from the owner's file: CPSP's S, VIC Charity's heart figure, MasterClass's cap and box, VICra's crescent. VIC Entertainment's the same, beside its row in the club life ledger | [5](experience.md#5-events-and-projects), [4](experience.md#4-club-life-and-the-photo-sequence-the-peak) |
+| 19 | The closing "Once a VICer, Always a VICer." gets the [word scrub](../GLOSSARY.md), the same as act 2's | [7](experience.md#7-close-and-footer) |
+| (photos) | The group photos `IMG_6171`, `IMG_7517` and `IMG_9215-2` join the peak's depth stack, which grows to ten in the same six screens (the tier 0 grid too). `IMG_0257` (a robot in the maze) is a second, smaller frame in POLYMAZE's cut: beside the first on desktop, sharing its height 2:1 on phones. `IMG_6141` (a SPARK workshop) is a small frame in SPARK's cut above the copy, with the logo formation behind it. `IMG_8095.HEIC` stays out until exported | [4](experience.md#4-club-life-and-the-photo-sequence-the-peak), [3](experience.md#3-departments), [5](experience.md#5-events-and-projects) |
+
+The logo files are in `assets/logos/`, which is not in git yet, so a worktree or a clean clone doesn't have them.
+They are Illustrator files saved with PDF inside, so PyMuPDF renders them. Training's and GALA's art is raster, not
+vector. POLYMAZE's and VICra's files are opaque squares; the others have transparent backgrounds. The first logo
+ticket puts what the page needs into the repo.
 
 ## The cut line
 

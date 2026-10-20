@@ -1,12 +1,12 @@
 import { lazy, Suspense, type CSSProperties } from 'react'
 import { Arrow } from '../components/ApplyPill'
 import { Photo } from '../components/Photo'
-import { INSTAGRAM } from '../config'
+import { Mark } from '../components/Peel'
 import { EVENTS, PROJECTS } from '../content/events'
 
 // Act 5 (#15). With the world: the pinned stage of five sideways cuts (EventsStage, its own chunk). Tier 0, reduced
 // motion and while that chunk loads: the title over a two-column grid of outlined event cards, then the four projects
-// full width. AEC and the projects wait for the owner's photos.
+// full width. The projects have no photos: no placeholder ships.
 const Stage = lazy(() => import('./EventsStage'))
 
 const accent = (c: string) => ({ '--c': c }) as CSSProperties
@@ -36,22 +36,10 @@ function Cards() {
                 className="mb-6 aspect-[16/9] w-full rounded-[calc(var(--radius)-8px)] object-cover"
               />
             )}
-            <p className="rule">
-              <b>{e.tag}</b>
-            </p>
-            <h3 id={`e-${e.id}`} className="mt-4 text-[clamp(34px,3.4vw,52px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
-              {e.name}
+            <h3 id={`e-${e.id}`} className="text-[clamp(34px,3.4vw,52px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
+              <Mark text={e.name} />
             </h3>
             <p className="mt-4 max-w-[46ch] text-base leading-normal text-gray">{e.lead}</p>
-            {e.chips && (
-              <ul className="chips mt-6" aria-label="Highlights">
-                {e.chips.map((c, i) => (
-                  <li key={c} className={i === 0 ? 'flag' : ''}>
-                    {c}
-                  </li>
-                ))}
-              </ul>
-            )}
             {e.cities && (
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2" aria-label="Host cities">
                 {e.cities.map((c) => (
@@ -61,12 +49,12 @@ function Cards() {
                 ))}
               </ul>
             )}
-            {e.id === 'gala' && (
+            {e.site && (
               <a
-                href={INSTAGRAM}
+                href={e.site.href}
                 className="mt-6 inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-(--c) px-4 text-[13px] font-bold text-white transition-colors hover:bg-[color-mix(in_srgb,var(--c)_14%,transparent)]"
               >
-                Gala teasers on Instagram @vic.enp
+                {e.site.label}
                 <span className="size-4 [&_svg]:size-full">
                   <Arrow />
                 </span>
@@ -78,10 +66,7 @@ function Cards() {
         <article aria-labelledby="e-projects" className="card p-6 md:col-span-2 md:p-8" style={accent('#69C4AF')}>
           <div className="grid gap-8 md:grid-cols-12">
             <div className="md:col-span-4">
-              <p className="rule">
-                <b>Projects</b>
-              </p>
-              <h3 id="e-projects" className="mt-4 text-[clamp(34px,3.4vw,52px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
+              <h3 id="e-projects" className="text-[clamp(34px,3.4vw,52px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
                 Four more projects.
               </h3>
             </div>

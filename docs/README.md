@@ -13,6 +13,9 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   peak's resolve, the close's flight and the icon formation. The depth stack stays DOM ([decisions.md](decisions.md), 40);
   the cut line is a set of `?cut=` switches (42). Waiting on the owner: frame rate on their phone and the point ramp
   (open question 25).
+- 2026-10-20: the copy declutter. The owner cut eyebrows, pills and spare lines, renamed the events, swapped two
+  projects and approved a humanizer pass ([decisions.md](decisions.md), 43 to 53). Their logo and motion notes
+  wait in slice 5 ([build-plan.md](build-plan.md#the-owners-notes-2026-10-20)).
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

@@ -4,7 +4,7 @@ Every file the page uses, where it comes from, and how it gets to the browser.
 
 ## Photos
 
-17 originals in `assets/pics/` (about 50 MB), added by the owner on 2026-10-19. Mostly group photos. Different
+17 originals in `assets/pics/` (about 50 MB), added by the owner on 2026-10-19, plus the AEC group photo on 2026-10-20. Mostly group photos. Different
 sizes, formats and orientations; the pipeline below normalises them.
 
 What each shows is read off the images, not confirmed. The page ships no captions (alt text only), so "Event?"
@@ -29,6 +29,7 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
 | `IMG_7544.jpg` | 5472×3072 | 16:9 | Very large group around a long table, holding a banner | | Peak photo 7 (dealt) |
 | `IMG_8759.JPG` | 6000×4000 | 3:2 | Large group outdoors in front of a building | | Peak photo 8 (flies in) |
 | `IMG_9215-2.JPG` | 6000×4000 | 3:2 | Large group in a hall with logos on the back wall | A partner event? | Spare, tier 0 grid or close |
+| `IMG_3223.jpg` | 2730×1536 | 16:9 | Large group in a lecture hall cheering, prize cheques held up, the screen reads "Algerian Engineering Competition" | AEC | Events, AEC cut (owner, 2026-10-20) |
 | `IMG_8095.HEIC` | ? | ? | Not previewed: HEIC can't be read by the tools here | | Left out (decided 2026-10-19) |
 
 ### Pipeline
@@ -73,7 +74,8 @@ Needed by the signed acts and not made yet:
 | `close-poster-d.webp`, `close-poster-m.webp` | Close tier 0 and reduced motion ([#17](https://github.com/puIad/vic-enp/issues/17)) | Baked from the real scene in the build |
 | Seven outlined department icons | Departments tier 0 cards only ([#13](https://github.com/puIad/vic-enp/issues/13)) | Drawn in the build |
 | One ambient sound loop, under 300 KB | The optional sound toggle ([#10](https://github.com/puIad/vic-enp/issues/10)) | To find, with a licence for public use |
-| One photo for AEC, one each for CPSP, STEPS, Anglosphere, VICra (3:2) | Events cuts 4 and 5 ([#15](https://github.com/puIad/vic-enp/issues/15)) | The owner |
+| One photo each for CPSP, VIC Charity, MasterClass, VICra (3:2), if the projects cut gets photos | Events cut 5 ([#15](https://github.com/puIad/vic-enp/issues/15)) | The owner |
+| SVG exports of the logos in `assets/logos/` (activity departments, events, projects), for sampling into dots and for the project rows | Slice 5, the owner's notes ([build-plan.md](build-plan.md#the-owners-notes-2026-10-20)) | The owner's `.ai` files, exported unchanged |
 
 ## Generated assets (agy)
 

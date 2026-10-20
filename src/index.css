@@ -272,7 +272,7 @@
     translate: none;
     opacity: 1;
   }
-  /* "Gathering the 600": the loader, beside the pill on desktop, in place of the small line on a phone */
+  /* "Gathering the 600": the loader, beside the pill on desktop, under it on a phone */
   .gather {
     position: absolute;
     left: calc(100% + 22px);
@@ -300,17 +300,11 @@
   html:not(.w-on) .gather {
     display: none;
   }
-  .since {
-    transition: opacity 0.8s var(--ease-out-expo);
-  }
   @media (max-width: 767px) {
     .gather {
       left: 0;
       top: calc(100% + 18px);
       translate: none;
-    }
-    .w-on #top:has(.gather[data-state='on']) .since {
-      opacity: 0;
     }
   }
 
@@ -573,48 +567,51 @@
     }
   }
 
-  /* ---------- chips and hairline lists, shared by the cards ---------- */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .chips li {
+  /* IT's "design and media, not coding" pill, the act's one pill (owner, 2026-10-20) */
+  .flag-pill {
     display: inline-flex;
     align-items: center;
+    align-self: flex-start;
     min-height: 34px;
     padding: 4px 14px;
     border-radius: 999px;
-    border: 1px solid rgb(239 239 239 / 0.22);
+    border: 1px solid var(--c);
+    box-shadow: inset 0 0 0 1px var(--c);
+    background: color-mix(in srgb, var(--c) 10%, transparent);
     font-weight: 700;
     font-size: 13px;
     line-height: 1.25;
     color: #fff;
   }
-  .chips li.flag {
-    border-color: var(--c);
-    box-shadow: inset 0 0 0 1px var(--c);
-    background: color-mix(in srgb, var(--c) 10%, transparent);
-  }
-
-  .rule {
+  /* the department's name on its tier 0 card, in place of the eyebrow */
+  .dept-name {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: var(--t-cap);
-    color: var(--color-mute);
+    gap: 12px;
+    font-size: clamp(26px, 2.2vw, 34px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    /* the accent lifted toward white, so every accent reads at 4.5:1 as text */
+    color: color-mix(in srgb, var(--c) 72%, #fff);
   }
-  .rule::before {
+  .dept-name::before {
     content: '';
-    width: 26px;
-    height: 2px;
+    flex: none;
+    width: 28px;
+    height: 3px;
     border-radius: 2px;
     background: linear-gradient(90deg, var(--c), var(--c2, var(--c)));
   }
-  .rule b {
+  /* Ignite®: the mark small and raised, so the name keeps its weight */
+  .reg {
+    position: relative;
+    top: -0.1em;
+    margin-left: 0.04em;
+    font-size: max(0.36em, 8px);
     font-weight: 700;
-    /* the accent lifted toward white, so Ignite red still reads at 4.5:1 as text */
-    color: color-mix(in srgb, var(--c) 72%, #fff);
+    vertical-align: super;
+    line-height: 0;
   }
 
   /* the cards of the department and event acts on tier 0 (#13, #15) */

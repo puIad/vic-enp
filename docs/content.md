@@ -4,15 +4,20 @@ What the page says, in page order. Facts come only from
 [source/landing-content-brief.md](source/landing-content-brief.md) (cited as §n). How each act looks and moves is
 in [experience.md](experience.md). The copy below was settled act by act on the wayfinder map (2026-10-19);
 lines marked **new** were written for the page and go to the owner in [one list](#new-lines-for-the-owners-approval)
-before the 22 Oct copy freeze.
+before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and approved a humanizer pass
+([decisions.md](decisions.md), 43 to 51); the acts below are the page as it stands after both.
 
 ## Voice
 
 - Short sentences, plain English, second person ("you"). Many readers read English as a second or third language.
 - Concrete over grand: "organise an event with sponsors and hundreds of guests" beats "unleash your potential".
-- Sentence case everywhere, never all caps (charter rule for Gilroy).
+- Sentence case everywhere, never all caps (charter rule for Gilroy). Two names are the exception, as the events
+  write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46).
+- US spelling: organized, organizing, specialized.
+- No eyebrows over headings and no pills, except IT's "Design and media, not coding" ([decisions.md](decisions.md), 43, 44).
 - Proper names as the club writes them: VIC, VICer, ENP, HR, FLER, IT, COMM, SPARK, English Bubble, Training,
-  The Local, FARI9 TI9NI, P&V, Engineers' Gala, Ignite Algiers, Polymaze, STEPS, AEC, VICra, CPSP.
+  The Local, FARI9 TI9NI, P&V, Engineers' GALA, Ignite® Algiers, POLYMAZE, AEC, CPSP, VIC Charity, MasterClass, VICra,
+  École Nationale Polytechnique d'Alger.
 - No promise the club can't keep: never "you'll be interviewed", always "if your application is accepted".
 
 ## Sections and acts
@@ -36,20 +41,20 @@ before the 22 Oct copy freeze.
 ## Act 1: hero
 
 - Headline: **Engineer more than your degree.** (§1 candidate, owner's pick)
-- Lead: **Vision & Innovation Club.** A nonprofit, English-speaking scientific club at ENP.
-- Small line: Since 2014 · Once a VICer, always a VICer.
+- Lead: **Vision & Innovation Club.** (owner, 2026-10-20: the rest of the lead and the small line went)
 - CTA before opening: "Applications open 25 Oct" with a countdown chip, links to `@vic.enp`. After: "Apply".
 - While loading only: "Gathering the 600 <n>".
 
 ## Act 2: what VIC is, the numbers, why join
 
 - Title (**new**): Run by ENP students, for ENP students.
-- Three sentences: VIC is a nonprofit, English-speaking scientific club at ENP, a branch of the El-Maarifa
-  Scientific Association. / Our mission: help members and ENP students build soft and hard skills and a network,
-  through events that are genuinely enjoyable. / Our vision: a lasting community you are proud to belong to.
+- Three sentences: VIC is an English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch of
+  the El-Maarifa Scientific Association. / **Our mission:** help members and ENP students build soft and hard
+  skills and a network, through events that are genuinely enjoyable. / **Our vision:** a lasting community you
+  are proud to belong to. (The labels are bold.)
 - Values (label **new**: "What we hold to"): Respect, Diversity, Contribution and creativity, Legacy.
-- Numbers: **600** members at ENP / **40+** trainings a year / **9** Engineers' Galas, the 9th in 2026 /
-  **since 2014** founded by ENP students. "~20 sponsors" stays out.
+- Numbers (owner, 2026-10-20): **600** members / **40+** trainings a year / **10+** major events / **since 2014**,
+  no caption. "~20 sponsors" stays out. There is no count-up on the page, so "10+" renders as written.
 - Why join, title (**new**): What you get. Ten benefits from §3 in three groups (group names **new**):
   - **Lead early:** Real responsibility, early (large events with corporate guests, sponsors and hundreds of
     attendees) / Organizing-team experience / A path to leadership (Project Managers, Department Heads, or run for
@@ -64,30 +69,30 @@ before the 22 Oct copy freeze.
 
 ## Act 3: departments
 
-Caption under the first cut: "You pick one main and one activity department when you apply." Lines and leads are
-**new**; chips, Suits and "What you'd do" come from §4 and §5.
+Caption under the first cut: "You join one main and one activity department." Lines and leads are **new**; Suits
+and "What you'd do" come from §4 and §5. Each cut and card shows the department's name, large, where the eyebrow
+was. The chips are cut (owner, 2026-10-20) except IT's flagged one; the column stays below as the record.
 
-| Cut | Line | Lead | Chips | Suits | What you'd do |
+| Cut | Line | Lead | Chips (cut) | Suits | What you'd do |
 |---|---|---|---|---|---|
-| HR · main 1 of 4 | Run the community. | HR is the heart of the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration. | People management, Organization, Reporting, Event operations | Suits organized people who care about the community. | Recruit and welcome new members; Follow up on members' engagement and motivation; Run VIC Entertainment, the fun side of the club; Organize logistics on event day |
+| HR · main 1 of 4 | Run the community. | HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration. | People management, Organization, Reporting, Event operations | Suits organized people who care about the community. | Recruit and welcome new members; Follow up on members' engagement and motivation; Run VIC Entertainment, the fun side of the club; Organize logistics on event day |
 | FLER · main 2 of 4 | Win the sponsors. | FLER is the club's link to companies, associations and guests, plus its logistics and budget. | Negotiation, Sponsorship, Budgeting, Logistics | Suits confident communicators who want hands-on experience with the professional world. | Contact companies and secure sponsorships for events; Build relationships with partners, institutions and alumni; Manage venues, sound, screens, catering and printables; Look for TV, radio and press appearances |
-| IT · main 3 of 4 | Design the club. | IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo. | Design and media, not coding (flagged chip); Branding; Photography; Videography | Suits creatives, designers, photographers and anyone who wants to learn. | Design posts, stories, posters and flyers; Build a full visual identity for each event; Join the Photography and Videography team; Join FARI9 TI9NI, the tech crew on event day |
-| COMM · main 4 of 4 | Tell the story. | COMM is the bridge between the club and its audience: its public image, its events and its reach. | Copywriting, Content strategy, Social media, Storytelling | Suits writers, storytellers and natural communicators. | Plan the communication for each event; Write captions, slogans, scripts and emails; Run VIC's social media; Build media partnerships and join the TikTok Content Team |
+| IT · main 3 of 4 | Design the club. | IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo. | Design and media, not coding (flagged chip, **kept**); Branding; Photography; Videography | Suits creatives, designers, photographers and anyone who wants to learn. | Design posts, stories, posters and flyers; Build a full visual identity for each event; Join the Photography and Videography team; Join FARI9 TI9NI, the tech crew on event day |
+| COMM · main 4 of 4 | Tell the story. | COMM runs the club's public image and gets every event in front of its audience. | Copywriting, Content strategy, Social media, Storytelling | Suits writers, storytellers and natural communicators. | Plan the communication for each event; Write captions, slogans, scripts and emails; Run VIC's social media; Build media partnerships and join the TikTok Content Team |
 | SPARK · activity 1 of 3 | Build robots. | SPARK is science, tech and robotics: hands-on workshops, competitions and a free learning platform. | Workshops, Competitions, Free learning platform | | Join workshops chosen from members' needs; Compete under SPARK's name, with technical support; Work on internal projects and research; Learn from free courses that fill curriculum gaps |
 | Training · activity 2 of 3 | Choose your skills. | At the start of the year you pick the skills you want to learn. The yearly plan is built around your answers. | Soft skills, Technical skills, Peer-to-peer sessions | | Attend sessions led by internal and external trainers; Teach what you are good at, peer to peer; Join learning groups with practical tasks and progress tracking |
 | English Bubble · activity 3 of 3 | Speak with confidence. | English Bubble is a relaxed place to practice English: debates, games, book discussions and social nights. | Debates, Games, Book discussions, Social nights | | Talk and share ideas in a relaxed setting; Build confidence, public speaking and leadership; Try new things in a safe space |
 
-Tier 0 heading (**new**): "Seven departments. You pick one main and one activity." FLER eligibility stays in the
+Tier 0 heading (**new**): "Seven departments. You join one main and one activity." FLER eligibility stays in the
 FAQ, not on the card.
 
 ## Act 4: club life (the peak)
 
-- Title: Every VICer is welcome. Lead: Without exception. The Local, VIC's headquarters inside ENP, is a
-  gathering place for all of them.
+- Title: Every VICer is welcome. Lead: Without exception.
 - Ledger, five rows from §6: VIC Entertainment ("At least two community activities a month, built from members'
   own ideas."), The Local ("VIC's headquarters inside ENP, a gathering place for every VICer."), General
-  assemblies ("The President keeps members updated on projects and progress."), Charity ("A school-supplies drive
-  for students in need."; web-sourced in the brief, keep its note), Alumni ("Graduates stay in the community and
+  assemblies ("The President keeps members updated on projects and progress."), VIC Charity ("A yearly project for
+  children and families in need, from school supplies to Quffat Ramadan."; owner, 2026-10-20), Alumni ("Graduates stay in the community and
   help with events.").
 - Photos carry no captions, alt text only. The private VICers-only Instagram stays a "once you're in" detail, off
   the page.
@@ -95,18 +100,20 @@ FAQ, not on the card.
 ## Act 5: events and projects
 
 The cut line is each event's own name, so no new headline copy. No edition numbers, no dates, no "coming this
-year". Hour of Code is not on the page.
+year". Hour of Code is not on the page. No eyebrows, no pills. Names and leads are the owner's, shortened from
+their own descriptions and approved on 2026-10-20 ([decisions.md](decisions.md), 46 to 49).
 
-| Cut | Tag | Line | Lead | Chips |
-|---|---|---|---|---|
-| 1 | Prestige event | Engineers' Gala. | National and international business leaders and researchers meet newly graduated engineers, to open the professional world and grow their network. | Guest talks, Roundtables with CEOs, Networking; plus a pill "Gala teasers on Instagram @vic.enp" |
-| 2 | International format | Ignite Algiers. | Short, powerful talks from industry leaders, innovators and thought leaders. | Short talks, Innovators, Thought leaders |
-| 3 | Robotics competition | Polymaze. | Line-follower and maze-solving robots. Registered participants prepare in workshops, then compete on a day at ENP. | Line followers, Maze solvers, Prep workshops |
-| 4 | Algerian Engineering Competition | AEC. | A national engineering competition. It has run in six cities at once: Algiers, Oran, Tlemcen, Constantine, Annaba and Ouargla. | the six cities |
-| 5 | Projects | Four more projects. | CPSP (a starter pack for ENP newcomers: discover the school and get tips for the Prepa Cycle, with guests who were class majors), STEPS (studying abroad, language tests and scholarships, with workshops and the "STEPS Abroad" YouTube series), Anglosphere (a celebration of the English language, with conferences, workshops and stands), VICra (VIC's Ramadan project: Islamic reminders, each followed by a quiz open to everyone, with prizes) | |
+| Cut | Line | Lead | Extra |
+|---|---|---|---|
+| 1 | Engineers' GALA | Emerging leaders of Algerian industry meet experts in their fields to share what they know and build lasting connections. Young graduates get a chance to stand out and find new career paths. | Link: gala.vic-enp.com |
+| 2 | Ignite® Algiers | An international public-speaking event: five minutes, 20 slides, each moving on by itself every 15 seconds. Speakers share their ideas and stories. | |
+| 3 | POLYMAZE | A two-day robotics competition. Teams design autonomous robots that solve a maze in record time, using mechanics, electronics and automation. | |
+| 4 | AEC | The Algerian Engineering Competition: a nationwide hackathon where students, startups and researchers take on real industry problems with expert companies. Regional rounds run across the wilayas, then the winners pitch to a professional jury at the national final in Algiers. | The six wilayas: Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla |
+| 5 | Four more projects. | CPSP: The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes. / VIC Charity: A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan. / MasterClass: A summer project: expert trainers teach practical skills on Discord while you build your own creative project. / VICra: VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts. | Logos in slice 5 |
 
-Note on cut 1 only: "Every event is organized by the whole club. Every department plays a part." (§7). Tier 0
-title (**new**): "Events and projects, organized by the whole club."
+STEPS and Anglosphere left the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
+organizes every event, and every department plays a part." (§7). Tier 0 title (**new**): "Events and projects,
+organized by the whole club."
 
 ## Act 6: how to join, grow after joining, FAQ
 
@@ -121,12 +128,12 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   3. **Set up your interview.** If your application is accepted, two club members contact you within a day to
      set up your interview. You choose your activity department there: SPARK, Training or English Bubble.
   4. **Join your teams.** Get your result and start with your departments.
-- **Then grow.** Lead: "Joining is the start. Members move on in many directions." Six rungs: Organising teams
-  ("Join the organising team of an event."), Across departments ("Help in other departments once you have
-  experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Specialised
-  teams ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Elections ("Run for Head
-  of Department or President."), R&D Squad ("Review and improve the club's charters. Open to members with
-  experience.").
+- **Then grow.** Lead: "Joining is the start. Here is where members go next." Six rungs: Organizing teams
+  ("Join the organizing team of an event."), Across departments ("Help in other departments once you have
+  experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Specialized
+  teams ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Commit to the club ("Run
+  for Head of Department or President."), Research & Development Squad ("Review and improve the club's charters.
+  Open to members with experience.").
 - **Questions.** Lead: "Still unsure? Message us on Instagram, @vic.enp." The nine §9 questions, verbatim except:
   - "Can I join more than one department?": "On the form you pick your first and second choice among the four
     main departments, and you choose your activity department at your interview. Once you have experience, you
@@ -143,8 +150,8 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
 - Headline (**new**): Your point is on its way.
 - Sub line, after opening only: Every ENP student can apply, any year, any specialty. (§8)
 - CTA: as the hero, "Applications open 25 Oct" then "Apply".
-- Footer: white logo with "A nonprofit, English-speaking scientific club at ENP, since 2014. A branch of the
-  El-Maarifa Scientific Association." (El-Maarifa as text). Instagram: @vic.enp, @spark.enp (SPARK),
+- Footer: white logo with "An English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch
+  of the El-Maarifa Scientific Association." (El-Maarifa as text; owner, 2026-10-20). Instagram: @vic.enp, @spark.enp (SPARK),
   @english.bubble (English Bubble). Facebook: @vic.enpa, @spark.vic.6 (SPARK), English Bubble. More: TikTok
   @vic.enp, YouTube @vic_enp, LinkedIn vicenp. Contact: vic@g.enp.edu.dz, ENP, 10 Avenue Hassen Badi, El Harrach,
   Algiers. (§10)
@@ -164,20 +171,38 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 2. What we hold to
 3. What you get.
 4. Lead early / Grow your skills / Belong for good
-5. You pick one main and one activity department when you apply.
+5. You join one main and one activity department. (approved 2026-10-20)
 6. Run the community. / Win the sponsors. / Design the club. / Tell the story. / Build robots. / Choose your
    skills. / Speak with confidence.
-7. The seven department leads in the act 3 table.
-8. Seven departments. You pick one main and one activity.
+7. The seven department leads in the act 3 table (HR's and COMM's approved as rewritten on 2026-10-20).
+8. Seven departments. You join one main and one activity. (approved 2026-10-20)
 9. Events and projects, organized by the whole club.
-10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Members move on in many
-    directions.", "Still unsure? Message us on Instagram, @vic.enp."
+10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Here is where members go
+    next." (approved 2026-10-20), "Still unsure? Message us on Instagram, @vic.enp."
 11. Fill in the form. / Check your inbox. / Set up your interview. / Join your teams.
-12. The six rung titles: Organising teams, Across departments, Project manager, Specialised teams, Elections, R&D
-    Squad.
+12. The six rung titles: Organizing teams, Across departments, Project manager, Specialized teams, Commit to the
+    club, Research & Development Squad (the last two are the owner's, 2026-10-20).
 13. The two rewritten FAQ answers in act 6.
 14. Your point is on its way.
 15. The chrome lines above.
+
+### Approved on 2026-10-20
+
+The humanizer pass, each line shown to the owner before and after and approved ([decisions.md](decisions.md), 51):
+
+| Where | Before | After |
+|---|---|---|
+| HR lead | HR is the heart of the club's internal life. You keep members ... | HR runs the club's internal life. You keep members ... |
+| COMM lead | COMM is the bridge between the club and its audience: its public image, its events and its reach. | COMM runs the club's public image and gets every event in front of its audience. |
+| Departments note | You pick one main and one activity department when you apply. | You join one main and one activity department. |
+| Departments title | Seven departments. You pick one main and one activity. | Seven departments. You join one main and one activity. |
+| Events note | Every event is organized by the whole club. Every department plays a part. | The whole club organizes every event, and every department plays a part. |
+| Club life lead | Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them. | Without exception. |
+| Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. |
+| Then grow lead | Joining is the start. Members move on in many directions. | Joining is the start. Here is where members go next. |
+| Then grow rungs | Organising teams / Join the organising team of an event. / Specialised teams | Organizing teams / Join the organizing team of an event. / Specialized teams |
+
+The event and project leads in act 5 were written from the owner's own descriptions and approved the same day.
 
 ## Checks before the copy is final
 

@@ -1,59 +1,55 @@
-// docs/content.md, act 5. The cut line is each event's own name; no edition numbers, no dates (#15).
+// docs/content.md, act 5. The cut line is each event's own name; no edition numbers, no dates (#15). Names and leads
+// are the owner's (decisions.md, 2026-10-20: the copy declutter).
 
 export type Event = {
   id: string
-  tag: string
   name: string
   lead: string
-  chips?: string[]
   cities?: string[]
+  /** the event's own site, linked under its lead */
+  site?: { href: string; label: string }
   /** Gala gold and Ignite red are the owner's values; the rest use aquamarine (#15). */
   accent: string
-  /** an id from content/photos.ts; AEC waits for the owner's photos */
+  /** an id from content/photos.ts */
   photo?: string
 }
 
 export const EVENTS: Event[] = [
   {
     id: 'gala',
-    tag: 'Prestige event',
-    name: "Engineers' Gala.",
-    lead: 'National and international business leaders and researchers meet newly graduated engineers, to open the professional world and grow their network.',
-    chips: ['Guest talks', 'Roundtables with CEOs', 'Networking'],
+    name: "Engineers' GALA",
+    lead: 'Emerging leaders of Algerian industry meet experts in their fields to share what they know and build lasting connections. Young graduates get a chance to stand out and find new career paths.',
+    site: { href: 'https://gala.vic-enp.com/', label: 'gala.vic-enp.com' },
     accent: '#D4A843',
     photo: 'dscf7405',
   },
   {
     id: 'ignite',
-    tag: 'International format',
-    name: 'Ignite Algiers.',
-    lead: 'Short, powerful talks from industry leaders, innovators and thought leaders.',
-    chips: ['Short talks', 'Innovators', 'Thought leaders'],
+    name: 'Ignite® Algiers',
+    lead: 'An international public-speaking event: five minutes, 20 slides, each moving on by itself every 15 seconds. Speakers share their ideas and stories.',
     accent: '#E0313F',
     photo: 't2a6297',
   },
   {
     id: 'polymaze',
-    tag: 'Robotics competition',
-    name: 'Polymaze.',
-    lead: 'Line-follower and maze-solving robots. Registered participants prepare in workshops, then compete on a day at ENP.',
-    chips: ['Line followers', 'Maze solvers', 'Prep workshops'],
+    name: 'POLYMAZE',
+    lead: 'A two-day robotics competition. Teams design autonomous robots that solve a maze in record time, using mechanics, electronics and automation.',
     accent: '#69C4AF',
     photo: 'img-8026',
   },
   {
     id: 'aec',
-    tag: 'Algerian Engineering Competition',
-    name: 'AEC.',
-    lead: 'A national engineering competition. It has run in six cities at once: Algiers, Oran, Tlemcen, Constantine, Annaba and Ouargla.',
+    name: 'AEC',
+    lead: 'The Algerian Engineering Competition: a nationwide hackathon where students, startups and researchers take on real industry problems with expert companies. Regional rounds run across the wilayas, then the winners pitch to a professional jury at the national final in Algiers.',
     cities: ['Algiers', 'Oran', 'Tlemcen', 'Constantine', 'Annaba', 'Ouargla'],
     accent: '#69C4AF',
+    photo: 'img-3223',
   },
 ]
 
 export const PROJECTS = [
-  { name: 'CPSP', text: 'A starter pack for ENP newcomers: discover the school and get tips for the Prepa Cycle, with guests who were class majors.' },
-  { name: 'STEPS', text: 'Studying abroad, language tests and scholarships, with workshops and the "STEPS Abroad" YouTube series.' },
-  { name: 'Anglosphere', text: 'A celebration of the English language, with conferences, workshops and stands.' },
-  { name: 'VICra', text: "VIC's Ramadan project: Islamic reminders, each followed by a quiz open to everyone, with prizes." },
+  { name: 'CPSP', text: 'The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes.' },
+  { name: 'VIC Charity', text: 'A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan.' },
+  { name: 'MasterClass', text: 'A summer project: expert trainers teach practical skills on Discord while you build your own creative project.' },
+  { name: 'VICra', text: "VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts." },
 ]

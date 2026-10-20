@@ -172,8 +172,12 @@ the hero goes on scroll.
 
 - **Device:** one pinned stage, a hard cut per department: HR, FLER, IT, COMM, then SPARK, Training, English
   Bubble. Entered through the door, left through the tunnel.
-- **Each cut:** an accent rule and label ("HR · main 1 of 4"), one Heavy line peeling in with a three-step
-  chromatic split, a lead, skill chips, a "Suits" line (main four only) and a "What you'd do" button.
+- **Each cut:** the department's name in its accent with a short rule, one Heavy line peeling in with a three-step
+  chromatic split, a lead, IT's "Design and media, not coding" pill (the only pill), a "Suits" line (main four
+  only) and a "What you'd do" button. Eyebrows and skill pills were cut on 2026-10-20 ([decisions.md](decisions.md), 43, 44).
+- **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 9 to 11):** the activity
+  departments' dots become their logos, IT's grid becomes a painting palette, and the dots carry over from
+  English Bubble instead of a hard cut.
 - **World:** 16k points desktop, 10k phone. Each cut snaps every point into the department's formation (HR six
   joined clumps, FLER rising bars, IT a viewfinder, COMM broadcast rings, SPARK an orange burst, Training ascending
   treads, English Bubble two open speech circles). The main four use blue and aquamarine; only the three activity
@@ -222,8 +226,13 @@ the hero goes on scroll.
   aquamarine.
 - **World:** snaps per cut: tiered seat arcs (Gala), eleven rising columns (Ignite), a maze path with a lit runner
   (Polymaze), six city clusters (AEC), four small rings (projects), then the flat line of the horizon.
-- **Photos:** `DSCF7405` (Gala), `_T2A6297` (Ignite), `IMG_8026` (Polymaze). AEC and the four projects wait for
-  photos from the owner ([assets.md](assets.md#missing)).
+- **Photos:** `DSCF7405` (Gala), `_T2A6297` (Ignite), `IMG_8026` (Polymaze), `IMG_3223` (AEC, 2026-10-20). The
+  four projects have none ([assets.md](assets.md#missing)).
+- **Copy (2026-10-20):** the name, a lead and, for the Gala, a link to gala.vic-enp.com. No eyebrow, no pills
+  ([decisions.md](decisions.md), 43 to 49).
+- **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 14 and 17):** each event's logo in
+  dots, left above its name on desktop with the formation kept behind the photo, the logo alone on a phone; the
+  projects' logos beside their names.
 - **Tier 0:** a two-column card grid. **Reduced motion:** cuts stack.
 
 ### 6. How to join, grow after joining, FAQ (the light act)
@@ -255,7 +264,8 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
-- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px.
+- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. Slice 5 gives the motto a text
+  animation ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19).
 
 ## Passages
 

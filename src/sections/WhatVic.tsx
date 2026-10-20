@@ -1,10 +1,10 @@
 // Act 2 (#12), tier 0: the final state of the pinned span as normal flow, then the benefits.
 
-const NUMBERS = [
-  { figure: '600', caption: 'members at ENP' },
+const NUMBERS: { figure: string; caption?: string; plus?: true; since?: true }[] = [
+  { figure: '600', caption: 'members' },
   { figure: '40', plus: true, caption: 'trainings a year' },
-  { figure: '9', caption: "Engineers' Galas, the 9th in 2026" },
-  { figure: '2014', since: true, caption: 'founded by ENP students' },
+  { figure: '10', plus: true, caption: 'major events' },
+  { figure: '2014', since: true },
 ]
 
 export function WhatVic() {
@@ -16,11 +16,15 @@ export function WhatVic() {
         </h2>
         <div className="t-lead mt-7 space-y-4 text-gray">
           <p>
-            <b className="font-bold text-white">VIC</b> is a nonprofit, English-speaking scientific club at ENP, a branch of the El-Maarifa Scientific
-            Association.
+            <b className="font-bold text-white">VIC</b> is an English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch of
+            the El-Maarifa Scientific Association.
           </p>
-          <p>Our mission: help members and ENP students build soft and hard skills and a network, through events that are genuinely enjoyable.</p>
-          <p>Our vision: a lasting community you are proud to belong to.</p>
+          <p>
+            <b className="font-bold text-white">Our mission:</b> help members and ENP students build soft and hard skills and a network, through events that are genuinely enjoyable.
+          </p>
+          <p>
+            <b className="font-bold text-white">Our vision:</b> a lasting community you are proud to belong to.
+          </p>
         </div>
         <div className="mt-8 flex flex-wrap items-baseline gap-x-5 gap-y-1">
           <h3 className="text-[13px] font-bold text-white">What we hold to</h3>
@@ -37,7 +41,7 @@ export function WhatVic() {
       <ul className="mt-20 grid grid-cols-2 gap-x-4 gap-y-8 md:mt-28 md:grid-cols-4 md:gap-0">
         {NUMBERS.map((n) => (
           <li
-            key={n.caption}
+            key={n.figure}
             className="relative border-t border-(--line) pt-4 before:absolute before:-top-px before:left-0 before:h-px before:w-full before:bg-(image:--grad) before:shadow-[0_0_10px_rgb(105_196_175/.55)] md:pt-[22px] md:pr-5"
           >
             <p className="tab flex items-baseline gap-2 text-(length:--t-figure) leading-none font-black tracking-[-0.03em] text-white">
@@ -45,7 +49,7 @@ export function WhatVic() {
               {n.figure}
               {n.plus && <span className="-ml-1.5 text-aqua">+</span>}
             </p>
-            <p className="t-cap mt-2.5 max-w-[20ch] max-md:text-xs">{n.caption}</p>
+            {n.caption && <p className="t-cap mt-2.5 max-w-[20ch] max-md:text-xs">{n.caption}</p>}
           </li>
         ))}
       </ul>

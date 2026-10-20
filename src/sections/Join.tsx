@@ -123,7 +123,7 @@ export function Join() {
           <h2 id="h-grow" className="t-act text-night">
             Then grow.
           </h2>
-          <p className="t-lead mt-5 text-ink">Joining is the start. Members move on in many directions.</p>
+          <p className="t-lead mt-5 text-ink">Joining is the start. Here is where members go next.</p>
           <Grow />
         </section>
 

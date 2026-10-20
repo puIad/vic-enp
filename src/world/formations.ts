@@ -4,6 +4,7 @@
 // icon.ts and photo.ts; everything here is pure, so it runs in tests.
 
 import { MEMBERS, constellation, heroPlacement, random } from './cloud'
+import type { LogoSample } from './logo'
 
 /** x, y, z, size per point, then r, g, b, a per point. Points past the formation's own count sit on a twin at a = 0. */
 export type Formation = { pos: Float32Array; col: Float32Array; count: number }
@@ -362,29 +363,76 @@ export const SHAPES = {
 export type ShapeKey = keyof typeof SHAPES
 const CENTRED: ShapeKey[] = ['door', 'tunnel', 'horizon']
 
-export function shape(key: ShapeKey, n: number, count: number, l: Layout): Formation {
+/** Where a cut's formation sits: right of centre on desktop (or its own spot), small at the top on a phone. */
+function cutPlacement(key: ShapeKey, l: Layout): Placement {
   const sh: Shape = SHAPES[key]
-  const c = comp(97 + key.length * 13 + key.charCodeAt(0))
-  const gen = sh.at(c)
-  const share = sh.share ?? 0.8
   const centred = CENTRED.includes(key)
   // the comps' group: right of centre on desktop; small at the top on a phone (the events' rows sit lower)
   const desk = !l.phone && sh.desk
   const k = l.phone && !centred ? K_PHONE * 0.5 * (sh.pscale ?? 1) : desk ? K_DESK * desk[2] : K_DESK
   const off: Vec = centred ? [0, 0, 0] : l.phone ? [0, sh.py ?? 3.35, 0] : desk ? [desk[0], desk[1], 0] : [17 * K_DESK, 0, 0]
   const [tx, ty] = sh.tilt ?? [0, 0]
+  return { scale: k, rotation: [tx, ty, 0], position: off }
+}
+
+const SHARE = 0.8
+const inShape = (i: number, share = SHARE) => (i % 10) / 10 < share
+
+/** How many of a cut's points draw its shape; the rest are dust. */
+export const shapeCount = (count: number) => Math.floor(count / 10) * SHARE * 10 + Math.min(count % 10, SHARE * 10)
+
+export function shape(key: ShapeKey, n: number, count: number, l: Layout): Formation {
+  const sh: Shape = SHAPES[key]
+  const c = comp(97 + key.length * 13 + key.charCodeAt(0))
+  const gen = sh.at(c)
+  const share = sh.share ?? SHARE
+  const pl = cutPlacement(key, l)
   const col = rgb(sh.color)
   const dim = key === 'tunnel' ? 0.4 : 1
   return build(n, count, (i) => {
-    const inShape = (i % 10) / 10 < share
-    const p = inShape ? gen(i) : c.dust()
-    const lit = inShape && !!sh.lit?.(i)
+    const on = inShape(i, share)
+    const p = on ? gen(i) : c.dust()
+    const lit = on && !!sh.lit?.(i)
     return {
-      p: place(p, { scale: k, rotation: [tx, ty, 0], position: off }),
+      p: place(p, pl),
       c: lit ? mixRgb(col, [1, 1, 1], 0.55) : col,
-      a: (lit ? 1 : inShape ? 0.62 : 0.3) * dim,
-      s: lit ? 0.75 : inShape ? 0.5 : 0.42,
+      a: (lit ? 1 : on ? 0.62 : 0.3) * dim,
+      s: lit ? 0.75 : on ? 0.5 : 0.42,
     }
+  })
+}
+
+/** A logo formation's height in the comps' units: about the reach of the shape it replaces, more on a phone, where the
+ * cut's shapes are drawn at half size and a symbol's lines would close up. */
+const LOGO_H = { desk: 30, phone: 42 }
+/** Each cut's second colour, for the logo's shade: SPARK runs orange to tangelo (brand.md, Activity departments). */
+const SHADE: Partial<Record<ShapeKey, string>> = { spark: '#F24407' }
+
+const lum = ([r, g, b]: Rgb) => 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+/**
+ * A logo formation (#29, decision 59): the cut's shape points drawn on the logo's sample and the cut's dust around it,
+ * at the cut's place, so its sway, lean and tap stay the cut's. The light is the cut's own: the file's lighter parts
+ * in the accent, its darker ones in the second colour, so a symbol's inner lines (SPARK's two flames) still read.
+ */
+export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: LogoSample): Formation {
+  const c = comp(97 + key.length * 13 + key.charCodeAt(0))
+  const pl = cutPlacement(key, l)
+  const h = l.phone ? LOGO_H.phone : LOGO_H.desk
+  // finer points on a phone, so the lines stay apart
+  const size = l.phone ? 0.34 : 0.5
+  const light = rgb(SHAPES[key].color)
+  const shade = rgb(SHADE[key] ?? SHAPES[key].color)
+  const ls = s.pts.map((q) => lum(q.c))
+  const lo = Math.min(...ls)
+  const span = Math.max(...ls) - lo || 1
+  let j = 0
+  return build(n, count, (i) => {
+    if (!inShape(i) || !s.pts.length) return { p: place(c.dust(), pl), c: light, a: 0.3, s: 0.42 }
+    const k = j++ % s.pts.length
+    const q = s.pts[k]
+    const t = (ls[k] - lo) / span
+    return { p: place([q.x * h, q.y * h, c.g() * 0.25], pl), c: mixRgb(shade, light, t), a: 0.5 + 0.25 * t, s: size }
   })
 }
 

@@ -57,6 +57,19 @@ Copied from `VIC-Recruitment-2026` at scaffold time, unchanged:
 | `frontend/src/assets/fonts/Gilroy-*.woff2` | `src/assets/fonts/` | Only once the web licence is settled ([brand.md](brand.md#type-charter-p17-to-20)). |
 | `frontend/src/components/brand/*.tsx` | `src/components/brand/` | Charter motifs, if the design uses them. |
 
+The department, event and project logos ([#29](https://github.com/puIad/vic-enp/issues/29), decisions 59 and 60) come
+from the owner's `.ai` files in `assets/logos/`, which stay outside git. `python scripts/logos.py` renders each one
+with PyMuPDF into `public/logos/<name>.png`: transparent, 512 px on the long side, colours and proportions unchanged,
+trimmed to the artwork. It only leaves whole parts out: the words beside a symbol, and Ignite's "Algiers" and ®.
+
+| File | Artboard | What it is |
+|---|---|---|
+| `spark.png`, `training.png`, `english-bubble.png`, `aec.png` | SPARK p1, Training p1, English Bubble p1, AEC p2 | The symbol alone, for the logo formations |
+| `cpsp.png`, `vic-charity.png`, `masterclass.png`, `vicra.png`, `vic-entertainment.png` | CPSP p1, VIC Charity p1, MasterClass p2, VICra p4 (the crescent, transparent), VIC Entertainment p2 | The symbol beside a name |
+| `gala.png`, `ignite.png`, `polymaze.png` | GALA p1 (raster art), Ignite p1, POLYMAZE p3 (the transparent wordmark) | The name artwork, for the logo formations |
+
+`src/world/logo.ts` turns any of them into a formation's places; `LOGO_CUTS` there lists the cuts drawn as their logo.
+
 ## 3D assets
 
 Procedural, no models: the point field, its formations and the photo resolve are computed in code (formations may
@@ -75,7 +88,6 @@ Needed by the signed acts and not made yet:
 | Seven outlined department icons | Departments tier 0 cards only ([#13](https://github.com/puIad/vic-enp/issues/13)) | Drawn in the build |
 | One ambient sound loop, under 300 KB | The optional sound toggle ([#10](https://github.com/puIad/vic-enp/issues/10)) | To find, with a licence for public use |
 | One photo each for CPSP, VIC Charity, MasterClass, VICra (3:2), if the projects cut gets photos | Events cut 5 ([#15](https://github.com/puIad/vic-enp/issues/15)) | The owner |
-| SVG exports of the logos in `assets/logos/` (activity departments, events, projects), for sampling into dots and for the project rows | Slice 5, the owner's notes ([build-plan.md](build-plan.md#the-owners-notes-2026-10-20)) | The owner's `.ai` files, exported unchanged |
 
 ## Generated assets (agy)
 

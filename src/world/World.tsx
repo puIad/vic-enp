@@ -18,8 +18,9 @@ import {
   Vector3,
 } from 'three'
 import { MEMBERS, heroPlacement, random } from './cloud'
-import { CAM_Z, HH, arrive, close, cloud, halfWidth, icon, irisAt, photo, shape, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
-import { sampleIcon, samplePhoto } from './sample'
+import { CAM_Z, HH, arrive, close, cloud, halfWidth, icon, irisAt, logo, photo, shape, shapeCount, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
+import { LOGO_CUTS, sampleLogo, type LogoCut, type Pixels } from './logo'
+import { loadLogo, sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
 import { meter, watchLoop } from './loop'
 import { has } from './steps'
@@ -153,7 +154,7 @@ function makeYou() {
   return { points, mat, pos, dispose: () => (g.dispose(), mat.dispose()) }
 }
 
-type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | false }
+type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | false; logos: Partial<Record<LogoCut, Pixels>> }
 
 const RAMP = forcedPoints(location.search)
 const FPS = new URLSearchParams(location.search).has('fps')
@@ -205,7 +206,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
   const fps = useFpsReadout()
   const field = useRef<ReturnType<typeof makeField> | null>(null)
   const you = useRef<ReturnType<typeof makeYou> | null>(null)
-  const samples = useRef<Samples>({ icon: null, photo: null })
+  const samples = useRef<Samples>({ icon: null, photo: null, logos: {} })
   const cache = useRef(new Map<string, Formation>())
 
   useEffect(() => {
@@ -239,6 +240,19 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       },
       () => !gone && (samples.current.photo = false),
     )
+    // the logo formations (#29): until a file lands, or if it fails, its cut keeps the comp's shape
+    for (const [key, src] of Object.entries(LOGO_CUTS) as [LogoCut, string][])
+      loadLogo(src).then(
+        (px) => {
+          if (gone) return
+          samples.current.logos[key] = px
+          cache.current.delete(key)
+          const f = field.current
+          if (f && f.keys.b === key) f.keys.b = ''
+          if (f && f.keys.a === key) f.keys.a = ''
+        },
+        () => {},
+      )
     return () => {
       gone = true
       document.documentElement.classList.remove('w-resolve')
@@ -357,6 +371,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       else if (key === 'photo') fm = s.photo && world.photo ? photo(n, c, l, s.photo, world.photo) : shape('tunnel', n, B.cuts, l)
       else if (key === 'closeRest') fm = close(n, c, l, null)
       else if (key === 'closeIris') fm = close(n, c, l, world.slot, has('cuts'))
+      else if (key in s.logos) fm = logo(key as LogoCut, n, c, l, sampleLogo(s.logos[key as LogoCut]!, shapeCount(c)))
       else fm = shape(key as ShapeKey, n, c, l)
       cache.current.set(key, fm)
       return fm
@@ -415,7 +430,8 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     u.uMix.value = K.mix
     u.uStag.value = fr.stag
     u.uTime.value = K.time
-    u.uDrift.value = fr.drift
+    // a logo's thin lines would blur in the full drift: it breathes, at a third
+    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? 0.35 : 1)
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height
     u.uLean.value = K.lean

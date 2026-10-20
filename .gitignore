@@ -11,3 +11,6 @@ graphify-out/cache
 *.log
 # photo originals: the pipeline commits resized copies to public/photos
 assets/pics/
+# the owner's logo files (Illustrator): scripts/logos.py commits web-ready copies to public/logos
+assets/logos/
+__pycache__/

@@ -81,7 +81,7 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    - "What we hold to" and its four values leave act 2 (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
    - VIC Charity's row leaves the club life ledger. VIC Charity stays in the projects (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
    - Each event's name sits at the same height on every cut, on desktop and phone. The lead, cities and link flow
-     down from it.
+     down from it (built, [#27](https://github.com/puIad/vic-enp/issues/27)).
    - Each event links to its own site: gala.vic-enp.com, ignite.vic-enp.com, polymaze.vic-enp.com and
      aec.vic-enp.com (built, [#26](https://github.com/puIad/vic-enp/issues/26)).
    - The footer loses its description line (act 2 keeps it), and its address becomes "10 Rue des Frères OUDEK, El
@@ -91,10 +91,13 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    - No orphan words: paragraphs use `text-wrap: pretty`, checked on a phone.
    - A 404 page on the night, with the logo and a link back.
    - A reload in the middle of a pinned act lands in the right place; check it and fix it if not.
-2. **Logo formations and the departments' dots**: owner items 9, 10, 11 and 14 in the table below.
+   - The last four built in [#28](https://github.com/puIad/vic-enp/issues/28) with the hidden tab, the font and the photo priority.
+2. **Logo formations and the departments' dots**: owner items 9, 10, 11 and 14 in the table below (built,
+   [#29](https://github.com/puIad/vic-enp/issues/29) to [#32](https://github.com/puIad/vic-enp/issues/32)).
 3. **Logos beside names, photos, the word scrub, the counters**: owner items 17 and 19 and the photos, from
    the table. Act 2's word scrub with the field's dim under the benefits; the four counters and the 600's pulse
-   ([experience.md](experience.md#2-what-vic-is-the-numbers-why-join)).
+   ([experience.md](experience.md#2-what-vic-is-the-numbers-why-join)). The logos beside names and the photos are
+   built ([#33](https://github.com/puIad/vic-enp/issues/33) to [#35](https://github.com/puIad/vic-enp/issues/35)); the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)) and the counters ([#37](https://github.com/puIad/vic-enp/issues/37)) are not.
 4. **Reactions, the light act, grain, sound** (63, 64):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
@@ -127,10 +130,33 @@ same evening (59 to 62, 65). The copy items are built; these are slice 5's group
 | 19 | The closing "Once a VICer, Always a VICer." gets the [word scrub](../GLOSSARY.md), the same as act 2's | [7](experience.md#7-close-and-footer) |
 | (photos) | The group photos `IMG_6171`, `IMG_7517` and `IMG_9215-2` join the peak's depth stack, which grows to ten in the same six screens (the tier 0 grid too). `IMG_0257` (a robot in the maze) is a second, smaller frame in POLYMAZE's cut: beside the first on desktop, sharing its height 2:1 on phones. `IMG_6141` (a SPARK workshop) is a small frame in SPARK's cut above the copy, with the logo formation behind it. `IMG_8095.HEIC` stays out until exported | [4](experience.md#4-club-life-and-the-photo-sequence-the-peak), [3](experience.md#3-departments), [5](experience.md#5-events-and-projects) |
 
-The logo files are in `assets/logos/`, which is not in git yet, so a worktree or a clean clone doesn't have them.
-They are Illustrator files saved with PDF inside, so PyMuPDF renders them. Training's and GALA's art is raster, not
-vector. POLYMAZE's and VICra's files are opaque squares; the others have transparent backgrounds. The first logo
-ticket puts what the page needs into the repo.
+The owner's logo files are in `assets/logos/` (Illustrator files saved with PDF inside, so PyMuPDF renders them).
+What the page uses was committed by [#29](https://github.com/puIad/vic-enp/issues/29) under `public/logos/`, so a clean
+clone has it.
+
+## Where it stands (20 Oct, night)
+
+Slices 1 to 4 are merged, a day and a half ahead of the calendar. Slice 5's groups 1 and 2 are merged, and
+group 3 has two tickets left. `IMG_6141` left the page on PR #56 ([decisions.md](decisions.md), 67).
+
+### Tomorrow (21 Oct)
+
+In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25](https://github.com/puIad/vic-enp/issues/25):
+
+1. Finish group 3: the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)), then the counters and the
+   600's pulse ([#37](https://github.com/puIad/vic-enp/issues/37)).
+2. Group 4: the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
+   ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)),
+   the sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)). For the sound, Claude shortlists CC0 loops and
+   the owner picks one and approves each download.
+3. The owner's phone check with `?fps` and `?points=N` ([#42](https://github.com/puIad/vic-enp/issues/42)), which
+   unblocks the performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)).
+4. **The application form on this site** (owner's note, 20 Oct): the form is the link between the landing page and
+   the recruitment dashboard, so its answers have to reach the Master the dashboard reads. Its scope, its place in
+   the plan and how it relates to `VITE_APPLY_URL` and the registration app in `VIC-Recruitment-2026` are not
+   settled yet ([open-questions.md](open-questions.md), 29). Settle them with the owner first, then ticket it.
+5. Owner answers that were due on 20 Oct and are still open: the Vercel project (8) and PR reviews (22). Due
+   22 Oct: content check 9, the Gilroy licence (11), the logo fade (19), the new-copy list (27).
 
 ## The cut line
 

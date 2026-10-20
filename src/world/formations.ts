@@ -173,6 +173,8 @@ type Shape = {
   at: (c: ReturnType<typeof comp>) => Gen
   /** the cut's light */
   color: string
+  /** a logo formation's second light, for the file's darker parts */
+  shade?: string
   /** a tilt, as in the comp's snap() */
   tilt?: [number, number]
   /** the brighter points of the shape (a lit runner, a stage line, the door's slit) */
@@ -268,6 +270,8 @@ export const SHAPES = {
   },
   spark: {
     color: '#F29A09',
+    // SPARK runs orange to tangelo (brand.md, Activity departments)
+    shade: '#F24407',
     at: ({ g, rnd }) => (i) => {
       const k = i % 18
       const a = (k / 18) * 6.283 + Math.sin(k * 7.3) * 0.25
@@ -362,6 +366,8 @@ export const SHAPES = {
 
 export type ShapeKey = keyof typeof SHAPES
 const CENTRED: ShapeKey[] = ['door', 'tunnel', 'horizon']
+/** Each cut's own seeded generators, the same for its shape and its logo. */
+const compOf = (key: ShapeKey) => comp(97 + key.length * 13 + key.charCodeAt(0))
 
 /** Where a cut's formation sits: right of centre on desktop (or its own spot), small at the top on a phone. */
 function cutPlacement(key: ShapeKey, l: Layout): Placement {
@@ -383,7 +389,7 @@ export const shapeCount = (count: number) => Math.floor(count / 10) * SHARE * 10
 
 export function shape(key: ShapeKey, n: number, count: number, l: Layout): Formation {
   const sh: Shape = SHAPES[key]
-  const c = comp(97 + key.length * 13 + key.charCodeAt(0))
+  const c = compOf(key)
   const gen = sh.at(c)
   const share = sh.share ?? SHARE
   const pl = cutPlacement(key, l)
@@ -405,8 +411,6 @@ export function shape(key: ShapeKey, n: number, count: number, l: Layout): Forma
 /** A logo formation's height in the comps' units: about the reach of the shape it replaces, more on a phone, where the
  * cut's shapes are drawn at half size and a symbol's lines would close up. */
 const LOGO_H = { desk: 30, phone: 42 }
-/** Each cut's second colour, for the logo's shade: SPARK runs orange to tangelo (brand.md, Activity departments). */
-const SHADE: Partial<Record<ShapeKey, string>> = { spark: '#F24407' }
 
 const lum = ([r, g, b]: Rgb) => 0.2126 * r + 0.7152 * g + 0.0722 * b
 
@@ -416,13 +420,14 @@ const lum = ([r, g, b]: Rgb) => 0.2126 * r + 0.7152 * g + 0.0722 * b
  * in the accent, its darker ones in the second colour, so a symbol's inner lines (SPARK's two flames) still read.
  */
 export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: LogoSample): Formation {
-  const c = comp(97 + key.length * 13 + key.charCodeAt(0))
+  const sh: Shape = SHAPES[key]
+  const c = compOf(key)
   const pl = cutPlacement(key, l)
   const h = l.phone ? LOGO_H.phone : LOGO_H.desk
   // finer points on a phone, so the lines stay apart
   const size = l.phone ? 0.34 : 0.5
-  const light = rgb(SHAPES[key].color)
-  const shade = rgb(SHADE[key] ?? SHAPES[key].color)
+  const light = rgb(sh.color)
+  const shade = rgb(sh.shade ?? sh.color)
   const ls = s.pts.map((q) => lum(q.c))
   const lo = Math.min(...ls)
   const span = Math.max(...ls) - lo || 1

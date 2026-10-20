@@ -2,8 +2,8 @@
 // formations (#29) from public/logos/, and the peak's group photo (#14) from its smallest export. Each reads pixels
 // through a 2D canvas once, at load.
 
-import { photoGrid, rgb, type IconSample, type PhotoSample } from './formations'
-import { spread, type Pixels } from './logo'
+import { photoGrid, type IconSample, type PhotoSample } from './formations'
+import { sampleLogo, type Pixels } from './logo'
 
 const load = (src: string) =>
   new Promise<HTMLImageElement>((ok, fail) => {
@@ -35,15 +35,9 @@ export async function sampleIcon(members: number): Promise<IconSample> {
   const im = await load('/brand/vic-icon.svg')
   const H = 320
   const W = Math.round((H * VIEW.w) / VIEW.h)
-  const px = pixels(im, W, H)
   const aspect = VIEW.w / VIEW.h
   return {
-    pts: spread({ w: W, h: H, data: px }, members).map((i) => {
-      const x = i % W
-      const y = Math.floor(i / W)
-      const hex = `#${[0, 1, 2].map((k) => px[i * 4 + k].toString(16).padStart(2, '0')).join('')}`
-      return { x: ((x + 0.5) / W - 0.5) * aspect, y: 0.5 - (y + 0.5) / H, c: rgb(hex) }
-    }),
+    pts: sampleLogo({ w: W, h: H, data: pixels(im, W, H) }, members).pts,
     iris: [((IRIS.x - VIEW.x) / VIEW.w - 0.5) * aspect, 0.5 - (IRIS.y - VIEW.y) / VIEW.h],
   }
 }

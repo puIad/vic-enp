@@ -16,11 +16,11 @@ const FILLED = 160
  * k pixels spread evenly over the file's filled area: one per cell of a grid sized to the area, jittered inside its
  * cell, then dropped at random or topped up from the filled area to exactly k.
  */
-export function spread({ w: W, h: H, data: px }: Pixels, k: number, seed = 19): number[] {
+export function spread({ w: W, h: H, data: px }: Pixels, k: number): number[] {
   const filled: number[] = []
   for (let i = 0; i < W * H; i++) if (px[i * 4 + 3] > FILLED) filled.push(i)
   if (!filled.length) throw new Error('nothing filled to sample')
-  const rnd = random(seed)
+  const rnd = random(19)
   const cell = Math.sqrt(filled.length / k)
   const pick: number[] = []
   for (let gy = 0; gy < H; gy += cell)
@@ -42,11 +42,11 @@ export function spread({ w: W, h: H, data: px }: Pixels, k: number, seed = 19): 
 }
 
 /** k places on the file, each in the colour under it. */
-export function sampleLogo(px: Pixels, k: number, seed?: number): LogoSample {
+export function sampleLogo(px: Pixels, k: number): LogoSample {
   const aspect = px.w / px.h
   return {
     aspect,
-    pts: spread(px, k, seed).map((i) => ({
+    pts: spread(px, k).map((i) => ({
       x: (((i % px.w) + 0.5) / px.w - 0.5) * aspect,
       y: 0.5 - (Math.floor(i / px.w) + 0.5) / px.h,
       c: [px.data[i * 4] / 255, px.data[i * 4 + 1] / 255, px.data[i * 4 + 2] / 255],

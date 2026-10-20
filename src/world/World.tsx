@@ -138,7 +138,8 @@ function makeField(n: number) {
   )
   const points = new Points(g, mat)
   points.frustumCulled = false
-  return { points, mat, slots, n, keys: { a: '', b: '' }, dispose: () => (g.dispose(), mat.dispose()) }
+  // relit: a formation on screen was swapped for its file's version, and flashes like a cut
+  return { points, mat, slots, n, keys: { a: '', b: '' }, relit: false, dispose: () => (g.dispose(), mat.dispose()) }
 }
 
 function makeYou() {
@@ -248,8 +249,12 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
           samples.current.logos[key] = px
           cache.current.delete(key)
           const f = field.current
-          if (f && f.keys.b === key) f.keys.b = ''
           if (f && f.keys.a === key) f.keys.a = ''
+          // on screen already (a slow file, a deep link to the cut): it lands as a cut does, with the flash
+          if (f && f.keys.b === key) {
+            f.keys.b = ''
+            f.relit = true
+          }
         },
         () => {},
       )
@@ -400,7 +405,8 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     f.points.geometry.setDrawRange(0, Math.min(f.n, drawn))
 
     // B's cuts land at once with a white flash that decays in about 0.17 s; A's blends ease
-    if (fr.snap && fr.snap !== K.snap) K.flash = 1
+    if ((fr.snap && fr.snap !== K.snap) || f.relit) K.flash = 1
+    f.relit = false
     K.snap = fr.snap
     if (world.pulse > 0 && world.pulse !== K.pulse) {
       K.pulse = world.pulse
@@ -430,7 +436,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     u.uMix.value = K.mix
     u.uStag.value = fr.stag
     u.uTime.value = K.time
-    // a logo's thin lines would blur in the full drift: it breathes, at a third
+    // a logo's thin lines would blur in the full drift: it breathes, at about a third
     u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? 0.35 : 1)
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height

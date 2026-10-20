@@ -55,7 +55,7 @@ export function sampleLogo(px: Pixels, k: number): LogoSample {
 }
 
 /** The cuts drawn as their logo (decision 59): SPARK first, the tracer bullet; the other cuts keep their shapes. */
-export const LOGO_CUTS = { spark: '/logos/spark.png' } as const
+export const LOGO_CUTS = { spark: '/logos/spark.png', training: '/logos/training.png', bubble: '/logos/english-bubble.png' } as const
 export type LogoCut = keyof typeof LOGO_CUTS
 
 /** The events drawn with their logo (#32, decision 59): GALA, Ignite and POLYMAZE as their names, AEC as its symbol. */

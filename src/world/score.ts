@@ -93,9 +93,15 @@ export function score(s: ScoreIn): Frame {
         const you = at([lerp(TR[0], CUT[0], ss(0, 1, t)), lerp(TR[1], CUT[1], ss(0, 1, t))], 1.35)
         return { ...sway, a: 'tight', b: 'door', mix: m, stag: 0.4, camZ: lerp(8.5, 14, m), turn: 0.28 * (1 - m), you }
       }
-      if (i === DEPT_STEPS.length - 1)
-        // the tunnel: dim and wordless, the camera eases forward into it
-        return { ...sway, a: 'tunnel', b: 'tunnel', mix: 1, snap: 'tunnel', camZ: lerp(14, 11, ss(0, 1, t)), sway: 0.4, you: at(CUT, 1.35) }
+      if (i === DEPT_STEPS.length - 1) {
+        // the tunnel: dim and wordless, the camera eases forward into it. English Bubble's points stream into its mouth
+        // over the first part of the step (decision 61); the morph carries on from the cut, under its snap, so neither
+        // way across flashes. With the cuts dropped the door still cuts to the tunnel.
+        const camZ = lerp(14, 11, ss(0, 1, t))
+        if (!has('cuts')) return { ...sway, a: 'tunnel', b: 'tunnel', mix: 1, snap: 'tunnel', camZ, sway: 0.4, you: at(CUT, 1.35) }
+        const m = ss(0, 0.85, t)
+        return { ...sway, a: DEPTS[i - 2], b: 'tunnel', mix: m, stag: 0.7, snap: `dept-${i - 1}`, camZ, sway: lerp(1, 0.4, m), you: at(CUT, 1.35) }
+      }
       const k = has('cuts') ? DEPTS[i - 1] : 'door'
       return { ...sway, a: k, b: k, mix: 1, snap: has('cuts') ? `dept-${i}` : null, you: at(CUT, 1.35) }
     }

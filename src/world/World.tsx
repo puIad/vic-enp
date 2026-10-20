@@ -444,10 +444,12 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     u.uMix.value = K.mix
     u.uStag.value = fr.stag
     u.uTime.value = K.time
-    // a logo's thin lines would blur in the full drift: it breathes, at about a third; an event's name, drawn a few
-    // pixels per stroke in the box above the name (#32), at a tenth, but only while the box is open: a cut that fell back
-    // to its shape keeps its full drift
-    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? (fr.b in EVENT_LOGOS ? (world.logoBox ? 0.1 : 1) : 0.35) : 1)
+    // a logo's thin lines would blur in the full drift: it breathes, at about a third, and the drift follows the mix
+    // into a logo and out of one (English Bubble into the tunnel). An event's name, drawn a few pixels per stroke in the
+    // box above the name (#32), breathes at a tenth, but only while the box is open: a cut that fell back to its shape
+    // keeps its full drift
+    const calm = (k: Key) => (k in s.logos ? (k in EVENT_LOGOS ? (world.logoBox ? 0.9 : 0) : 0.65) : 0)
+    u.uDrift.value = fr.drift * (1 - calm(fr.a) * (1 - K.mix) - calm(fr.b) * K.mix)
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height
     u.uLean.value = K.lean

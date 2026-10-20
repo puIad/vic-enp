@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { MEMBERS } from './cloud'
-import { CAM_Z, HH, SHAPES, close, cloud, halfWidth, icon, photo, photoGrid, shape, type IconSample, type Layout, type ShapeKey } from './formations'
+import { CAM_Z, HH, SHAPES, close, cloud, halfWidth, icon, logo, photo, photoGrid, rgb, shape, type IconSample, type Layout, type ShapeKey } from './formations'
+import type { LogoSample } from './logo'
 
 const desk: Layout = { phone: false, w: 1440, h: 900 }
 const phone: Layout = { phone: true, w: 390, h: 844 }
@@ -87,5 +88,39 @@ describe('the close', () => {
     const f = close(3000, 3000, desk, slot, false)
     const near = Array.from({ length: MEMBERS }, (_, i) => screen(f, i)).filter(([x, y]) => Math.hypot(x - slot.x, y - slot.y) < 90)
     expect(near.length).toBeLessThan(MEMBERS / 4)
+  })
+})
+
+describe("a department's logo formation", () => {
+  // a square of points standing in for SPARK's sample, in the logo's units
+  const sample: LogoSample = { aspect: 1, pts: Array.from({ length: 400 }, (_, i) => ({ x: (i % 20) / 19 - 0.5, y: Math.floor(i / 20) / 19 - 0.5, c: [0.1, 0.2, 0.3] as [number, number, number] })) }
+  const screen = (f: ReturnType<typeof logo>, l: Layout, i: number) => {
+    const d = (CAM_Z - f.pos[i * 4 + 2]) / CAM_Z
+    return [f.pos[i * 4] / d / halfWidth(l), f.pos[i * 4 + 1] / d / HH]
+  }
+
+  it("draws SPARK's symbol in SPARK's own light, the file's light parts orange and its dark parts tangelo", () => {
+    const shaded: LogoSample = { aspect: 1, pts: [{ x: 0, y: 0, c: [1, 1, 0.6] }, { x: 0.1, y: 0, c: [0.3, 0.1, 0.1] }] }
+    const f = logo('spark', 10, 10, desk, shaded)
+    const at = (i: number) => [...f.col.slice(i * 4, i * 4 + 3)].map((v) => +v.toFixed(3))
+    const hex = (h: string) => rgb(h).map((v) => +v.toFixed(3))
+    expect(at(0)).toEqual(hex('#F29A09'))
+    expect(at(1)).toEqual(hex('#F24407'))
+  })
+
+  it('sits where the cut\'s shape sits: the right half on desktop, clear of the copy, the top of a phone, whole on screen', () => {
+    for (const [l, inside] of [
+      [desk, ([x, y]: number[]) => x > 0 && x < 0.95 && Math.abs(y) < 0.9],
+      [phone, ([x, y]: number[]) => Math.abs(x) < 0.95 && y > 0.15 && y < 0.95],
+    ] as const) {
+      const f = logo('spark', 1000, 1000, l, sample)
+      const lit = Array.from({ length: 1000 }, (_, i) => i).filter((i) => i % 10 < 8)
+      for (const i of lit) expect(inside(screen(f, l, i))).toBe(true)
+    }
+  })
+
+  it('keeps a fifth of the points as dust around it, as every cut does', () => {
+    const f = logo('spark', 1000, 1000, desk, sample)
+    expect(f.col[8 * 4 + 3]).toBeLessThan(f.col[3])
   })
 })

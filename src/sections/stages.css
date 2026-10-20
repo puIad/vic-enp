@@ -294,6 +294,16 @@
 .ev .cut-line {
   max-width: none;
 }
+/* the box above the name where the world draws the event's logo in dots (#32): it opens only while the world draws
+   them (html.w-logos), so tier 0, reduced motion and ?cut=cuts keep the copy as it was. EventsStage measures it */
+.ev-logo {
+  display: none;
+  height: clamp(84px, 16vh, 160px);
+  margin-bottom: 20px;
+}
+.w-ready.w-logos .ev-logo {
+  display: block;
+}
 /* each event's name on the same line on every cut, level with the frame's top, the copy flowing down from it; a short
    window lifts it just enough for the tallest copy (AEC's) to clear the picker, never under the logo. --ev-copy is that
    copy's height, measured by EventsStage (56) */
@@ -516,6 +526,10 @@
   .ev .cut-line {
     font-size: clamp(40px, 12vw, 56px);
   }
+  .ev-logo {
+    height: clamp(44px, 10svh, 88px);
+    margin-bottom: 12px;
+  }
   .ev-rows {
     left: var(--gut);
     right: 20px;
@@ -579,5 +593,22 @@
   }
   .ev-ig {
     margin-top: 12px;
+  }
+  /* a shorter box for the logo, and the copy under it drawn tighter so AEC's still clears the picker with the frame at
+     its minimum (#32, owner's call): only while the box is open */
+  .ev-logo {
+    height: 36px;
+    margin-bottom: 8px;
+  }
+  .w-ready.w-logos .ev.has-photo .ev-text {
+    padding-top: 8px;
+  }
+  .w-ready.w-logos .ev .cut-lead {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .w-ready.w-logos .ev-cities,
+  .w-ready.w-logos .ev-ig {
+    margin-top: 8px;
   }
 }

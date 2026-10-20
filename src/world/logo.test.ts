@@ -78,6 +78,60 @@ describe('a name logo sampled into points', () => {
   })
 })
 
+describe("the events' name logos sampled into points (#32)", () => {
+  /** every sixth of the width gets points, so no letter of a wide name drops out */
+  const across = (pts: { x: number }[], a: number, min: number) => {
+    for (let k = 0; k < 6; k++) expect(pts.filter((p) => p.x >= -a / 2 + (k * a) / 6 && p.x < -a / 2 + ((k + 1) * a) / 6).length).toBeGreaterThan(min)
+  }
+
+  it("draws Engineers' GALA on both its lines, edge to edge, in the file's gold", async () => {
+    const px = await file('gala')
+    const s = sampleLogo(px, 4000)
+    expect(s.aspect).toBeGreaterThan(2.5)
+    across(s.pts, s.aspect, 250)
+    // "ENGINEERS'" above, "GALA" and its sparkles below
+    expect(s.pts.filter((p) => p.y > 0.15).length).toBeGreaterThan(1000)
+    expect(s.pts.filter((p) => p.y < -0.15).length).toBeGreaterThan(1000)
+    for (const { c } of s.pts) expect(c[0]).toBeGreaterThan(c[2])
+  })
+
+  it('draws Ignite as its three nodes over the red word, without "Algiers" or ®, edge to edge', async () => {
+    const px = await file('ignite')
+    const s = sampleLogo(px, 4000)
+    const red = (c: number[]) => c[0] - c[1] > 0.3
+    across(s.pts, s.aspect, 150)
+    // the grey node lines above, the red word below, and nothing of a second line of words under it
+    const grey = s.pts.filter((p) => !red(p.c))
+    expect(grey.length).toBeGreaterThan(300)
+    expect(grey.every((p) => p.y > -0.15)).toBe(true)
+    expect(s.pts.filter((p) => red(p.c) && p.y < 0).length).toBeGreaterThan(1500)
+    expect(s.aspect).toBeGreaterThan(1.2)
+    expect(s.aspect).toBeLessThan(1.6)
+  })
+
+  it('draws POLYMAZE across its whole width, every point on the wordmark', async () => {
+    const px = await file('polymaze')
+    const s = sampleLogo(px, 4000)
+    expect(s.aspect).toBeGreaterThan(2.2)
+    across(s.pts, s.aspect, 300)
+    for (const p of s.pts) expect(under(px, p.x, p.y)[3]).toBeGreaterThan(160)
+  })
+})
+
+describe("AEC's symbol sampled into points (#32)", () => {
+  it('draws the monument in grey on the left and the gear in navy on the right', async () => {
+    const px = await file('aec')
+    const s = sampleLogo(px, 4000)
+    const navy = (c: number[]) => c[2] - c[0] > 0.15
+    const left = s.pts.filter((p) => p.x < -0.15)
+    const right = s.pts.filter((p) => p.x > 0.15)
+    expect(left.length).toBeGreaterThan(600)
+    expect(right.length).toBeGreaterThan(600)
+    expect(left.filter((p) => !navy(p.c)).length / left.length).toBeGreaterThan(0.95)
+    expect(right.filter((p) => navy(p.c)).length / right.length).toBeGreaterThan(0.8)
+  })
+})
+
 describe("Training's and English Bubble's symbols sampled into points", () => {
   it('puts every point on the symbol, none on the empty ground', async () => {
     for (const name of ['training', 'english-bubble']) {

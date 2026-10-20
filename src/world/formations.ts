@@ -4,7 +4,7 @@
 // icon.ts and photo.ts; everything here is pure, so it runs in tests.
 
 import { MEMBERS, constellation, heroPlacement, random } from './cloud'
-import type { LogoSample } from './logo'
+import type { EventKey, LogoSample } from './logo'
 
 /** x, y, z, size per point, then r, g, b, a per point. Points past the formation's own count sit on a twin at a = 0. */
 export type Formation = { pos: Float32Array; col: Float32Array; count: number }
@@ -443,29 +443,28 @@ export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: Logo
 
 // ---------- the events' logo formations (#32) ----------
 
-export type EventKey = 'gala' | 'ignite' | 'poly' | 'aec'
-
 /** Which of an event cut's points draw its logo: on desktop 7 in 20, taken from the formation's points and never from
  * its dust, so the formation keeps 9 in 20 behind the photo; on a phone all of the formation's, so only the logo shows. */
-export const onMark = (i: number, phone: boolean) => (phone ? inShape(i) : i % 20 < 7)
-export const markCount = (count: number, phone: boolean) => (phone ? shapeCount(count) : Math.floor(count / 20) * 7 + Math.min(count % 20, 7))
+export const onLogo = (i: number, phone: boolean) => inShape(i) && (phone || i % 20 < 7)
+export const logoCount = (count: number, phone: boolean) => (phone ? shapeCount(count) : Math.floor(count / 20) * 7 + Math.min(count % 20, 7))
 
 /**
  * Each event logo's two inks, for its file's parts at tone 0 and tone 1, all in light that reads on the night: GALA's
- * gold from its darker to its lighter parts; Ignite's word in its red and its node lines in a pale grey; POLYMAZE's
- * wordmark (dark maroon in the file) in its cut's aquamarine; AEC's grey monument in aquamarine and its navy gear in
- * the charter's lighter blue.
+ * gold from the owner's #D4A843 (brand.md) in its darker parts to a paler gold in its lighter ones; Ignite's word in
+ * its red and its node lines in a pale grey; POLYMAZE's wordmark in the orange of its file's other artboards; AEC in
+ * white, as the owner asked.
  */
 export const EVENT_INK: Record<EventKey, readonly [string, string]> = {
-  gala: ['#B8862F', '#F2D27A'],
+  gala: ['#D4A843', '#F2D27A'],
   ignite: ['#E0313F', '#C4CAD1'],
-  poly: ['#69C4AF', '#69C4AF'],
-  aec: ['#69C4AF', '#3BA6E8'],
+  poly: ['#F25805', '#F25805'],
+  aec: ['#FFFFFF', '#FFFFFF'],
 }
 
-/** A sampled colour's tone, 0..1: by lightness, except AEC, whose two halves are as dark as each other and part by hue. */
+/** A sampled colour's tone, 0..1: by lightness, except Ignite, whose red word and dark grey lines are about as dark
+ * as each other and part by hue. */
 function tones(key: EventKey, cs: Rgb[]): number[] {
-  if (key === 'aec') return cs.map(([r, , b]) => (b - r > 0.15 ? 1 : 0))
+  if (key === 'ignite') return cs.map(([r, g]) => (r - g > 0.3 ? 0 : 1))
   const ls = cs.map(lum)
   const lo = Math.min(...ls)
   const span = Math.max(...ls) - lo || 1
@@ -486,7 +485,7 @@ export function eventLogo(key: EventKey, n: number, count: number, l: Layout, s:
   // bottom-aligned, so a short logo still sits right on the name
   const top = r.cy + r.h / 2 - hpx
   // the dots' size follows their spacing over a name's usual fill (about a third of its box), so letters stay open
-  const k = markCount(count, l.phone)
+  const k = logoCount(count, l.phone)
   const spacing = hpx * Math.sqrt((s.aspect * 0.35) / Math.max(1, k))
   const size = Math.min(0.6, Math.max(0.16, (spacing * 1.5) / (l.h / CAM_Z) / 0.09))
   const [ink0, ink1] = EVENT_INK[key].map(rgb)
@@ -494,7 +493,7 @@ export function eventLogo(key: EventKey, n: number, count: number, l: Layout, s:
   const rnd = random(151)
   let j = 0
   return build(n, count, (i) => {
-    if (!onMark(i, l.phone)) {
+    if (!onLogo(i, l.phone)) {
       const a = own.col[i * 4 + 3]
       return { p: [own.pos[i * 4], own.pos[i * 4 + 1], own.pos[i * 4 + 2]], c: [own.col[i * 4], own.col[i * 4 + 1], own.col[i * 4 + 2]], a, s: own.pos[i * 4 + 3] }
     }

@@ -95,6 +95,20 @@ describe("the events' name logos sampled into points (#32)", () => {
     for (const { c } of s.pts) expect(c[0]).toBeGreaterThan(c[2])
   })
 
+  it('draws Ignite as its three nodes over the red word, without "Algiers" or ®, edge to edge', async () => {
+    const px = await file('ignite')
+    const s = sampleLogo(px, 4000)
+    const red = (c: number[]) => c[0] - c[1] > 0.3
+    across(s.pts, s.aspect, 150)
+    // the grey node lines above, the red word below, and nothing of a second line of words under it
+    const grey = s.pts.filter((p) => !red(p.c))
+    expect(grey.length).toBeGreaterThan(300)
+    expect(grey.every((p) => p.y > -0.15)).toBe(true)
+    expect(s.pts.filter((p) => red(p.c) && p.y < 0).length).toBeGreaterThan(1500)
+    expect(s.aspect).toBeGreaterThan(1.2)
+    expect(s.aspect).toBeLessThan(1.6)
+  })
+
   it('draws POLYMAZE across its whole width, every point on the wordmark', async () => {
     const px = await file('polymaze')
     const s = sampleLogo(px, 4000)

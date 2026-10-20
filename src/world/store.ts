@@ -21,7 +21,7 @@ export const world = {
   /** The peak's photo as laid out, in screen px (ClubLifePeak), for the points to resolve into. */
   photo: null as null | { cx: number; cy: number; w: number; h: number },
   /** The box above each event's name as laid out in its pinned stage, in screen px (EventsStage), for its logo (#32). */
-  mark: null as null | { cx: number; cy: number; w: number; h: number },
+  logoBox: null as null | { cx: number; cy: number; w: number; h: number },
   /** The close's pill and slot as laid out in its pinned stage, in screen px (Close). */
   slot: null as null | { pill: { cx: number; cy: number; w: number; h: number }; x: number; y: number },
   /** performance.now() of the Apply press, for the wave through the 600; -1 when none. */

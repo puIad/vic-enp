@@ -295,13 +295,13 @@
   max-width: none;
 }
 /* the box above the name where the world draws the event's logo in dots (#32): it opens only while the world draws
-   them (html.w-marks), so tier 0, reduced motion and ?cut=cuts keep the copy as it was. EventsStage measures it */
-.ev-mark {
+   them (html.w-logos), so tier 0, reduced motion and ?cut=cuts keep the copy as it was. EventsStage measures it */
+.ev-logo {
   display: none;
   height: clamp(84px, 16vh, 160px);
   margin-bottom: 20px;
 }
-.w-ready.w-marks .ev-mark {
+.w-ready.w-logos .ev-logo {
   display: block;
 }
 /* each event's name on the same line on every cut, level with the frame's top, the copy flowing down from it; a short
@@ -526,7 +526,7 @@
   .ev .cut-line {
     font-size: clamp(40px, 12vw, 56px);
   }
-  .ev-mark {
+  .ev-logo {
     height: clamp(44px, 10svh, 88px);
     margin-bottom: 12px;
   }
@@ -586,11 +586,6 @@
   .ev .cut-lead {
     font-size: 15px;
   }
-  /* no room for the logo's box: AEC's copy already fills the cut with the frame at its minimum, so on a short phone the
-     cuts keep their formations (#32) */
-  .w-ready.w-marks .ev-mark {
-    display: none;
-  }
   /* AEC's cities and site link clear the event picker on a 360x640 screen, the frame already at its minimum */
   .ev-cities {
     gap: 6px 16px;
@@ -598,5 +593,22 @@
   }
   .ev-ig {
     margin-top: 12px;
+  }
+  /* a shorter box for the logo, and the copy under it drawn tighter so AEC's still clears the picker with the frame at
+     its minimum (#32, owner's call): only while the box is open */
+  .ev-logo {
+    height: 36px;
+    margin-bottom: 8px;
+  }
+  .w-ready.w-logos .ev.has-photo .ev-text {
+    padding-top: 8px;
+  }
+  .w-ready.w-logos .ev .cut-lead {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .w-ready.w-logos .ev-cities,
+  .w-ready.w-logos .ev-ig {
+    margin-top: 8px;
   }
 }

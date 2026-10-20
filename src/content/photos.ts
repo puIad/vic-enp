@@ -33,6 +33,9 @@ export const PHOTOS: Photo[] = [
   { id: 't2a6297', src: '_T2A6297.jpg', w: 6160, h: 4640, focal: [50, 52], widths: W, alt: 'A large group on a stage in front of a red screen showing the Vision & Innovation Club logo.' },
   { id: 'img-8026', src: 'IMG_8026.JPG', w: 6000, h: 4000, focal: [50, 62], widths: W, alt: 'A crowd standing around a robot maze built on the floor of a hall.' },
   { id: 'img-3223', src: 'IMG_3223.jpg', w: 2730, h: 1536, focal: [52, 40], widths: W, alt: "A large group in a lecture hall, cheering and holding prize cheques, in front of a screen that reads 'Algerian Engineering Competition'." },
+  // POLYMAZE's second frame (decision 65). It is never drawn wider than about 500 CSS px (it covers its frame by
+  // height), so 1280 covers a retina screen
+  { id: 'img-0257', src: 'IMG_0257.JPG', w: 6000, h: 4000, focal: [40, 70], widths: [640, 1280], alt: 'A small wheeled robot, its wires and battery showing, driving between the white walls of a maze.' },
 ]
 
 export function photo(id: string): Photo {

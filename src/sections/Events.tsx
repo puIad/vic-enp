@@ -30,12 +30,20 @@ function Cards() {
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {EVENTS.map((e) => (
           <article key={e.id} aria-labelledby={`e-${e.id}`} className="card flex flex-col p-6 md:p-8" style={accent(e.accent)}>
-            {e.photo && (
+            {e.photo && !e.photo2 && (
               <Photo
                 id={e.photo}
                 sizes="(max-width: 767px) 92vw, 44vw"
                 className="mb-6 aspect-[16/9] w-full rounded-[calc(var(--radius)-8px)] object-cover"
               />
+            )}
+            {/* two photos share the same 16:9 row, 2:1 (decision 65); both cells are narrower than 3:2, so each photo is drawn
+                about 0.84 of the card wide */}
+            {e.photo && e.photo2 && (
+              <div className="mb-6 grid aspect-[16/9] grid-cols-[2fr_1fr] gap-3">
+                <Photo id={e.photo} sizes="(max-width: 767px) 70vw, 34vw" className="size-full rounded-[calc(var(--radius)-8px)] object-cover" />
+                <Photo id={e.photo2} sizes="(max-width: 767px) 70vw, 34vw" className="size-full rounded-[calc(var(--radius)-8px)] object-cover" />
+              </div>
             )}
             <h3 id={`e-${e.id}`} className="text-[clamp(34px,3.4vw,52px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
               <Mark text={e.name} />

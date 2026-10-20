@@ -65,12 +65,19 @@ export default function EventsStage() {
           <article
             key={e.id}
             aria-labelledby={`ec-${e.id}`}
-            className={`cut ev ${i === cut ? 'on' : ''} ${e.photo ? 'has-photo' : ''}`}
+            className={`cut ev ${i === cut ? 'on' : ''} ${e.photo ? 'has-photo' : ''} ${e.photo2 ? 'has-pair' : ''}`}
             style={{ '--c': e.accent } as CSSProperties}
           >
             {e.photo && (
               <div className="ev-frame">
-                <Photo id={e.photo} sizes="(max-width: 767px) 92vw, 50vw" className="ev-img" />
+                <Photo id={e.photo} sizes={e.photo2 ? '(max-width: 767px) 38vh, 93vh' : '(max-width: 767px) 92vw, 50vw'} className="ev-img" />
+              </div>
+            )}
+            {/* the second, smaller frame (decision 65): beside the first on desktop, a third of the row on a phone. Both frames
+                of the pair are narrower than 3:2, so the photos cover them by height: the hints count from it */}
+            {e.photo2 && (
+              <div className="ev-frame ev-frame2">
+                <Photo id={e.photo2} sizes="(max-width: 767px) 38vh, 54vh" className="ev-img" />
               </div>
             )}
             <div className="ev-text">

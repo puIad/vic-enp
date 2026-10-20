@@ -366,6 +366,24 @@
     transform: scale(1.02) translateX(-1%);
   }
 }
+/* POLYMAZE's pair (decision 65): the frame's width split about 2:1, the second frame shorter and level with the first's
+   top; --fw is the single frame's width */
+.ev.has-pair {
+  --fw: min(calc(54vw - var(--gut) + 40px), 760px);
+}
+.ev.has-pair .ev-frame {
+  right: calc(var(--edge) + var(--fw) * 0.36 + 8px);
+  width: calc(var(--fw) * 0.64 - 8px);
+  max-width: none;
+}
+.ev.has-pair .ev-frame2 {
+  right: var(--edge);
+  width: calc(var(--fw) * 0.36 - 8px);
+  height: calc(62vh * 0.58);
+}
+.cut.on .ev-frame2 {
+  animation-delay: 0.12s;
+}
 .ev-cities {
   display: flex;
   flex-wrap: wrap;
@@ -565,6 +583,18 @@
     width: auto;
     flex: none;
     padding-top: 16px;
+  }
+  /* the pair shares the frame's height, 2:1 across the row, so the cut grows no taller (decision 65). The second frame is
+     out of the flow, so its sizes count from the padding box: the same height as the first's, a third of the row */
+  .ev.has-pair .ev-frame {
+    right: auto;
+    width: calc((100% - 8px) * 2 / 3);
+  }
+  .ev.has-pair .ev-frame2 {
+    position: absolute;
+    inset: 84px 20px auto auto;
+    width: calc((100% - var(--gut) - 20px - 8px) / 3);
+    height: clamp(88px, calc(100% - 216px - var(--ev-copy, 0px)), 25svh);
   }
   .ev.projects .ev-text {
     bottom: 150px;

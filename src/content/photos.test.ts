@@ -8,7 +8,7 @@ const files = new Set(Object.keys(import.meta.glob('/public/photos/*')).map((f) 
 
 describe('photos', () => {
   it('every photo id the page uses is in photos.ts', () => {
-    const used = [PEAK_ONE, ...STACK.map((s) => s.id), ...GRID.map(([id]) => id), ...EVENTS.flatMap((e) => (e.photo ? [e.photo] : []))]
+    const used = [PEAK_ONE, ...STACK.map((s) => s.id), ...GRID.map(([id]) => id), ...EVENTS.flatMap((e) => [e.photo, e.photo2])].filter((id) => id !== undefined)
     for (const id of used) expect(() => photo(id), id).not.toThrow()
   })
 

@@ -209,27 +209,6 @@
 .cut.open .cut-body {
   display: none;
 }
-/* SPARK's workshop (decision 65): a small frame on the formation's centre, so the logo's rings show around it. The
-   world puts the formation 0.342 of the screen's height right of centre on desktop and 0.289 above it on a phone
-   (formations.ts, cutPlacement); the frame follows the same height-based offsets */
-.dept-frame {
-  position: absolute;
-  left: calc(50% + 34.2lvh);
-  top: 50%;
-  width: min(30lvh, 22vw);
-  aspect-ratio: 3 / 2;
-  translate: -50% -50%;
-  overflow: hidden;
-  border-radius: calc(var(--radius) - 8px);
-  background: #0c1319;
-  box-shadow:
-    0 24px 60px -24px rgb(0 0 0 / 0.8),
-    0 0 0 1px color-mix(in srgb, var(--c) 55%, transparent),
-    0 0 48px -10px color-mix(in srgb, var(--c) 55%, transparent);
-}
-.cut.on .dept-frame {
-  animation: ev-in 0.5s var(--ease-out-expo) both;
-}
 .cuts-note {
   position: absolute;
   left: var(--gut);
@@ -616,17 +595,6 @@
     inset: 84px 20px auto auto;
     width: calc((100% - var(--gut) - 20px - 8px) / 3);
     height: clamp(88px, calc(100% - 216px - var(--ev-copy, 0px)), 25svh);
-  }
-  .dept-frame {
-    left: 50%;
-    top: calc(50% - 28.9lvh);
-    width: min(40vw, 22lvh);
-    transition: filter 0.3s var(--ease-out-expo);
-  }
-  /* the opened panel lifts the copy into the frame on most phones (under about 834px tall): the frame steps aside. A
-     filter, since the entrance animation holds opacity */
-  .cut.open .dept-frame {
-    filter: opacity(0);
   }
   .ev.projects .ev-text {
     bottom: 150px;

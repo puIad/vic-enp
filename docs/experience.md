@@ -180,10 +180,8 @@ the hero goes on scroll.
   only) and a "What you'd do" button. Eyebrows and skill pills were cut on 2026-10-20 ([decisions.md](decisions.md), 43, 44).
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 9 to 11):** the activity
   departments get logo formations (each logo's symbol), IT's grid becomes a painting palette, and English Bubble's
-  points morph into the tunnel within the existing scroll instead of a hard cut. SPARK's cut gets a small frame
-  with `IMG_6141` above its copy, the logo formation behind it (built: on the formation's centre, so its rings show
-  around the frame; on a phone the frame steps aside while "What you'd do" is open; the tier 0 card leads with it)
-  ([decisions.md](decisions.md), 59, 61, 65).
+  points morph into the tunnel within the existing scroll instead of a hard cut. `IMG_6141` leads SPARK's tier 0
+  card; the staged cut keeps its logo formation clear, with no photo on it ([decisions.md](decisions.md), 59, 61, 65, 67).
 - **World:** 16k points desktop, 10k phone. Each cut snaps every point into the department's formation (HR six
   joined clumps, FLER rising bars, IT a painting palette, COMM broadcast rings, SPARK an orange burst, Training ascending
   treads, English Bubble two open speech circles). The main four use blue and aquamarine; only the three activity

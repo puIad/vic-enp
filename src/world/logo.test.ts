@@ -77,3 +77,42 @@ describe('a name logo sampled into points', () => {
     expect(s.pts.filter((p) => grey(p.c)).every((p) => p.y > -0.1)).toBe(true)
   })
 })
+
+describe("Training's and English Bubble's symbols sampled into points", () => {
+  it('puts every point on the symbol, none on the empty ground', async () => {
+    for (const name of ['training', 'english-bubble']) {
+      const px = await file(name)
+      const s = sampleLogo(px, 3000)
+      expect(s.pts.length).toBe(3000)
+      for (const p of s.pts) expect(under(px, p.x, p.y)[3]).toBeGreaterThan(160)
+    }
+  })
+
+  it("draws every part of Training's figure: the cap, the raised arm and the foot of the stroke", async () => {
+    const s = sampleLogo(await file('training'), 3000)
+    // the cap is the top seventh, the arm the only thing in the left fifth, the stroke's foot the bottom tenth
+    expect(s.pts.filter((p) => p.y > 0.36).length).toBeGreaterThan(40)
+    expect(s.pts.filter((p) => p.x < -0.25).length).toBeGreaterThan(50)
+    expect(s.pts.filter((p) => p.y < -0.4).length).toBeGreaterThan(50)
+    // and in the file's own violet
+    for (const { c } of s.pts) {
+      expect(c[2]).toBeGreaterThan(0.6)
+      expect(c[1]).toBeLessThan(0.4)
+    }
+  })
+
+  it("draws English Bubble's B across its whole width and height, aquamarine on the left and blue on the right", async () => {
+    const s = sampleLogo(await file('english-bubble'), 3000)
+    const a = s.aspect
+    expect(a).toBeGreaterThan(1)
+    for (let k = 0; k < 6; k++) {
+      expect(s.pts.filter((p) => p.x >= -a / 2 + (k * a) / 6 && p.x < -a / 2 + ((k + 1) * a) / 6).length).toBeGreaterThan(150)
+      expect(s.pts.filter((p) => p.y <= 0.5 - k / 6 && p.y > 0.5 - (k + 1) / 6).length).toBeGreaterThan(150)
+    }
+    const green = (p: { c: number[] }) => p.c[1] > p.c[2]
+    const left = s.pts.filter((p) => p.x < -a / 3)
+    const right = s.pts.filter((p) => p.x > a / 3)
+    expect(left.filter(green).length / left.length).toBeGreaterThan(0.6)
+    expect(right.filter(green).length / right.length).toBeLessThan(0.1)
+  })
+})

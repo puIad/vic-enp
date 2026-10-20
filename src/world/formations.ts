@@ -282,6 +282,8 @@ export const SHAPES = {
   },
   training: {
     color: '#6A9CF0',
+    // Training's blue runs #1A52A2 to #6A9CF0 (brand.md, Activity departments)
+    shade: '#1A52A2',
     tilt: [-0.3, 0.75],
     at: ({ g, R }) => (i) => {
       const s = i % 5
@@ -294,6 +296,8 @@ export const SHAPES = {
   // two open speech circles: outlines, never a disc around a lit point
   bubble: {
     color: '#69C4AF',
+    // English Bubble's B runs the VIC gradient, aquamarine to blue
+    shade: '#127DBB',
     at: ({ g, R, ell }) => (i) => {
       if (i % 10 < 9) return i % 2 ? ell(-6, 4, 13, 9, 0.3) : ell(7, -3, 13, 9, 0.3)
       return [R(-2, 7), R(-14, -8), g() * 0.6]
@@ -422,7 +426,8 @@ const lum = ([r, g, b]: Rgb) => 0.2126 * r + 0.7152 * g + 0.0722 * b
 export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: LogoSample): Formation {
   const sh: Shape = SHAPES[key]
   const c = compOf(key)
-  const pl = cutPlacement(key, l)
+  // flat to the view: a comp's tilt (Training's) would foreshorten the symbol
+  const pl: Placement = { ...cutPlacement(key, l), rotation: [0, 0, 0] }
   const h = l.phone ? LOGO_H.phone : LOGO_H.desk
   // finer points on a phone, so the lines stay apart
   const size = l.phone ? 0.34 : 0.5

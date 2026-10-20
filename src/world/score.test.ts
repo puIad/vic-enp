@@ -57,6 +57,26 @@ describe('the score', () => {
     expect(cut(8).b).toBe('tunnel')
   })
 
+  it("streams English Bubble's points into the tunnel over the tunnel's own step, both ways, with no flash", () => {
+    const last = DEPT_STEPS.length - 1
+    const from = total(DEPT_STEPS.slice(0, last)) / total(DEPT_STEPS)
+    const at = (t: number) => score({ ...base, act: 'departments', progress: from + (1 - from) * t })
+    const bubble = score({ ...base, act: 'departments', progress: stepMiddle(DEPT_STEPS, last - 1) })
+    expect([at(0.01).a, at(0.01).b]).toEqual(['bubble', 'tunnel'])
+    expect(at(0.01).mix).toBeLessThan(0.05)
+    expect(at(0.5).mix).toBeGreaterThan(0.3)
+    expect(at(0.5).mix).toBeLessThan(1)
+    expect(at(1).mix).toBe(1)
+    // the morph carries on from the cut, so crossing into it or back out of it never flashes
+    expect(at(0.01).snap).toBe(bubble.snap)
+    expect(at(1).snap).toBe(bubble.snap)
+    // scrolling back up runs it in reverse: the score is the scroll's alone
+    const ts = [0, 0.2, 0.4, 0.6, 0.8, 1]
+    const mix = ts.map((t) => at(t).mix)
+    expect(mix).toEqual([...mix].sort((x, y) => x - y))
+    expect(ts.reverse().map((t) => at(t).mix)).toEqual(mix.reverse())
+  })
+
   it('rushes the tunnel into the photo across the peak, then steps the points out for the stack', () => {
     const at = (p: number) => score({ ...base, act: 'club-life', progress: p })
     expect([at(0).a, at(0).b]).toEqual(['tunnel', 'photo'])

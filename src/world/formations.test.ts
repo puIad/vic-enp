@@ -112,11 +112,35 @@ describe("a department's logo formation", () => {
     for (const [l, inside] of [
       [desk, ([x, y]: number[]) => x > 0 && x < 0.95 && Math.abs(y) < 0.9],
       [phone, ([x, y]: number[]) => Math.abs(x) < 0.95 && y > 0.15 && y < 0.95],
+    ] as const)
+      for (const key of ['spark', 'training', 'bubble'] as const) {
+        const f = logo(key, 1000, 1000, l, sample)
+        const lit = Array.from({ length: 1000 }, (_, i) => i).filter((i) => i % 10 < 8)
+        for (const i of lit) expect(inside(screen(f, l, i))).toBe(true)
+      }
+  })
+
+  it("draws Training and English Bubble in their own pairs: the file's light parts in the cut's light, its dark parts in its shade", () => {
+    const shaded: LogoSample = { aspect: 1, pts: [{ x: 0, y: 0, c: [1, 1, 1] }, { x: 0.1, y: 0, c: [0.1, 0.1, 0.1] }] }
+    const hex = (h: string) => rgb(h).map((v) => +v.toFixed(3))
+    for (const [key, light, shade] of [
+      ['training', '#6A9CF0', '#1A52A2'],
+      ['bubble', '#69C4AF', '#127DBB'],
     ] as const) {
-      const f = logo('spark', 1000, 1000, l, sample)
-      const lit = Array.from({ length: 1000 }, (_, i) => i).filter((i) => i % 10 < 8)
-      for (const i of lit) expect(inside(screen(f, l, i))).toBe(true)
+      const f = logo(key, 10, 10, desk, shaded)
+      const at = (i: number) => [...f.col.slice(i * 4, i * 4 + 3)].map((v) => +v.toFixed(3))
+      expect(at(0)).toEqual(hex(light))
+      expect(at(1)).toEqual(hex(shade))
     }
+  })
+
+  it("draws Training's figure flat to the view, at the file's own proportions, though its comp shape is tilted", () => {
+    const tall: LogoSample = { aspect: 0.5, pts: [{ x: -0.25, y: -0.5, c: [1, 1, 1] }, { x: 0.25, y: 0.5, c: [1, 1, 1] }] }
+    const f = logo('training', 2, 2, desk, tall)
+    const [x0, y0, z0] = f.pos.slice(0, 3)
+    const [x1, y1, z1] = f.pos.slice(4, 7)
+    expect((x1 - x0) / (y1 - y0)).toBeCloseTo(0.5, 1)
+    expect(Math.abs(z1 - z0)).toBeLessThan(0.3)
   })
 
   it('keeps a fifth of the points as dust around it, as every cut does', () => {

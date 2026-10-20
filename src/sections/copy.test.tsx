@@ -15,33 +15,40 @@ import { world } from '../world/store'
 
 const ENTITIES: Record<string, string> = { '&amp;': '&', '&#x27;': "'", '&quot;': '"', '&lt;': '<', '&gt;': '>' }
 
-/** The visible text of some markup: inline tags join their words (Ignite<sup>®</sup>), block tags part them. */
-function textOf(html: string) {
+/** What a visitor reads in some markup: inline tags join their words (Ignite<sup>®</sup>), block tags part them. */
+function readHtml(html: string) {
   return html
     .replace(/<\/?(a|b|span|sup|small|i)\b[^>]*>/g, '')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&(amp|#x27|quot|lt|gt);/g, (e) => ENTITIES[e])
+    .replace(/&[^;\s]+;/g, (e) => ENTITIES[e] ?? e)
     .replace(/\s+/g, ' ')
     .trim()
 }
 
-const text = (el: ReactElement) => textOf(renderToStaticMarkup(el))
+/** What a visitor reads in a rendered element. */
+const read = (el: ReactElement) => readHtml(renderToStaticMarkup(el))
+
+/** The markup inside the first `<tag>` of some markup. */
+const inner = (html: string, tag: string) => html.match(new RegExp(`<${tag}[^>]*>(.*?)</${tag}>`, 's'))![1]
+
+const attr = (attrs: string, name: string) => attrs.match(new RegExp(`${name}="([^"]*)"`))?.[1]
 
 /** Each article's links, keyed by the article's heading. */
 function articleLinks(el: ReactElement) {
   const out: Record<string, { href: string; label: string; tabIndex?: string }[]> = {}
   for (const article of renderToStaticMarkup(el).split('<article').slice(1)) {
-    out[textOf(article.match(/<h3[^>]*>(.*?)<\/h3>/s)![1])] = [...article.matchAll(/<a\s([^>]*)>(.*?)<\/a>/gs)].map(([, attrs, inner]) => {
-      const tab = attrs.match(/tabindex="([^"]*)"/)
-      return { href: attrs.match(/href="([^"]*)"/)![1], label: textOf(inner), ...(tab && { tabIndex: tab[1] }) }
+    const links = [...article.matchAll(/<a\s([^>]*)>(.*?)<\/a>/gs)].map(([, attrs, label]) => {
+      const tabIndex = attr(attrs, 'tabindex')
+      return { href: attr(attrs, 'href')!, label: readHtml(label), ...(tabIndex && { tabIndex }) }
     })
+    out[readHtml(inner(article, 'h3'))] = links
   }
   return out
 }
 
-/** prefers-reduced-motion as the OS reports it */
-const reduceMotion = (on: boolean) =>
-  vi.stubGlobal('matchMedia', (q: string) => ({ matches: on && q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
+/** The OS asks for reduced motion. */
+const reduceMotion = () =>
+  vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
 afterEach(() => {
   vi.unstubAllGlobals()
   world.act = ''
@@ -50,7 +57,7 @@ afterEach(() => {
 
 describe('act 2', () => {
   it('has no values line (54)', () => {
-    const page = text(<WhatVic />)
+    const page = read(<WhatVic />)
     for (const line of ['What we hold to', 'Respect', 'Diversity', 'Contribution and creativity', 'Legacy']) expect(page).not.toContain(line)
   })
 })
@@ -58,9 +65,9 @@ describe('act 2', () => {
 describe('club life', () => {
   it.each([
     ['the peak (tiers 1 and 2)', () => <ClubLifePeak />],
-    ['the still (tier 0, reduced motion)', () => (reduceMotion(true), <ClubLife />)],
+    ['the still (tier 0, reduced motion)', () => (reduceMotion(), <ClubLife />)],
   ])("drops VIC Charity's ledger row and keeps the other four on %s (55)", (_, render) => {
-    const page = text(render())
+    const page = read(render())
     expect(page).not.toContain('VIC Charity')
     for (const row of ['VIC Entertainment', 'The Local', 'General assemblies', 'Alumni']) expect(page).toContain(row)
   })
@@ -82,12 +89,12 @@ describe('events', () => {
 
   it.each(Object.keys(SITES).map((name, i) => [name, i] as const))(
     "on the staged cuts, only %s's link is in the tab order while its cut is on (57)",
-    (on, i) => {
+    (cut, i) => {
       world.act = 'events'
       world.progress = stepMiddle(EVENT_STEPS, i)
       const cuts = articleLinks(<EventsStage />)
       for (const [name, host] of Object.entries(SITES))
-        expect(cuts[name], name).toEqual([{ href: `https://${host}/`, label: host, ...(name !== on && { tabIndex: '-1' }) }])
+        expect(cuts[name], name).toEqual([{ href: `https://${host}/`, label: host, ...(name !== cut && { tabIndex: '-1' }) }])
     },
   )
 })
@@ -95,12 +102,12 @@ describe('events', () => {
 describe('footer', () => {
   it('has no description line, and the contact reads the email and the new address exactly (58)', () => {
     const html = renderToStaticMarkup(<Footer />)
-    expect(textOf(html)).not.toContain('English-speaking scientific club')
-    expect(textOf(html.match(/<address[^>]*>(.*?)<\/address>/s)![1])).toBe('vic@g.enp.edu.dz 10 Rue des Frères OUDEK, El Harrach')
+    expect(readHtml(html)).not.toContain('English-speaking scientific club')
+    expect(readHtml(inner(html, 'address'))).toBe('vic@g.enp.edu.dz 10 Rue des Frères OUDEK, El Harrach')
   })
 
   it('leaves the description line to act 2 (58)', () => {
-    expect(text(<WhatVic />)).toContain(
+    expect(read(<WhatVic />)).toContain(
       "VIC is an English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch of the El-Maarifa Scientific Association.",
     )
   })

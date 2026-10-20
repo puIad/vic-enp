@@ -274,9 +274,9 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
-- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. No description line, and the address reads "10 Rue
-  des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). Slice 5 gives the motto the word scrub
-  ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62).
+- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. No description line, and the address
+  reads "10 Rue des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). Slice 5 gives the motto the word
+  scrub ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62).
 
 ## Passages
 

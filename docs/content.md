@@ -12,7 +12,8 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 - Short sentences, plain English, second person ("you"). Many readers read English as a second or third language.
 - Concrete over grand: "organise an event with sponsors and hundreds of guests" beats "unleash your potential".
 - Sentence case everywhere, never all caps (charter rule for Gilroy). Two names are the exception, as the events
-  write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46).
+  write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46). The footer's street name, Rue des
+  Frères OUDEK, is written as the owner gave it ([decisions.md](decisions.md), 58).
 - US spelling: organized, organizing, specialized.
 - No eyebrows over headings and no pills, except IT's "Design and media, not coding" ([decisions.md](decisions.md), 43, 44).
 - Proper names as the club writes them: VIC, VICer, ENP, HR, FLER, IT, COMM, SPARK, English Bubble, Training,
@@ -112,8 +113,8 @@ their own descriptions and approved on 2026-10-20 ([decisions.md](decisions.md),
 | 4 | AEC | The Algerian Engineering Competition: a nationwide hackathon where students, startups and researchers take on real industry problems with expert companies. Regional rounds run across the wilayas, then the winners pitch to a professional jury at the national final in Algiers. | The six wilayas: Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla. Link: aec.vic-enp.com |
 | 5 | Four more projects. | CPSP: The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes. / VIC Charity: A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan. / MasterClass: A summer project: expert trainers teach practical skills on Discord while you build your own creative project. / VICra: VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts. | Logos in slice 5 |
 
-Each event links to its own site, under its lead ([decisions.md](decisions.md), 47, 57). STEPS and Anglosphere left
-the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
+Each event links to its own site, last in its text, after the lead and AEC's cities ([decisions.md](decisions.md),
+47, 57). STEPS and Anglosphere left the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
 organizes every event, and every department plays a part." (§7). Tier 0 title (**new**): "Events and projects,
 organized by the whole club."
 
@@ -199,7 +200,7 @@ The humanizer pass, each line shown to the owner before and after and approved (
 | Departments title | Seven departments. You pick one main and one activity. | Seven departments. You join one main and one activity. |
 | Events note | Every event is organized by the whole club. Every department plays a part. | The whole club organizes every event, and every department plays a part. |
 | Club life lead | Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them. | Without exception. |
-| Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. |
+| Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. (The row left the page later that day, [decisions.md](decisions.md), 55.) |
 | Then grow lead | Joining is the start. Members move on in many directions. | Joining is the start. Here is where members go next. |
 | Then grow rungs | Organising teams / Join the organising team of an event. / Specialised teams | Organizing teams / Join the organizing team of an event. / Specialized teams |
 

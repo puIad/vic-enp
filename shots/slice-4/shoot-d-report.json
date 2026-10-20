@@ -1,0 +1,791 @@
+{
+  "doc": {
+    "height": 24780,
+    "vh": 900,
+    "acts": [
+      "flow",
+      "pin",
+      "pin",
+      "pin",
+      "pin"
+    ],
+    "world": null
+  },
+  "report": [
+    {
+      "i": 0,
+      "y": 0,
+      "pct": 0,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "flow",
+      "stages": [
+        2913,
+        8988,
+        14388,
+        21779
+      ],
+      "segs": [],
+      "custom": [
+        "top:0.00:arrive>icon:0.13:14.0:0.00:0.00:95"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 1,
+      "y": 173,
+      "pct": 1,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "flow",
+      "stages": [
+        2740,
+        8815,
+        14215,
+        21606
+      ],
+      "segs": [],
+      "custom": [
+        "top:0.27:arrive>icon:0.80:14.0:0.00:0.00:498"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 2,
+      "y": 518,
+      "pct": 2,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "-",
+      "stages": [
+        2395,
+        8470,
+        13870,
+        21261
+      ],
+      "segs": [],
+      "custom": [
+        "top:0.82:icon>tight:0.79:9.9:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 3,
+      "y": 864,
+      "pct": 4,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "-",
+      "stages": [
+        2049,
+        8124,
+        13524,
+        20915
+      ],
+      "segs": [],
+      "custom": [
+        "the-600:1.00:tight>tight:0.98:8.7:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 4,
+      "y": 3017,
+      "pct": 13,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        0,
+        5971,
+        11371,
+        18762
+      ],
+      "segs": [],
+      "custom": [
+        "departments:1.00:tight>door:0.24:9.6:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 5,
+      "y": 4010,
+      "pct": 17,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        0,
+        4978,
+        10378,
+        17769
+      ],
+      "segs": [],
+      "custom": [
+        "departments:1.00:hr>hr:1.00:14.0:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 6,
+      "y": 5004,
+      "pct": 21,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        0,
+        3984,
+        9384,
+        16775
+      ],
+      "segs": [],
+      "custom": [
+        "departments:1.00:it>it:1.00:14.0:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 7,
+      "y": 5997,
+      "pct": 25,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        0,
+        2991,
+        8391,
+        15782
+      ],
+      "segs": [],
+      "custom": [
+        "departments:1.00:spark>spark:1.00:14.0:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 8,
+      "y": 6991,
+      "pct": 29,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        0,
+        1997,
+        7397,
+        14788
+      ],
+      "segs": [],
+      "custom": [
+        "departments:1.00:bubble>bubble:1.00:14.0:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 9,
+      "y": 7985,
+      "pct": 33,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        0,
+        1003,
+        6403,
+        13794
+      ],
+      "segs": [],
+      "custom": [
+        "departments:1.00:tunnel>tunnel:1.00:11.3:0.00:0.00:600"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 10,
+      "y": 9096,
+      "pct": 38,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -1008,
+        0,
+        5292,
+        12683
+      ],
+      "segs": [],
+      "custom": [
+        "club-life:1.00:tunnel>photo:0.02:11.4:0.00:0.00:600",
+        "transform: translate3d(-50%, -50%, 0px); translate: none; rotate: none; scale: none; --round: 0;|translate: none; rotate: none; scale: none; transform: scale(0.6, 0.6); opacity: 0;|||translate: none; rotate: none; scale: none; transform: translate(0px, 540px) rotate(-10deg); opacity: 0;|translate: none; rotate: none; scale: none; transform: scale(1.08, 1.08); opacity: 0;||translate: none; rotate: none; scale: none; transform: translate(504px, 405px) rotate(-31deg) scale(0.75, 0.75); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, -3800px); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 11.2px, 0px); opacity: 0.2;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 11,
+      "y": 10133,
+      "pct": 42,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -2045,
+        0,
+        4255,
+        11646
+      ],
+      "segs": [],
+      "custom": [
+        "club-life:1.00:tunnel>photo:0.79:13.3:0.00:0.00:600",
+        "transform: translate3d(-50%, -50%, 0px); translate: none; rotate: none; scale: none; --round: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 0px) scale(0.9714, 0.9714); opacity: 0.9286;|||translate: none; rotate: none; scale: none; transform: translate(0px, 540px) rotate(-10deg); opacity: 0;|translate: none; rotate: none; scale: none; transform: scale(1.08, 1.08); opacity: 0;||translate: none; rotate: none; scale: none; transform: translate(504px, 405px) rotate(-31deg) scale(0.75, 0.75); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, -3800px); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, -2.8086px, 0px); opacity: 0.7994;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 12,
+      "y": 11170,
+      "pct": 47,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -3082,
+        0,
+        3218,
+        10609
+      ],
+      "segs": [],
+      "custom": [
+        "club-life:1.00:tunnel>photo:0.99:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%) translate3d(1.9918px, 0px, 0px) scale(0.998, 0.998); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|||translate: none; rotate: none; scale: none; transform: translate(0px, 540px) rotate(-10deg); opacity: 0;|translate: none; rotate: none; scale: none; transform: scale(1.08, 1.08); opacity: 0;||translate: none; rotate: none; scale: none; transform: translate(504px, 405px) rotate(-31deg) scale(0.75, 0.75); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, -3800px); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 13,
+      "y": 12207,
+      "pct": 51,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -4119,
+        0,
+        2181,
+        9572
+      ],
+      "segs": [],
+      "custom": [
+        "club-life:1.00:tunnel>photo:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%) translate(216px, 0px) scale(0.78, 0.78); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0.8819; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 64.9757px) scale(1.0295, 1.0295);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 11.5851px, 0px) rotate(-0.2145deg); opacity: 1;|translate: none; rotate: none; scale: none; transform: scale(1.08, 1.08); opacity: 0;||translate: none; rotate: none; scale: none; transform: translate(504px, 405px) rotate(-31deg) scale(0.75, 0.75); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, -3800px); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 1;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 14,
+      "y": 13243,
+      "pct": 55,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -5155,
+        0,
+        1145,
+        8536
+      ],
+      "segs": [],
+      "custom": [
+        "club-life:1.00:tunnel>photo:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%) translate(216px, 0px) scale(0.78, 0.78); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 1;|translate: none; rotate: none; scale: none; transform: translate3d(116.202px, 93.3766px, 0px) rotate(-7.1473deg) scale(0.9424, 0.9424); opacity: 0.7676;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, -3800px); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 1;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 15,
+      "y": 14280,
+      "pct": 60,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -6192,
+        0,
+        108,
+        7499
+      ],
+      "segs": [],
+      "custom": [
+        "club-life:1.00:tunnel>photo:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%) translate3d(12px, 0px, 0px) scale(0.9878, 0.9878); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 16,
+      "y": 14453,
+      "pct": 61,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -6365,
+        -65,
+        0,
+        7326
+      ],
+      "segs": [],
+      "custom": [
+        "events:1.00:gala>gala:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 17,
+      "y": 15075,
+      "pct": 63,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -6987,
+        -687,
+        0,
+        6704
+      ],
+      "segs": [],
+      "custom": [
+        "events:1.00:ignite>ignite:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 18,
+      "y": 15697,
+      "pct": 66,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -7609,
+        -1309,
+        0,
+        6082
+      ],
+      "segs": [],
+      "custom": [
+        "events:1.00:poly>poly:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 19,
+      "y": 16319,
+      "pct": 68,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -8231,
+        -1931,
+        0,
+        5460
+      ],
+      "segs": [],
+      "custom": [
+        "events:1.00:aec>aec:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 20,
+      "y": 16941,
+      "pct": 71,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -8853,
+        -2553,
+        0,
+        4838
+      ],
+      "segs": [],
+      "custom": [
+        "events:1.00:more>more:1.00:14.0:0.00:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 21,
+      "y": 17563,
+      "pct": 74,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -9475,
+        -3175,
+        0,
+        4216
+      ],
+      "segs": [],
+      "custom": [
+        "events:1.00:more>horizon:0.96:14.0:-0.62:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 22,
+      "y": 21803,
+      "pct": 91,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -13715,
+        -7415,
+        -4175,
+        0
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:0.00:14.0:-0.08:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 23,
+      "y": 22027,
+      "pct": 92,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -13939,
+        -7639,
+        -4399,
+        0
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:0.12:14.0:-0.00:0.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 24,
+      "y": 22252,
+      "pct": 93,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -14164,
+        -7864,
+        -4624,
+        0
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:0.73:14.0:-0.00:0.01:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 25,
+      "y": 22477,
+      "pct": 94,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -14389,
+        -8089,
+        -4849,
+        0
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:0.98:14.0:-0.00:0.43:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 26,
+      "y": 22701,
+      "pct": 95,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -14613,
+        -8313,
+        -5073,
+        0
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:1.00:14.0:-0.00:0.89:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": false,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 27,
+      "y": 22926,
+      "pct": 96,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "pin",
+      "stages": [
+        -14838,
+        -8538,
+        -5298,
+        0
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:1.00:14.0:-0.00:1.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": true,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    },
+    {
+      "i": 28,
+      "y": 23880,
+      "pct": 100,
+      "settled": true,
+      "contrast": [],
+      "cues": [],
+      "clips": [],
+      "rails": [],
+      "wipes": [],
+      "act": "-",
+      "stages": [
+        -15792,
+        -9492,
+        -6252,
+        -931
+      ],
+      "segs": [],
+      "custom": [
+        "apply:1.00:closeRest>closeIris:1.00:14.0:-0.00:1.00:600",
+        "transform: translate(-50%, -50%); translate: none; rotate: none; scale: none; --round: 1;|translate: none; rotate: none; scale: none; transform: translate(0px, 0px); opacity: 1;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|opacity: 0; translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25);|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate3d(0px, 0px, 550px) scale(1.25, 1.25); opacity: 0;|translate: none; rotate: none; scale: none; transform: translate(0px, -14px); opacity: 0;|opacity: 0;"
+      ],
+      "customHold": true,
+      "seg": null,
+      "segp": null,
+      "bg": ""
+    }
+  ],
+  "consoleErrors": [],
+  "failed": []
+}

@@ -15,6 +15,8 @@ export type Department = {
   accent: string
   /** Second stop when the rule runs as a gradient. */
   accent2?: string
+  /** a small frame above the copy, the logo formation behind it (SPARK's workshop, decision 65): an id from content/photos.ts */
+  photo?: string
 }
 
 export const MAIN: Department[] = [
@@ -91,6 +93,7 @@ export const ACTIVITY: Department[] = [
     ],
     accent: '#F29A09',
     accent2: '#F24407',
+    photo: 'img-6141',
   },
   {
     id: 'training',

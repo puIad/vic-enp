@@ -65,12 +65,18 @@ export default function EventsStage() {
           <article
             key={e.id}
             aria-labelledby={`ec-${e.id}`}
-            className={`cut ev ${i === cut ? 'on' : ''} ${e.photo ? 'has-photo' : ''}`}
+            className={`cut ev ${i === cut ? 'on' : ''} ${e.photo ? 'has-photo' : ''} ${e.photo2 ? 'has-pair' : ''}`}
             style={{ '--c': e.accent } as CSSProperties}
           >
             {e.photo && (
               <div className="ev-frame">
-                <Photo id={e.photo} sizes="(max-width: 767px) 92vw, 50vw" className="ev-img" />
+                <Photo id={e.photo} sizes={e.photo2 ? '(max-width: 767px) 60vw, 33vw' : '(max-width: 767px) 92vw, 50vw'} className="ev-img" />
+              </div>
+            )}
+            {/* the second, smaller frame (decision 65): beside the first on desktop, a third of the row on a phone */}
+            {e.photo2 && (
+              <div className="ev-frame ev-frame2">
+                <Photo id={e.photo2} sizes="(max-width: 767px) 30vw, 18vw" className="ev-img" />
               </div>
             )}
             <div className="ev-text">

@@ -14,6 +14,8 @@ export type Event = {
   accent: string
   /** an id from content/photos.ts */
   photo?: string
+  /** a second, smaller frame beside the first (POLYMAZE's robot, decision 65) */
+  photo2?: string
 }
 
 export const EVENTS: Event[] = [
@@ -40,6 +42,7 @@ export const EVENTS: Event[] = [
     site: { href: 'https://polymaze.vic-enp.com/', label: 'polymaze.vic-enp.com' },
     accent: '#69C4AF',
     photo: 'img-8026',
+    photo2: 'img-0257',
   },
   {
     id: 'aec',

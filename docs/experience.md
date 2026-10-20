@@ -181,7 +181,9 @@ the hero goes on scroll.
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 9 to 11):** the activity
   departments get logo formations (each logo's symbol), IT's grid becomes a painting palette, and English Bubble's
   points morph into the tunnel within the existing scroll instead of a hard cut. SPARK's cut gets a small frame
-  with `IMG_6141` above its copy, the logo formation behind it ([decisions.md](decisions.md), 59, 61, 65).
+  with `IMG_6141` above its copy, the logo formation behind it (built: on the formation's centre, so its rings show
+  around the frame; on a phone the frame steps aside while "What you'd do" is open; the tier 0 card leads with it)
+  ([decisions.md](decisions.md), 59, 61, 65).
 - **World:** 16k points desktop, 10k phone. Each cut snaps every point into the department's formation (HR six
   joined clumps, FLER rising bars, IT a painting palette, COMM broadcast rings, SPARK an orange burst, Training ascending
   treads, English Bubble two open speech circles). The main four use blue and aquamarine; only the three activity
@@ -244,7 +246,9 @@ the hero goes on scroll.
   formation (AEC's symbol; GALA, Ignite and POLYMAZE draw their names), left above its name on desktop with the
   formation kept behind the photo, the logo alone on a phone; the projects' logo symbols beside their names; every
   event's name at the same height on every cut; ignite, polymaze and aec links; `IMG_0257` as a second frame in
-  POLYMAZE's cut ([decisions.md](decisions.md), 56, 57, 59, 60, 65).
+  POLYMAZE's cut (built: beside the first on desktop, about 2:1 across the frame's width, shorter and level with its
+  top; on a phone the two share the frame's height 2:1; the tier 0 card's 16:9 row splits the same way)
+  ([decisions.md](decisions.md), 56, 57, 59, 60, 65).
 - **Tier 0:** a two-column card grid. **Reduced motion:** cuts stack.
 
 ### 6. How to join, grow after joining, FAQ (the light act)

@@ -3,6 +3,7 @@ import { ACTIVITY, MAIN, type Department } from '../content/departments'
 import { DEPT_STEPS, total } from '../world/steps'
 import { world } from '../world/store'
 import { Peel } from '../components/Peel'
+import { Photo } from '../components/Photo'
 import { jump, useStep } from './stage'
 import './stages.css'
 
@@ -22,6 +23,12 @@ function Cut({ d, n, on, open, onToggle }: { d: Department; n: number; on: boole
       style={{ '--c': d.accent, '--c2': d.accent2 ?? d.accent } as CSSProperties}
       data-n={n}
     >
+      {/* SPARK's workshop (decision 65): a small frame over the middle of the logo formation, which shows around it */}
+      {d.photo && (
+        <div className="dept-frame">
+          <Photo id={d.photo} sizes="(max-width: 767px) 40vw, 24vw" className="ev-img" />
+        </div>
+      )}
       <p className="cut-name">{d.name}</p>
       <h3 id={`dc-${d.id}`} className="cut-line">
         <Peel text={d.line} />

@@ -295,9 +295,10 @@
   max-width: none;
 }
 /* each event's name on the same line on every cut, level with the frame's top, the copy flowing down from it; a short
-   window lifts it just enough for the tallest copy (AEC's) to clear the picker. --ev-copy is that copy's height (56) */
-.ev:not(.projects) .ev-text {
-  top: min(15vh, calc(100% - 112px - var(--ev-copy, 0px)));
+   window lifts it just enough for the tallest copy (AEC's) to clear the picker, never under the logo. --ev-copy is that
+   copy's height, measured by EventsStage (56) */
+.ev.has-photo .ev-text {
+  top: max(72px, min(15vh, calc(100% - 112px - var(--ev-copy, 0px))));
   bottom: auto;
 }
 .ev-frame {

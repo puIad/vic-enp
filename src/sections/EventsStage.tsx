@@ -18,7 +18,7 @@ export default function EventsStage() {
   const root = useRef<HTMLElement>(null)
   const step = useStep('events', EVENT_STEPS)
   const cut = step >= 0 && step < 5 ? step : -1
-  useTallestCopy(root, '.ev:not(.projects) .ev-text')
+  useTallestCopy(root, '.ev.has-photo .ev-text')
 
   return (
     <section

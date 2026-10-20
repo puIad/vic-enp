@@ -23,7 +23,7 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
 | `IMG_9159.jpg` | 6000×4000 | 3:2 | Night selfie, a close group of friends | | Peak photo 5 (lens pull) |
 | `IMG_8641.JPG` | 5472×3648 | 3:2 | A student lifting a bottle rocket in front of the ENP building, friends cheering | A rocket competition? | Peak photo 6 (split) |
 | `IMG_0257.JPG` | 6000×4000 | 3:2 | Close-up of a small robot in a white maze | Polymaze | Events, Polymaze cut: the second, smaller frame (640 and 1280 only) |
-| `IMG_6141.jpg` | 6000×4000 | 3:2 | A hand holding a small robot in front of a laptop with code | SPARK workshop | Departments, SPARK's tier 0 card (640 and 1280 only; off the staged cut, decision 67) |
+| `IMG_6141.jpg` | 6000×4000 | 3:2 | A hand holding a small robot in front of a laptop with code | SPARK workshop | Spare (not placed; the owner took it off the page, decision 67) |
 | `IMG_6171.jpg` | 5472×3072 | 16:9 | Casual group indoors, some holding small robot cars | | Peak stack (tilt) and the still grid |
 | `IMG_7517.jpg` | 5472×3072 | 16:9 | Group on steps in a blue room, holding a certificate | | Peak stack (iris) and the still grid |
 | `IMG_7544.jpg` | 5472×3072 | 16:9 | Very large group around a long table, holding a banner | | Peak photo 7 (dealt) |

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { GRID, PEAK_ONE, STACK } from './clubLife'
-import { ACTIVITY, MAIN } from './departments'
 import { EVENTS } from './events'
 import { PHOTOS, photo } from './photos'
 
@@ -9,7 +8,7 @@ const files = new Set(Object.keys(import.meta.glob('/public/photos/*')).map((f) 
 
 describe('photos', () => {
   it('every photo id the page uses is in photos.ts', () => {
-    const used = [PEAK_ONE, ...STACK.map((s) => s.id), ...GRID.map(([id]) => id), ...EVENTS.flatMap((e) => [e.photo, e.photo2]), ...[...MAIN, ...ACTIVITY].map((d) => d.photo)].filter((id) => id !== undefined)
+    const used = [PEAK_ONE, ...STACK.map((s) => s.id), ...GRID.map(([id]) => id), ...EVENTS.flatMap((e) => [e.photo, e.photo2])].filter((id) => id !== undefined)
     for (const id of used) expect(() => photo(id), id).not.toThrow()
   })
 

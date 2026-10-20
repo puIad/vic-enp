@@ -1,6 +1,5 @@
 import { lazy, Suspense, type CSSProperties } from 'react'
 import { DeptIcon } from '../components/DeptIcon'
-import { Photo } from '../components/Photo'
 import { ACTIVITY, MAIN, type Department } from '../content/departments'
 
 // Act 3 (#13). With the world: the pinned stage of seven cuts (DepartmentsStage, its own chunk). Tier 0, reduced
@@ -14,9 +13,6 @@ function Card({ d }: { d: Department }) {
       className="card flex flex-col px-6 pt-[26px] pb-7"
       style={{ '--c': d.accent, '--c2': d.accent2 ?? d.accent } as CSSProperties}
     >
-      {d.photo && (
-        <Photo id={d.photo} sizes="(max-width: 639px) 88vw, (max-width: 1279px) 44vw, 29vw" className="mb-6 aspect-[3/2] w-full rounded-[calc(var(--radius)-8px)] object-cover" />
-      )}
       <p className="dept-name">{d.name}</p>
       <div className="mt-5">
         <DeptIcon id={d.id} />

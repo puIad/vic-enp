@@ -294,6 +294,16 @@
 .ev .cut-line {
   max-width: none;
 }
+/* the box above the name where the world draws the event's logo in dots (#32): it opens only while the world draws
+   them (html.w-marks), so tier 0, reduced motion and ?cut=cuts keep the copy as it was. EventsStage measures it */
+.ev-mark {
+  display: none;
+  height: clamp(84px, 16vh, 160px);
+  margin-bottom: 20px;
+}
+.w-ready.w-marks .ev-mark {
+  display: block;
+}
 /* each event's name on the same line on every cut, level with the frame's top, the copy flowing down from it; a short
    window lifts it just enough for the tallest copy (AEC's) to clear the picker, never under the logo. --ev-copy is that
    copy's height, measured by EventsStage (56) */
@@ -516,6 +526,10 @@
   .ev .cut-line {
     font-size: clamp(40px, 12vw, 56px);
   }
+  .ev-mark {
+    height: clamp(44px, 10svh, 88px);
+    margin-bottom: 12px;
+  }
   .ev-rows {
     left: var(--gut);
     right: 20px;
@@ -571,6 +585,11 @@
 @media (max-width: 767px) and (max-height: 700px) {
   .ev .cut-lead {
     font-size: 15px;
+  }
+  /* no room for the logo's box: AEC's copy already fills the cut with the frame at its minimum, so on a short phone the
+     cuts keep their formations (#32) */
+  .w-ready.w-marks .ev-mark {
+    display: none;
   }
   /* AEC's cities and site link clear the event picker on a 360x640 screen, the frame already at its minimum */
   .ev-cities {

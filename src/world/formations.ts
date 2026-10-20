@@ -441,6 +441,76 @@ export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: Logo
   })
 }
 
+// ---------- the events' logo formations (#32) ----------
+
+export type EventKey = 'gala' | 'ignite' | 'poly' | 'aec'
+
+/** Which of an event cut's points draw its logo: on desktop 7 in 20, taken from the formation's points and never from
+ * its dust, so the formation keeps 9 in 20 behind the photo; on a phone all of the formation's, so only the logo shows. */
+export const onMark = (i: number, phone: boolean) => (phone ? inShape(i) : i % 20 < 7)
+export const markCount = (count: number, phone: boolean) => (phone ? shapeCount(count) : Math.floor(count / 20) * 7 + Math.min(count % 20, 7))
+
+/**
+ * Each event logo's two inks, for its file's parts at tone 0 and tone 1, all in light that reads on the night: GALA's
+ * gold from its darker to its lighter parts; Ignite's word in its red and its node lines in a pale grey; POLYMAZE's
+ * wordmark (dark maroon in the file) in its cut's aquamarine; AEC's grey monument in aquamarine and its navy gear in
+ * the charter's lighter blue.
+ */
+export const EVENT_INK: Record<EventKey, readonly [string, string]> = {
+  gala: ['#B8862F', '#F2D27A'],
+  ignite: ['#E0313F', '#C4CAD1'],
+  poly: ['#69C4AF', '#69C4AF'],
+  aec: ['#69C4AF', '#3BA6E8'],
+}
+
+/** A sampled colour's tone, 0..1: by lightness, except AEC, whose two halves are as dark as each other and part by hue. */
+function tones(key: EventKey, cs: Rgb[]): number[] {
+  if (key === 'aec') return cs.map(([r, , b]) => (b - r > 0.15 ? 1 : 0))
+  const ls = cs.map(lum)
+  const lo = Math.min(...ls)
+  const span = Math.max(...ls) - lo || 1
+  return ls.map((v) => (v - lo) / span)
+}
+
+/**
+ * An event cut with its logo (#32, decision 59): the logo's dots fill the box above the event's name (`r`, in screen
+ * px, laid out by EventsStage), as high as the box and from its left edge, the way the name starts. On desktop the
+ * cut's own formation keeps the rest of its points behind the photo, exactly as `shape` places them; on a phone the
+ * logo takes all of them, and only the dust stays around it.
+ */
+export function eventLogo(key: EventKey, n: number, count: number, l: Layout, s: LogoSample, r: Rect): Formation {
+  const own = shape(key, n, count, l)
+  const hw = halfWidth(l)
+  const hpx = Math.min(r.h, r.w / s.aspect)
+  const left = r.cx - r.w / 2
+  // bottom-aligned, so a short logo still sits right on the name
+  const top = r.cy + r.h / 2 - hpx
+  // the dots' size follows their spacing over a name's usual fill (about a third of its box), so letters stay open
+  const k = markCount(count, l.phone)
+  const spacing = hpx * Math.sqrt((s.aspect * 0.35) / Math.max(1, k))
+  const size = Math.min(0.6, Math.max(0.16, (spacing * 1.5) / (l.h / CAM_Z) / 0.09))
+  const [ink0, ink1] = EVENT_INK[key].map(rgb)
+  const ts = tones(key, s.pts.map((q) => q.c))
+  const rnd = random(151)
+  let j = 0
+  return build(n, count, (i) => {
+    if (!onMark(i, l.phone)) {
+      const a = own.col[i * 4 + 3]
+      return { p: [own.pos[i * 4], own.pos[i * 4 + 1], own.pos[i * 4 + 2]], c: [own.col[i * 4], own.col[i * 4 + 1], own.col[i * 4 + 2]], a, s: own.pos[i * 4 + 3] }
+    }
+    const m = j++ % s.pts.length
+    const q = s.pts[m]
+    const px = left + (q.x / s.aspect + 0.5) * s.aspect * hpx
+    const py = top + (0.5 - q.y) * hpx
+    return {
+      p: [(px / l.w) * 2 * hw - hw, HH - (py / l.h) * 2 * HH, (rnd() - 0.5) * 0.04],
+      c: mixRgb(ink0, ink1, ts[m]),
+      a: 0.7 + 0.2 * ts[m],
+      s: size,
+    }
+  })
+}
+
 // ---------- the peak's resolve (#14) ----------
 
 /** The group photo as points: one per sampled pixel, laid on the photo's own rectangle in world units. */

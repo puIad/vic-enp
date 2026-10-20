@@ -3,6 +3,7 @@ import { Arrow } from '../components/ApplyPill'
 import { Photo } from '../components/Photo'
 import { EVENTS, PROJECTS } from '../content/events'
 import { EVENT_STEPS, total } from '../world/steps'
+import { world } from '../world/store'
 import { Mark, Peel } from '../components/Peel'
 import { jump, tallestCopy, useStep } from './stage'
 import './stages.css'
@@ -23,11 +24,24 @@ export default function EventsStage() {
   useLayoutEffect(() => {
     const stage = root.current!
     const copies = [...stage.querySelectorAll<HTMLElement>('.ev.has-photo .ev-text')]
-    const measure = () => stage.style.setProperty('--ev-copy', `${tallestCopy(copies.map((c) => c.offsetHeight))}px`)
+    // the box above the name, where the world draws the cut's logo (#32): every cut's box sits at the same place, so
+    // the first one's, against the pinned stage, is the one for all of them. Empty until the world shows it (w-marks).
+    const mark = stage.querySelector<HTMLElement>('.ev-mark')!
+    const pin = stage.querySelector<HTMLElement>('.cuts-stage')!
+    const measure = () => {
+      stage.style.setProperty('--ev-copy', `${tallestCopy(copies.map((c) => c.offsetHeight))}px`)
+      const r = mark.getBoundingClientRect()
+      const o = pin.getBoundingClientRect()
+      world.mark = r.width && r.height ? { cx: r.left - o.left + r.width / 2, cy: r.top - o.top + r.height / 2, w: r.width, h: r.height } : null
+    }
     const ro = new ResizeObserver(measure)
     copies.forEach((c) => ro.observe(c))
+    ro.observe(mark)
     measure()
-    return () => ro.disconnect()
+    return () => {
+      ro.disconnect()
+      world.mark = null
+    }
   }, [])
 
   return (
@@ -57,6 +71,7 @@ export default function EventsStage() {
               </div>
             )}
             <div className="ev-text">
+              <div className="ev-mark" aria-hidden="true" />
               <h3 id={`ec-${e.id}`} className="cut-line">
                 <Peel text={e.name} />
               </h3>

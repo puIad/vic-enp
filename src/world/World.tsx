@@ -18,8 +18,8 @@ import {
   Vector3,
 } from 'three'
 import { MEMBERS, heroPlacement, random } from './cloud'
-import { CAM_Z, HH, arrive, close, cloud, halfWidth, icon, irisAt, logo, photo, shape, shapeCount, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
-import { LOGO_CUTS, sampleLogo, type LogoCut, type Pixels } from './logo'
+import { CAM_Z, HH, arrive, close, cloud, eventLogo, halfWidth, icon, irisAt, logo, markCount, photo, shape, shapeCount, slotAt, type EventKey, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
+import { EVENT_LOGOS, LOGO_CUTS, sampleLogo, type LogoCut, type Pixels } from './logo'
 import { loadLogo, sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
 import { meter, watchLoop } from './loop'
@@ -155,7 +155,7 @@ function makeYou() {
   return { points, mat, pos, dispose: () => (g.dispose(), mat.dispose()) }
 }
 
-type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | false; logos: Partial<Record<LogoCut, Pixels>> }
+type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | false; logos: Partial<Record<LogoCut | EventKey, Pixels>> }
 
 const RAMP = forcedPoints(location.search)
 const FPS = new URLSearchParams(location.search).has('fps')
@@ -242,11 +242,14 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       () => !gone && (samples.current.photo = false),
     )
     // the logo formations (#29): until a file lands, or if it fails, its cut keeps the comp's shape
-    for (const [key, src] of Object.entries(LOGO_CUTS) as [LogoCut, string][])
+    // the events' logos (#32) too: the first to land opens the box above each event's name, where they draw
+    const files = [...Object.entries(LOGO_CUTS), ...Object.entries(EVENT_LOGOS)] as [LogoCut | EventKey, string][]
+    for (const [key, src] of files)
       loadLogo(src).then(
         (px) => {
           if (gone) return
           samples.current.logos[key] = px
+          if (key in EVENT_LOGOS && has('cuts')) document.documentElement.classList.add('w-marks')
           cache.current.delete(key)
           const f = field.current
           if (f && f.keys.a === key) f.keys.a = ''
@@ -260,7 +263,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       )
     return () => {
       gone = true
-      document.documentElement.classList.remove('w-resolve')
+      document.documentElement.classList.remove('w-resolve', 'w-marks')
     }
   }, [B.peak])
 
@@ -326,7 +329,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
 
     // the layout changed (a resize, a phone turning): every formation is rebuilt for the new view
     // the photo sample too: a budget change resamples it, and the resolve must rebuild once the new grid lands
-    const lkey = `${l.phone}:${l.w}:${l.h}:${s.photo && s.photo.cols}:${JSON.stringify(world.photo)}:${JSON.stringify(world.slot)}`
+    const lkey = `${l.phone}:${l.w}:${l.h}:${s.photo && s.photo.cols}:${JSON.stringify(world.photo)}:${JSON.stringify(world.slot)}:${JSON.stringify(world.mark)}`
     if (lkey !== K.layout) {
       K.layout = lkey
       cache.current.clear()
@@ -376,7 +379,10 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       else if (key === 'photo') fm = s.photo && world.photo ? photo(n, c, l, s.photo, world.photo) : shape('tunnel', n, B.cuts, l)
       else if (key === 'closeRest') fm = close(n, c, l, null)
       else if (key === 'closeIris') fm = close(n, c, l, world.slot, has('cuts'))
-      else if (key in s.logos) fm = logo(key as LogoCut, n, c, l, sampleLogo(s.logos[key as LogoCut]!, shapeCount(c)))
+      else if (key in EVENT_LOGOS) {
+        const px = s.logos[key as EventKey]
+        fm = px && world.mark ? eventLogo(key as EventKey, n, c, l, sampleLogo(px, markCount(c, l.phone)), world.mark) : shape(key as ShapeKey, n, c, l)
+      } else if (key in s.logos) fm = logo(key as LogoCut, n, c, l, sampleLogo(s.logos[key as LogoCut]!, shapeCount(c)))
       else fm = shape(key as ShapeKey, n, c, l)
       cache.current.set(key, fm)
       return fm
@@ -436,8 +442,9 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     u.uMix.value = K.mix
     u.uStag.value = fr.stag
     u.uTime.value = K.time
-    // a logo's thin lines would blur in the full drift: it breathes, at about a third
-    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? 0.35 : 1)
+    // a logo's thin lines would blur in the full drift: it breathes, at about a third; an event's name, drawn a few
+    // pixels per stroke in the box above the name (#32), at a tenth
+    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? (fr.b in EVENT_LOGOS ? 0.1 : 0.35) : 1)
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height
     u.uLean.value = K.lean

@@ -1,8 +1,8 @@
 import { useMemo, useSyncExternalStore } from 'react'
 import { constellation, type Pt } from '../world/cloud'
 
-// The tier 0 posters. The hero's is a baked frame of the real scene (scripts/posters.mjs); the close's clearing is
-// still drawn as SVG from the same seeded constellation until slice 4 gives the close its formation.
+// The tier 0 posters. The hero's is a baked frame of the real scene, the icon formation at rest (scripts/posters.mjs);
+// the close's clearing is drawn as SVG from the same seeded constellation, centred on the pill whatever the viewport.
 
 const phoneQuery = typeof matchMedia === 'undefined' ? null : matchMedia('(max-width: 767px)')
 export function usePhone() {
@@ -49,7 +49,8 @@ export function HeroPoster({ className = '' }: { className?: string }) {
   )
 }
 
-/** A wobbled ellipse with a jittered edge, so the clearing never has a crisp rim (iris rule). */
+/** A wobbled ellipse with a jittered edge, so the clearing never has a crisp rim: on tier 0 the close has no iris
+ * slot, and the page keeps every other place eye-free by choice (ADR 0001). */
 function outsideClearing(cx: number, cy: number, rx: number, ry: number) {
   let s = 11
   const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647

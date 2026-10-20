@@ -4,11 +4,12 @@ import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { Photo } from '../components/Photo'
 import { LEAD, LEDGER, PEAK_ONE, STACK, TITLE } from '../content/clubLife'
 import { photo } from '../content/photos'
+import { world } from '../world/store'
 
 // Act 4, the peak (#14), with motion: six screens pinned, photo 1 then a depth stack of seven, the ledger over it.
 // Its own chunk with GSAP, loaded after first paint; ClubLife shows the still grid until it arrives.
-// shortcut: photo 1 fades in where slice 4's points will resolve into it (the cut line's fallback, build-plan.md);
-// the cut to the first event and your point arrive with the world.
+// With the world's resolve on (html.w-resolve), the points rush into photo 1 and the real photo fades in under them
+// (--formed); without it, photo 1 comes in from far on its own, the cut line's fallback (build-plan.md).
 gsap.registerPlugin(ScrollTrigger)
 
 // ---------- the sequence ----------
@@ -56,12 +57,19 @@ export default function ClubLifePeak() {
     ledger(0)
 
     // shoot.mjs (scroll-craft) compares this between samples to find dead scroll; the hold at .31 to .40 is still on purpose
-    const moving = [...root.querySelectorAll<HTMLElement>('.peak-one, .peak-card, .peak-title, .peak-ledger')]
+    const moving = [...root.querySelectorAll<HTMLElement>('.peak-one, .peak-enter, .peak-card, .peak-title, .peak-ledger')]
     const verify = (p: number) => {
       if (!navigator.webdriver) return
       root.dataset.scVerifyState = moving.map((el) => el.style.cssText).join('|')
       root.dataset.scVerifyHold = String(p > 0.31 && p < 0.4)
     }
+
+    // the points resolve into photo 1 where it is laid out, before any transform: its centre and size in the stage
+    const one = root.querySelector<HTMLElement>('.peak-one')!
+    const measure = () => (world.photo = { cx: one.offsetLeft, cy: one.offsetTop, w: one.offsetWidth, h: one.offsetHeight })
+    const ro = new ResizeObserver(measure)
+    ro.observe(one)
+    measure()
 
     // the stack leans with the pointer, deeper photos more (bonus only; CSS smooths it)
     const lean = (e: PointerEvent) => {
@@ -82,7 +90,8 @@ export default function ClubLifePeak() {
 
       // photo 1: comes in from far and dim (the camera's approach, so the title reads over the night first), rounds
       // its corners once it has formed, holds still, steps aside for the stack, returns
-      tl.fromTo('.peak-one', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, ease: 'power2.inOut', duration: 0.26 }, 0.02)
+      tl.fromTo('.peak-enter', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, ease: 'power2.inOut', duration: 0.26 }, 0.02)
+        .fromTo(root, { '--formed': 0 }, { '--formed': 1, duration: 0.07 }, 0.24)
         .fromTo('.peak-one .peak-dim', { opacity: 0.6 }, { opacity: 0, ease: 'power1.in', duration: 0.27 }, 0.02)
         .fromTo('.peak-one', { '--round': 0 }, { '--round': 1, duration: 0.07 }, 0.24)
         .to('.peak-one', { scale: phone ? 0.92 : 0.78, x: phone ? 0 : () => innerWidth * 0.15, ease: 'power1.inOut', duration: 0.06 }, 0.4)
@@ -147,17 +156,21 @@ export default function ClubLifePeak() {
     ScrollTrigger.refresh() // this act just replaced its still fallback, so every trigger below it moved
     return () => {
       mm.revert()
+      ro.disconnect()
+      world.photo = null
       removeEventListener('pointermove', lean)
     }
   }, [])
 
   return (
-    <div ref={ref} className="peak" data-sc-act="pin">
+    <div ref={ref} className="peak" data-pin data-sc-act="pin">
       <div className="peak-stage" data-sc-stage>
         <div className="peak-one">
-          <div className="peak-frame">
-            <Photo id={PEAK_ONE} sizes="(max-width: 767px) 100vw, min(96vw, 120vh)" className="peak-img" />
-            <div className="peak-dim" />
+          <div className="peak-enter">
+            <div className="peak-frame">
+              <Photo id={PEAK_ONE} sizes="(max-width: 767px) 100vw, min(96vw, 120vh)" className="peak-img" />
+              <div className="peak-dim" />
+            </div>
           </div>
         </div>
         <div className="peak-stack">

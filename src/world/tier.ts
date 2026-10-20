@@ -39,14 +39,24 @@ export function detectTier(): Tier {
 }
 
 /**
- * What each tier draws in the hero (#11, #5): points and the pixel-ratio cap. The world starts on its tier's rung and
- * PerformanceMonitor moves it along the ladder: down when frames drop, up (phones too) when there is headroom.
+ * The point counts per act on each tier's budget (#5, docs/architecture.md, Device tiers): hero and close, the cut
+ * runs and their passages, the peak, and the far field before the light act (#16).
+ */
+export const BUDGET = {
+  2: { hero: 9000, cuts: 16000, peak: 24000, light: 6500 },
+  1: { hero: 5000, cuts: 10000, peak: 12000, light: 3500 },
+} as const
+export type Budget = (typeof BUDGET)[1 | 2]
+
+/**
+ * What the world draws: a budget and the pixel-ratio cap. The world starts on its tier's rung and PerformanceMonitor
+ * moves it along the ladder: down when frames drop, up (phones too) when there is headroom.
  */
 export const LADDER = [
-  { points: 9000, dpr: 2 }, // tier 2
-  { points: 9000, dpr: 1.5 },
-  { points: 5000, dpr: 1.5 }, // tier 1
-  { points: 5000, dpr: 1 },
+  { budget: 2, dpr: 2 }, // tier 2
+  { budget: 2, dpr: 1.5 },
+  { budget: 1, dpr: 1.5 }, // tier 1
+  { budget: 1, dpr: 1 },
 ] as const
 
 export const startRung = (tier: Tier) => (tier === 2 ? 0 : 2)

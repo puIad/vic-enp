@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LADDER, forcedTier, pickTier, startRung } from './tier'
+import { BUDGET, LADDER, forcedTier, pickTier, startRung } from './tier'
 
 const base = { search: '', reduce: false, saveData: false, memory: 8, phone: false }
 
@@ -26,14 +26,17 @@ describe('pickTier', () => {
 })
 
 describe('the ladder', () => {
-  it('starts each tier on its own budget from #11', () => {
-    expect(LADDER[startRung(2)]).toEqual({ points: 9000, dpr: 2 })
-    expect(LADDER[startRung(1)]).toEqual({ points: 5000, dpr: 1.5 })
+  it('starts each tier on its own budget from #11 and #5', () => {
+    expect(LADDER[startRung(2)]).toEqual({ budget: 2, dpr: 2 })
+    expect(LADDER[startRung(1)]).toEqual({ budget: 1, dpr: 1.5 })
+    expect(BUDGET[2].hero).toBe(9000)
+    expect(BUDGET[1].hero).toBe(5000)
   })
 
   it('never goes above the tier 2 caps or below DPR 1', () => {
     expect(Math.max(...LADDER.map((r) => r.dpr))).toBe(2)
     expect(Math.min(...LADDER.map((r) => r.dpr))).toBe(1)
-    expect(Math.max(...LADDER.map((r) => r.points))).toBe(9000)
+    expect(BUDGET[2].peak).toBe(24000)
+    expect(BUDGET[1].peak).toBe(12000)
   })
 })

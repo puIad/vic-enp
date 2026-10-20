@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react'
+import { DEPT_STEPS, EVENT_STEPS, stepAt } from '../world/steps'
+import { world } from '../world/store'
 import type { Cta } from '../lib/opening'
 import { ApplyPill } from './ApplyPill'
 
@@ -14,6 +16,20 @@ const WAYPOINTS = [
   { id: 'join', name: 'How to join' },
   { id: 'apply', name: 'Your place' },
 ]
+
+/** The cut runs' ticks (#13, #15): while a staged run holds the screen, its waypoint grows one tick per cut. */
+const RUNS: Record<string, { steps: number[]; first: number; cuts: number }> = {
+  departments: { steps: DEPT_STEPS, first: 1, cuts: 7 },
+  events: { steps: EVENT_STEPS, first: 0, cuts: 5 },
+}
+const subscribe = (cb: () => void) => (world.listeners.add(cb), () => void world.listeners.delete(cb))
+function useCut() {
+  return useSyncExternalStore(subscribe, () => {
+    const run = RUNS[world.act]
+    if (!run || !document.querySelector(`#${world.act}[data-pin]`)) return ''
+    return `${world.act}:${stepAt(run.steps, world.progress).i - run.first}`
+  })
+}
 
 const START = 48 // the readout's distance at the top of the page, as in the hero comp
 
@@ -31,14 +47,16 @@ export function Chrome({ cta }: { cta: Cta }) {
   const [lit, setLit] = useState({ rail: false, readout: false, logo: false })
   const [pillHidden, setPillHidden] = useState(true)
   const dist = useRef<HTMLElement>(null)
+  const [runAct, runCut] = useCut().split(':')
 
   useEffect(() => {
-    const sections = WAYPOINTS.map((w) => document.getElementById(w.id))
-    const footer = document.getElementById('footer')
-    const ctas = ['hero-cta', 'close-cta'].map((id) => document.getElementById(id))
     let raf = 0
     const update = () => {
       raf = 0
+      // looked up each time: the staged acts replace their tier 0 sections after first paint
+      const sections = WAYPOINTS.map((w) => document.getElementById(w.id))
+      const footer = document.getElementById('footer')
+      const ctas = ['hero-cta', 'close-cta'].map((id) => document.getElementById(id))
       const vh = innerHeight
       // the current waypoint: the last act whose top has reached 45% of the screen (#16)
       let i = 0
@@ -87,10 +105,19 @@ export function Chrome({ cta }: { cta: Cta }) {
       </div>
       <nav className={`rail ${lit.rail ? 'lit' : ''}`} aria-label="Waypoints" style={{ '--fill': `${(now / (WAYPOINTS.length - 1)) * 100}%` } as CSSProperties}>
         {WAYPOINTS.map((w, k) => (
-          <a key={w.id} href={`#${w.id}`} className={`${k <= now ? 'on' : ''} ${k === now ? 'now' : ''}`} aria-current={k === now ? 'location' : undefined}>
-            <i aria-hidden="true" />
-            <span>{w.name}</span>
-          </a>
+          <Fragment key={w.id}>
+            <a href={`#${w.id}`} className={`${k <= now ? 'on' : ''} ${k === now ? 'now' : ''}`} aria-current={k === now ? 'location' : undefined}>
+              <i aria-hidden="true" />
+              <span>{w.name}</span>
+            </a>
+            {runAct === w.id && (
+              <span className="rail-ticks" aria-hidden="true">
+                {Array.from({ length: RUNS[w.id].cuts }, (_, t) => (
+                  <b key={t} className={`${t <= +runCut ? 'on' : ''} ${t === +runCut ? 'now' : ''}`} />
+                ))}
+              </span>
+            )}
+          </Fragment>
         ))}
       </nav>
       <ApplyPill cta={cta} className={`corner ${pillHidden ? 'hide' : ''}`} inert={pillHidden} />

@@ -1,16 +1,26 @@
-import type { CSSProperties } from 'react'
+import { lazy, Suspense, type CSSProperties } from 'react'
 import { Arrow } from '../components/ApplyPill'
 import { Photo } from '../components/Photo'
 import { INSTAGRAM } from '../config'
 import { EVENTS, PROJECTS } from '../content/events'
 
-// Act 5 (#15), tier 0: the title over a two-column grid of outlined event cards, then the four projects full width.
-// shortcut: the pinned stage of five sideways cuts arrives with the world's snap formations; AEC and the projects
-// wait for the owner's photos.
+// Act 5 (#15). With the world: the pinned stage of five sideways cuts (EventsStage, its own chunk). Tier 0, reduced
+// motion and while that chunk loads: the title over a two-column grid of outlined event cards, then the four projects
+// full width. AEC and the projects wait for the owner's photos.
+const Stage = lazy(() => import('./EventsStage'))
 
 const accent = (c: string) => ({ '--c': c }) as CSSProperties
 
-export function Events() {
+export function Events({ staged }: { staged: boolean }) {
+  if (!staged) return <Cards />
+  return (
+    <Suspense fallback={<Cards />}>
+      <Stage />
+    </Suspense>
+  )
+}
+
+function Cards() {
   return (
     <section id="events" aria-labelledby="h-events" className="wrap pt-28 pb-32 md:pt-40 md:pb-40">
       <h2 id="h-events" className="max-w-[18ch] text-[clamp(32px,4.4vw,64px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">

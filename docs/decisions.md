@@ -58,3 +58,11 @@ Each line links the ticket that holds the full answer. The spec itself lives in 
 | # | Decision | By | Notes |
 |---|---|---|---|
 | 39 | Charter exception for this website: the charter's 3D rule covers post design, not websites, so every 3D logo rule in [brand.md](brand.md#logo-in-a-3d-world) is lifted here and the logo files keep their rules. The hero's 600 gather into the VIC icon and hold it until the first scroll, your point lit in its iris, then loosen into the signed cloud. The close's slot gets an iris ring of the 600 (the iris slot); every other act stays as signed. Built in slice 4 with no comp, second in the cut line. | Owner; the exception from VIC's IT department | [ADR 0001](adr/0001-the-icon-formation.md). Amends [#11](https://github.com/puIad/vic-enp/issues/11) and [#17](https://github.com/puIad/vic-enp/issues/17). |
+
+## 2026-10-20: slice 4
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 40 | The depth stack stays slice 2's DOM stack (CSS 3D, #14's entrances and timings) instead of Meng To's Gallery. 21st.dev serves the Gallery's code only to a signed-in account, and it is a rotating cylinder carousel the research expected to rewrite almost entirely. No 21st.dev code ships, so no notice or account is needed. Amends 36. | Owner | Asked in the slice 4 session. [architecture.md](architecture.md#third-party-code), [assets.md](assets.md#asset-ledger). |
+| 41 | Open question 28, as built: your point slides from top right to its cut spot during the door and back to top right during the events' horizon step. On phones it moves within the top right, from the hero's spot to the comps' cut spot below the readout. | Claude, shown to the owner in the slice 4 PR | [experience.md](experience.md#the-signature-move-your-point) |
+| 42 | The cut line is built as switches: `?cut=icon,cuts,flight,resolve` previews the page with those items cut, each dropping to the fallback [build-plan.md](build-plan.md#the-cut-line) names. Bloom (item 1) was never built: the signed comps use none. | Claude | `src/world/steps.ts` |

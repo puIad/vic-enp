@@ -41,9 +41,9 @@ Used for tier 0 and the content inside each act; all stack to one column on a ph
 
 ## Code taken from a reference
 
-Only one: Meng To's MIT [Gallery](https://21st.dev/@mengto/components/gallery) on 21st.dev, as the base of the
-peak's depth stack ([#19](https://github.com/puIad/vic-enp/issues/19), [architecture.md](architecture.md#third-party-code)).
-Everything else is ported from our own comps.
+None. Meng To's MIT [Gallery](https://21st.dev/@mengto/components/gallery) on 21st.dev was chosen as the base of the
+peak's depth stack ([#19](https://github.com/puIad/vic-enp/issues/19)), then dropped on 2026-10-20 for slice 2's DOM
+stack ([decisions.md](decisions.md), 40). Everything is ported from our own comps.
 
 ## In this workspace already
 

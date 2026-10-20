@@ -9,6 +9,10 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   these docs. Gate 0 signed on 2026-10-19 ([decisions.md](decisions.md), 38): the build starts at slice 1.
 - 2026-10-20: under a charter exception for websites, the hero's 600 gather into the VIC icon and the close gets an
   iris slot ([ADR 0001](adr/0001-the-icon-formation.md), [decisions.md](decisions.md), 39). Slice 4 builds both.
+- 2026-10-20: slice 4 built: one canvas behind the whole page, a formation per act, the cut runs, the passages, the
+  peak's resolve, the close's flight and the icon formation. The depth stack stays DOM ([decisions.md](decisions.md), 40);
+  the cut line is a set of `?cut=` switches (42). Waiting on the owner: frame rate on their phone and the point ramp
+  (open question 25).
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

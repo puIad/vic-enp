@@ -24,3 +24,7 @@ export function jump(el: HTMLElement | null, weights: number[], i: number) {
   if (world.go) world.go(y)
   else scrollTo({ top: y })
 }
+
+/** The height every events cut makes room for: its tallest copy, rounded up (56). */
+export const tallestCopy = (heights: number[]) => Math.ceil(Math.max(0, ...heights))
+

@@ -276,7 +276,7 @@
   box-shadow: 0 0 18px -4px var(--c);
 }
 
-/* events: photo-led cuts, the frame on the right, the copy bottom left */
+/* events: photo-led cuts, the frame on the right, the copy on the left */
 .ev {
   justify-content: flex-start;
   padding: 0;
@@ -293,6 +293,13 @@
 }
 .ev .cut-line {
   max-width: none;
+}
+/* each event's name on the same line on every cut, level with the frame's top, the copy flowing down from it; a short
+   window lifts it just enough for the tallest copy (AEC's) to clear the picker, never under the logo. --ev-copy is that
+   copy's height, measured by EventsStage (56) */
+.ev.has-photo .ev-text {
+  top: max(72px, min(15vh, calc(100% - 112px - var(--ev-copy, 0px))));
+  bottom: auto;
 }
 .ev-frame {
   position: absolute;
@@ -525,8 +532,9 @@
     margin-top: 3px;
     font-size: 13px;
   }
-  /* a photo cut on a phone is one column, frame then copy: the frame gives up height so the copy never runs over it
-     (AEC's long lead on a 360x640 screen) */
+  /* a photo cut on a phone is one column, frame then copy. The frame is as tall on every cut, so the name sits on the
+     same line on each (56), and gives up height so the tallest copy never runs over it or the picker (AEC's long lead
+     on a 360x640 screen) */
   .ev.has-photo {
     padding: 84px 20px 132px var(--gut);
   }
@@ -534,16 +542,14 @@
     position: relative;
     inset: auto;
     width: auto;
-    height: auto;
-    flex: 0 1 25svh;
-    min-height: 88px;
+    height: clamp(88px, calc(100% - var(--ev-copy, 0px)), 25svh);
+    flex: none;
   }
   .ev.has-photo .ev-text {
     position: relative;
     inset: auto;
     width: auto;
     flex: none;
-    margin-top: auto;
     padding-top: 16px;
   }
   .ev.projects .ev-text {

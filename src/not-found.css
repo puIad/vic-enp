@@ -1,0 +1,246 @@
+/* The 404 page (404.html, decision 64): the night, a scatter of the 600, and your point standing in for the zero.
+   Plain CSS, no Tailwind and no script: it ships on its own and keeps the CSP's style-src 'self'. */
+@import '@fontsource-variable/outfit';
+
+/* the charter's tokens, as index.css sets them: keep the two in step */
+:root {
+  --night: #141e27;
+  --blue: #127dbb;
+  --aqua: #69c4af;
+  --gray: #efefef;
+  --mute: #a3afba;
+  --grad: linear-gradient(135deg, #127dbb, #69c4af);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --edge: 24px;
+  --gut: calc(max(20px, 2.4vw) + 132px);
+}
+@media (max-width: 767px) {
+  :root {
+    --edge: 16px;
+    --gut: 40px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  background: var(--night);
+  color: var(--gray);
+  font-family: 'Outfit Variable', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--night);
+  overflow-x: clip;
+}
+::selection {
+  background: var(--aqua);
+  color: var(--night);
+}
+:focus-visible {
+  outline: 3px solid var(--aqua);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- the sky: three drifts of points at prime tile sizes, so the scatter never reads as a grid ---------- */
+.nf-sky,
+.nf-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+.nf-sky {
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 40%, rgb(8 12 17 / 0.9) 100%),
+    radial-gradient(1.6px 1.6px at 23px 41px, rgb(105 196 175 / 0.8), transparent),
+    radial-gradient(1.2px 1.2px at 151px 89px, rgb(18 125 187 / 0.75), transparent),
+    radial-gradient(1px 1px at 97px 173px, rgb(105 196 175 / 0.5), transparent),
+    radial-gradient(2px 2px at 211px 23px, rgb(18 125 187 / 0.6), transparent),
+    radial-gradient(1.3px 1.3px at 61px 233px, rgb(105 196 175 / 0.6), transparent),
+    radial-gradient(1px 1px at 179px 199px, rgb(18 125 187 / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 7px 131px, rgb(18 125 187 / 0.7), transparent),
+    radial-gradient(1.1px 1.1px at 127px 7px, rgb(105 196 175 / 0.45), transparent);
+  background-size:
+    100% 100%,
+    241px 257px,
+    263px 239px,
+    227px 251px,
+    251px 269px,
+    239px 263px,
+    269px 229px,
+    257px 241px,
+    233px 271px;
+  /* the scatter thins toward the words, the way the 600 make room for the slot at the close */
+  mask-image: radial-gradient(60% 55% at 50% 52%, rgb(0 0 0 / 0.25), #000 75%);
+}
+.nf-grain {
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- the logo, as the page's chrome sets it: the white file, untouched ---------- */
+.nf-top {
+  position: relative;
+  padding: 28px var(--edge) 0 var(--gut);
+}
+.nf-logo {
+  display: inline-block;
+}
+.nf-logo img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+/* ---------- the words ---------- */
+.nf-main {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px var(--edge) 18svh var(--gut);
+}
+.nf-code {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 900;
+  font-size: clamp(120px, 22vw, 300px);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  /* a fill that fades into the night: a stroke would trace the variable font's overlapping contours */
+  color: transparent;
+  background: linear-gradient(180deg, rgb(239 239 239 / 0.5), rgb(239 239 239 / 0.04) 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+/* your point, where the zero would be: lit, a little lost */
+.nf-point {
+  position: relative;
+  width: 0.62em;
+  height: 0.62em;
+  margin: 0 0.06em;
+  flex: none;
+}
+.nf-point::before,
+.nf-point::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+}
+.nf-point::before {
+  width: 0.34em;
+  height: 0.34em;
+  background: radial-gradient(circle, rgb(105 196 175 / 0.5) 0, rgb(105 196 175 / 0.14) 45%, transparent 70%);
+  animation: nf-breathe 3.6s var(--ease) infinite alternate;
+}
+.nf-point::after {
+  width: clamp(8px, 1.4vw, 14px);
+  height: clamp(8px, 1.4vw, 14px);
+  background: #fff;
+  box-shadow:
+    0 0 14px 3px var(--aqua),
+    0 0 48px 10px rgb(105 196 175 / 0.35);
+}
+@keyframes nf-breathe {
+  from {
+    transform: scale(0.82);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+h1 {
+  margin: clamp(28px, 4vw, 48px) 0 0;
+  max-width: 14ch;
+  font-weight: 900;
+  font-size: clamp(36px, 5vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-wrap: balance;
+}
+.nf-lead {
+  margin: 18px 0 0;
+  max-width: 34ch;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.45;
+  color: var(--gray);
+  text-wrap: pretty;
+}
+
+/* ---------- the way back: the page's pill, night fill and gradient ring ---------- */
+.nf-pill {
+  margin-top: clamp(32px, 5vw, 56px);
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 54px;
+  padding: 0 7px 0 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  text-decoration: none;
+  background:
+    linear-gradient(var(--night), var(--night)) padding-box,
+    var(--grad) border-box;
+  border: 1.5px solid transparent;
+  box-shadow: 0 8px 32px -8px rgb(18 125 187 / 0.55);
+  transition:
+    box-shadow 0.4s var(--ease),
+    transform 0.4s var(--ease);
+}
+.nf-pill:focus-visible {
+  border-radius: 999px;
+}
+.nf-pill:hover {
+  box-shadow: 0 10px 40px -6px rgb(105 196 175 / 0.6);
+  transform: translateY(-1px);
+}
+.nf-pill:active {
+  transform: scale(0.98);
+}
+.nf-go {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--grad);
+  color: var(--night);
+  transition: transform 0.4s var(--ease);
+}
+.nf-go svg {
+  width: 17px;
+  height: 17px;
+}
+.nf-pill:hover .nf-go {
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-point::before {
+    animation: none;
+  }
+  .nf-pill,
+  .nf-go {
+    transition: none;
+  }
+}

@@ -187,6 +187,8 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 13. The two rewritten FAQ answers in act 6.
 14. Your point is on its way.
 15. The chrome lines above.
+16. The 404 page (decision 64, `404.html`): "This page isn't here.", "The address may be mistyped. The rest of VIC
+    is one click away.", "Back to the page".
 
 ### Approved on 2026-10-20
 

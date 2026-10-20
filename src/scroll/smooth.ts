@@ -3,11 +3,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
+import { restorer, whereAt, type Range } from './restore'
 
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
 gsap.registerPlugin(ScrollTrigger)
-
-type Range = { id: string; start: number; end: number }
 
 const abs = (el: Element) => el.getBoundingClientRect().top + scrollY
 const ndc = (y: number) => 1 - (2 * y) / innerHeight
@@ -51,16 +50,14 @@ function follow() {
   const update = () => {
     const y = scrollY
     const vh = innerHeight
-    let r = ranges[0]
-    for (const x of ranges) if (y >= x.start) r = x
-    if (!r) return
-    if (world.act !== r.id) document.documentElement.dataset.act = r.id
-    world.act = r.id
-    const p = (y - r.start) / Math.max(1, r.end - r.start)
-    world.progress = Math.min(1, Math.max(0, p))
+    if (!ranges.length) return
+    const at = whereAt(ranges, y)
+    if (world.act !== at.act) document.documentElement.dataset.act = at.act
+    world.act = at.act
+    world.progress = at.progress
     // the close: entry over the screen before it pins, then its travel
     const a = apply()
-    if (r.id === 'apply' && a) {
+    if (at.act === 'apply' && a) {
       const top = a.getBoundingClientRect().top
       world.entry = Math.min(1, Math.max(0, (vh - top) / vh))
       world.progress = Math.min(1, Math.max(0, -top / Math.max(1, a.offsetHeight - vh)))
@@ -80,8 +77,15 @@ function follow() {
     })
     notify()
   }
+  // a reload lands where the visitor was (decision 64), in the same act and step, however the page has grown
+  const back = restorer()
+  const keep = () => back.keep(ranges, scrollY)
+  const hide = () => document.visibilityState === 'hidden' && keep()
+
   const refresh = () => {
     ranges = measure()
+    const y = back.place(ranges)
+    if (y !== null && Math.abs(scrollY - y) > 1) scrollTo({ top: y, behavior: 'instant' })
     update()
   }
   // the staged acts swap in after first paint and change the page's height: measure again whenever it changes
@@ -89,12 +93,17 @@ function follow() {
   ro.observe(document.body)
   addEventListener('scroll', update, { passive: true })
   addEventListener('resize', refresh)
+  addEventListener('pagehide', keep)
+  document.addEventListener('visibilitychange', hide)
   document.fonts?.ready.then(refresh)
   refresh()
   return () => {
     ro.disconnect()
+    back.stop()
     removeEventListener('scroll', update)
     removeEventListener('resize', refresh)
+    removeEventListener('pagehide', keep)
+    document.removeEventListener('visibilitychange', hide)
   }
 }
 

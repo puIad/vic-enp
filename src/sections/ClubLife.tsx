@@ -32,8 +32,8 @@ function ClubLifeStill() {
       </h2>
       <p className="t-lead mt-4 mb-12 text-gray md:mb-14">{LEAD}</p>
       <div className="peak-grid">
-        {GRID.map(([id, area, s]) => (
-          <Photo key={id} id={id} sizes={s} className={area} />
+        {GRID.map(([id, area, s], i) => (
+          <Photo key={id} id={id} sizes={s} className={area} first={i === 0} />
         ))}
         <ol>
           {LEDGER.map(([name, text]) => (

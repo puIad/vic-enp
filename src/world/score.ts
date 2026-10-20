@@ -100,7 +100,7 @@ export function score(s: ScoreIn): Frame {
         const camZ = lerp(14, 11, ss(0, 1, t))
         if (!has('cuts')) return { ...sway, a: 'tunnel', b: 'tunnel', mix: 1, snap: 'tunnel', camZ, sway: 0.4, you: at(CUT, 1.35) }
         const m = ss(0, 0.85, t)
-        return { ...sway, a: 'bubble', b: 'tunnel', mix: m, stag: 0.7, snap: `dept-${i - 1}`, camZ, sway: lerp(1, 0.4, m), you: at(CUT, 1.35) }
+        return { ...sway, a: DEPTS[i - 2], b: 'tunnel', mix: m, stag: 0.7, snap: `dept-${i - 1}`, camZ, sway: lerp(1, 0.4, m), you: at(CUT, 1.35) }
       }
       const k = has('cuts') ? DEPTS[i - 1] : 'door'
       return { ...sway, a: k, b: k, mix: 1, snap: has('cuts') ? `dept-${i}` : null, you: at(CUT, 1.35) }

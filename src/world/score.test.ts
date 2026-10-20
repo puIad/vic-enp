@@ -70,11 +70,9 @@ describe('the score', () => {
     // the morph carries on from the cut, so crossing into it or back out of it never flashes
     expect(at(0.01).snap).toBe(bubble.snap)
     expect(at(1).snap).toBe(bubble.snap)
-    // scrolling back up runs it in reverse: the score is the scroll's alone
-    const ts = [0, 0.2, 0.4, 0.6, 0.8, 1]
-    const mix = ts.map((t) => at(t).mix)
+    // the score is the scroll's alone, so scrolling back up runs this same climb in reverse
+    const mix = [0, 0.2, 0.4, 0.6, 0.8, 1].map((t) => at(t).mix)
     expect(mix).toEqual([...mix].sort((x, y) => x - y))
-    expect(ts.reverse().map((t) => at(t).mix)).toEqual(mix.reverse())
   })
 
   it('rushes the tunnel into the photo across the peak, then steps the points out for the stack', () => {

@@ -128,7 +128,8 @@ icon in points:
   ([experience.md](experience.md)). The extraction rule above still holds for flat graphics.
 - Everywhere else the world stays eye-free by choice, so the iris belongs to the start and the end: no other ring
   with a bright centre, no dark disc around a lit point. The cloud the icon loosens into stays tilted and
-  three-armed, no passage reads as an iris, and the English Bubble circles stay open outlines.
+  three-armed, no passage reads as an iris, and the English Bubble circles (its cut's shape
+  until the B's file loads) stay open outlines.
 - The 3D world never passes over the logo (no particles in front of it). The fixed logo sits on its own night
   plate (radial, solid at the logo, feathered out) between canvas and logo. Clear space around it stays empty.
 - The fixed logo steps away over the light act, since the full-colour logo is only for white or black, and again

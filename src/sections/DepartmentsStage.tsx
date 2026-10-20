@@ -4,6 +4,7 @@ import { DEPT_STEPS, total } from '../world/steps'
 import { world } from '../world/store'
 import { Peel } from '../components/Peel'
 import { jump, useStep } from './stage'
+import './stages.css'
 
 // Act 3 with the world (#13): one pinned stage, the door, seven hard cuts, the tunnel. The world snaps the formation
 // at each step boundary (score.ts); this is the copy that cuts with it. Its own chunk, loaded after first paint;

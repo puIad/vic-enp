@@ -6,6 +6,7 @@ import { EVENTS, PROJECTS } from '../content/events'
 import { EVENT_STEPS, total } from '../world/steps'
 import { Peel } from '../components/Peel'
 import { jump, useStep } from './stage'
+import './stages.css'
 
 // Act 5 with the world (#15): one pinned stage, five sideways hard cuts, then the horizon. It starts a screen early
 // (margin-top: -100lvh), so it pins the moment the peak lets go: the resolved photo cuts straight to the Gala, with no

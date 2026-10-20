@@ -18,17 +18,21 @@ export const LEDGER: [name: string, text: string, logo?: LogoId][] = [
 /** photo 1: the group in front of ENP that the points resolve into, and the act returns to */
 export const PEAK_ONE = 'img-8658'
 
-export type Mode = 'slit' | 'pan' | 'rise' | 'lens' | 'split' | 'deal' | 'fly'
+export type Mode = 'slit' | 'tilt' | 'pan' | 'rise' | 'iris' | 'lens' | 'split' | 'wipe' | 'deal' | 'fly'
 
-// The sequence after photo 1, in order; no two neighbours share an entrance (#14). [x, y, size]: the frame's centre
-// and size as fractions of the viewport, desktop (d) then phone (m), from the signed comp. size is a width, or a
-// height for the portrait (tall).
+// The sequence after photo 1, in order; no two neighbours share an entrance (#14). The three group photos joined in
+// slice 5 (decisions.md, 65), each with an entrance of its own. [x, y, size]: the frame's centre and size as fractions
+// of the viewport, desktop (d) then phone (m), from the signed comp. size is a width, or a height for the portrait
+// (tall).
 export const STACK: { id: string; mode: Mode; d: number[]; m: number[]; tall?: true }[] = [
   { id: 'img-0645', mode: 'slit', d: [0.66, 0.42, 0.4], m: [0.5, 0.34, 0.86] },
+  { id: 'img-6171', mode: 'tilt', d: [0.58, 0.32, 0.36], m: [0.5, 0.37, 0.9] },
   { id: 'img-2757', mode: 'pan', d: [0.55, 0.6, 0.36], m: [0.5, 0.4, 0.86] },
   { id: 'img-9072', mode: 'rise', d: [0.72, 0.5, 0.74], m: [0.5, 0.34, 0.62], tall: true },
+  { id: 'img-7517', mode: 'iris', d: [0.56, 0.58, 0.42], m: [0.5, 0.36, 0.9] },
   { id: 'img-9159', mode: 'lens', d: [0.48, 0.38, 0.34], m: [0.5, 0.31, 0.86] },
   { id: 'img-8641', mode: 'split', d: [0.7, 0.56, 0.38], m: [0.5, 0.38, 0.86] },
+  { id: 'img-9215', mode: 'wipe', d: [0.62, 0.38, 0.4], m: [0.5, 0.33, 0.86] },
   { id: 'img-7544', mode: 'deal', d: [0.6, 0.48, 0.54], m: [0.5, 0.33, 0.9] },
   { id: 'img-8759', mode: 'fly', d: [0.64, 0.46, 0.46], m: [0.5, 0.35, 0.86] },
 ]
@@ -43,4 +47,7 @@ export const GRID = [
   ['img-8641', 'f', '(max-width: 767px) 50vw, 30vw'],
   ['img-7544', 'h', '(max-width: 767px) 50vw, 30vw'],
   ['img-8759', 'i', '(max-width: 767px) 100vw, 30vw'],
+  ['img-6171', 'k', '(max-width: 767px) 50vw, 30vw'],
+  ['img-7517', 'l', '(max-width: 767px) 50vw, 30vw'],
+  ['img-9215', 'j', '(max-width: 767px) 100vw, 60vw'],
 ]

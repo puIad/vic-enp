@@ -12,6 +12,11 @@ describe('photos', () => {
     for (const id of used) expect(() => photo(id), id).not.toThrow()
   })
 
+  it('no two neighbours in the stack share an entrance, and the still grid holds photo 1 and the whole stack', () => {
+    STACK.slice(1).forEach((s, i) => expect(s.mode, s.id).not.toBe(STACK[i].mode))
+    expect(GRID.map(([id]) => id).sort()).toEqual([PEAK_ONE, ...STACK.map((s) => s.id)].sort())
+  })
+
   it('every photo has its AVIF and WebP at every width in public/photos', () => {
     const missing = PHOTOS.flatMap((p) => p.widths.flatMap((w) => ['avif', 'webp'].map((ext) => `${p.id}-${w}.${ext}`))).filter((f) => !files.has(f))
     expect(missing).toEqual([])

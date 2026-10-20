@@ -7,7 +7,7 @@ import { LEAD, LEDGER, PEAK_ONE, STACK, TITLE } from '../content/clubLife'
 import { photo } from '../content/photos'
 import { world } from '../world/store'
 
-// Act 4, the peak (#14), with motion: six screens pinned, photo 1 then a depth stack of seven, the ledger over it.
+// Act 4, the peak (#14), with motion: six screens pinned, photo 1 then a depth stack of ten, the ledger over it.
 // Its own chunk with GSAP, loaded after first paint; ClubLife shows the still grid until it arrives.
 // With the world's resolve on (html.w-resolve), the points rush into photo 1 and the real photo fades in under them
 // (--formed); without it, photo 1 comes in from far on its own, the cut line's fallback (build-plan.md).
@@ -15,10 +15,11 @@ gsap.registerPlugin(ScrollTrigger)
 
 // ---------- the sequence ----------
 
-// the act's progress p runs 0..1 over 6 screens; photo i lives from START + i * STEP for LIFE
+// the act's progress p runs 0..1 over 6 screens; photo i lives from START + i * STEP for LIFE. Ten photos share the
+// window seven had (decisions.md, 65): LIFE stays under 2 * STEP, so at most two stack photos are on screen at once.
 const START = 0.42
-const STEP = 0.07
-const LIFE = 0.13
+const STEP = 0.05
+const LIFE = 0.093
 
 function slot(s: (typeof STACK)[number], i: number): CSSProperties {
   const p = photo(s.id)
@@ -118,6 +119,23 @@ export default function ClubLifePeak() {
           case 'slit':
             tl.fromTo(card.querySelector('.peak-frame'), { clipPath: 'inset(50% 0% 50% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power3.out', duration: d }, s)
             tl.fromTo(img, { scale: 1.2 }, { scale: 1, ease: 'power3.out', duration: d }, s)
+            break
+          case 'tilt': // swings open on its left edge, like a door toward the viewer
+            tl.fromTo(card, { rotationY: 78, transformOrigin: '0% 50%' }, { rotationY: 0, ease: 'power3.out', duration: d }, s)
+            tl.set(card, { transformOrigin: '50% 50%' }, s + d) // flat again, so the exit grows from the centre like the rest
+            fade(d * 0.3)
+            break
+          case 'iris': // a circle opens from the middle of the group
+            tl.fromTo(card.querySelector('.peak-frame'), { clipPath: 'circle(0% at 50% 52%)' }, { clipPath: 'circle(75% at 50% 52%)', ease: 'power2.inOut', duration: d }, s)
+            break
+          case 'wipe': // a diagonal edge sweeps across from the right while the photo drifts the other way
+            tl.fromTo(
+              card.querySelector('.peak-frame'),
+              { clipPath: 'polygon(100% 0%, 130% 0%, 130% 100%, 130% 100%)' },
+              { clipPath: 'polygon(-30% 0%, 130% 0%, 130% 100%, 0% 100%)', ease: 'power3.out', duration: d },
+              s,
+            )
+            tl.fromTo(img, { xPercent: -8, scale: 1.1 }, { xPercent: 0, scale: 1, ease: 'power3.out', duration: d }, s)
             break
           case 'pan': // opens on the left 60% of the hall and pulls out to the whole room
             tl.fromTo(img, { scale: 1 / 0.6, xPercent: 33.3 }, { scale: 1, xPercent: 0, ease: 'power3.out', duration: d }, s)

@@ -88,7 +88,7 @@ Testimonials (content section 11) stay cut until real quotes arrive.
 ## The peak
 
 **The resolve.** The crowd of points rushes together into the group photo in front of ENP (`IMG_8658`) and holds
-still long enough to look. Then seven more photos arrive in a depth stack, each in its own way, and the ENP photo
+still long enough to look. Then ten more photos arrive in a depth stack, each in its own way, and the ENP photo
 returns full frame before a hard cut to the first event ([#14](https://github.com/puIad/vic-enp/issues/14)).
 
 ## The signature move: your point
@@ -199,26 +199,29 @@ the hero goes on scroll.
 - **Resolve:** from the tunnel's dim galaxy, the camera comes in while the points (12k phone, 24k desktop) rush
   into a sampled copy of `IMG_8658`. The real photo fades in under them and only then rounds its corners. The hold
   has no text and nothing moves.
-- **Sequence:** seven photos in a depth stack, no two neighbours with the same entrance, at most two stack planes
+- **Sequence:** ten photos in a depth stack, no two neighbours with the same entrance, at most two stack planes
   on screen at once on a phone:
 
 | # | Photo | Entrance |
 |---|---|---|
 | 1 | `IMG_8658` group in front of ENP | resolves from the points |
 | 2 | `IMG_0645` forest group | slit opens from the centre line |
-| 3 | `IMG_2757` full hall, speakers on stage | pan from the left 60% out to the whole hall |
-| 4 | `IMG_9072` night courtyard (portrait) | rises from below with a slight rotation; the phone's portrait moment |
-| 5 | `IMG_9159` night selfie | lens pull back from 2x |
-| 6 | `IMG_8641` bottle rocket lifted overhead | split: two halves close in from the sides |
-| 7 | `IMG_7544` banner around the table | dealt from a pile, lower right |
-| 8 | `IMG_8759` outdoor group | flies in from far back |
+| 3 | `IMG_6171` group indoors with robot cars | tilt: swings open on its left edge, like a door |
+| 4 | `IMG_2757` full hall, speakers on stage | pan from the left 60% out to the whole hall |
+| 5 | `IMG_9072` night courtyard (portrait) | rises from below with a slight rotation; the phone's portrait moment |
+| 6 | `IMG_7517` group on the steps, a certificate held up | iris: a circle opens from the middle of the group |
+| 7 | `IMG_9159` night selfie | lens pull back from 2x |
+| 8 | `IMG_8641` bottle rocket lifted overhead | split: two halves close in from the sides |
+| 9 | `IMG_9215-2` large group in a hall | wipe: a diagonal edge sweeps in from the right |
+| 10 | `IMG_7544` banner around the table | dealt from a pile, lower right |
+| 11 | `IMG_8759` outdoor group | flies in from far back |
 
 - **Copy:** the title and lead over the points, then a four-row ledger of club life, one row lit at a time. No
   captions, alt text only.
 - **Hand-over:** the ENP photo returns full frame, then a hard cut (no passage, no fade) to the Gala cut.
-- **Tier 0 and reduced motion:** one art-directed grid of the same eight photos.
+- **Tier 0 and reduced motion:** one art-directed grid of the same eleven photos.
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20)):** `IMG_6171`, `IMG_7517` and `IMG_9215-2` join the stack, ten photos in
-  the same six screens, and the tier 0 grid. VIC Entertainment's row gets its logo's symbol. VIC Charity's row has
+  the same six screens, and the tier 0 grid (built). VIC Entertainment's row gets its logo's symbol. VIC Charity's row has
   left the ledger (built) ([decisions.md](decisions.md), 55, 60, 65).
 
 ### 5. Events and projects

@@ -24,11 +24,11 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
 | `IMG_8641.JPG` | 5472×3648 | 3:2 | A student lifting a bottle rocket in front of the ENP building, friends cheering | A rocket competition? | Peak photo 6 (split) |
 | `IMG_0257.JPG` | 6000×4000 | 3:2 | Close-up of a small robot in a white maze | Polymaze | Spare (not placed) |
 | `IMG_6141.jpg` | 6000×4000 | 3:2 | A hand holding a small robot in front of a laptop with code | SPARK workshop | Spare (not placed) |
-| `IMG_6171.jpg` | 5472×3072 | 16:9 | Casual group indoors | | Spare, tier 0 grid or close |
-| `IMG_7517.jpg` | 5472×3072 | 16:9 | Group on steps in a blue room, holding a paper | | Spare, tier 0 grid or close |
+| `IMG_6171.jpg` | 5472×3072 | 16:9 | Casual group indoors, some holding small robot cars | | Peak stack (tilt) and the still grid |
+| `IMG_7517.jpg` | 5472×3072 | 16:9 | Group on steps in a blue room, holding a certificate | | Peak stack (iris) and the still grid |
 | `IMG_7544.jpg` | 5472×3072 | 16:9 | Very large group around a long table, holding a banner | | Peak photo 7 (dealt) |
 | `IMG_8759.JPG` | 6000×4000 | 3:2 | Large group outdoors in front of a building | | Peak photo 8 (flies in) |
-| `IMG_9215-2.JPG` | 6000×4000 | 3:2 | Large group in a hall with logos on the back wall | A partner event? | Spare, tier 0 grid or close |
+| `IMG_9215-2.JPG` | 6000×4000 | 3:2 | Large group in a hall with logos on the back wall | A partner event? | Peak stack (wipe) and the still grid |
 | `IMG_3223.jpg` | 2730×1536 | 16:9 | Large group in a lecture hall cheering, prize cheques held up, the screen reads "Algerian Engineering Competition" | AEC | Events, AEC cut (owner, 2026-10-20) |
 | `IMG_8095.HEIC` | ? | ? | Not previewed: HEIC can't be read by the tools here | | Left out (decided 2026-10-19) |
 

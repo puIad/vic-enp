@@ -25,6 +25,9 @@ export const PHOTOS: Photo[] = [
   { id: 'img-8641', src: 'IMG_8641.JPG', w: 5472, h: 3648, focal: [43, 55], widths: W, alt: 'A student lifts a bottle rocket overhead in front of the ENP building while friends cheer.' },
   { id: 'img-7544', src: 'IMG_7544.jpg', w: 5472, h: 3072, focal: [48, 60], widths: W, alt: "A large group behind a long table, two of them holding a 'Congratulations, second winner' banner." },
   { id: 'img-8759', src: 'IMG_8759.JPG', w: 6000, h: 4000, focal: [42, 55], widths: W, alt: 'A large group of VIC members outdoors in front of a white building with arches.' },
+  { id: 'img-6171', src: 'IMG_6171.jpg', w: 5472, h: 3072, focal: [55, 50], widths: W, alt: 'A group of students indoors, several sitting on the floor, some holding small robot cars.' },
+  { id: 'img-7517', src: 'IMG_7517.jpg', w: 5472, h: 3072, focal: [47, 52], widths: W, alt: 'A group on the steps of a room with a light blue wall, one of them holding up a certificate.' },
+  { id: 'img-9215', src: 'IMG_9215-2.JPG', w: 6000, h: 4000, focal: [50, 55], widths: W, alt: "A large group posing at the front of a hall under a wall that reads 'HIS University', rows of empty chairs before them." },
   // events (#15)
   { id: 'dscf7405', src: 'DSCF7405.jpg', w: 6240, h: 4160, focal: [50, 60], widths: W, alt: 'A large group in suits and dresses posing together in a draped hall.' },
   { id: 't2a6297', src: '_T2A6297.jpg', w: 6160, h: 4640, focal: [50, 52], widths: W, alt: 'A large group on a stage in front of a red screen showing the Vision & Innovation Club logo.' },

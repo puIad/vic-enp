@@ -525,6 +525,27 @@
     margin-top: 3px;
     font-size: 13px;
   }
+  /* a photo cut on a phone is one column, frame then copy: the frame gives up height so the copy never runs over it
+     (AEC's long lead on a 360x640 screen) */
+  .ev.has-photo {
+    padding: 84px 20px 132px var(--gut);
+  }
+  .ev.has-photo .ev-frame {
+    position: relative;
+    inset: auto;
+    width: auto;
+    height: auto;
+    flex: 0 1 25svh;
+    min-height: 88px;
+  }
+  .ev.has-photo .ev-text {
+    position: relative;
+    inset: auto;
+    width: auto;
+    flex: none;
+    margin-top: auto;
+    padding-top: 16px;
+  }
   .ev.projects .ev-text {
     bottom: 150px;
   }
@@ -541,4 +562,8 @@
     flex: none;
   }
 }
-
+@media (max-width: 767px) and (max-height: 700px) {
+  .ev .cut-lead {
+    font-size: 15px;
+  }
+}

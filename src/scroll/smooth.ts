@@ -7,8 +7,6 @@ import { world } from '../world/store'
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
 gsap.registerPlugin(ScrollTrigger)
 
-export { world }
-
 const ACTS = ['top', 'the-600', 'departments', 'club-life', 'events', 'join', 'apply']
 
 // Lenis and ScrollTrigger on one clock: gsap's ticker drives Lenis, Lenis's scroll events update ScrollTrigger.

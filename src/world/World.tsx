@@ -13,9 +13,7 @@ export type WorldProps = {
   tier: Exclude<Tier, 0>
   /** a forced tier holds its rung: the verification runs and the owner's phone checks see the tier they asked for */
   forced: boolean
-  /** skip the gather (the poster was already on screen, or a still for the posters and screenshots) */
-  formed: boolean
-  /** freeze time and the gather, for the baked posters */
+  /** the field formed, time frozen and your point lit, for the baked posters */
   still: boolean
   onReady: () => void
   onLost: () => void
@@ -134,7 +132,7 @@ function makeHero(still: boolean) {
   }
 }
 
-function Hero({ points, formed, still, onReady }: { points: number; formed: boolean; still: boolean; onReady: () => void }) {
+function Hero({ points, still, onReady }: { points: number; still: boolean; onReady: () => void }) {
   const scene = useThree((s) => s.scene)
   const phone = useThree((s) => s.size.width < 768)
   const hero = useRef<ReturnType<typeof makeHero> | null>(null)
@@ -176,8 +174,8 @@ function Hero({ points, formed, still, onReady }: { points: number; formed: bool
     const since = state.clock.elapsedTime - k.start
 
     // arrival: the points stream in, the counter climbs, then your point lights and breathes
-    const gather = formed || still ? 1 : Math.min(1, since / GATHER)
-    const lit = formed || still ? 1 : Math.min(1, Math.max(0, (since - GATHER) / LIGHT))
+    const gather = still ? 1 : Math.min(1, since / GATHER)
+    const lit = still ? 1 : Math.min(1, Math.max(0, (since - GATHER) / LIGHT))
     const count = Math.round(MEMBERS * gather)
     if (count !== k.count) {
       k.count = count
@@ -280,7 +278,7 @@ function PauseOffscreen() {
   return null
 }
 
-export default function World({ tier, forced, formed, still, onReady, onLost }: WorldProps) {
+export default function World({ tier, forced, still, onReady, onLost }: WorldProps) {
   const [rung, setRung] = useState(startRung(tier))
   const { points, dpr } = LADDER[rung]
   usePointer()
@@ -312,7 +310,7 @@ export default function World({ tier, forced, formed, still, onReady, onLost }: 
         />
       )}
       <PauseOffscreen />
-      <Hero points={points} formed={formed} still={still} onReady={onReady} />
+      <Hero points={points} still={still} onReady={onReady} />
     </Canvas>
   )
 }

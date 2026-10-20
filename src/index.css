@@ -258,6 +258,11 @@
     translate: 0 calc(var(--hand, 0) * -64px);
     opacity: calc(1 - var(--fade, 0));
   }
+  /* a keyboard user moving back into the hero lands on copy they can see */
+  .w-ready #top:focus-within > * {
+    translate: none;
+    opacity: 1;
+  }
   /* "Gathering the 600": the loader, beside the pill on desktop, in place of the small line on a phone */
   .gather {
     position: absolute;

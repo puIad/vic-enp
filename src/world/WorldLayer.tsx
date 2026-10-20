@@ -50,7 +50,6 @@ export function WorldLayer({ state, setState }: { state: WorldState; setState: (
         <World
           tier={TIER as 1 | 2}
           forced={forcedTier(location.search) !== null}
-          formed={STILL}
           still={STILL}
           onReady={() => setState('ready')}
           onLost={off}

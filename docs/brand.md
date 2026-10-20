@@ -48,7 +48,7 @@ they are: ring (`#5AB3B1` to `#127DBB`, 90°), cover (`#3997B4` to `#1F84B7`, 18
 | Department | Colours |
 |---|---|
 | SPARK | Orange `#F29A09` to Tangelo `#F24407` |
-| Training | Cyan Cobalt Blue `#1A52A2` (darker blue gradient). As additive light on night it is too dark, so the rule runs `#1A52A2` to `#6A9CF0` and the points use `#6A9CF0` ([#13](https://github.com/puIad/vic-enp/issues/13)) |
+| Training | Cyan Cobalt Blue `#1A52A2` (darker blue gradient). As additive light on night it is too dark, so the rule runs `#1A52A2` to `#6A9CF0` and the points use `#6A9CF0` ([#13](https://github.com/puIad/vic-enp/issues/13)). Its logo formation keeps the file's violet, lifted to `#7C34DC` to `#B17DF5` ([#31](https://github.com/puIad/vic-enp/issues/31)) |
 | English Bubble | The VIC gradient, `#127DBB` to `#69C4AF` |
 | Also in the charter | Dark Violet `#5700CF`, Medium Purple `#7849A8` |
 
@@ -128,7 +128,8 @@ icon in points:
   ([experience.md](experience.md)). The extraction rule above still holds for flat graphics.
 - Everywhere else the world stays eye-free by choice, so the iris belongs to the start and the end: no other ring
   with a bright centre, no dark disc around a lit point. The cloud the icon loosens into stays tilted and
-  three-armed, no passage reads as an iris, and the English Bubble circles stay open outlines.
+  three-armed, no passage reads as an iris, and the English Bubble circles (its cut's shape
+  until the B's file loads) stay open outlines.
 - The 3D world never passes over the logo (no particles in front of it). The fixed logo sits on its own night
   plate (radial, solid at the logo, feathered out) between canvas and logo. Clear space around it stays empty.
 - The fixed logo steps away over the light act, since the full-colour logo is only for white or black, and again

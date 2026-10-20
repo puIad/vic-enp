@@ -436,8 +436,10 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     u.uMix.value = K.mix
     u.uStag.value = fr.stag
     u.uTime.value = K.time
-    // a logo's thin lines would blur in the full drift: it breathes, at about a third
-    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? 0.35 : 1)
+    // a logo's thin lines would blur in the full drift: it breathes, at about a third, and the drift follows the mix
+    // into a logo and out of one (English Bubble into the tunnel)
+    const onLogo = (fr.a in s.logos ? 1 - K.mix : 0) + (fr.b in s.logos ? K.mix : 0)
+    u.uDrift.value = fr.drift * (1 - 0.65 * onLogo)
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height
     u.uLean.value = K.lean

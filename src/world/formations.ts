@@ -184,6 +184,8 @@ type Shape = {
   color: string
   /** a logo formation's second light, for the file's darker parts */
   shade?: string
+  /** a logo formation's own light and shade, where the file keeps a colour that isn't the cut's */
+  logo?: [string, string]
   /** some of the shape's points in a second light of their own (IT's paint) */
   tint?: { color: string; on: (i: number) => boolean }
   /** a tilt, as in the comp's snap() */
@@ -329,6 +331,11 @@ export const SHAPES = {
   },
   training: {
     color: '#6A9CF0',
+    // Training's blue runs #1A52A2 to #6A9CF0 (brand.md, Activity departments)
+    shade: '#1A52A2',
+    // its figure keeps the file's violet (#5500CE to #7748A8), lifted to the blue pair's brightness so it reads on the
+    // night (the owner's call on #31)
+    logo: ['#B17DF5', '#7C34DC'],
     tilt: [-0.3, 0.75],
     at: ({ g, R }) => (i) => {
       const s = i % 5
@@ -341,6 +348,8 @@ export const SHAPES = {
   // two open speech circles: outlines, never a disc around a lit point
   bubble: {
     color: '#69C4AF',
+    // English Bubble's B runs the VIC gradient, aquamarine to blue
+    shade: '#127DBB',
     at: ({ g, R, ell }) => (i) => {
       if (i % 10 < 9) return i % 2 ? ell(-6, 4, 13, 9, 0.3) : ell(7, -3, 13, 9, 0.3)
       return [R(-2, 7), R(-14, -8), g() * 0.6]
@@ -471,12 +480,12 @@ const lum = ([r, g, b]: Rgb) => 0.2126 * r + 0.7152 * g + 0.0722 * b
 export function logo(key: ShapeKey, n: number, count: number, l: Layout, s: LogoSample): Formation {
   const sh: Shape = SHAPES[key]
   const c = compOf(key)
-  const pl = cutPlacement(key, l)
+  // flat to the view: a comp's tilt (Training's) would foreshorten the symbol
+  const pl: Placement = { ...cutPlacement(key, l), rotation: [0, 0, 0] }
   const h = l.phone ? LOGO_H.phone : LOGO_H.desk
   // finer points on a phone, so the lines stay apart
   const size = l.phone ? 0.34 : 0.5
-  const light = rgb(sh.color)
-  const shade = rgb(sh.shade ?? sh.color)
+  const [light, shade] = (sh.logo ?? [sh.color, sh.shade ?? sh.color]).map(rgb)
   const ls = s.pts.map((q) => lum(q.c))
   const lo = Math.min(...ls)
   const span = Math.max(...ls) - lo || 1

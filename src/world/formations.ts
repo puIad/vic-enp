@@ -182,10 +182,10 @@ type Shape = {
   at: (c: ReturnType<typeof comp>) => Gen
   /** the cut's light */
   color: string
-  /** a second light: a logo formation's darker parts, or the points `tint` picks */
+  /** a logo formation's second light, for the file's darker parts */
   shade?: string
-  /** the points of the shape drawn in the second light (IT's paint) */
-  tint?: (i: number) => boolean
+  /** some of the shape's points in a second light of their own (IT's paint) */
+  tint?: { color: string; on: (i: number) => boolean }
   /** a tilt, as in the comp's snap() */
   tilt?: [number, number]
   /** the brighter points of the shape (a lit runner, a stage line, the door's slit) */
@@ -197,7 +197,8 @@ type Shape = {
   py?: number
   /** where the shape sits on desktop instead of the comps' right of centre: world x, y and a scale */
   desk?: [number, number, number]
-  /** a smaller shape on a phone, where it has to fit a gap */
+  /** the shape's size on a phone against the other cuts': smaller where it has to fit a gap, larger where its parts
+   * would run together */
   pscale?: number
 }
 
@@ -255,8 +256,7 @@ export const SHAPES = {
   // aquamarine, spaced so they stay apart on a phone; the notch and the hole stay open
   it: {
     color: '#3BA6E8',
-    shade: '#69C4AF',
-    tint: (i) => i % 10 >= 6,
+    tint: { color: '#69C4AF', on: (i) => i % 10 >= 6 },
     // a few brighter points in each dab, so the paint reads wet without washing out to white
     lit: (i) => i % 20 === 7,
     // larger on a phone than the other cuts' half size, so the dabs stay apart
@@ -441,13 +441,13 @@ export function shape(key: ShapeKey, n: number, count: number, l: Layout): Forma
   const share = sh.share ?? SHARE
   const pl = cutPlacement(key, l)
   const col = rgb(sh.color)
-  const second = rgb(sh.shade ?? sh.color)
+  const paint = rgb(sh.tint?.color ?? sh.color)
   const dim = key === 'tunnel' ? 0.4 : 1
   return build(n, count, (i) => {
     const on = inShape(i, share)
     const p = on ? gen(i) : c.dust()
     const lit = on && !!sh.lit?.(i)
-    const base = on && sh.tint?.(i) ? second : col
+    const base = on && sh.tint?.on(i) ? paint : col
     return {
       p: place(p, pl),
       c: lit ? mixRgb(base, [1, 1, 1], 0.55) : base,

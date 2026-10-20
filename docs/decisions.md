@@ -52,3 +52,9 @@ Each line links the ticket that holds the full answer. The spec itself lives in 
 | 36 | Third-party code: port every comp to R3F, except the depth stack, which starts from Meng To's MIT Gallery on 21st.dev, installed on the owner's 21st.dev account. No Originkit. | Owner | [#19](https://github.com/puIad/vic-enp/issues/19), [architecture.md](architecture.md#third-party-code) |
 | 37 | Performance proof on a real phone and the share image and favicon move to build time (open questions 25, 26); the new-copy list goes to the owner by the 22 Oct copy freeze (27). | Owner | [#18](https://github.com/puIad/vic-enp/issues/18) |
 | 38 | **Gate 0 signed.** The owner read the docs and accepted them as written, including open question 28's default and the rewritten cut line items 2 and 3. The build can start at slice 1. | Owner | [#18](https://github.com/puIad/vic-enp/issues/18). Every Gate 0 box in [build-plan.md](build-plan.md#gate-0-docs-signed-off) ticked. |
+
+## 2026-10-20: the icon formation
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 39 | Charter exception for this website: the charter's 3D rule covers post design, not websites, so every 3D logo rule in [brand.md](brand.md#logo-in-a-3d-world) is lifted here and the logo files keep their rules. The hero's 600 gather into the VIC icon and hold it until the first scroll, your point lit in its iris, then loosen into the signed cloud. The close's slot gets an iris ring of the 600 (the iris slot); every other act stays as signed. Built in slice 4 with no comp, second in the cut line. | Owner; the exception from VIC's IT department | [ADR 0001](adr/0001-the-icon-formation.md). Amends [#11](https://github.com/puIad/vic-enp/issues/11) and [#17](https://github.com/puIad/vic-enp/issues/17). |

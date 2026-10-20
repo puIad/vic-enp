@@ -63,10 +63,13 @@ slowed by the world (Lighthouse before and after).
 ### Slice 4: the formations and the peak
 
 A formation per act, the transitions between them, the passages, the peak (the photo resolve and the depth stack), the close (the
-visitor's point joins the network on Apply).
+visitor's point joins the network on Apply). The canvas moves from the hero's backdrop to the one fixed layer behind
+the whole page ([architecture.md](architecture.md)). Added on 2026-10-20 with no comp ([ADR 0001](adr/0001-the-icon-formation.md)): the
+hero's icon formation (your point lit in its iris, loosening into the cloud on scroll), the iris slot at the close,
+and the hero posters rebaked from the icon. The PR is the owner's first look at both.
 
-Done: `shoot.mjs` shows every act landing, the peak has the largest span and reads in a phone screenshot, frame
-rate holds on the owner's phone.
+Done: `shoot.mjs` shows every act landing, the icon formation reads as the VIC icon in a phone screenshot, the peak
+has the largest span and reads in a phone screenshot, frame rate holds on the owner's phone.
 
 ### Slice 5: polish and launch
 
@@ -81,10 +84,13 @@ Friday 23 Oct, evening. Whatever isn't working then is cut from the launch, in t
 first):
 
 1. Bloom and other postprocessing.
-2. The per-cut formations in the departments and events: every cut keeps the field's last formation and only the copy cuts.
-3. The close's flight and Apply wave: your point is already in the slot, the field is still.
-4. The peak's photo resolve: the photo sequence opens with its first photo instead.
-5. The world entirely: slice 1 and 2 launch, the world follows in v1.1.
+2. The icon formation: the hero gathers into the cloud and your point lights top right, as signed in [#11](https://github.com/puIad/vic-enp/issues/11); the
+   posters stay the cloud.
+3. The per-cut formations in the departments and events: every cut keeps the field's last formation and only the copy cuts.
+   The close's iris slot goes with them: the close keeps the soft irregular clearing signed in [#17](https://github.com/puIad/vic-enp/issues/17).
+4. The close's flight and Apply wave: your point is already in the slot, the field is still.
+5. The peak's photo resolve: the photo sequence opens with its first photo instead.
+6. The world entirely: slice 1 and 2 launch, the world follows in v1.1.
 
 Content and the CTA are never cut.
 

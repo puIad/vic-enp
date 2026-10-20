@@ -57,7 +57,8 @@ The page is one continuous world of points the whole way down: one WebGL context
 - **B's speed:** the same points snap into a new formation on every cut, no morph, a one or two frame white flash,
   and the ground steps hard between night and a lifted tint (departments, events).
 - **Passages:** C's door, tunnel and horizon switch between the speeds. Each is used once. No passage may read
-  as a dark disc around a lit point (the charter's iris rule).
+  as a dark disc around a lit point: the iris belongs to the hero and the close
+  ([brand.md](brand.md#logo-in-a-3d-world)).
 
 Because the cuts are the same world snapping, this is not a chaptered page with a world underneath (which
 scroll-craft bans), and it is the cheapest option on a phone: no scene is disposed and rebuilt.
@@ -92,15 +93,17 @@ returns full frame before a hard cut to the first event ([#14](https://github.co
 
 ## The signature move: your point
 
-The visitor's own point of light: its own sprite, aquamarine glow with a white core, lit when "Gathering the 600"
-reaches 600 in the hero. It is the one thing on screen that never cuts.
+The visitor's own point of light: its own sprite, aquamarine glow with a white core, lit in the iris of the icon
+formation when "Gathering the 600" reaches 600 in the hero. It is the one thing on screen that never cuts.
 
-- Hero and act 2: fixed on screen top right, outside the cloud. It never leans, drifts or parallaxes. It grows
-  35% across the hero's hand-over.
+- Hero: held in the icon's iris while the icon holds, moving only as the icon leans. Across the hero's hand-over
+  it drifts out to its fixed spot top right and grows 35%.
+- Act 2: fixed on screen top right, outside the cloud. It never leans, drifts or parallaxes.
 - Departments, peak, events: fixed in the world, still, off to one side (bottom right on desktop, top right on
   phones). It grows 55% across the peak.
 - The light act: the horizon line carries it up and away; it relights with one pulse on the way out.
-- The close: it swoops from top right along a curve with a light trail into an empty slot in the Apply pill.
+- The close: it swoops from top right along a curve with a light trail into an empty slot in the Apply pill,
+  ringed by an iris of the 600 (the iris slot).
   Pressing Apply (after opening) sends a wave of light through the 600.
 
 How it moves from top right to bottom right on desktop between act 2 and the departments is not specified by the
@@ -112,7 +115,7 @@ The plan's row for scroll-craft's fingerprint registry (empty for this workspace
 
 | Grammar | Nav | Hero | Act sequence | Close | Signature |
 |---|---|---|---|---|---|
-| One continuous world at two speeds, with three passages | Waypoint rail with a tick per cut, no menu | Headline over a tilted cloud of 600, your point lit top right | 7 acts, 2 cut runs (7 and 5 cuts), 3 passages, 1 hard cut | Your point flies into a slot in the Apply pill inside a clearing of the 600 | Your point |
+| One continuous world at two speeds, with three passages | Waypoint rail with a tick per cut, no menu | Headline beside the VIC icon drawn by the 600, your point lit in its iris; it loosens into a tilted cloud on scroll | 7 acts, 2 cut runs (7 and 5 cuts), 3 passages, 1 hard cut | Your point flies into a slot in the Apply pill ringed by an iris of the 600 | Your point |
 
 ## The acts
 
@@ -126,17 +129,25 @@ is in [content.md](content.md).
 ### 1. Hero
 
 [#11](https://github.com/puIad/vic-enp/issues/11), comp
-[`prototype/act-hero`](https://github.com/puIad/vic-enp/tree/prototype/act-hero/prototype/act-hero).
+[`prototype/act-hero`](https://github.com/puIad/vic-enp/tree/prototype/act-hero/prototype/act-hero). The icon
+formation was added on 2026-10-20 ([ADR 0001](adr/0001-the-icon-formation.md)) and has no comp: the comp shows the cloud, which is where
+the hero goes on scroll.
 
-- **World:** a loose, tilted cloud of three arms with a dense core, so it never reads as a ring with a bright
-  centre (eye-free). 600 member points (larger, up to 7 px) plus dust: 9,000 points desktop, 5,000 phone. Blue far,
-  aquamarine near. Slow idle drift.
-- **Layout:** desktop, copy bottom left at the rail gutter, headline capped at 128 px running over the cloud's left
-  edge, cloud on the right two thirds. Phone, field in the top 40%, copy in the bottom 60%, headline 52 px.
-- **Arrival:** night, then the words (HTML, first paint), then points stream in over 3.2 s while "Gathering the
-  600" climbs; at 600 the counter fades and your point lights.
-- **Scroll:** over 0.7 screen the headline lifts and fades, the camera dollies into the field, the field tightens
-  38%, the sticky pill appears at 92%.
+- **World:** 600 member points (larger, up to 7 px) plus dust: 9,000 points desktop, 5,000 phone. Slow idle drift.
+  - At rest, the icon formation: the 600 draw the VIC icon, bulb and iris, from `vic-icon.svg`, tilted like the
+    cloud and coloured with the logo's gradient (`#69C4AF` to `#127DBB`). The dust stays loose around it, blue far,
+    aquamarine near.
+  - On scroll, the cloud: loose, tilted, three arms with a dense core, so it never reads as a ring with a bright
+    centre. Blue far, aquamarine near.
+- **Layout:** desktop, copy bottom left at the rail gutter, headline capped at 128 px; the icon sits whole in the
+  right two thirds, clear of the headline, and the cloud after it fills the same area. Phone, the icon fills the
+  field in the top 40%, copy in the bottom 60%, headline 52 px.
+- **Arrival:** night, then the words (HTML, first paint), then the 600 stream in over 3.2 s and land on the icon
+  while "Gathering the 600" climbs; at 600 the counter fades and your point lights in the iris. The icon holds
+  until the first scroll.
+- **Scroll:** over 0.7 screen the headline lifts and fades, the icon loosens into the cloud as the camera dollies
+  into the field, the field tightens 38%, your point drifts out of the iris to top right, and the sticky pill
+  appears at 92%.
 - **Pointer:** the field leans toward the pointer or a held finger and swings by depth. Bonus only.
 - **Hand-over:** A to A, no passage. Act 2's first line arrives into the cleared left side.
 
@@ -236,8 +247,10 @@ is in [content.md](content.md).
 [`prototype/act-close`](https://github.com/puIad/vic-enp/tree/prototype/act-close/prototype/act-close).
 
 - **Stage:** centred, the only centred act. Headline "Your point is on its way.", then the Apply pill (64 px high,
-  19 px label) with an empty 40 px slot at its left, set in a soft irregular clearing of the 600, about 36 px wider
-  than the pill on desktop. No ring around the slot.
+  19 px label) with an empty 40 px slot at its left, set in a clearing of the 600 about 36 px wider than the pill
+  on desktop. The iris slot, added on 2026-10-20 with no comp ([ADR 0001](adr/0001-the-icon-formation.md)): the 600 ring the slot as an
+  iris, so your point lights in an iris at the start and lands in one at the end. Slice 4 settles the ring's size
+  against the pill.
 - **Travel:** headline wipes up, the clearing opens, the pill rises, the readout counts to 0.0, your point swoops
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,

@@ -74,7 +74,8 @@ Per slice, before its PR merges:
 Before launch, once:
 
 5. `impeccable-finish-reviewer` against [experience.md](experience.md) and [brand.md](brand.md).
-6. Brand Guardian agent on the charter rules (logo, type, colour pairings).
+6. Brand Guardian agent on the charter rules (logo, type, colour pairings), with the website's 3D exception in
+   [ADR 0001](adr/0001-the-icon-formation.md).
 7. Reality Checker agent on the whole launch: it defaults to "needs work" and asks for evidence.
 8. The owner on two real phones (one Android, one iPhone), inside Instagram.
 

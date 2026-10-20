@@ -7,6 +7,8 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 - Phase: **build, from slice 1**. The wayfinder map ([issue #1](https://github.com/puIad/vic-enp/issues/1)) settled
   the direction, the journey, the page-wide system and all seven acts on 2026-10-19, and the spec is folded into
   these docs. Gate 0 signed on 2026-10-19 ([decisions.md](decisions.md), 38): the build starts at slice 1.
+- 2026-10-20: under a charter exception for websites, the hero's 600 gather into the VIC icon and the close gets an
+  iris slot ([ADR 0001](adr/0001-the-icon-formation.md), [decisions.md](decisions.md), 39). Slice 4 builds both.
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)
@@ -32,6 +34,7 @@ Other folders:
 
 - [source/landing-content-brief.md](source/landing-content-brief.md): the owner's content brief, copied in
   unchanged on 2026-10-19. The only source of facts for the page.
+- [adr/](adr/): decisions made during the build, one file each, each also logged in decisions.md.
 - [agents/](agents/): how agent skills use the issue tracker and these docs.
 - [../GLOSSARY.md](../GLOSSARY.md): the page's terms (direction, your point, speed, passage, cut sequence).
 

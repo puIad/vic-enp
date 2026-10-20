@@ -18,8 +18,10 @@ Start every session at `docs/README.md`. It has the reading order and the curren
 - Content comes from `docs/source/landing-content-brief.md` (owner-supplied, committee-approved). Never invent
   facts, numbers, dates, quotes or testimonials. Items marked ⚠️ there stay out of the page until resolved in
   `docs/content.md`.
-- The VIC charter's logo rules hold in 3D: the logo is never modelled, extruded, animated, recoloured or split
-  into its bulb and iris. Details in `docs/brand.md`.
+- The VIC charter's logo file rules hold: the flat logo comes from the provided files and is never recoloured,
+  cropped, distorted or changed in opacity. Its 3D rule covers post design, not websites, so the 600 may draw the
+  icon in points: the icon formation in the hero and the iris slot at the close, nowhere else. Details in
+  `docs/brand.md` and `docs/adr/0001-the-icon-formation.md`.
 - Every word on the page is real DOM text. The 3D canvas is decoration (`aria-hidden`), and the page reads
   fully without WebGL or with reduced motion.
 - No candidate data, ever. The page collects nothing; the CTA is a link.

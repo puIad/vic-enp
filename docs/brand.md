@@ -116,15 +116,19 @@ The charter's rules (p.9 to 12):
 
 ### Logo in a 3D world
 
-What the rules mean here:
+The charter's 3D rule covers post design, not websites: VIC's IT department, who wrote the charter, said so on
+2026-10-20 ([ADR 0001](adr/0001-the-icon-formation.md)). On this page the logo files keep every rule above, and the world may draw the
+icon in points:
 
-- The logo is a flat DOM or SVG element in front of the canvas, never a texture on a 3D object, never extruded,
-  never lit, never animated part by part. It can fade or move in as a whole, as long as it ends at full opacity
-  (a fade-in is a transition, not an opacity change; if the owner reads the rule more strictly, the logo simply
-  appears).
-- No 3D form may resemble the bulb, the iris, or the two together. In practice: no ring with a bright centre, no
-  dark disc around a lit point. The hero cloud is tilted and three-armed for this reason, the close's clearing is
-  soft and irregular, and the English Bubble circles are open outlines.
+- The flat logo is a DOM or SVG element from the provided files, in front of the canvas. It can fade or move in as
+  a whole, as long as it ends at full opacity (a fade-in is a transition, not an opacity change; if the owner reads
+  the rule more strictly, the logo simply appears).
+- The 600 may draw the VIC icon, bulb and iris together, and the iris may stand alone in points. Each is used once:
+  the icon formation at the start of the hero, with your point lit in its iris, and the iris slot at the close
+  ([experience.md](experience.md)). The extraction rule above still holds for flat graphics.
+- Everywhere else the world stays eye-free by choice, so the iris belongs to the start and the end: no other ring
+  with a bright centre, no dark disc around a lit point. The cloud the icon loosens into stays tilted and
+  three-armed, no passage reads as an iris, and the English Bubble circles stay open outlines.
 - The 3D world never passes over the logo (no particles in front of it). The fixed logo sits on its own night
   plate (radial, solid at the logo, feathered out) between canvas and logo. Clear space around it stays empty.
 - The fixed logo steps away over the light act, since the full-colour logo is only for white or black, and again

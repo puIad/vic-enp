@@ -59,7 +59,8 @@ Out:
 - **Time.** Six days from this brief to opening. A full 3D page in that window means a strict launch cut
   ([build-plan.md](build-plan.md)): what ships on the 24th must be complete and polished, and anything that
   doesn't fit moves to a v1.1 during the recruitment window.
-- **The charter.** Logo, colour and type rules from the VIC IT Charter 2026 ([brand.md](brand.md)). No 3D logo.
+- **The charter.** Logo, colour and type rules from the VIC IT Charter 2026 ([brand.md](brand.md)). Its no-3D rule
+  covers post design, not websites ([ADR 0001](adr/0001-the-icon-formation.md)), so the hero's points may draw the VIC icon.
 - **Phones.** Instagram's in-app browser, mid-range GPUs, limited data. The 3D layer is progressive: it loads
   after the content and scales down by device.
 - **Honesty.** Facts only from the source brief. No generated photos of people presented as VIC events. No

@@ -1,3 +1,5 @@
+import type { LogoId } from '../components/LogoSymbol'
+
 // docs/content.md, act 5. The cut line is each event's own name; no edition numbers, no dates (#15). Names and leads
 // are the owner's (decisions.md, 2026-10-20: the copy declutter), and so are the sites (57).
 
@@ -51,7 +53,7 @@ export const EVENTS: Event[] = [
 ]
 
 // logo: public/logos/<logo>.png, the symbol beside the name (60)
-export const PROJECTS = [
+export const PROJECTS: { name: string; logo: LogoId; text: string }[] = [
   { name: 'CPSP', logo: 'cpsp', text: 'The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes.' },
   { name: 'VIC Charity', logo: 'vic-charity', text: 'A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan.' },
   { name: 'MasterClass', logo: 'masterclass', text: 'A summer project: expert trainers teach practical skills on Discord while you build your own creative project.' },

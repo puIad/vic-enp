@@ -1,10 +1,12 @@
+import type { LogoId } from '../components/LogoSymbol'
+
 // docs/content.md, act 4 (#14): lines from the source brief, section 6. VIC Charity's row left on 2026-10-20; it
 // stays among the projects (decisions.md, 55).
 
 export const TITLE = 'Every VICer is welcome.'
 export const LEAD = 'Without exception.'
 /** [name, line, logo]: logo is public/logos/<logo>.png, the symbol beside the name (60) */
-export const LEDGER: [name: string, text: string, logo?: string][] = [
+export const LEDGER: [name: string, text: string, logo?: LogoId][] = [
   ['VIC Entertainment', "At least two community activities a month, built from members' own ideas.", 'vic-entertainment'],
   ['The Local', "VIC's headquarters inside ENP, a gathering place for every VICer."],
   ['General assemblies', 'The President keeps members updated on projects and progress.'],

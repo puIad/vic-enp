@@ -22,20 +22,13 @@ function Cut({ d, n, on, open, onToggle }: { d: Department; n: number; on: boole
       style={{ '--c': d.accent, '--c2': d.accent2 ?? d.accent } as CSSProperties}
       data-n={n}
     >
-      <p className="cut-label">
-        <b>{d.name}</b> <span>· {d.kind}</span>
-      </p>
+      <p className="cut-name">{d.name}</p>
       <h3 id={`dc-${d.id}`} className="cut-line">
         <Peel text={d.line} />
       </h3>
       <div className="cut-body">
         <p className="cut-lead">{d.lead}</p>
-        <ul className="chips cut-chips" aria-label="Skills">
-          {d.flagged && <li className="flag">{d.flagged}</li>}
-          {d.chips.map((c) => (
-            <li key={c}>{c}</li>
-          ))}
-        </ul>
+        {d.flagged && <p className="flag-pill cut-flag">{d.flagged}</p>}
         {d.suits && <p className="cut-suits">{d.suits}</p>}
       </div>
       <button type="button" className="cut-more" aria-expanded={open} aria-controls={panel} tabIndex={off} onClick={onToggle}>
@@ -86,12 +79,12 @@ export default function DepartmentsStage() {
     >
       <div className="cuts-stage" data-sc-stage onClick={tap} data-step={step}>
         <h2 id="h-dept" className="sr-only">
-          Seven departments. You pick one main and one activity.
+          Seven departments. You join one main and one activity.
         </h2>
         {ALL.map((d, i) => (
           <Cut key={d.id} d={d} n={i} on={i === cut} open={i === open} onToggle={() => setOpen((o) => (o === i ? -1 : i))} />
         ))}
-        <p className={`cuts-note ${cut === 0 ? 'on' : ''}`}>You pick one main and one activity department when you apply.</p>
+        <p className={`cuts-note ${cut === 0 ? 'on' : ''}`}>You join one main and one activity department.</p>
         <nav className={`cut-pick ${cut >= 0 ? 'on' : ''}`} aria-label="Jump to a department">
           {[
             ['Main', MAIN, 0],

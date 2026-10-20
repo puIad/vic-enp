@@ -78,6 +78,22 @@ Checker, the owner's real-phone check, the domain, the production deploy, the sh
 
 Done: [quality.md](quality.md#definition-of-done-launch) is met.
 
+#### The owner's notes (2026-10-20)
+
+From the owner's walk of the live page ([decisions.md](decisions.md), 43 to 53). The copy items are built; these
+wait for slice 5. The logos are in `assets/logos/` as Illustrator files: export each to SVG unchanged first
+([assets.md](assets.md#missing)). Anything not working by the cut line moves to [After launch](#after-launch-v11).
+
+| Owner item | What | Act |
+|---|---|---|
+| 9 | The activity departments' dots become their own logos: SPARK, Training, English Bubble (`assets/logos/act-deps/`, which also holds VIC Entertainment's) | [3](experience.md#3-departments) |
+| 10 | IT's dots: a painting palette in place of the grid (the viewfinder) | [3](experience.md#3-departments) |
+| 11 | A transition for the dots from the English Bubble cut into what follows, in place of the hard cut | [3](experience.md#3-departments) |
+| 14 | Each event's logo in dots (`assets/logos/events/`). Desktop: the logo's dots sit left, above the event's name, and the current formation stays behind the photo. Phone: only the logo's dots | [5](experience.md#5-events-and-projects) |
+| 17 | The four projects' logos next to their names (`assets/logos/projects/`). The copy swap is done ([decisions.md](decisions.md), 49) | [5](experience.md#5-events-and-projects) |
+| 19 | A text animation on the last "Once a VICer, Always a VICer." | [7](experience.md#7-close-and-footer) |
+| (photos) | Place the five spare photos (`IMG_0257`, `IMG_6141`, `IMG_6171`, `IMG_7517`, `IMG_9215-2`, [assets.md](assets.md#photos)); proposed homes go to the owner first. `IMG_8095.HEIC` stays out until exported | 4, 5 |
+
 ## The cut line
 
 Friday 23 Oct, evening. Whatever isn't working then is cut from the launch, in this order (cut the first item

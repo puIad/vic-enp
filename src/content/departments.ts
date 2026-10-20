@@ -1,15 +1,13 @@
-// docs/content.md, act 3. Lines and leads are new (owner's list); chips, Suits and "What you'd do" are brief §4, §5.
+// docs/content.md, act 3. Lines and leads are new (owner's list); Suits and "What you'd do" are brief §4, §5.
 
 export type DeptIcon = 'hr' | 'fler' | 'it' | 'comm' | 'spark' | 'training' | 'bubble'
 
 export type Department = {
   id: DeptIcon
   name: string
-  kind: string
   line: string
   lead: string
-  chips: string[]
-  /** IT's "not coding" chip carries the accent outline. */
+  /** IT's "not coding" pill, the one pill left in the act (owner, 2026-10-20). */
   flagged?: string
   suits?: string
   does: string[]
@@ -23,10 +21,8 @@ export const MAIN: Department[] = [
   {
     id: 'hr',
     name: 'HR',
-    kind: 'main 1 of 4',
     line: 'Run the community.',
-    lead: "HR is the heart of the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration.",
-    chips: ['People management', 'Organization', 'Reporting', 'Event operations'],
+    lead: "HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration.",
     suits: 'Suits organized people who care about the community.',
     does: [
       'Recruit and welcome new members',
@@ -39,10 +35,8 @@ export const MAIN: Department[] = [
   {
     id: 'fler',
     name: 'FLER',
-    kind: 'main 2 of 4',
     line: 'Win the sponsors.',
     lead: "FLER is the club's link to companies, associations and guests, plus its logistics and budget.",
-    chips: ['Negotiation', 'Sponsorship', 'Budgeting', 'Logistics'],
     suits: 'Suits confident communicators who want hands-on experience with the professional world.',
     does: [
       'Contact companies and secure sponsorships for events',
@@ -55,11 +49,9 @@ export const MAIN: Department[] = [
   {
     id: 'it',
     name: 'IT',
-    kind: 'main 3 of 4',
     line: 'Design the club.',
     lead: 'IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo.',
     flagged: 'Design and media, not coding',
-    chips: ['Branding', 'Photography', 'Videography'],
     suits: 'Suits creatives, designers, photographers and anyone who wants to learn.',
     does: [
       'Design posts, stories, posters and flyers',
@@ -72,10 +64,8 @@ export const MAIN: Department[] = [
   {
     id: 'comm',
     name: 'COMM',
-    kind: 'main 4 of 4',
     line: 'Tell the story.',
-    lead: 'COMM is the bridge between the club and its audience: its public image, its events and its reach.',
-    chips: ['Copywriting', 'Content strategy', 'Social media', 'Storytelling'],
+    lead: "COMM runs the club's public image and gets every event in front of its audience.",
     suits: 'Suits writers, storytellers and natural communicators.',
     does: [
       'Plan the communication for each event',
@@ -91,10 +81,8 @@ export const ACTIVITY: Department[] = [
   {
     id: 'spark',
     name: 'SPARK',
-    kind: 'activity 1 of 3',
     line: 'Build robots.',
     lead: 'SPARK is science, tech and robotics: hands-on workshops, competitions and a free learning platform.',
-    chips: ['Workshops', 'Competitions', 'Free learning platform'],
     does: [
       "Join workshops chosen from members' needs",
       "Compete under SPARK's name, with technical support",
@@ -107,10 +95,8 @@ export const ACTIVITY: Department[] = [
   {
     id: 'training',
     name: 'Training',
-    kind: 'activity 2 of 3',
     line: 'Choose your skills.',
     lead: 'At the start of the year you pick the skills you want to learn. The yearly plan is built around your answers.',
-    chips: ['Soft skills', 'Technical skills', 'Peer-to-peer sessions'],
     does: [
       'Attend sessions led by internal and external trainers',
       'Teach what you are good at, peer to peer',
@@ -122,10 +108,8 @@ export const ACTIVITY: Department[] = [
   {
     id: 'bubble',
     name: 'English Bubble',
-    kind: 'activity 3 of 3',
     line: 'Speak with confidence.',
     lead: 'English Bubble is a relaxed place to practice English: debates, games, book discussions and social nights.',
-    chips: ['Debates', 'Games', 'Book discussions', 'Social nights'],
     does: [
       'Talk and share ideas in a relaxed setting',
       'Build confidence, public speaking and leadership',

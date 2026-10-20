@@ -11,7 +11,7 @@ export function Hero({ cta }: { cta: Cta }) {
         Engineer more than your degree.
       </h1>
       <p className="t-lead mt-6 text-gray md:mt-[26px]">
-        <b className="font-bold text-white">Vision &amp; Innovation Club.</b> A nonprofit, English-speaking scientific club at ENP.
+        <b className="font-bold text-white">Vision &amp; Innovation Club.</b>
       </p>
       <div id="hero-cta" className="mt-7 flex md:mt-[34px]">
         <div className="relative">
@@ -23,7 +23,6 @@ export function Hero({ cta }: { cta: Cta }) {
           )}
         </div>
       </div>
-      <p className="since t-cap mt-[18px]">Since 2014 · Once a VICer, always a VICer.</p>
     </section>
   )
 }

@@ -173,7 +173,7 @@ export function Footer() {
         <div className="md:col-span-4 lg:col-span-3">
           <img src="/brand/vic-logo-white.svg" alt="Vision & Innovation Club" width="110" height="44" className="h-11 w-auto" />
           <p className="t-cap mt-5 max-w-[34ch] text-[14px]">
-            A nonprofit, English-speaking scientific club at ENP, since 2014. A branch of the El-Maarifa Scientific Association.
+            An English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch of the El-Maarifa Scientific Association.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:col-span-8 md:grid-cols-3 lg:col-span-8 lg:col-start-5">

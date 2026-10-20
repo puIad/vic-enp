@@ -41,26 +41,25 @@
   background: linear-gradient(90deg, #127dbb 0 50%, #69c4af 50%);
   opacity: 0.9;
 }
-.cut-label {
+/* the department's own name over its line, in its accent (owner, 2026-10-20: in place of the eyebrow) */
+.cut-name {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  font-size: var(--t-ui);
+  gap: 14px;
+  margin-bottom: 18px;
+  font-size: clamp(30px, 3vw, 46px);
   font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.015em;
   color: color-mix(in srgb, var(--c) 72%, #fff);
 }
-.cut-label::before {
+.cut-name::before {
   content: '';
   flex: none;
-  width: 28px;
-  height: 3px;
+  width: 36px;
+  height: 4px;
   border-radius: 2px;
   background: linear-gradient(90deg, var(--c), var(--c2, var(--c)));
-}
-.cut-label span {
-  font-weight: 400;
-  color: var(--color-mute);
 }
 .cut-line {
   max-width: 13ch;
@@ -107,9 +106,8 @@
   line-height: 1.45;
   color: var(--color-gray);
 }
-.cut-chips {
+.cut-flag {
   margin-top: 20px;
-  max-width: 44ch;
 }
 .cut-suits {
   margin-top: 14px;
@@ -459,7 +457,16 @@
     margin-top: 14px;
     font-size: 17px;
   }
-  .cut-chips {
+  .cut-name {
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 28px;
+  }
+  .cut-name::before {
+    width: 28px;
+    height: 3px;
+  }
+  .cut-flag {
     margin-top: 14px;
   }
   /* on phones the Suits line moves into the opened panel, to keep the headline clear of the formation */
@@ -499,9 +506,6 @@
     width: auto;
     bottom: 132px;
   }
-  .ev.has-photo .cut-chips {
-    display: none;
-  }
   .ev .cut-line {
     font-size: clamp(40px, 12vw, 56px);
   }
@@ -521,6 +525,27 @@
     margin-top: 3px;
     font-size: 13px;
   }
+  /* a photo cut on a phone is one column, frame then copy: the frame gives up height so the copy never runs over it
+     (AEC's long lead on a 360x640 screen) */
+  .ev.has-photo {
+    padding: 84px 20px 132px var(--gut);
+  }
+  .ev.has-photo .ev-frame {
+    position: relative;
+    inset: auto;
+    width: auto;
+    height: auto;
+    flex: 0 1 25svh;
+    min-height: 88px;
+  }
+  .ev.has-photo .ev-text {
+    position: relative;
+    inset: auto;
+    width: auto;
+    flex: none;
+    margin-top: auto;
+    padding-top: 16px;
+  }
   .ev.projects .ev-text {
     bottom: 150px;
   }
@@ -537,4 +562,8 @@
     flex: none;
   }
 }
-
+@media (max-width: 767px) and (max-height: 700px) {
+  .ev .cut-lead {
+    font-size: 15px;
+  }
+}

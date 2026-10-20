@@ -3,8 +3,9 @@
 
 export const TITLE = 'Every VICer is welcome.'
 export const LEAD = 'Without exception.'
-export const LEDGER = [
-  ['VIC Entertainment', "At least two community activities a month, built from members' own ideas."],
+/** [name, line, logo]: logo is public/logos/<logo>.png, the symbol beside the name (60) */
+export const LEDGER: [name: string, text: string, logo?: string][] = [
+  ['VIC Entertainment', "At least two community activities a month, built from members' own ideas.", 'vic-entertainment'],
   ['The Local', "VIC's headquarters inside ENP, a gathering place for every VICer."],
   ['General assemblies', 'The President keeps members updated on projects and progress.'],
   ['Alumni', 'Graduates stay in the community and help with events.'],

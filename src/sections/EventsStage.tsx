@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { Arrow } from '../components/ApplyPill'
+import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { EVENTS, PROJECTS } from '../content/events'
 import { EVENT_STEPS, total } from '../world/steps'
@@ -105,7 +106,10 @@ export default function EventsStage() {
           <ul className="ev-rows">
             {PROJECTS.map((p) => (
               <li key={p.name}>
-                <h4>{p.name}</h4>
+                <h4>
+                  <LogoSymbol id={p.logo} />
+                  {p.name}
+                </h4>
                 <p>{p.text}</p>
               </li>
             ))}

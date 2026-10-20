@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { GRID, LEAD, LEDGER, TITLE } from '../content/clubLife'
 import { useReducedMotion } from '../lib/motion'
@@ -36,9 +37,12 @@ function ClubLifeStill() {
           <Photo key={id} id={id} sizes={s} className={area} first={i === 0} />
         ))}
         <ol>
-          {LEDGER.map(([name, text]) => (
+          {LEDGER.map(([name, text, logo]) => (
             <li key={name}>
-              <h3>{name}</h3>
+              <h3>
+                {logo && <LogoSymbol id={logo} />}
+                {name}
+              </h3>
               <p>{text}</p>
             </li>
           ))}

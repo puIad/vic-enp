@@ -1,6 +1,7 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLayoutEffect, useRef, type CSSProperties } from 'react'
+import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { LEAD, LEDGER, PEAK_ONE, STACK, TITLE } from '../content/clubLife'
 import { photo } from '../content/photos'
@@ -208,9 +209,12 @@ export default function ClubLifePeak() {
         </div>
         <div className="peak-ledger">
           <ol>
-            {LEDGER.map(([name, text]) => (
+            {LEDGER.map(([name, text, logo]) => (
               <li key={name}>
-                <h3>{name}</h3>
+                <h3>
+                  {logo && <LogoSymbol id={logo} />}
+                  {name}
+                </h3>
                 <p>{text}</p>
               </li>
             ))}

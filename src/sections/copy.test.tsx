@@ -46,6 +46,22 @@ function articleLinks(el: ReactElement) {
   return out
 }
 
+/** Each `<tag>` heading that carries an image: its words, and the image's src. The image must be decorative (alt=""),
+ *  since the name beside it is the text (60). */
+function symbols(html: string, tag: string) {
+  const out: Record<string, string> = {}
+  for (const [, body] of html.matchAll(new RegExp(`<${tag}[^>]*>(.*?)</${tag}>`, 'gs'))) {
+    const img = body.match(/<img\s([^>]*)>/)
+    if (!img) continue
+    expect(attr(img[1], 'alt'), readHtml(body)).toBe('')
+    out[readHtml(body)] = attr(img[1], 'src')!
+  }
+  return out
+}
+
+/** The class of every symbol in some markup. */
+const symbolClasses = (html: string) => [...html.matchAll(/<img\s([^>]*src="\/logos\/[^>]*)>/g)].map(([, a]) => attr(a, 'class'))
+
 /** The OS asks for reduced motion. */
 const reduceMotion = () =>
   vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
@@ -71,6 +87,13 @@ describe('club life', () => {
     expect(page).not.toContain('VIC Charity')
     for (const row of ['VIC Entertainment', 'The Local', 'General assemblies', 'Alumni']) expect(page).toContain(row)
   })
+
+  it.each([
+    ['the peak (tiers 1 and 2)', () => <ClubLifePeak />],
+    ['the still (tier 0, reduced motion)', () => (reduceMotion(), <ClubLife />)],
+  ])("puts VIC Entertainment's symbol beside its ledger row, and only there, on %s (60)", (_, render) => {
+    expect(symbols(renderToStaticMarkup(render()), 'h3')).toEqual({ 'VIC Entertainment': '/logos/vic-entertainment.png' })
+  })
 })
 
 // decisions.md, 47 and 57: every event links to its own site, the way the GALA did first.
@@ -85,6 +108,20 @@ describe('events', () => {
   it('each event card links to its own site (tier 0, reduced motion) (57)', () => {
     const cards = articleLinks(<Events staged={false} />)
     for (const [name, host] of Object.entries(SITES)) expect(cards[name], name).toEqual([{ href: `https://${host}/`, label: host }])
+  })
+
+  it.each([
+    ['the staged cut (tiers 1 and 2)', () => <EventsStage />],
+    ['the card (tier 0, reduced motion)', () => <Events staged={false} />],
+  ])("puts each project's symbol beside its name on %s (60)", (_, render) => {
+    const html = renderToStaticMarkup(render())
+    expect(symbols(html, 'h4')).toEqual({
+      CPSP: '/logos/cpsp.png',
+      'VIC Charity': '/logos/vic-charity.png',
+      MasterClass: '/logos/masterclass.png',
+      VICra: '/logos/vicra.png',
+    })
+    expect(new Set(symbolClasses(html)).size).toBe(1)
   })
 
   it.each(Object.keys(SITES).map((name, i) => [name, i] as const))(

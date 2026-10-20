@@ -70,6 +70,9 @@ trimmed to the artwork. It only leaves whole parts out: the words beside a symbo
 | `gala.png`, `ignite.png`, `polymaze.png` | GALA p1 (raster art), Ignite p1, POLYMAZE p3 (the transparent wordmark) | The name artwork, for the logo formations |
 
 `src/world/logo.ts` turns any of them into a formation's places; `LOGO_CUTS` there lists the cuts drawn as their logo.
+The beside-name symbols go through `src/components/LogoSymbol.tsx` ([#33](https://github.com/puIad/vic-enp/issues/33)):
+a decorative `<img>` in one square about the name's height (`.sym` in `index.css`), named by each project's `logo` in
+`content/events.ts` and the ledger row's in `content/clubLife.ts`.
 
 ## 3D assets
 

@@ -50,9 +50,10 @@ export const EVENTS: Event[] = [
   },
 ]
 
+// logo: public/logos/<logo>.png, the symbol beside the name (60)
 export const PROJECTS = [
-  { name: 'CPSP', text: 'The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes.' },
-  { name: 'VIC Charity', text: 'A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan.' },
-  { name: 'MasterClass', text: 'A summer project: expert trainers teach practical skills on Discord while you build your own creative project.' },
-  { name: 'VICra', text: "VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts." },
+  { name: 'CPSP', logo: 'cpsp', text: 'The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes.' },
+  { name: 'VIC Charity', logo: 'vic-charity', text: 'A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan.' },
+  { name: 'MasterClass', logo: 'masterclass', text: 'A summer project: expert trainers teach practical skills on Discord while you build your own creative project.' },
+  { name: 'VICra', logo: 'vicra', text: "VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts." },
 ]

@@ -445,8 +445,9 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     u.uStag.value = fr.stag
     u.uTime.value = K.time
     // a logo's thin lines would blur in the full drift: it breathes, at about a third; an event's name, drawn a few
-    // pixels per stroke in the box above the name (#32), at a tenth
-    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? (fr.b in EVENT_LOGOS ? 0.1 : 0.35) : 1)
+    // pixels per stroke in the box above the name (#32), at a tenth, but only while the box is open: a cut that fell back
+    // to its shape keeps its full drift
+    u.uDrift.value = fr.drift * (snapped && fr.b in s.logos ? (fr.b in EVENT_LOGOS ? (world.logoBox ? 0.1 : 1) : 0.35) : 1)
     u.uPx.value = viewport.dpr
     u.uScale.value = size.height
     u.uLean.value = K.lean

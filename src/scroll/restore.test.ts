@@ -36,6 +36,20 @@ describe('yAt', () => {
     expect(stepAt(DEPT_STEPS, whereAt(staged, back).progress).i).toBe(stepAt(DEPT_STEPS, at.progress).i)
   })
 
+  it('keeps a place in the screen between two pinned acts, or in the footer, where it was', () => {
+    // the departments let go a screen before the peak pins; the footer sits below the close's range
+    const short: Range[] = [
+      { id: 'departments', start: 2000, end: 4000 },
+      { id: 'club-life', start: 4900, end: 9000 },
+    ]
+    const tall: Range[] = [
+      { id: 'departments', start: 2000, end: 8000 },
+      { id: 'club-life', start: 8900, end: 13000 },
+    ]
+    expect(yAt(tall, whereAt(short, 4450))).toBe(8450)
+    expect(yAt(tall, whereAt(short, 9600))).toBe(13600)
+  })
+
   it('gives nothing for an act the page no longer has', () => {
     expect(yAt(cards, { act: 'apply', progress: 0.5 })).toBeNull()
   })

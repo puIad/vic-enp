@@ -4,7 +4,8 @@
 
 /** An act's scroll range (smooth.ts, measure). */
 export type Range = { id: string; start: number; end: number }
-export type At = { act: string; progress: number }
+/** `past`: px beyond the act's end, in the screen between two pinned acts or the footer; those gaps never change height. */
+export type At = { act: string; progress: number; past?: number }
 
 const KEY = 'vic:at'
 
@@ -12,13 +13,14 @@ const KEY = 'vic:at'
 export function whereAt(ranges: Range[], y: number): At {
   let r = ranges[0]
   for (const x of ranges) if (y >= x.start) r = x
-  return { act: r.id, progress: Math.min(1, Math.max(0, (y - r.start) / Math.max(1, r.end - r.start))) }
+  const past = y - Math.max(r.start, r.end)
+  return { act: r.id, progress: Math.min(1, Math.max(0, (y - r.start) / Math.max(1, r.end - r.start))), ...(past > 0 && { past }) }
 }
 
 /** The scroll position of a place on this layout, or null when the page has no such act. */
 export function yAt(ranges: Range[], at: At): number | null {
   const r = ranges.find((x) => x.id === at.act)
-  return r ? r.start + at.progress * (r.end - r.start) : null
+  return r ? r.start + at.progress * (r.end - r.start) + (at.past ?? 0) : null
 }
 
 type Store = Pick<Storage, 'getItem' | 'setItem'>
@@ -32,7 +34,8 @@ export function remembered(store: Store, navigation: string): At | null {
   if (navigation !== 'reload' && navigation !== 'back_forward') return null
   try {
     const at = JSON.parse(store.getItem(KEY) ?? 'null')
-    return typeof at?.act === 'string' && typeof at.progress === 'number' ? { act: at.act, progress: at.progress } : null
+    if (typeof at?.act !== 'string' || typeof at.progress !== 'number') return null
+    return { act: at.act, progress: at.progress, ...(typeof at.past === 'number' && at.past > 0 && { past: at.past }) }
   } catch {
     return null
   }

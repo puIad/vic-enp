@@ -23,11 +23,12 @@ const paths: Record<Id, ReactNode> = {
   ),
   // FLER: bars rising
   fler: <path d="M5 19v-4M9.5 19v-7M14 19V9M18.5 19V5M3.5 19.5h17" />,
-  // IT: a viewfinder with rule-of-thirds lines
+  // IT: a painting palette, its thumb hole and dabs of paint (#30)
   it: (
     <>
-      <path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4" />
-      <path d="M9.5 6.5v11M14.5 6.5v11M6.5 9.5h11M6.5 14.5h11" strokeOpacity=".55" />
+      <path d="M12 4.5c-4.7 0-8.5 2.9-8.5 6.6 0 2.4 1.9 3.4 3.6 3.1 1.3-.2 2.4.5 2.1 1.9-.4 1.8 1.1 3.4 3.6 3.4 5.7 0 8.7-3.3 8.7-7.5S16.7 4.5 12 4.5Z" />
+      <circle cx="13.4" cy="15.6" r="1.3" />
+      <path d="M8.6 8.6h.01M12.6 7.5h.01M16.4 9.2h.01M17 13.2h.01" strokeWidth="2.6" strokeOpacity=".8" />
     </>
   ),
   // COMM: a broadcast spreading from one source

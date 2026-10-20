@@ -183,7 +183,7 @@ the hero goes on scroll.
   points morph into the tunnel within the existing scroll instead of a hard cut. SPARK's cut gets a small frame
   with `IMG_6141` above its copy, the logo formation behind it ([decisions.md](decisions.md), 59, 61, 65).
 - **World:** 16k points desktop, 10k phone. Each cut snaps every point into the department's formation (HR six
-  joined clumps, FLER rising bars, IT a viewfinder, COMM broadcast rings, SPARK an orange burst, Training ascending
+  joined clumps, FLER rising bars, IT a painting palette, COMM broadcast rings, SPARK an orange burst, Training ascending
   treads, English Bubble two open speech circles). The main four use blue and aquamarine; only the three activity
   departments carry their own accents.
 - **Pointer:** the formation leans toward the pointer; a tap on the cluster or the button opens "What you'd do" in

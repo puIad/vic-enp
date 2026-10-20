@@ -56,7 +56,8 @@ export function Chrome({ cta }: { cta: Cta }) {
       const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn }
       // keep the same object when nothing changed, so React skips the re-render on most scroll frames
       setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo ? l : next))
-      setPillHidden(ctas.some((c) => c && c.getBoundingClientRect().bottom > 0 && c.getBoundingClientRect().top < vh))
+      // a CTA counts while it is on screen and visible: the hero's fades out over the world's hand-over (#11)
+      setPillHidden(ctas.some((c) => c && c.getBoundingClientRect().bottom > 0 && c.getBoundingClientRect().top < vh && +getComputedStyle(c).opacity > 0.5))
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update)

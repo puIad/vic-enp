@@ -1,22 +1,8 @@
 import { useMemo, useSyncExternalStore } from 'react'
+import { constellation, type Pt } from '../world/cloud'
 
-// The tier 0 poster: the hero's seeded constellation as flat SVG (#11, ported from prototype/act-hero).
-// shortcut: drawn in the browser until slice 3 bakes hero-poster-{d,m}.webp from the real scene.
-
-type Pt = [x: number, y: number, z: number]
-
-/** One seeded cloud of three arms with a dense core, tilted so it never reads as a ring with a lit centre. */
-function constellation(n: number, seed = 7): Pt[] {
-  let s = seed
-  const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647
-  const out: Pt[] = []
-  for (let i = 0; i < n; i++) {
-    const r = Math.pow(rnd(), 1.15) * 7.5
-    const a = (i % 3) * 2.094 + r * 0.55 + (rnd() - 0.5) * 0.9
-    out.push([Math.cos(a) * r * 1.15, Math.sin(a) * r * 0.62 + (rnd() - 0.5) * 0.5, (rnd() - 0.5) * 11 * (1 - r / 10)])
-  }
-  return out
-}
+// The tier 0 posters. The hero's is a baked frame of the real scene (scripts/posters.mjs); the close's clearing is
+// still drawn as SVG from the same seeded constellation until slice 4 gives the close its formation.
 
 const phoneQuery = typeof matchMedia === 'undefined' ? null : matchMedia('(max-width: 767px)')
 export function usePhone() {
@@ -53,40 +39,13 @@ function Dots({ list }: { list: Dot[] }) {
   return list.map((d, i) => <circle key={i} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={d.r.toFixed(2)} fill={d.fill} opacity={d.o.toFixed(2)} />)
 }
 
-/** Your point: aquamarine glow with a white core. Never a ring, never a dark disc around it. */
-function YourPoint({ x, y }: { x: number; y: number }) {
-  return (
-    <>
-      <circle cx={x} cy={y} r="30" fill="url(#yp)" />
-      <circle cx={x} cy={y} r="3" fill="#fff" />
-    </>
-  )
-}
-
-const glow = (
-  <defs>
-    <radialGradient id="yp">
-      <stop offset="0" stopColor="#fff" />
-      <stop offset=".18" stopColor="#69C4AF" />
-      <stop offset="1" stopColor="#69C4AF" stopOpacity="0" />
-    </radialGradient>
-  </defs>
-)
-
-/** The hero's world on tier 0: cloud on the right two thirds (desktop) or the top 40% (phone), your point top right. */
+/** The hero's world on tier 0 (#11): the scene as the canvas draws it, baked per aspect. Decorative, so no alt. */
 export function HeroPoster({ className = '' }: { className?: string }) {
-  const phone = usePhone()
-  const [W, H] = phone ? [390, 844] : [1440, 900]
-  const list = useMemo(() => {
-    const sc = phone ? Math.min(W, H) * 0.062 : Math.min(W, H) * 0.105
-    return dots(constellation(phone ? 700 : 1100), phone ? W * 0.5 : W * 0.66, phone ? H * 0.22 : H * 0.42, sc, phone ? 0.9 : 0.45)
-  }, [phone, W, H])
   return (
-    <svg className={className} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-      {glow}
-      <Dots list={list} />
-      <YourPoint x={phone ? W * 0.84 : W * 0.92} y={phone ? H * 0.13 : H * 0.2} />
-    </svg>
+    <picture>
+      <source media="(max-width: 767px)" srcSet="/posters/hero-poster-m.webp" width={585} height={1266} />
+      <img src="/posters/hero-poster-d.webp" width={1920} height={1200} alt="" decoding="async" className={`object-cover ${className}`} />
+    </picture>
   )
 }
 

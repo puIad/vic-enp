@@ -69,7 +69,7 @@ Needed by the signed acts and not made yet:
 
 | Asset | For | From |
 |---|---|---|
-| `hero-poster-d.webp`, `hero-poster-m.webp` | Hero tier 0, reduced motion and first paint ([#11](https://github.com/puIad/vic-enp/issues/11)) | Baked from the real scene in the build |
+| `hero-poster-d.webp`, `hero-poster-m.webp` | Hero tier 0, reduced motion, and the fallback when the world fails ([#11](https://github.com/puIad/vic-enp/issues/11)) | Baked from the real scene by `npm run posters` (slice 3) into `public/posters/`: 1920x1200 at 35 KB, 585x1266 at 18 KB |
 | `close-poster-d.webp`, `close-poster-m.webp` | Close tier 0 and reduced motion ([#17](https://github.com/puIad/vic-enp/issues/17)) | Baked from the real scene in the build |
 | Seven outlined department icons | Departments tier 0 cards only ([#13](https://github.com/puIad/vic-enp/issues/13)) | Drawn in the build |
 | One ambient sound loop, under 300 KB | The optional sound toggle ([#10](https://github.com/puIad/vic-enp/issues/10)) | To find, with a licence for public use |

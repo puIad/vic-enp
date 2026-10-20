@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { MEMBERS } from './cloud'
-import { CAM_Z, HH, SHAPES, close, cloud, halfWidth, icon, logo, photo, photoGrid, rgb, shape, type IconSample, type Layout, type ShapeKey } from './formations'
+import { CAM_Z, HH, PALETTE, SHAPES, close, cutPlacement, cloud, halfWidth, icon, logo, photo, photoGrid, rgb, shape, type IconSample, type Layout, type ShapeKey } from './formations'
 import type { LogoSample } from './logo'
 
 const desk: Layout = { phone: false, w: 1440, h: 900 }
@@ -152,5 +152,61 @@ describe("a department's logo formation", () => {
   it('keeps a fifth of the points as dust around it, as every cut does', () => {
     const f = logo('spark', 1000, 1000, desk, sample)
     expect(f.col[8 * 4 + 3]).toBeLessThan(f.col[3])
+  })
+})
+
+describe("IT's painting palette", () => {
+  // the palette in its own comp units: undo the cut's placement (IT has no tilt, so a scale and a move)
+  const local = (l: Layout) => {
+    const f = shape('it', 4000, 4000, l)
+    const pl = cutPlacement('it', l)
+    return Array.from({ length: 4000 }, (_, i) => i)
+      .filter((i) => i % 10 < 8)
+      .map((i) => ({
+        x: (f.pos[i * 4] - pl.position[0]) / pl.scale,
+        y: (f.pos[i * 4 + 1] - pl.position[1]) / pl.scale,
+        c: [...f.col.slice(i * 4, i * 4 + 3)].map((v) => +v.toFixed(3)),
+      }))
+  }
+  const hex = (h: string) => rgb(h).map((v) => +v.toFixed(3))
+  // aquamarine, lit or not, runs greener than it is blue; the board's blue the other way
+  const aqua = (c: number[]) => c[1] > c[2]
+
+  it('leaves the thumb hole open and draws its rim', () => {
+    const [hx, hy, hr] = PALETTE.hole
+    const d = local(desk).map((p) => Math.hypot(p.x - hx, p.y - hy))
+    expect(d.filter((v) => v < hr * 0.7)).toEqual([])
+    expect(d.filter((v) => Math.abs(v - hr) < 0.6).length).toBeGreaterThan(80)
+  })
+
+  it('draws the board in blue and every blob of paint in aquamarine, each blob its own round dab', () => {
+    const pts = local(desk)
+    for (const [bx, by, br] of PALETTE.blobs) {
+      const dab = pts.filter((p) => Math.hypot(p.x - bx, p.y - by) < br)
+      expect(dab.length).toBeGreaterThan(40)
+      expect(dab.filter((p) => aqua(p.c)).length / dab.length).toBeGreaterThan(0.9)
+    }
+    const board = pts.filter((p) => PALETTE.blobs.every(([bx, by, br]) => Math.hypot(p.x - bx, p.y - by) > br + 1))
+    expect(board.filter((p) => p.c.join() === hex('#3BA6E8').join()).length / board.length).toBeGreaterThan(0.9)
+  })
+
+  it('keeps the board inside its oval, with a notch cut into the rim beside the thumb hole', () => {
+    const [rx, ry] = PALETTE.board
+    const pts = local(desk)
+    for (const p of pts) expect(Math.hypot(p.x / rx, p.y / ry)).toBeLessThan(1.15)
+    // just inside the rim, in the notch, there is no board
+    const [a] = PALETTE.notch
+    const [mx, my] = [Math.cos(a) * rx * 0.93, Math.sin(a) * ry * 0.93]
+    expect(pts.filter((p) => Math.hypot(p.x - mx, p.y - my) < 0.6)).toEqual([])
+  })
+
+  it('stays whole on screen and clear of the copy on desktop and a phone', () => {
+    for (const [l, inside] of [
+      [desk, ([x, y]: number[]) => x > 0 && x < 0.95 && Math.abs(y) < 0.9],
+      [phone, ([x, y]: number[]) => Math.abs(x) < 0.95 && y > 0.15 && y < 0.95],
+    ] as const) {
+      const f = shape('it', 2000, 2000, l)
+      for (let i = 0; i < 2000; i++) if (i % 10 < 8) expect(inside([f.pos[i * 4] / halfWidth(l), f.pos[i * 4 + 1] / HH])).toBe(true)
+    }
   })
 })

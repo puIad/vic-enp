@@ -166,6 +166,15 @@ function comp(seed: number) {
 }
 
 const MAZE = [[-17, -11], [-17, 9], [-9, 9], [-9, -5], [-1, -5], [-1, 5], [7, 5], [7, -9], [15, -9], [15, 11]]
+/** IT's palette in comp units, about the reach of the viewfinder it replaced: the board's radii, the thumb hole (x, y, r), the notch
+ * cut into the rim beside it (angle, half width in radians, how far in it reaches) and the dabs of paint (x, y, r). */
+export const PALETTE = {
+  board: [16, 12],
+  hole: [-8.6, -3.6, 2.5],
+  notch: [-2.15, 0.26, 0.3],
+  blobs: [[8.7, -3.6, 2.1], [9.3, 2.6, 2], [4.5, 6.6, 2.1], [-2.8, 7.1, 2], [-8.5, 3.8, 2.1]],
+} as const satisfies { board: [number, number]; hole: [number, number, number]; notch: [number, number, number]; blobs: [number, number, number][] }
+
 const CITY = [[-1, 6], [-12, 3], [-17, 0], [8, 5], [16, 7], [4, -12]] // Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla
 
 type Shape = {
@@ -177,6 +186,8 @@ type Shape = {
   shade?: string
   /** a logo formation's own light and shade, where the file keeps a colour that isn't the cut's */
   logo?: [string, string]
+  /** some of the shape's points in a second light of their own (IT's paint) */
+  tint?: { color: string; on: (i: number) => boolean }
   /** a tilt, as in the comp's snap() */
   tilt?: [number, number]
   /** the brighter points of the shape (a lit runner, a stage line, the door's slit) */
@@ -188,7 +199,8 @@ type Shape = {
   py?: number
   /** where the shape sits on desktop instead of the comps' right of centre: world x, y and a scale */
   desk?: [number, number, number]
-  /** a smaller shape on a phone, where it has to fit a gap */
+  /** the shape's size on a phone against the other cuts': smaller where it has to fit a gap, larger where its parts
+   * would run together */
   pscale?: number
 }
 
@@ -242,22 +254,57 @@ export const SHAPES = {
       return [(col - 3) * 5.6 + R(-1.4, 1.4), -12 + Math.pow(rnd(), 0.8) * h, R(-1.5, 1.5)]
     },
   },
+  // a painting palette (#30): the board's rim and a light fill in blue, the thumb hole's rim, five dabs of paint in
+  // aquamarine, spaced so they stay apart on a phone; the notch and the hole stay open
   it: {
-    color: '#69C4AF',
-    at: ({ g, R, rnd, ell }) => (i) => {
-      const W = 34
-      const H = 22
-      const m = i % 10
-      if (m < 5) {
-        const e = rnd() * 2 * (W + H)
-        const t = e < W ? [e - W / 2, -H / 2] : e < W + H ? [W / 2, e - W - H / 2] : e < 2 * W + H ? [W / 2 - (e - W - H), H / 2] : [-W / 2, H / 2 - (e - 2 * W - H)]
-        return [t[0] + g() * 0.25, t[1] + g() * 0.25, g() * 0.6]
+    color: '#3BA6E8',
+    tint: { color: '#69C4AF', on: (i) => i % 10 >= 6 },
+    // a few brighter points in each dab, so the paint reads wet without washing out to white
+    lit: (i) => i % 20 === 7,
+    // larger on a phone than the other cuts' half size, so the dabs stay apart
+    pscale: 1.35,
+    at: ({ g, rnd }) => {
+      const [rx, ry] = PALETTE.board
+      const [hx, hy, hr] = PALETTE.hole
+      const [tn] = PALETTE.notch
+      // the rim's reach at angle t, in board radii: 1, except where the notch cuts in towards the hole
+      const reach = (t: number) => {
+        const [, width, depth] = PALETTE.notch
+        const u = Math.abs(Math.atan2(Math.sin(t - tn), Math.cos(t - tn))) / width
+        return u < 1 ? 1 - depth * (1 - u) : 1
       }
-      if (m < 8)
-        return rnd() < 0.5
-          ? [(rnd() < 0.5 ? -1 : 1) * (W / 6) + g() * 0.15, R(-H / 2, H / 2), 0]
-          : [R(-W / 2, W / 2), (rnd() < 0.5 ? -1 : 1) * (H / 6) + g() * 0.15, 0]
-      return ell(0, 0, 5.2, 5.2, 0.25)
+      const open = (x: number, y: number) =>
+        Math.hypot(x - hx, y - hy) < hr + 0.4 ||
+        Math.hypot(x / rx, y / ry) > reach(Math.atan2(y / ry, x / rx)) - 0.04 ||
+        PALETTE.blobs.some(([bx, by, br]) => Math.hypot(x - bx, y - by) < br + 0.4)
+      return (i) => {
+        const k = i % 10
+        if (k < 3) {
+          const t = rnd() * 6.283
+          const r = reach(t)
+          return [Math.cos(t) * rx * r + g() * 0.25, Math.sin(t) * ry * r + g() * 0.25, g() * 0.6]
+        }
+        if (k < 5) {
+          let x = 0
+          let y = 0
+          for (let n = 0; n < 24; n++) {
+            const t = rnd() * 6.283
+            const r = Math.sqrt(rnd())
+            x = Math.cos(t) * rx * r
+            y = Math.sin(t) * ry * r
+            if (!open(x, y)) break
+          }
+          return [x, y, g() * 0.6]
+        }
+        if (k === 5) {
+          const t = rnd() * 6.283
+          return [hx + Math.cos(t) * hr + g() * 0.2, hy + Math.sin(t) * hr + g() * 0.2, g() * 0.4]
+        }
+        const [bx, by, br] = PALETTE.blobs[Math.floor(i / 10) % PALETTE.blobs.length]
+        const t = rnd() * 6.283
+        const r = Math.sqrt(rnd()) * br * 0.92
+        return [bx + Math.cos(t) * r, by + Math.sin(t) * r, 0.4 + g() * 0.5]
+      }
     },
   },
   comm: {
@@ -379,7 +426,7 @@ const CENTRED: ShapeKey[] = ['door', 'tunnel', 'horizon']
 const compOf = (key: ShapeKey) => comp(97 + key.length * 13 + key.charCodeAt(0))
 
 /** Where a cut's formation sits: right of centre on desktop (or its own spot), small at the top on a phone. */
-function cutPlacement(key: ShapeKey, l: Layout): Placement {
+export function cutPlacement(key: ShapeKey, l: Layout): Placement {
   const sh: Shape = SHAPES[key]
   const centred = CENTRED.includes(key)
   // the comps' group: right of centre on desktop; small at the top on a phone (the events' rows sit lower)
@@ -403,14 +450,16 @@ export function shape(key: ShapeKey, n: number, count: number, l: Layout): Forma
   const share = sh.share ?? SHARE
   const pl = cutPlacement(key, l)
   const col = rgb(sh.color)
+  const paint = rgb(sh.tint?.color ?? sh.color)
   const dim = key === 'tunnel' ? 0.4 : 1
   return build(n, count, (i) => {
     const on = inShape(i, share)
     const p = on ? gen(i) : c.dust()
     const lit = on && !!sh.lit?.(i)
+    const base = on && sh.tint?.on(i) ? paint : col
     return {
       p: place(p, pl),
-      c: lit ? mixRgb(col, [1, 1, 1], 0.55) : col,
+      c: lit ? mixRgb(base, [1, 1, 1], 0.55) : base,
       a: (lit ? 1 : on ? 0.62 : 0.3) * dim,
       s: lit ? 0.75 : on ? 0.5 : 0.42,
     }

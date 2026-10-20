@@ -32,6 +32,9 @@ export const PHOTOS: Photo[] = [
   { id: 'img-3223', src: 'IMG_3223.jpg', w: 2730, h: 1536, focal: [52, 40], widths: W, alt: "A large group in a lecture hall, cheering and holding prize cheques, in front of a screen that reads 'Algerian Engineering Competition'." },
 ]
 
+/** The first photo in the page's order on every tier: the peak's photo 1, and the still grid's first (content/clubLife.ts). */
+export const FIRST_PHOTO = 'img-8658'
+
 export function photo(id: string): Photo {
   const p = PHOTOS.find((x) => x.id === id)
   if (!p) throw new Error(`Unknown photo ${id}`)

@@ -21,6 +21,7 @@ import { MEMBERS, heroPlacement, random } from './cloud'
 import { CAM_Z, HH, arrive, close, cloud, halfWidth, icon, irisAt, photo, shape, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
 import { sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
+import { meter, watchLoop } from './loop'
 import { has } from './steps'
 import { world } from './store'
 import { BUDGET, LADDER, flatBudget, forcedPoints, startRung, type Budget, type Tier } from './tier'
@@ -157,10 +158,12 @@ type Samples = { icon: IconSample | null | false; photo: PhotoSample | null | fa
 const RAMP = forcedPoints(location.search)
 const FPS = new URLSearchParams(location.search).has('fps')
 
-/** `?fps`: a small live readout of the frame rate, the points drawn and the pixel ratio, for the owner's phone checks. */
+/**
+ * `?fps`: a small live readout of the frame rate, the points drawn and the pixel ratio, for the owner's phone checks.
+ * While the world isn't drawing (a hidden tab, an opaque act over it) it says so, so it never shows a stale act.
+ */
 function useFpsReadout() {
   const el = useRef<HTMLElement | null>(null)
-  const k = useRef({ frames: 0, since: 0 })
   useEffect(() => {
     if (!FPS) return
     const d = document.createElement('output')
@@ -170,15 +173,24 @@ function useFpsReadout() {
     el.current = d
     return () => d.remove()
   }, [])
-  return (now: number, points: number, dpr: number) => {
-    if (!el.current) return
-    const c = k.current
-    c.frames++
-    if (now - c.since < 1) return
-    el.current.textContent = `${Math.round(c.frames / (now - c.since))} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`
-    c.frames = 0
-    c.since = now
-  }
+  // one readout for the canvas's life, so the loop's watcher below never resubscribes
+  const [read] = useState(() => {
+    const m = meter()
+    const show = (text: string) => el.current && (el.current.textContent = text)
+    return {
+      frame(now: number, points: number, dpr: number) {
+        if (!el.current) return
+        const rate = m(now)
+        if (rate !== null) show(`${Math.round(rate)} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`)
+      },
+      idle() {
+        m.pause()
+        show('idle · not drawing')
+      },
+      resume: () => show(`measuring · ${world.act || 'top'}`),
+    }
+  })
+  return read
 }
 
 function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onReady: () => void }) {
@@ -229,20 +241,21 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     }
   }, [B.peak])
 
-  // nothing is drawn while an opaque act covers the screen (the light act, the footer)
-  useEffect(() => {
-    let covered = false
-    const check = () => {
-      if (world.covered === covered) return
-      covered = world.covered
-      setFrameloop(covered ? 'never' : 'always')
-    }
-    world.listeners.add(check)
-    return () => void world.listeners.delete(check)
-  }, [setFrameloop])
+  // nothing is drawn while an opaque act covers the screen (the light act, the footer) or the tab is hidden
+  useEffect(
+    () =>
+      watchLoop(document, (loop) => {
+        if (loop === 'never') fps.idle()
+        else fps.resume()
+        setFrameloop(loop)
+      }),
+    [fps, setFrameloop],
+  )
 
   const k = useRef({
     start: -1,
+    /** the field's own clock, in clamped frame steps: a stopped loop (R3F resets its clock) or a hidden tab never jumps it */
+    age: 0,
     time: 0,
     frames: 0,
     count: -1,
@@ -299,8 +312,9 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     }
 
     // arrival: waits for the icon's sample (a few ms), then the points stream in and the counter climbs
-    if (K.start < 0 && s.icon !== null) K.start = state.clock.elapsedTime
-    const since = K.start < 0 ? 0 : state.clock.elapsedTime - K.start
+    K.age += dt
+    if (K.start < 0 && s.icon !== null) K.start = K.age
+    const since = K.start < 0 ? 0 : K.age - K.start
     const gather = still ? 1 : Math.min(1, since / GATHER)
     const lit = still ? 1 : Math.min(1, Math.max(0, (since - GATHER) / LIGHT))
     const count = Math.round(MEMBERS * gather)
@@ -478,7 +492,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
         html.dataset.scVerifyHold = String(world.act === 'apply' && world.progress > 0.82)
       }
     }
-    fps(state.clock.elapsedTime, f.points.geometry.drawRange.count, viewport.dpr)
+    fps.frame(performance.now() / 1000, f.points.geometry.drawRange.count, viewport.dpr)
     // the canvas fades in once a frame of the gather has been drawn, never on an empty buffer or before the icon's sample
     if (K.start >= 0 && ++K.frames === 2) onReady()
   })

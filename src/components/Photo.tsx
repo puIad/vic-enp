@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { photo } from '../content/photos'
+import { FIRST_PHOTO, photo } from '../content/photos'
 
 type Props = {
   id: string
@@ -28,6 +28,8 @@ export function Photo({ id, sizes, className, style, eager, decorative }: Props)
         alt={decorative ? '' : p.alt}
         aria-hidden={decorative || undefined}
         loading={eager ? 'eager' : 'lazy'}
+        // the first photo a visitor sees fetches ahead of the rest (decision 64); its duplicates never do
+        fetchPriority={p.id === FIRST_PHOTO && !decorative ? 'high' : undefined}
         decoding="async"
         className={className}
         style={{ objectPosition: `${p.focal[0]}% ${p.focal[1]}%`, ...style }}

@@ -93,6 +93,11 @@
   h3 {
     text-wrap: balance;
   }
+  /* no lone word on a paragraph's last line (decision 64); browsers without it wrap as before */
+  p,
+  li {
+    text-wrap: pretty;
+  }
   /* <picture> only picks the source; the <img> inside is the box that lays out */
   picture {
     display: contents;

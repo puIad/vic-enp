@@ -73,26 +73,6 @@
   html.lenis {
     scroll-behavior: auto;
   }
-  /* the phone catch (src/scroll/snap.ts): the root snaps only while a caught fling settles, onto its one marker */
-  html[data-snap] {
-    scroll-snap-type: y mandatory;
-  }
-  .catch-marks {
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-  }
-  .catch-marks > i {
-    position: absolute;
-    left: 0;
-    width: 1px;
-    height: 1px;
-  }
-  .catch-marks > .on {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
   body {
     background: var(--color-night);
     font-size: var(--t-body);

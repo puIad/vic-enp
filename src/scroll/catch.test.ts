@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { catcher, flinger, releaseSpeed, type Point } from './catch'
+import { catcher, flinger, type Point } from './catch'
 
 // Points 1000 apart: a still section at 500, the departments' cuts at 1000..3000, the peak's photo at 4000 (still),
 // the events' cuts at 5000 and 6000, the light act at 7000 (still).
@@ -343,77 +343,148 @@ describe('the catch on phones', () => {
     f.points(POINTS)
     return f
   }
-  /** A finger down at t, lifting at t + 80 from scroll y at v px/s. */
-  const fling = (f: ReturnType<typeof flinger>, t: number, y: number, v: number) => {
-    f.touch(t)
-    return f.release({ from: y, v })
+  /**
+   * A finger down at t that drags the page 100 px and lifts 100 ms later at scroll y; then the page coasts at v px/s (a
+   * frame every 16 ms), slowing by `fade` a frame, until it stops or is caught.
+   */
+  const fling = (f: ReturnType<typeof flinger>, t: number, y: number, v: number, fade = 0.97) => {
+    f.touch(t, y - Math.sign(v) * 100)
+    t += 100
+    f.release(t, y)
+    for (let i = 0; i < 300 && Math.abs(v) > 20; i++) {
+      t += 16
+      y += (v * 16) / 1000
+      v *= fade
+      const c = f.scroll(t, y)
+      if (c) return { at: c.at, y, t }
+    }
+    return { at: null, y, t }
   }
 
-  it('reads the release speed from the last moves, and none from a finger that stopped first', () => {
-    // the finger moves up 20 px every 10 ms: the page scrolls down at 2000 px/s
-    const moves = Array.from({ length: 10 }, (_, i) => ({ t: i * 10, y: 500 - i * 20 }))
-    expect(releaseSpeed(moves, 95)).toBeCloseTo(2000)
-    expect(releaseSpeed(moves, 200)).toBe(0)
-    expect(releaseSpeed(moves.slice(0, 1), 5)).toBe(0)
-    // a busy page: moves 50 to 100 ms apart still give the speed
-    expect(releaseSpeed([{ t: 0, y: 150 }, { t: 100, y: 283 }, { t: 200, y: 416 }, { t: 300, y: 550 }], 330)).toBeCloseTo(-1340)
-    // and the finger lifting 66 ms after a move, when moves come about 70 ms apart, was still moving
-    const busy = [{ t: 0, y: 150 }, { t: 110, y: 483 }, { t: 209, y: 567 }, { t: 272, y: 650 }]
-    expect(releaseSpeed(busy, 338)).toBeCloseTo(-1317, -1)
-    expect(releaseSpeed(busy, 400)).toBe(0)
+  it('never catches the finger itself, only what coasts after it', () => {
+    const f = phone()
+    f.touch(0, 900)
+    // no release: these are the finger's own drag past 1000
+    expect([950, 990, 1030, 1070].map((y, i) => f.scroll(i * 16, y))).toEqual([null, null, null, null])
   })
 
-  it('lets a slow release scroll free, even near a point', () => {
-    expect(fling(phone(), 0, 950, 600)).toBeNull()
+  it('catches a fling on the first point it coasts across, and glides back to it', () => {
+    const c = fling(phone(), 0, 600, 3000)
+    expect(c.at).toBe(1000)
+    expect(c.y).toBeGreaterThan(1000)
   })
 
-  it('catches a fling on the first point it would carry past', () => {
-    expect(fling(phone(), 0, 600, 3000)).toEqual({ at: 1000 })
+  it('catches a fling started well before a run on its first cut, however far it would carry', () => {
+    // from far above the departments, a hard fling that would coast past every cut
+    expect(fling(phone(), 0, 100, 6000, 0.99).at).toBe(500)
+    const f = phone()
+    expect(fling(f, 0, 600, 6000, 0.99).at).toBe(1000)
   })
 
-  it("lets a fling that wouldn't reach the next point scroll free", () => {
-    // 1200 px/s carries about 600 px: from 1100, short of 2000
-    expect(fling(phone(), 0, 1100, 1200)).toBeNull()
+  it('catches a gentle flick that coasts across a cut', () => {
+    expect(fling(phone(), 0, 1800, 1200, 0.95).at).toBe(2000)
+  })
+
+  it('lets a slow lift coast free, even across a point', () => {
+    // a reader lifting a nearly still finger: the page drifts at 250 px/s across 1000
+    expect(fling(phone(), 0, 990, 250, 0.99).at).toBeNull()
+  })
+
+  it('lets a coast that has slowed to a crawl cross', () => {
+    // fast at first, but well below COASTING by the time it reaches 2000
+    expect(fling(phone(), 0, 1200, 1500, 0.9).at).toBeNull()
   })
 
   it('works the same scrolling up', () => {
-    expect(fling(phone(), 0, 2500, -3000)).toEqual({ at: 2000 })
+    expect(fling(phone(), 0, 2500, -3000).at).toBe(2000)
   })
 
   it('never catches again on the point you rest on, and moves on with each new fling', () => {
     const f = phone()
-    expect(fling(f, 0, 600, 3000)).toEqual({ at: 1000 })
-    f.rested(600)
-    expect(fling(f, 2000, 1000, 3000)).toEqual({ at: 2000 })
+    const a = fling(f, 0, 600, 3000)
+    expect(a.at).toBe(1000)
+    f.rested(a.t + 400)
+    expect(fling(f, a.t + 2000, 1000, 3000).at).toBe(2000)
   })
 
   it('passes the rest of a run on the third quick fling, never a still section', () => {
     const f = phone()
-    expect(fling(f, 0, 600, 4000)).toEqual({ at: 1000 })
-    f.rested(500)
-    expect(fling(f, 600, 1000, 4000)).toEqual({ at: 2000 })
-    f.rested(1100)
+    const a = fling(f, 0, 600, 4000)
+    expect(a.at).toBe(1000)
+    f.rested(a.t + 400)
+    const b = fling(f, a.t + 600, 1000, 4000)
+    expect(b.at).toBe(2000)
+    f.rested(b.t + 400)
     // the third, starting 0.2 s after the rest, passes 3000 and stops on the peak's photo
-    expect(fling(f, 1300, 2000, 6000)).toEqual({ at: 4000 })
-    f.rested(1800)
+    const c = fling(f, b.t + 600, 2000, 6000, 0.99)
+    expect(c.at).toBe(4000)
+    f.rested(c.t + 400)
     // and swiping on quickly skips the events too, stopping on the light act
-    expect(fling(f, 1900, 4000, 7000)).toEqual({ at: 7000 })
+    expect(fling(f, c.t + 600, 4000, 7000, 0.995).at).toBe(7000)
   })
 
   it('catches the next cut again after a pause', () => {
     const f = phone()
-    expect(fling(f, 0, 600, 4000)).toEqual({ at: 1000 })
-    f.rested(500)
-    expect(fling(f, 600, 1000, 4000)).toEqual({ at: 2000 })
-    f.rested(1100)
-    expect(fling(f, 2000, 2000, 4000)).toEqual({ at: 3000 })
+    const a = fling(f, 0, 600, 4000)
+    f.rested(a.t + 400)
+    const b = fling(f, a.t + 600, 1000, 4000)
+    f.rested(b.t + 400)
+    expect(fling(f, b.t + 2000, 2000, 4000).at).toBe(3000)
   })
 
-  it('counts a fling made during the snap as quick, though the snap never came to rest', () => {
+  it('counts a fling made during the glide as quick, though the glide never came to rest', () => {
     const f = phone()
-    expect(fling(f, 0, 600, 4000)).toEqual({ at: 1000 })
-    expect(fling(f, 200, 900, 4000)).toEqual({ at: 2000 })
-    f.rested(800)
-    expect(fling(f, 900, 2000, 6000)).toEqual({ at: 4000 })
+    const a = fling(f, 0, 600, 4000)
+    expect(a.at).toBe(1000)
+    const b = fling(f, a.t + 200, 1010, 4000)
+    expect(b.at).toBe(2000)
+    f.rested(b.t + 400)
+    expect(fling(f, b.t + 500, 2000, 6000, 0.99).at).toBe(4000)
+  })
+
+  it('ends the fling on a bounce, a stop, or a jump', () => {
+    const f = phone()
+    f.touch(0, 800)
+    f.release(100, 900)
+    // the page bounces back: no catch after it
+    expect(f.scroll(116, 940)).toBeNull()
+    expect(f.scroll(132, 830)).toBeNull()
+    expect(f.scroll(148, 1100)).toBeNull()
+    f.touch(1000, 800)
+    f.release(1100, 900)
+    // the momentum's first move comes too late to be this fling's
+    expect(f.scroll(1700, 1100)).toBeNull()
+    f.touch(2000, 800)
+    f.release(2100, 900)
+    f.cancel()
+    expect(f.scroll(2116, 1100)).toBeNull()
+  })
+
+  it('takes the way the finger dragged, and lets a small jitter the other way pass', () => {
+    const f = phone()
+    // dragged up to 1900 and lifted; the page twitches 15 px down, then coasts up across 1000
+    f.touch(0, 2000)
+    f.release(100, 1900)
+    expect(f.scroll(116, 1915)).toBeNull()
+    let y = 1915
+    let c = null
+    for (let t = 132; !c && y > 900; t += 16) c = f.scroll(t, (y -= 40))
+    expect(c).toEqual({ at: 1000 })
+  })
+
+  it('keeps a fling through a pause the page crossed at speed, and ends it on one it did not', () => {
+    const f = phone()
+    f.touch(0, 2900)
+    f.release(100, 3000)
+    expect(f.scroll(116, 3060)).toBeNull()
+    // the page is busy building a formation: no scroll events for 200 ms, but the momentum carried on across the peak
+    expect(f.scroll(316, 4100)).toEqual({ at: 4000 })
+    const g = phone()
+    g.touch(0, 2900)
+    g.release(100, 3000)
+    expect(g.scroll(116, 3060)).toBeNull()
+    // a stop: 200 ms and barely moved, then a later scroll (a key) across 4000
+    expect(g.scroll(316, 3070)).toBeNull()
+    expect(g.scroll(332, 4100)).toBeNull()
   })
 })

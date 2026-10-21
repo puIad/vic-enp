@@ -100,9 +100,9 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
 - Under reduced motion, Lenis is not started and every act jumps to its resting formation (still images per
   section), no scrubbing.
 - The catch (slice 5, [experience.md](experience.md#the-catch)) sits between input and the scroll: on the wheel
-  inside Lenis's `virtualScroll` hook, on touch as CSS `scroll-snap-stop` markers the script switches on and off
-  (`src/scroll/snap.ts`): only a fast release that would carry the page past a point switches that one point's marker
-  on, and the root snaps until the page rests there; if the browser doesn't snap, the page glides there once at rest.
+  inside Lenis's `virtualScroll` hook; on touch by watching the page coast after the finger lifts (`src/scroll/touch.ts`):
+  when the browser's own momentum carries the page across a point while still moving, Lenis glides it back to rest there,
+  which also stops the momentum ([decisions.md](decisions.md), 83).
   Lenis's snap plugin is not used: it ignores touch and snaps only after a pause. Programmatic scrolls (`world.go`,
   anchors, the reload restore) bypass it.
 

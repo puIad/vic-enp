@@ -4,8 +4,8 @@ import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
 import { underBenefits } from '../lib/scrub'
-import { DEPT_STEPS, EVENT_STEPS, stepMiddle } from '../world/steps'
-import { catcher, type Point } from './catch'
+import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, stepMiddle } from '../world/steps'
+import { GLIDE, catcher, type Point } from './catch'
 import { restorer, whereAt, type Range } from './restore'
 
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
@@ -61,12 +61,12 @@ function catchPoints(ranges: Range[]): Point[] {
   }
   top('the-600')
   for (let i = 1; i <= 7; i++) along('departments', stepMiddle(DEPT_STEPS, i), 'departments')
-  along('club-life', 0.355) // the photo's hold, 0.31 to 0.40 of the peak (ClubLifePeak)
+  along('club-life', (PEAK_HOLD[0] + PEAK_HOLD[1]) / 2)
   for (let i = 0; i < 5; i++) along('events', stepMiddle(EVENT_STEPS, i), 'events')
   top('join')
-  // your point lands at 0.8 of the close's travel (score.ts); the rest is the close at rest
+  // the close at rest: a beat after your point lands in its slot
   const apply = document.getElementById('apply')
-  if (apply?.matches('[data-pin]')) out.push({ y: abs(apply) + 0.85 * (apply.offsetHeight - innerHeight) })
+  if (apply?.matches('[data-pin]')) out.push({ y: abs(apply) + (CLOSE_LANDS + 0.05) * (apply.offsetHeight - innerHeight) })
   return out
 }
 
@@ -172,23 +172,29 @@ export function startScroll() {
   if (matchMedia(REDUCE).matches) return stop
 
   // the catch works on the wheel only: keys, touch, anchors and every scrollTo (world.go, the restore) never reach it.
+  // shortcut: phones keep free scroll until the phone catch (#61) shares catch.ts's rules.
   // `?catch=off` turns it off to compare.
   const catching = new URLSearchParams(location.search).get('catch') !== 'off'
   const glide = (t: number) => 1 - (1 - t) ** 3
+  let frame = performance.now() // the last frame drawn: none for 100 ms means the page, not the visitor, paused the wheel
   const lenis: Lenis = new Lenis({
     anchors: true, // honours the page's scroll-padding-top on its own
     virtualScroll: ({ deltaY, event }) => {
-      if (!catching || event.type !== 'wheel' || event.ctrlKey || !deltaY) return true
+      if (!catching || event.type !== 'wheel' || event.ctrlKey || !deltaY || lenis.isStopped || lenis.isLocked) return true
       const to = Math.min(lenis.limit, Math.max(0, lenis.targetScroll + deltaY))
-      const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from: lenis.animatedScroll, to })
+      const stalled = performance.now() - frame > 100
+      const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from: lenis.animatedScroll, to, stalled })
       if (v === 'pass') return true
       event.preventDefault()
-      if (v !== 'hold') lenis.scrollTo(v.at, { duration: 0.4, easing: glide })
+      if (v !== 'hold') lenis.scrollTo(v.at, { duration: GLIDE / 1000, easing: glide, onComplete: () => caught.rested(performance.now()) })
       return false
     },
   })
   lenis.on('scroll', ScrollTrigger.update)
-  const tick = (time: number) => lenis.raf(time * 1000)
+  const tick = (time: number) => {
+    frame = performance.now()
+    lenis.raf(time * 1000)
+  }
   gsap.ticker.add(tick)
   gsap.ticker.lagSmoothing(0)
   world.go = (y) => lenis.scrollTo(y)

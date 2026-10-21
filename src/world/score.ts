@@ -3,7 +3,7 @@
 // step boundary, with a flash; the passages switch between the speeds.
 
 import type { ShapeKey } from './formations'
-import { DEPT_STEPS, EVENT_STEPS, has, stepAt } from './steps'
+import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, has, stepAt } from './steps'
 
 export type Key = ShapeKey | 'arrive' | 'icon' | 'cloud' | 'tight' | 'photo' | 'closeRest' | 'closeIris'
 
@@ -162,7 +162,7 @@ export function score(s: ScoreIn): Frame {
     case 'apply': {
       // the close (#17): the field rises from the horizon, dim, then makes room around the pill and rings its slot
       const e = ss(0, 1, s.entry)
-      const flight = has('flight') ? ss(0.38, 0.8, p) : 1
+      const flight = has('flight') ? ss(0.38, CLOSE_LANDS, p) : 1
       const you: You = p > 0 || !has('flight') ? { flight } : at(TR, 1.35, s.line.down >= TR[1] || s.entry > 0.6 ? 1 : 0)
       if (e < 1 && p <= 0) return { ...base, a: 'horizon', b: 'closeRest', mix: e, stag: 0.3, shift: (1 - e) * Math.max(s.line.down, -1.2), dim: 0.35 + 0.65 * e, you }
       const open = s.ready.slot ? ss(0.12, 0.52, p) : 0

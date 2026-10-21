@@ -5,6 +5,7 @@ import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { LEAD, LEDGER, PEAK_ONE, STACK, TITLE } from '../content/clubLife'
 import { photo } from '../content/photos'
+import { PEAK_HOLD } from '../world/steps'
 import { world } from '../world/store'
 
 // Act 4, the peak (#14), with motion: six screens pinned, photo 1 then a depth stack of ten, the ledger over it.
@@ -63,7 +64,7 @@ export default function ClubLifePeak() {
     const verify = (p: number) => {
       if (!navigator.webdriver) return
       root.dataset.scVerifyState = moving.map((el) => el.style.cssText).join('|')
-      root.dataset.scVerifyHold = String(p > 0.31 && p < 0.4)
+      root.dataset.scVerifyHold = String(p > PEAK_HOLD[0] && p < PEAK_HOLD[1])
     }
 
     // the points resolve into photo 1 where it is laid out, before any transform: its centre and size in the stage

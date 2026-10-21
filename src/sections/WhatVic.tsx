@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
 import { Plain, Words } from '../components/Scrub'
 import { act2Progress, startsByBlock, wordStarts, wordsOf, type Part } from '../lib/scrub'
 import { useScrub } from '../lib/useScrub'
@@ -29,8 +29,11 @@ const TITLE_AT = wordStarts(wordsOf(TITLE).length, 0.05, 0.19)
 const SENT_AT = startsByBlock(SENTENCES, 0.17, 0.51)
 const NUM_AT = NUMBERS.map((_, i) => 0.58 + i * 0.08)
 
-const act2At = (el: HTMLElement) => act2Progress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight)
 const RISE = 0.12
+/** The stage's timings, handed to index.css so the verify state below and the CSS can't drift apart. */
+const TIMING = { '--lit-by': LIT_BY, '--rise': RISE } as CSSProperties
+
+const act2At = (el: HTMLElement) => act2Progress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight)
 // what is on screen, for shoot.mjs: how many words have lit, the fade, and each number's rise in quarters
 const act2State = (k: number) =>
   [
@@ -60,14 +63,43 @@ function Numbers({ staged }: { staged: boolean }) {
   )
 }
 
-export function WhatVic({ staged = false }: { staged?: boolean }) {
+/** The room the pinned stage leaves above and below the copy: the top bar's clearance (.a2-stage's padding-top) and a
+ *  little air under it. */
+const CLEAR = 126
+
+/**
+ * Whether act 2's copy fits on one pinned screen. Its height depends on the width only, so on a short screen (a phone
+ * held sideways, a 1280x600 laptop window) the title and sentences can outgrow the stage; act 2 then flows as on tier
+ * 0, all lit. The still and staged copy blocks share their width and type, so either one measures it.
+ */
+function useFits(copy: RefObject<HTMLDivElement | null>) {
+  const [fits, setFits] = useState(true)
+  useEffect(() => {
+    const el = copy.current
+    if (!el) return
+    const check = () => setFits(el.offsetHeight + CLEAR <= innerHeight)
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    addEventListener('resize', check)
+    check()
+    return () => {
+      ro.disconnect()
+      removeEventListener('resize', check)
+    }
+  })
+  return fits
+}
+
+export function WhatVic({ staged: withWorld = false }: { staged?: boolean }) {
   const pin = useRef<HTMLDivElement>(null)
+  const copy = useRef<HTMLDivElement>(null)
+  const staged = useFits(copy) && withWorld
   useScrub(pin, staged, act2At, act2State)
 
   if (!staged)
     return (
       <section id="the-600" aria-labelledby="h-600" className="wrap pt-[18svh] pb-24 md:pt-[22vh] md:pb-32">
-        <div className="max-w-[34rem]">
+        <div ref={copy} className="max-w-[34rem]">
           <h2 id="h-600" className="t-act max-w-[14ch]">
             <Plain parts={TITLE} />
           </h2>
@@ -84,9 +116,9 @@ export function WhatVic({ staged = false }: { staged?: boolean }) {
     )
   return (
     <section id="the-600" aria-labelledby="h-600" className="relative z-[2]">
-      <div ref={pin} className="a2-pin" data-sc-act="pin">
+      <div ref={pin} className="a2-pin" style={TIMING} data-sc-act="pin">
         <div className="a2-stage wrap" data-sc-stage>
-          <div className="a2-text max-w-[34rem]">
+          <div ref={copy} className="a2-text max-w-[34rem]">
             <h2 id="h-600" className="a2-title t-act max-w-[14ch]">
               <Words parts={TITLE} starts={TITLE_AT} pair={false} />
             </h2>

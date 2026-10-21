@@ -4,7 +4,7 @@ import { Plain, Words } from '../components/Scrub'
 import { ClosePoster, usePhone } from '../components/Poster'
 import { ADDRESS, EMAIL, SOCIAL } from '../config'
 import type { Cta } from '../lib/opening'
-import { mottoProgress, wordStarts, wordsOf, type Part } from '../lib/scrub'
+import { mottoProgress, startsByBlock, type Part } from '../lib/scrub'
 import { useScrub } from '../lib/useScrub'
 import { world } from '../world/store'
 
@@ -169,13 +169,10 @@ function Links({ title, links }: { title: string; links: readonly { label: strin
   )
 }
 
-// The closing motto (decisions.md, 62): the same word scrub as act 2's title, so the page opens and closes on one device.
+// The closing motto (#36, decisions.md, 62): the same word scrub as act 2's title, so the page opens and closes on one device.
 // Each word lights over a quarter of the motto's progress, the last one whole as the page ends.
 const MOTTO: Part[][] = [['Once a VICer,'], ['Always a VICer.']]
-const MOTTO_AT = (() => {
-  const all = wordStarts(wordsOf(MOTTO.flat()).length, 0, 0.75)
-  return MOTTO.map((line) => all.splice(0, wordsOf(line).length))
-})()
+const MOTTO_AT = startsByBlock(MOTTO, 0, 0.75)
 const mottoAt = (el: HTMLElement) =>
   mottoProgress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight, document.documentElement.scrollHeight - innerHeight)
 const mottoState = (k: number) => `motto ${MOTTO_AT.flat().filter((a) => k > a).length} of ${MOTTO_AT.flat().length}, whole ${k >= 1}`

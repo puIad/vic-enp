@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { act2Progress, mottoProgress, underBenefits, wordStarts } from './scrub'
+import { act2Progress, mottoProgress, startsByBlock, underBenefits, wordStarts } from './scrub'
 
 // The word scrub (GLOSSARY.md): words light one by one as the visitor scrolls, act 2's and the closing motto's.
 
@@ -8,6 +8,14 @@ describe('wordStarts', () => {
     const starts = wordStarts(4, 0.1, 0.5)
     expect(starts).toHaveLength(4)
     ;[0.1, 0.2, 0.3, 0.4].forEach((a, i) => expect(starts[i]).toBeCloseTo(a))
+  })
+})
+
+describe('startsByBlock', () => {
+  it('lights several blocks as one run of words, in order, each block keeping its own starts', () => {
+    const [a, b] = startsByBlock([['One two'], [{ b: 'Three:' }, ' four']], 0, 0.4)
+    expect(a.map((x) => +x.toFixed(2))).toEqual([0, 0.1])
+    expect(b.map((x) => +x.toFixed(2))).toEqual([0.2, 0.3])
   })
 })
 

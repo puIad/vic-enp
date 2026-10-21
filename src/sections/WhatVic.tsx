@@ -1,6 +1,6 @@
 import { useRef, type CSSProperties } from 'react'
 import { Plain, Words } from '../components/Scrub'
-import { act2Progress, wordStarts, wordsOf, type Part } from '../lib/scrub'
+import { act2Progress, startsByBlock, wordStarts, wordsOf, type Part } from '../lib/scrub'
 import { useScrub } from '../lib/useScrub'
 
 // Act 2 (#12). Tier 0 and reduced motion: the final state of the pinned span as normal flow, then the benefits. With
@@ -26,17 +26,13 @@ const BOLD = 'font-bold text-white'
 // the copy fades. Each number rises over 12% from 58%, 8% apart, the last whole by 94%, so the pin never holds still.
 const LIT_BY = 0.56
 const TITLE_AT = wordStarts(wordsOf(TITLE).length, 0.05, 0.19)
-const SENT_AT = (() => {
-  const counts = SENTENCES.map((s) => wordsOf(s).length)
-  const all = wordStarts(counts.reduce((a, b) => a + b, 0), 0.17, 0.51)
-  return counts.map((n) => all.splice(0, n))
-})()
+const SENT_AT = startsByBlock(SENTENCES, 0.17, 0.51)
 const NUM_AT = NUMBERS.map((_, i) => 0.58 + i * 0.08)
 
-const progress = (el: HTMLElement) => act2Progress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight)
+const act2At = (el: HTMLElement) => act2Progress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight)
 const RISE = 0.12
 // what is on screen, for shoot.mjs: how many words have lit, the fade, and each number's rise in quarters
-const state = (k: number) =>
+const act2State = (k: number) =>
   [
     `words ${[...TITLE_AT, ...SENT_AT.flat()].filter((a) => k > a).length}`,
     k >= LIT_BY ? 'faded' : 'shown',
@@ -66,7 +62,7 @@ function Numbers({ staged }: { staged: boolean }) {
 
 export function WhatVic({ staged = false }: { staged?: boolean }) {
   const pin = useRef<HTMLDivElement>(null)
-  useScrub(pin, staged, progress, state)
+  useScrub(pin, staged, act2At, act2State)
 
   if (!staged)
     return (

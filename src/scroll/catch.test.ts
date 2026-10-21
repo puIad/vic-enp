@@ -73,16 +73,17 @@ describe('the catch', () => {
     expect(burst(c, 1050, 990, 60, 30).at).toBe(2000)
   })
 
-  it('lets a quick second burst inside a run pass the rest of that run, up to the next point after it', () => {
+  it('never insists on a burst made during the glide: it steps on to the next cut', () => {
     const c = fresh()
-    burst(c, 0, 600, 60, 20) // caught on the first cut at 1000, last event at 96 ms
-    // the second burst 300 ms later carries past 2000 and 3000; the peak at 4000 still catches
-    expect(burst(c, 400, 1000, 120, 40).at).toBe(4000)
+    burst(c, 0, 600, 60, 20) // caught on the first cut at 1000 at 96 ms, at rest by 496 ms
+    // a second burst 300 ms in, still gliding: held, then moved on like a wheel spun on
+    expect(burst(c, 400, 1000, 120, 40).at).toBe(2000)
   })
 
-  it('still insists when the second burst comes after the glide is over', () => {
+  it('lets a quick second burst after the rest pass the rest of the run, up to the next point after it', () => {
     const c = fresh()
-    burst(c, 0, 600, 60, 20) // caught at 96 ms
+    burst(c, 0, 600, 60, 20) // caught at 96 ms, at rest by 496 ms
+    // carries past 2000 and 3000; the peak at 4000 still catches
     expect(burst(c, 560, 1000, 120, 40).at).toBe(4000)
   })
 
@@ -107,16 +108,17 @@ describe('the catch', () => {
 
   it('does not insist outside a run', () => {
     const c = fresh()
-    expect(burst(c, 0, 0, 60, 20).at).toBe(500)
-    expect(burst(c, 300, 500, 60, 20).at).toBe(1000)
+    expect(burst(c, 0, 0, 60, 20).at).toBe(500) // caught at 128 ms, at rest by 528 ms
+    expect(burst(c, 700, 500, 60, 20).at).toBe(1000)
   })
 
-  it('reads a new flick inside the caught gesture\'s fading tail as a second burst', () => {
+  it('reads a new flick inside the caught gesture\'s fading tail, just after the rest, as a second burst', () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20)
-    // the trackpad's momentum fades with no pause, then the finger flicks again
+    // the trackpad's momentum fades with no pause past the rest at 496 ms, then the finger flicks again
     let t = 96
-    for (const d of [50, 40, 30, 20, 12, 8, 5]) expect(c.wheel({ t: (t += 16), dy: d, from: 990, to: 1000 })).toBe('hold')
+    for (let d = 50; d >= 2; d -= 2) expect(c.wheel({ t: (t += 18), dy: d, from: 1000, to: 1000 + d })).toBe('hold')
+    expect(t).toBeGreaterThan(496)
     expect(burst(c, t + 16, 1000, 120, 40).at).toBe(4000)
   })
 
@@ -136,22 +138,23 @@ describe('the catch', () => {
       expect(c.wheel({ t: (t += 16), dy: d, from: 1000, to: 1000 + d })).toBe('hold')
   })
 
-  /** Caught on 1000, then a gentle second burst at 400 ms insists while it drifts to 1060; last event at 432 ms. */
+  /** Caught on 1000 (at rest by 496 ms), then a gentle second burst at 600 ms insists while it drifts to 1060; its
+   *  last event at 632 ms. */
   const insisting = () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20)
-    for (let i = 0; i < 3; i++) c.wheel({ t: 400 + i * 16, dy: 20, from: 1000 + i * 20, to: 1020 + i * 20 })
+    for (let i = 0; i < 3; i++) c.wheel({ t: 600 + i * 16, dy: 20, from: 1000 + i * 20, to: 1020 + i * 20 })
     return c
   }
 
-  it('keeps insisting through a short pause', () => {
-    expect(burst(insisting(), 1100, 1060, 120, 40).at).toBe(4000)
+  it('ends insisting with its flick: the next flick, after a short pause, catches the next cut again', () => {
+    expect(burst(insisting(), 1100, 1060, 120, 40).at).toBe(2000)
   })
 
   it('never catches the insisting burst on the run\'s last cut as it passes the end', () => {
     const c = insisting()
-    // the second burst's lagging scroll crosses the last cut at 3000 mid-burst
-    const v = [2900, 2950, 3050, 3150].map((from, i) => c.wheel({ t: 600 + i * 16, dy: 120, from, to: from + 400 }))
+    // the same flick goes on; its lagging scroll crosses the last cut at 3000
+    const v = [2900, 2950, 3050, 3150].map((from, i) => c.wheel({ t: 648 + i * 16, dy: 120, from, to: from + 400 }))
     expect(v.filter((x) => typeof x === 'object')).toEqual([])
   })
 
@@ -199,20 +202,12 @@ describe('the catch', () => {
     expect(burst(insisting(), 1500, 1060, 120, 40).at).toBe(2000)
   })
 
-  it("re-arms the run once the visitor is past its end", () => {
-    const c = insisting()
-    // a slow drift past the run's last cut, then back up into it, never resting a second
-    c.wheel({ t: 900, dy: 100, from: 3050, to: 3150 })
-    c.wheel({ t: 1300, dy: -100, from: 1500, to: 1400 })
-    expect(burst(c, 1700, 1400, 120, 40).at).toBe(2000)
-  })
-
   it('works the same scrolling up', () => {
     const c = fresh()
     expect(c.wheel({ t: 0, dy: -100, from: 2050, to: 1950 })).toBe('pass')
-    expect(burst(c, 400, 3500, -60, 20).at).toBe(3000)
-    // a quick second burst up passes the rest of the run, to the point before it
-    expect(burst(c, 800, 3000, -120, 40).at).toBe(500)
+    expect(burst(c, 400, 3500, -60, 20).at).toBe(3000) // caught at 528 ms, at rest by 928 ms
+    // a quick second burst up after the rest passes the rest of the run, to the point before it
+    expect(burst(c, 1000, 3000, -120, 40).at).toBe(500)
     // after a rest the run catches again
     expect(burst(c, 3000, 2500, -120, 40).at).toBe(2000)
   })

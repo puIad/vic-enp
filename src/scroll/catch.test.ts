@@ -172,6 +172,14 @@ describe('the catch', () => {
     expect(burst(c, after(d, 100), 4000, 120, 40).at).toBe(7000)
   })
 
+  it('counts a swipe as quick only within a quarter second of the rest', () => {
+    const c = fresh()
+    const a = burst(c, 0, 600, 60, 20) // 1000
+    const b = burst(c, after(a, 200), 1000, 120, 40) // 2000, quick
+    // 300 ms after the rest is the owner's ordinary pace, not insisting: the next cut
+    expect(burst(c, after(b, 300), 2000, 120, 40).at).toBe(3000)
+  })
+
   it('starts the count again after a slow swipe', () => {
     const c = fresh()
     const a = burst(c, 0, 600, 60, 20) // 1000

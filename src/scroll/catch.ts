@@ -1,4 +1,4 @@
-// The catch's rules (docs/experience.md, The catch; decisions.md, 68, 69, 78 and 80): a fast swipe that would carry
+// The catch's rules (docs/experience.md, The catch; decisions.md, 68, 69, 78, 80 and 81): a fast swipe that would carry
 // the visitor past a catch point rests on it, and so does its coasting; a slow one crosses; the point you rest on never
 // catches again; a flick during the glide moves exactly one more point; and only the third quick swipe in a row passes
 // the rest of a run, never a still section. No DOM and no clock of its own, so it is tested alone and the phone catch
@@ -30,7 +30,7 @@ const GAP = 150
 export const GLIDE = 400
 /** a swipe starting this soon after the last catch came to rest is quick; the third quick one in a row passes the rest of
  *  a run. Counted from the rest, never from the last event: a touchpad's momentum runs on with no pause in it. */
-const INSIST = 500
+const INSIST = 250
 /** a caught gesture still pushing at full strength once its glide is over is a wheel spun on, not momentum */
 const HOLD = 600
 /** momentum has faded once a caught gesture's smoothed size drops below this share of its peak */

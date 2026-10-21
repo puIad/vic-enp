@@ -179,8 +179,8 @@ describe('the catch', () => {
     expect(burst(c, 400, 1000, 120, 40).at).toBe(2000)
   })
 
-  // insisting (decision 80, the owner's three swipes): only the third swipe in a row, each starting within 0.5 s after
-  // the previous one came to rest, passes the rest of a run; the still sections stop every swipe
+  // insisting (decisions 80 and 81, the owner's three swipes): only the third swipe in a row, each starting within
+  // 0.25 s after the previous one came to rest, passes the rest of a run; the still sections stop every swipe
   it('stops a quick second swipe on the next cut', () => {
     const c = fresh()
     const a = burst(c, 0, 600, 60, 20)

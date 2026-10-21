@@ -311,6 +311,9 @@ the hero goes on scroll.
 - No full-screen loader: "Gathering the 600" under the hero headline is the loader.
 - Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
   reduced motion and on the world's lowest rung ([decisions.md](decisions.md), 64).
+- The tap ripple is built ([#38](https://github.com/puIad/vic-enp/issues/38)): a short, still tap sends one soft ring
+  from the finger that lights the points it passes and nudges them outward, fading in about 0.9 s. One ring at a
+  time: a tap while the Apply wave, the 600's landing or another tap runs is let go.
 
 ## Reading and wayfinding
 

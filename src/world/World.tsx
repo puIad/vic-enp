@@ -18,11 +18,13 @@ import {
   Vector3,
 } from 'three'
 import { MEMBERS, heroPlacement, random } from './cloud'
+import { REDUCE } from '../lib/motion'
 import { CAM_Z, HH, arrive, close, cloud, eventLogo, halfWidth, icon, irisAt, logo, logoCount, photo, shape, shapeCount, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
 import { EVENT_LOGOS, LOGO_CUTS, sampleLogo, type EventKey, type LogoCut, type Pixels } from './logo'
 import { loadLogo, sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
 import { meter, watchLoop } from './loop'
+import { ring, watchTaps } from './ripple'
 import { has } from './steps'
 import { world } from './store'
 import { BUDGET, LADDER, flatBudget, forcedPoints, startRung, type Budget, type Tier } from './tier'
@@ -48,7 +50,7 @@ const damp = (from: number, to: number, k: number, dt: number) => from + (to - f
 
 const fieldVertex = /* glsl */ `
   attribute vec4 aA, aB, cA, cB, aR;
-  uniform float uMix, uStag, uTime, uDrift, uPx, uScale, uLean, uFlash, uDim, uWave, uWaveR, uShift;
+  uniform float uMix, uStag, uTime, uDrift, uPx, uScale, uLean, uFlash, uDim, uWave, uWaveR, uWaveK, uWaveP, uShift;
   uniform vec2 uPar, uPtr; uniform vec3 uPivot, uWaveO; uniform mat3 uRot;
   varying vec3 vC; varying float vA;
   void main() {
@@ -61,7 +63,8 @@ const fieldVertex = /* glsl */ `
     p.xy += uPar * (near - .4) * 1.4 * uLean;                       // parallax: near points swing more than far ones
     vec2 dv = uPtr - p.xy; p.xy += dv * exp(-dot(dv, dv) / 9.68) * .3 * uLean;   // the lean toward the pointer
     p.y += uShift;
-    float glow = uWave >= 0. ? exp(-pow((length(p.xy - uWaveO.xy) - uWave * uWaveR) * 1.6, 2.)) : 0.;
+    float glow = uWave >= 0. ? exp(-pow((length(p.xy - uWaveO.xy) - uWave * uWaveR) * 1.6, 2.)) * uWaveK : 0.;
+    p.xy += normalize(p.xy - uWaveO.xy + 1e-4) * glow * uWaveP;      // a tap's ring nudges the points it passes outward
     vec4 mv = modelViewMatrix * vec4(p, 1.); gl_Position = projectionMatrix * mv;
     float cap = max(3., P.w * 1.35);
     gl_PointSize = clamp(P.w * (1. + glow * .9) * uPx * (uScale / -mv.z) * .09, 1., (cap + glow * 4.) * uPx);
@@ -126,6 +129,8 @@ function makeField(n: number) {
       uDim: { value: 1 },
       uWave: { value: -1 },
       uWaveR: { value: 14 },
+      uWaveK: { value: 1 },
+      uWaveP: { value: 0 },
       uShift: { value: 0 },
       uPar: { value: new Vector2() },
       uPtr: { value: new Vector2(99, 99) },
@@ -305,6 +310,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
   const tmp = useRef({
     par: new Vector2(),
     tgt: new Vector2(9, 9),
+    at: new Vector2(),
     v: new Vector3(),
     hit: new Vector3(),
     ray: new Raycaster(),
@@ -475,21 +481,27 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       gl.setClearColor(T.color.set(fr.ground?.color ?? '#141E27'), fr.ground?.alpha ?? 0)
     }
 
-    // the Apply wave: a ring of light runs out through the 600 from the slot (#17)
-    const slotW = world.slot ? slotAt(l, world.slot.x, world.slot.y) : [0, 0, 0]
-    const wave = world.wave > 0 ? (performance.now() - world.wave) / 650 : -1
-    // act 2's 600 lands (#37): the same ring, once, slower and out from the cloud's centre, sized to the cloud
-    const landed = world.landed > 0 ? (performance.now() - world.landed) / 1100 : -1
-    if (wave >= 0 && wave <= 1.3) {
-      u.uWave.value = wave
+    // the Apply wave: a ring of light runs out through the 600 from the slot (#17); act 2's 600 lands (#37): the same
+    // ring, once, slower and out from the cloud's centre, sized to the cloud; a tap on a phone (#38): a soft one from
+    // the finger, nudging the points it passes
+    const r = ring(performance.now(), world)
+    const wave = r?.from === 'apply' ? r.t : -1
+    u.uWave.value = r ? r.t : -1
+    u.uWaveK.value = r ? r.k : 1
+    u.uWaveP.value = r ? r.push : 0
+    if (r?.from === 'apply') {
+      const slotW = world.slot ? slotAt(l, world.slot.x, world.slot.y) : [0, 0, 0]
       u.uWaveO.value.set(slotW[0], slotW[1], 0)
       u.uWaveR.value = halfWidth(l) * 1.6
-    } else if (landed >= 0 && landed <= 1.3) {
+    } else if (r?.from === 'landed') {
       const { position: c, scale } = heroPlacement(l.phone)
-      u.uWave.value = landed
       u.uWaveO.value.set(c[0], c[1] + K.shift * HH, 0)
       u.uWaveR.value = scale * 3.4
-    } else u.uWave.value = -1
+    } else if (r?.from === 'tap') {
+      T.ray.setFromCamera(T.at.set(world.tapAt.x, world.tapAt.y), camera)
+      if (T.ray.ray.intersectPlane(T.plane, T.hit)) u.uWaveO.value.set(T.hit.x, T.hit.y, 0)
+      u.uWaveR.value = halfWidth(l) * 1.4
+    }
 
     // your point: a fixed spot in the view, unprojected at a constant distance, so it never leans, drifts or parallaxes
     const yu = y.mat.uniforms
@@ -547,7 +559,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
   return null
 }
 
-/** The pointer into the store: a mouse anywhere over the page, a finger only while it is held down (#11). */
+/** The pointer into the store: a mouse anywhere over the page, a finger only while it is held down (#11), and taps (#38). */
 function usePointer() {
   useEffect(() => {
     const p = world.pointer
@@ -561,6 +573,18 @@ function usePointer() {
     const down = (e: PointerEvent) => e.pointerType === 'touch' && ((held = true), at(e))
     const up = (e: PointerEvent) => e.pointerType === 'touch' && ((held = false), (p.on = false))
     const leave = () => (p.on = false)
+    // a tap sends one soft ripple through the 600 from the finger (#38); never under reduced motion
+    const taps = watchTaps(
+      window,
+      (x, y) => {
+        // one ripple at a time: a tap while any ring runs is let go
+        if (ring(performance.now(), world)) return
+        world.tap = performance.now()
+        world.tapAt.x = (x / innerWidth) * 2 - 1
+        world.tapAt.y = -((y / innerHeight) * 2 - 1)
+      },
+      () => matchMedia(REDUCE).matches,
+    )
     addEventListener('pointermove', move, { passive: true })
     addEventListener('pointerdown', down, { passive: true })
     addEventListener('pointerup', up)
@@ -572,6 +596,7 @@ function usePointer() {
       removeEventListener('pointerup', up)
       removeEventListener('pointercancel', up)
       document.documentElement.removeEventListener('pointerleave', leave)
+      taps()
       p.on = false
     }
   }, [])

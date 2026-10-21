@@ -31,6 +31,10 @@ export const world = {
   /** performance.now() of act 2's 600 landing at the end of its count, for the members' pulse from the centre (#37);
    *  -1 when none. */
   landed: -1,
+  /** performance.now() of a tap on a phone and where it touched in NDC, for its ripple through the 600 (#38); -1 when
+   *  none. */
+  tap: -1,
+  tapAt: { x: 0, y: 0 },
   /** performance.now() of a tap on a department's cluster, for its pulse; -1 when none. */
   pulse: -1,
   /** Scrolls the page to y through Lenis when it runs (smooth.ts), natively otherwise. */

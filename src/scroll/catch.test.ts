@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { catcher, type Point } from './catch'
+import { catcher, flinger, releaseSpeed, type Point } from './catch'
 
 // Points 1000 apart: a still section at 500, the departments' cuts at 1000..3000, the peak's photo at 4000 (still),
 // the events' cuts at 5000 and 6000, the light act at 7000 (still).
@@ -334,5 +334,86 @@ describe('the catch', () => {
     expect(d.at).toBe(500)
     // after a pause the run catches again
     expect(burst(c, d.t + 3000, 2500, -120, 40).at).toBe(2000)
+  })
+})
+
+describe('the catch on phones', () => {
+  const phone = () => {
+    const f = flinger()
+    f.points(POINTS)
+    return f
+  }
+  /** A finger down at t, lifting at t + 80 from scroll y at v px/s. */
+  const fling = (f: ReturnType<typeof flinger>, t: number, y: number, v: number) => {
+    f.touch(t)
+    return f.release({ from: y, v })
+  }
+
+  it('reads the release speed from the last moves, and none from a finger that stopped first', () => {
+    // the finger moves up 20 px every 10 ms: the page scrolls down at 2000 px/s
+    const moves = Array.from({ length: 10 }, (_, i) => ({ t: i * 10, y: 500 - i * 20 }))
+    expect(releaseSpeed(moves, 95)).toBeCloseTo(2000)
+    expect(releaseSpeed(moves, 200)).toBe(0)
+    expect(releaseSpeed(moves.slice(0, 1), 5)).toBe(0)
+    // a busy page: moves 50 to 100 ms apart still give the speed
+    expect(releaseSpeed([{ t: 0, y: 150 }, { t: 100, y: 283 }, { t: 200, y: 416 }, { t: 300, y: 550 }], 330)).toBeCloseTo(-1340)
+    // and the finger lifting 66 ms after a move, when moves come about 70 ms apart, was still moving
+    const busy = [{ t: 0, y: 150 }, { t: 110, y: 483 }, { t: 209, y: 567 }, { t: 272, y: 650 }]
+    expect(releaseSpeed(busy, 338)).toBeCloseTo(-1317, -1)
+    expect(releaseSpeed(busy, 400)).toBe(0)
+  })
+
+  it('lets a slow release scroll free, even near a point', () => {
+    expect(fling(phone(), 0, 950, 600)).toBeNull()
+  })
+
+  it('catches a fling on the first point it would carry past', () => {
+    expect(fling(phone(), 0, 600, 3000)).toEqual({ at: 1000 })
+  })
+
+  it("lets a fling that wouldn't reach the next point scroll free", () => {
+    // 1200 px/s carries about 600 px: from 1100, short of 2000
+    expect(fling(phone(), 0, 1100, 1200)).toBeNull()
+  })
+
+  it('works the same scrolling up', () => {
+    expect(fling(phone(), 0, 2500, -3000)).toEqual({ at: 2000 })
+  })
+
+  it('never catches again on the point you rest on, and moves on with each new fling', () => {
+    const f = phone()
+    expect(fling(f, 0, 600, 3000)).toEqual({ at: 1000 })
+    f.rested(600)
+    expect(fling(f, 2000, 1000, 3000)).toEqual({ at: 2000 })
+  })
+
+  it('passes the rest of a run on the third quick fling, never a still section', () => {
+    const f = phone()
+    expect(fling(f, 0, 600, 4000)).toEqual({ at: 1000 })
+    f.rested(500)
+    expect(fling(f, 600, 1000, 4000)).toEqual({ at: 2000 })
+    f.rested(1100)
+    // the third, starting 0.2 s after the rest, passes 3000 and stops on the peak's photo
+    expect(fling(f, 1300, 2000, 6000)).toEqual({ at: 4000 })
+    f.rested(1800)
+    // and swiping on quickly skips the events too, stopping on the light act
+    expect(fling(f, 1900, 4000, 7000)).toEqual({ at: 7000 })
+  })
+
+  it('catches the next cut again after a pause', () => {
+    const f = phone()
+    expect(fling(f, 0, 600, 4000)).toEqual({ at: 1000 })
+    f.rested(500)
+    expect(fling(f, 600, 1000, 4000)).toEqual({ at: 2000 })
+    f.rested(1100)
+    expect(fling(f, 2000, 2000, 4000)).toEqual({ at: 3000 })
+  })
+
+  it('counts a fling made during the snap as quick, though the snap never came to rest', () => {
+    const f = phone()
+    expect(fling(f, 0, 600, 4000)).toEqual({ at: 1000 })
+    expect(fling(f, 200, 900, 4000)).toEqual({ at: 2000 })
+    f.rested(800)
+    expect(fling(f, 900, 2000, 6000)).toEqual({ at: 4000 })
   })
 })

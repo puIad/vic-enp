@@ -163,7 +163,7 @@
     padding-right: var(--edge);
   }
 
-  /* static grain and vignette over the poster, under the content (#10) */
+  /* grain and vignette over the poster, under the content (#10) */
   .fx {
     position: fixed;
     inset: 0;
@@ -174,9 +174,55 @@
     background: radial-gradient(120% 90% at 50% 45%, transparent 45%, rgb(8 12 17 / 0.85) 100%);
   }
   .grain {
+    overflow: hidden;
     opacity: 0.07;
     mix-blend-mode: overlay;
+  }
+  /* the noise sits one tile past every edge so it can jump without uncovering the screen */
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: -160px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* tiers 1 and 2 run it like film grain, ten jumps a second; tier 0, reduced motion and the world's lowest rung
+     (html.w-low, World) keep it still (decision 64, #40). Transforms only, so the compositor moves it without a repaint */
+  @media (prefers-reduced-motion: no-preference) {
+    html.w-on:not(.w-low) .grain::before {
+      animation: grain 1s steps(1, end) infinite;
+    }
+  }
+  @keyframes grain {
+    0% {
+      transform: translate(0, 0);
+    }
+    10% {
+      transform: translate(-63px, 41px);
+    }
+    20% {
+      transform: translate(52px, -97px);
+    }
+    30% {
+      transform: translate(-118px, -24px);
+    }
+    40% {
+      transform: translate(87px, 133px);
+    }
+    50% {
+      transform: translate(-31px, -142px);
+    }
+    60% {
+      transform: translate(141px, 18px);
+    }
+    70% {
+      transform: translate(-96px, 109px);
+    }
+    80% {
+      transform: translate(24px, 76px);
+    }
+    90% {
+      transform: translate(-149px, -61px);
+    }
   }
 
   /* ---------- the Apply pill: night fill, gradient ring, white label ---------- */

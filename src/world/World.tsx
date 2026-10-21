@@ -583,6 +583,8 @@ export default function World({ tier, forced, still, onReady, onLost }: WorldPro
   usePointer()
   useEffect(() => {
     document.documentElement.dataset.worldRung = String(rung)
+    // the lowest rung holds the grain still (index.css, .grain)
+    document.documentElement.classList.toggle('w-low', rung === LADDER.length - 1)
   }, [rung])
 
   return (

@@ -155,6 +155,46 @@ describe('the catch', () => {
     expect(v.filter((x) => typeof x === 'object')).toEqual([])
   })
 
+  // the owner's touchpad (2026-10-21): an event every 8 ms, momentum running on long after the glide rests
+  it('catches the next cut on a touchpad flick made well after the rest, though momentum never paused', () => {
+    const c = fresh()
+    burst(c, 0, 600, 60, 20) // caught on 1000 at 96 ms
+    c.rested(496)
+    let t = 96
+    // the momentum tail fades over a second with no pause
+    for (let d = 40; d >= 4; d -= 0.25) expect(c.wheel({ t: (t += 8), dy: Math.round(d), from: 1000, to: 1000 + d })).toBe('hold')
+    expect(t).toBeGreaterThan(496 + 500)
+    // a new flick, no gap before it
+    const v = []
+    let to = 1000
+    for (let i = 0; i < 40; i++) v.push(c.wheel({ t: (t += 8), dy: 50, from: 1000 + i * 20, to: (to += 50) }))
+    expect(v.find((x) => typeof x === 'object')).toEqual({ at: 2000 })
+  })
+
+  it('moves a steady touchpad push on after the glide, though one spike stood out in it', () => {
+    const c = fresh()
+    expect(burst(c, 0, 600, 60, 20).at).toBe(1000) // caught at 96 ms
+    // the finger keeps pushing at about 30 per event, with one 61 among them: never a fade
+    const dys = [33, 34, 32, 33, 32, 31, 31, 61, 36, 32, 22, 29, ...Array(150).fill(0).map((_, i) => 28 + (i % 5))]
+    let t = 96
+    let y = 1000 // held events don't move the scroll; passed ones do
+    const v = dys.map((dy) => {
+      const r = c.wheel({ t: (t += 8), dy, from: y, to: y + dy })
+      if (r === 'pass') y += dy
+      return r
+    })
+    expect(v.find((x) => typeof x === 'object')).toEqual({ at: 2000 })
+  })
+
+  it('reads one tiny delta inside a finger stroke as jitter, not the end of the gesture', () => {
+    const c = fresh()
+    expect(burst(c, 0, 3500, -108, 20).at).toBe(3000)
+    // the same stroke goes on: -107, a stray -1, then the finger's -172s, all held through the glide
+    const t0 = 16 * 5
+    const v = [-107, -1, -172, -170, -160, -150].map((dy, i) => c.wheel({ t: t0 + 8 * (i + 1), dy, from: 3000, to: 3000 + dy }))
+    expect(v).toEqual(['hold', 'hold', 'hold', 'hold', 'hold', 'hold'])
+  })
+
   it('re-arms the run after about a second at rest', () => {
     expect(burst(insisting(), 1500, 1060, 120, 40).at).toBe(2000)
   })

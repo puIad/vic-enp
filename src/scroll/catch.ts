@@ -15,7 +15,7 @@ export type Wheel = { t: number; dy: number; from: number; to: number; stalled?:
 /** `pass`: scroll as usual. `hold`: the rest of a caught gesture, dropped. `at`: glide to rest there. */
 export type Verdict = 'pass' | 'hold' | { at: number }
 
-// shortcut: FAST, GAP, INSIST, HOLD and REARM are first values from a desktop check; the owner's checks tune them.
+// shortcut: FAST, GAP, INSIST, HOLD, FELL, FADE and REARM are first values from a desktop check; the owner's checks tune them.
 /** px/s of wheel travel, over the last WINDOW ms, that counts as a fast burst */
 const FAST = 2400
 const WINDOW = 100
@@ -23,11 +23,16 @@ const WINDOW = 100
 const GAP = 150
 /** a caught burst glides to rest on its point in this long */
 export const GLIDE = 400
-/** a second burst this soon after a catch comes to rest (or after the caught gesture's last event), inside a run,
- *  passes the rest of the run */
+/** a second burst this soon after a catch comes to rest, inside a run, passes the rest of the run. Counted from the
+ *  rest, never from the last event: a touchpad's momentum runs on for a second or more with no pause in it. */
 const INSIST = 500
 /** a caught gesture still pushing at full strength once its glide is over is a wheel spun on, not momentum */
 const HOLD = 600
+/** momentum has faded once a caught gesture's smoothed size drops below this share of its peak */
+const FELL = 0.35
+/** a caught gesture whose smoothed size shrinks by FADE or more over TREND ms is momentum, not a push */
+const FADE = 0.15
+const TREND = 200
 /** this long with no wheel events (the page at rest, or near it) re-arms every point */
 const REARM = 1000
 
@@ -42,10 +47,22 @@ export function catcher() {
   let home: number | null = null
   /**
    * This gesture was caught at `at` and its glide came to rest at `rest` (when the page said so): the rest of it is held,
-   * and a second burst right after it insists. `peak` is its biggest event since the catch; `fell` once an event drops
-   * below half of that, as a trackpad's momentum does.
+   * and a second burst right after it insists. `level` is its events' size, smoothed so that one spike or one stray small
+   * event inside a finger stroke barely moves it, and `peak` the highest level since the catch; `fell` once the level
+   * drops below FELL of the peak; `fading` while it shrinks by FADE or more over each TREND ms (`mark` is the last
+   * sample). Momentum fades; a finger still pushing holds its level.
    */
-  let held: { run?: string; dir: number; at: number; rest?: number; peak: number; fell: boolean } | null = null
+  let held: {
+    run?: string
+    dir: number
+    at: number
+    rest?: number
+    level: number
+    peak: number
+    mark: { t: number; level: number }
+    fading: boolean
+    fell: boolean
+  } | null = null
   /** a run whose rest the visitor insisted past, in one direction (1 down, -1 up) */
   let insist: { run: string; dir: number } | null = null
 
@@ -62,9 +79,9 @@ export function catcher() {
       const gap = stalled ? 0 : t - last
       const dir = Math.sign(dy)
       // a trackpad's momentum keeps sending events with no pause, so a new flick inside it shows as a jump in size
-      const flick = !!held && held.fell && d >= 8 && d > Math.abs(prev) * 2
+      const flick = !!held && (held.fell || held.fading) && d >= 8 && d > Math.abs(prev) * 2
       // a mouse wheel spun on sends the same notches with no pause: past the glide, it moves on to the next point
-      const spun = !!held && !held.fell && gap <= GAP && t - held.at >= HOLD
+      const spun = !!held && !held.fell && !held.fading && gap <= GAP && t - held.at >= HOLD
       // after about a second at rest every point catches again
       if (gap >= REARM) insist = home = null
       if (gap > GAP || flick || spun || dir !== Math.sign(prev)) {
@@ -73,15 +90,20 @@ export function catcher() {
           const ys = points.filter((p) => p.run === insist!.run).map((p) => p.y * insist!.dir)
           if (from * insist.dir > Math.max(...ys) + 1) insist = null
         }
-        if (held?.run && held.dir === dir && !spun && (gap <= INSIST || t - (held.rest ?? held.at + GLIDE) <= INSIST)) insist = { run: held.run, dir }
+        if (held?.run && held.dir === dir && !spun && t - (held.rest ?? held.at + GLIDE) <= INSIST) insist = { run: held.run, dir }
         held = null
         recent = []
       }
       last = t
       prev = dy
       if (held) {
-        held.peak = Math.max(held.peak, d)
-        if (d < held.peak / 2) held.fell = true
+        held.level += (d - held.level) * 0.3
+        held.peak = Math.max(held.peak, held.level)
+        if (held.level < held.peak * FELL) held.fell = true
+        if (t - held.mark.t >= TREND) {
+          held.fading = held.level < held.mark.level * (1 - FADE)
+          held.mark = { t, level: held.level }
+        }
         return 'hold'
       }
       recent = recent.filter((e) => e.t > t - WINDOW)
@@ -94,7 +116,7 @@ export function catcher() {
       const next = dir > 0 ? crossed[0] : crossed[crossed.length - 1]
       if (!next || speed < FAST) return 'pass'
       home = next.y
-      held = { run: next.run, dir, at: t, peak: d, fell: false }
+      held = { run: next.run, dir, at: t, level: d, peak: d, mark: { t, level: d }, fading: false, fell: false }
       return { at: next.y }
     },
   }

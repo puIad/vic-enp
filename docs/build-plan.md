@@ -97,7 +97,7 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
 3. **Logos beside names, photos, the word scrub, the counters**: owner items 17 and 19 and the photos, from
    the table. Act 2's word scrub with the field's dim under the benefits; the four counters and the 600's pulse
    ([experience.md](experience.md#2-what-vic-is-the-numbers-why-join)). The logos beside names and the photos are
-   built ([#33](https://github.com/puIad/vic-enp/issues/33) to [#35](https://github.com/puIad/vic-enp/issues/35)); so is the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)); the counters ([#37](https://github.com/puIad/vic-enp/issues/37)) are not.
+   built ([#33](https://github.com/puIad/vic-enp/issues/33) to [#35](https://github.com/puIad/vic-enp/issues/35)); so are the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)) and the counters ([#37](https://github.com/puIad/vic-enp/issues/37)).
 4. **Reactions, the light act, grain, sound** (63, 64):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.

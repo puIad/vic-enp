@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
 import { Plain, Words } from '../components/Scrub'
+import { COUNT_MS, countAt } from '../lib/count'
+import { world } from '../world/store'
 import { act2Progress, startsByBlock, wordStarts, wordsOf, type Part } from '../lib/scrub'
 import { useScrub } from '../lib/useScrub'
 
@@ -7,11 +9,12 @@ import { useScrub } from '../lib/useScrub'
 // the world (#36): two screens pinned, where the title and three sentences light word by word (the word scrub), then
 // fade at about 56% as the numbers rise one after another. The timing runs on --sk, the act's progress (index.css).
 
-const NUMBERS: { figure: string; caption?: string; plus?: true; since?: true }[] = [
-  { figure: '600', caption: 'members' },
-  { figure: '40', plus: true, caption: 'trainings a year' },
-  { figure: '10', plus: true, caption: 'major events' },
-  { figure: '2014', since: true },
+// `from`: where a staged counter starts (#37); the year counts up from 2000, as in the comp
+const NUMBERS: { figure: string; from: number; caption?: string; plus?: true; since?: true }[] = [
+  { figure: '600', from: 0, caption: 'members' },
+  { figure: '40', from: 0, plus: true, caption: 'trainings a year' },
+  { figure: '10', from: 0, plus: true, caption: 'major events' },
+  { figure: '2014', from: 2000, since: true },
 ]
 
 const TITLE: Part[] = ['Run by ENP students, for ENP students.']
@@ -52,9 +55,17 @@ function Numbers({ staged }: { staged: boolean }) {
           className="relative border-t border-(--line) pt-4 before:absolute before:-top-px before:left-0 before:h-px before:w-full before:bg-(image:--grad) before:shadow-[0_0_10px_rgb(105_196_175/.55)] md:pt-[22px] md:pr-5"
         >
           <p className="tab flex items-baseline gap-2 text-(length:--t-figure) leading-none font-black tracking-[-0.03em] text-white">
-            {n.since && <small className="text-[.3em] font-bold tracking-normal text-aqua">since</small>}
-            {n.figure}
-            {n.plus && <span className="-ml-1.5 text-aqua">+</span>}
+            {n.since && <small className="text-[.3em] font-bold tracking-normal text-aqua">since</small>}{' '}
+            {staged ? (
+              // the figure holds its width while a copy hidden from screen readers counts up over it (index.css)
+              <span className="relative">
+                <span className="a2-final">{n.figure}</span>
+                <span aria-hidden="true" className="a2-count absolute top-0 left-0">{n.from}</span>
+              </span>
+            ) : (
+              n.figure
+            )}
+            {n.plus && <span className="a2-plus -ml-1.5 text-aqua">+</span>}
           </p>
           {n.caption && <p className="t-cap mt-2.5 max-w-[20ch] max-md:text-xs">{n.caption}</p>}
         </li>
@@ -90,11 +101,61 @@ function useFits(copy: RefObject<HTMLDivElement | null>) {
   return fits
 }
 
+/**
+ * The counters (decisions.md, 63): each number counts up once over 1.5 s from when it starts to rise, then shows its
+ * figure (and its plus) for good; when the 600 lands, the member points pulse once from the centre (World). The starts
+ * outlive the stage, so a resize that drops it and brings it back never recounts or pulses again.
+ */
+function useCounters(pin: RefObject<HTMLDivElement | null>, staged: boolean) {
+  const started = useRef(NUMBERS.map(() => -1))
+  const pulsed = useRef(false)
+  useEffect(() => {
+    const el = pin.current
+    if (!staged || !el) return
+    const items = [...el.querySelectorAll<HTMLElement>('.a2-nums > li')]
+    let raf = 0
+    const tick = () => {
+      raf = 0
+      const now = performance.now()
+      items.forEach((li, i) => {
+        const at = started.current[i]
+        if (at < 0 || 'counted' in li.dataset) return
+        const ms = now - at
+        li.querySelector('.a2-count')!.textContent = String(countAt(NUMBERS[i].from, +NUMBERS[i].figure, ms))
+        if (ms < COUNT_MS) raf ||= requestAnimationFrame(tick)
+        else {
+          li.dataset.counted = ''
+          // the pulse belongs to act 2: a 600 that lands with another act on screen (a restored scroll, a flick
+          // past) passes it up for good
+          if (i === 0 && !pulsed.current) {
+            pulsed.current = true
+            if (world.act === 'the-600') world.landed = now
+          }
+        }
+      })
+    }
+    const update = () => {
+      const k = act2At(el)
+      NUM_AT.forEach((a, i) => {
+        if (started.current[i] < 0 && k >= a) started.current[i] = performance.now()
+      })
+      if (!raf) tick()
+    }
+    update()
+    world.listeners.add(update)
+    return () => {
+      world.listeners.delete(update)
+      cancelAnimationFrame(raf)
+    }
+  }, [pin, staged])
+}
+
 export function WhatVic({ staged: withWorld = false }: { staged?: boolean }) {
   const pin = useRef<HTMLDivElement>(null)
   const copy = useRef<HTMLDivElement>(null)
   const staged = useFits(copy) && withWorld
   useScrub(pin, staged, act2At, act2State)
+  useCounters(pin, staged)
 
   if (!staged)
     return (

@@ -76,6 +76,16 @@ describe('act 2', () => {
     const page = read(<WhatVic />)
     for (const line of ['What we hold to', 'Respect', 'Diversity', 'Contribution and creativity', 'Legacy']) expect(page).not.toContain(line)
   })
+
+  it.each([
+    ['staged (tiers 1 and 2)', true],
+    ['still (tier 0, reduced motion)', false],
+  ])('gives a screen reader the final numbers, never the count, %s (63)', (_, staged) => {
+    const nums = renderToStaticMarkup(<WhatVic staged={staged} />).match(/<ul class="a2-nums.*?<\/ul>/s)![0]
+    const counters = nums.match(/<span aria-hidden="true"[^>]*>[^<]*<\/span>/g) ?? []
+    expect(counters).toHaveLength(staged ? 4 : 0)
+    expect(readHtml(counters.reduce((html, c) => html.replace(c, ''), nums))).toBe('600 members 40+ trainings a year 10+ major events since 2014')
+  })
 })
 
 describe('club life', () => {

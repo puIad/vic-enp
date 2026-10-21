@@ -96,6 +96,10 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
   for the same set of points, computed once at load or baked (the photo formation computed when its photo has
   loaded).
 - Under the light act the canvas is covered, so the render loop idles.
+- The rings of light through the 600 share one arbiter (`src/world/ripple.ts`, `ring`): the Apply wave from the slot,
+  act 2's 600 landing, then a tap on a phone ([#38](https://github.com/puIad/vic-enp/issues/38)). `watchTaps` hears a
+  short, still one-finger touch with passive listeners only, so no tap ever waits on the world and scrolling is untouched;
+  under reduced motion it hears nothing.
 - `gsap.ticker` drives Lenis's `raf`, and Lenis's scroll events update ScrollTrigger, so the two share one clock.
 - Under reduced motion, Lenis is not started and every act jumps to its resting formation (still images per
   section), no scrubbing.

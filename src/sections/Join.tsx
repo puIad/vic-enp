@@ -1,34 +1,116 @@
-import { useId, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import { INSTAGRAM } from '../config'
 import { FAQ, RUNGS, STEPS } from '../content/join'
+import { reached, walkAt } from '../lib/walk'
+import { world } from '../world/store'
 
 // Act 6, the light act (#16): how to join, then grow, then the questions, on Bright Gray between two horizons.
-// Tier 0: every block visible, every step node filled, no walking point.
+// Tier 0 and reduced motion: every block visible, every step node filled, no walking point. With the world (#39): your
+// point walks the steps' hairline and the blocks reveal once as they come in (index.css, the light act with the world).
 
-function Steps() {
+const WIDE = '(min-width: 1280px)'
+const PHONE = '(max-width: 767px)'
+/** Where a step's node sits on its hairline, from the step's own corner: the node's middle (the classes below). */
+const NODE = { wide: 5, phone: 13 }
+
+/** Moves your point along the steps' hairline (--k) and fills the nodes it has reached (data-on), after every scroll
+ *  update. Between a phone and a wide screen the steps sit in two columns with no hairline, so nothing walks. */
+function useWalk(ref: RefObject<HTMLDivElement | null>, on: boolean) {
+  useEffect(() => {
+    const box = ref.current
+    if (!on || !box) return
+    const items = [...box.querySelectorAll('li')]
+    let last = ''
+    const update = () => {
+      const wide = matchMedia(WIDE).matches
+      const along = wide || matchMedia(PHONE).matches
+      const r = box.getBoundingClientRect()
+      const k = walkAt(r.top, r.height, innerHeight).toFixed(3)
+      const stops = items.map((li) => (wide ? li.offsetLeft + NODE.wide : li.offsetTop + NODE.phone))
+      const lit = along ? reached(+k, wide ? r.width : r.height, stops) : items.length
+      const now = `walk ${k}, steps ${lit}`
+      if (now === last) return
+      last = now
+      box.style.setProperty('--k', k)
+      items.forEach((li, i) => li.toggleAttribute('data-on', i < lit))
+      // for scroll-craft's shoot.mjs
+      box.dataset.scVerifyState = now
+    }
+    update()
+    world.listeners.add(update)
+    addEventListener('resize', update)
+    return () => {
+      world.listeners.delete(update)
+      removeEventListener('resize', update)
+    }
+  }, [ref, on])
+}
+
+/** Shows each block marked data-rv once, as it comes up past the bottom 8% of the screen, and never hides it again.
+ *  Blocks already above the screen (a reload partway down) show at once, without travelling. */
+function useReveal(ref: RefObject<HTMLDivElement | null>, on: boolean) {
+  useEffect(() => {
+    const root = ref.current
+    if (!on || !root) return
+    const io = new IntersectionObserver(
+      (es) => {
+        for (const e of es) {
+          if (!e.isIntersecting && e.boundingClientRect.top > 0) continue
+          if (!e.isIntersecting) e.target.setAttribute('data-still', '')
+          e.target.setAttribute('data-in', '')
+          io.unobserve(e.target)
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px' },
+    )
+    root.querySelectorAll('[data-rv]').forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [ref, on])
+}
+
+function Steps({ staged }: { staged: boolean }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useWalk(ref, staged)
   return (
-    <ol id="steps" className="relative mt-12 grid gap-10 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-16 md:grid-cols-2 md:gap-x-8 md:gap-y-14 xl:grid-cols-4 xl:border-t xl:border-night/70 xl:pt-0">
-      {STEPS.map((s, i) => (
-        <li key={s.title} className="relative xl:pt-12">
-          {/* the node on the hairline: left edge on a phone, top edge on a wide screen */}
-          <span aria-hidden="true" className="absolute top-2 -left-[33px] size-[11px] rounded-full bg-night md:hidden xl:-top-[6px] xl:left-0 xl:block" />
-          <span aria-hidden="true" className="block text-[76px] leading-[.9] ghost font-black tracking-[-0.03em] md:text-[clamp(84px,7.5vw,112px)]">
-            {String(i + 1).padStart(2, '0')}
-          </span>
-          <h3 className="mt-4 text-[clamp(22px,1.9vw,27px)] leading-tight font-black tracking-[-0.015em]">{s.title}</h3>
-          <p className="mt-2.5 max-w-[30ch] text-[15px] leading-normal text-ink">{s.text}</p>
-        </li>
-      ))}
-    </ol>
+    <div ref={ref} className={`relative mt-12 md:mt-16 ${staged ? 'walking' : ''}`}>
+      <ol
+        id="steps"
+        className={`grid gap-10 max-md:border-l max-md:border-night/30 max-md:pl-7 md:grid-cols-2 md:gap-x-8 md:gap-y-14 xl:grid-cols-4 xl:border-t xl:pt-0 ${staged ? 'xl:border-night/30' : 'xl:border-night/70'}`}
+      >
+        {STEPS.map((s, i) => (
+          <li key={s.title} data-rv={staged || undefined} className="relative xl:pt-12">
+            {/* the node on the hairline: left edge on a phone, top edge on a wide screen; with the world it fills once
+                your point reaches it (index.css) */}
+            <span
+              aria-hidden="true"
+              className={`node absolute top-2 -left-[33px] size-[11px] rounded-full md:hidden xl:-top-[6px] xl:left-0 xl:block ${staged ? '' : 'bg-night'}`}
+            />
+            <span aria-hidden="true" className="block text-[76px] leading-[.9] ghost font-black tracking-[-0.03em] md:text-[clamp(84px,7.5vw,112px)]">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3 className="mt-4 text-[clamp(22px,1.9vw,27px)] leading-tight font-black tracking-[-0.015em]">{s.title}</h3>
+            <p className="mt-2.5 max-w-[30ch] text-[15px] leading-normal text-ink">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      {staged && (
+        <>
+          {/* the trail behind your point, and your point */}
+          <span aria-hidden="true" className="walk" />
+          <span aria-hidden="true" className="me" />
+        </>
+      )}
+    </div>
   )
 }
 
-function Grow() {
+function Grow({ staged }: { staged: boolean }) {
   return (
     <ol className="mt-12 grid gap-8 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-20 md:grid-cols-3 md:gap-x-6 md:gap-y-12 xl:grid-cols-6 xl:items-end xl:gap-x-5">
       {RUNGS.map((r, i) => (
         <li
           key={r.title}
+          data-rv={staged || undefined}
           // a staircase rising to the right, 34 px a rung (desktop only)
           className="relative xl:mb-(--lift)"
           style={{ '--lift': `${i * 34}px` } as CSSProperties}
@@ -106,38 +188,41 @@ function Faq() {
   )
 }
 
-export function Join() {
+export function Join({ staged }: { staged: boolean }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useReveal(ref, staged)
+  const rv = staged || undefined
   return (
     <>
       <div className="horizon" aria-hidden="true" />
-      <div id="lightact" className="lightact">
+      <div ref={ref} id="lightact" className="lightact">
         <section id="join" aria-labelledby="h-join" className="wrap pt-10 pb-20 md:pt-14 md:pr-[150px] md:pb-24">
-          <h2 id="h-join" className="t-act text-night">
+          <h2 id="h-join" data-rv={rv} className="t-act text-night">
             How to join.
           </h2>
-          <p className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 25 October 2026.</p>
-          <Steps />
+          <p data-rv={rv} className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 25 October 2026.</p>
+          <Steps staged={staged} />
         </section>
 
         <section id="grow" aria-labelledby="h-grow" className="wrap border-t border-(--line-dark) py-20 md:mr-[150px] md:ml-(--gut) md:px-0 md:py-28">
-          <h2 id="h-grow" className="t-act text-night">
+          <h2 id="h-grow" data-rv={rv} className="t-act text-night">
             Then grow.
           </h2>
-          <p className="t-lead mt-5 text-ink">Joining is the start. Here is where members go next.</p>
-          <Grow />
+          <p data-rv={rv} className="t-lead mt-5 text-ink">Joining is the start. Here is where members go next.</p>
+          <Grow staged={staged} />
         </section>
 
         <section id="faq" aria-labelledby="h-faq" className="wrap border-t border-(--line-dark) pt-20 pb-28 md:mr-[150px] md:ml-(--gut) md:px-0 md:pt-28 md:pb-36">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
-              <h2 id="h-faq" className="t-act text-night">
+            <div data-rv={rv} className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+              <h2 id="h-faq" data-rv={rv} className="t-act text-night">
                 Questions.
               </h2>
-              <p className="t-lead mt-5 text-ink">
+              <p data-rv={rv} className="t-lead mt-5 text-ink">
                 Still unsure? Message us on Instagram, <a href={INSTAGRAM}>@vic.enp</a>.
               </p>
             </div>
-            <div className="lg:col-span-8">
+            <div data-rv={rv} className="lg:col-span-8">
               <Faq />
             </div>
           </div>

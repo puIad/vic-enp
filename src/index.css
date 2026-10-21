@@ -1101,6 +1101,87 @@
     text-underline-offset: 3px;
   }
 
+  /* ---------- the light act with the world (#39): blocks reveal once, your point walks the steps (Join) ---------- */
+  .lightact [data-rv] {
+    transition:
+      opacity 0.7s var(--ease-out-expo),
+      translate 0.7s var(--ease-out-expo);
+  }
+  .lightact [data-rv]:not([data-in]) {
+    opacity: 0;
+    translate: 0 22px;
+  }
+  /* already above the screen when first seen (a reload partway down): shown at once, nothing travels */
+  .lightact [data-still] {
+    transition: none;
+  }
+  /* a node fills once your point has reached it */
+  .walking .node {
+    background: var(--color-gray);
+    box-shadow: inset 0 0 0 1.5px var(--color-night);
+    transition: background-color 0.4s var(--ease-out-expo);
+  }
+  .walking li[data-on] .node {
+    background: var(--color-night);
+  }
+  /* the trail and your point, on the hairline: down the left edge on a phone, across the top on a wide screen; between
+     the two the steps sit in two columns with no hairline, and nothing walks */
+  .walk,
+  .me {
+    display: none;
+    position: absolute;
+    pointer-events: none;
+  }
+  .walk {
+    top: 0;
+    left: 0;
+    background: var(--color-night);
+  }
+  .me {
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    border: 2px solid var(--color-night);
+    background: var(--color-aqua);
+    box-shadow:
+      0 0 0 5px rgb(105 196 175 / 0.28),
+      0 0 16px rgb(105 196 175 / 0.7);
+  }
+  @media (max-width: 767px) {
+    .walk,
+    .me {
+      display: block;
+    }
+    .walk {
+      width: 1px;
+      height: 100%;
+      transform-origin: top;
+      scale: 1 var(--k, 0);
+    }
+    .me {
+      left: 0.5px;
+      top: calc(var(--k, 0) * 100%);
+    }
+  }
+  @media (min-width: 1280px) {
+    .walk,
+    .me {
+      display: block;
+    }
+    .walk {
+      width: 100%;
+      height: 1px;
+      transform-origin: left;
+      scale: var(--k, 0) 1;
+    }
+    .me {
+      top: 0.5px;
+      left: calc(var(--k, 0) * 100%);
+    }
+  }
+
   /* ---------- act 4, the peak (#14): six screens pinned, photos under the grain, words over it ---------- */
   .peak {
     position: relative;

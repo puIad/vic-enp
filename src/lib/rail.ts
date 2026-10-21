@@ -68,22 +68,22 @@ export function subAt(act: RailAct, at: Where) {
 export type Spot = { act: number; sub: number }
 /** A name showing beside its dot for about 2 s: an act's (sub -1) or a sub-section's. An act's flash on entering a run
  *  also names the cut it starts on (`namesCut`), so that cut doesn't flash a second time. */
-export type Flash = { act: number; sub: number; label: string; namesCut?: number }
+export type Flash = { act: number; sub: number; namesCut?: number }
 
 /** The flash after the visitor moves from `from` to `to`; `prev` itself when nothing new should flash. */
 export function nextFlash(prev: Flash | null, from: Spot, to: Spot): Flash | null {
   const act = RAIL[to.act]
   if (!act) return prev
   if (to.act !== from.act) {
-    if (!act.run) return { act: to.act, sub: -1, label: act.name }
+    if (!act.run) return { act: to.act, sub: -1 }
     // at the door the run starts on its first cut; coming up from below, on its last
     const n = act.subs.length
     const namesCut = to.sub >= 0 && to.sub < n ? to.sub : to.sub < 0 ? 0 : n - 1
-    return { act: to.act, sub: -1, label: `${act.name} · ${act.subs[namesCut].name}`, namesCut }
+    return { act: to.act, sub: -1, namesCut }
   }
   if (to.sub === from.sub || to.sub < 0 || to.sub >= act.subs.length) return prev
   if (prev && prev.act === to.act && prev.namesCut === to.sub) return prev
-  return { act: to.act, sub: to.sub, label: act.subs[to.sub].name }
+  return { act: to.act, sub: to.sub }
 }
 
 /** The rail opened by a hold (phones) or in the footer: every act, then its sub-sections, in page order. On a hold the

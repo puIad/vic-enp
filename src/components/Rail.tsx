@@ -129,7 +129,8 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
       const row = pick.current
       if (slid) setTimeout(() => document.querySelector<HTMLAnchorElement>(`.rail-sheet a[data-row="${row}"]`)?.click())
     }
-    const noMenu = (e: Event) => e.preventDefault() // no Android press menu on the rail's links
+    // no Android press menu on the rail's links; a mouse keeps its right-click menu (open in a new tab, copy the link)
+    const noMenu = (e: Event) => phone() && e.preventDefault()
     el.addEventListener('touchstart', onStart, { passive: true })
     el.addEventListener('touchmove', onMove, { passive: false })
     el.addEventListener('touchend', onEnd, { passive: false })

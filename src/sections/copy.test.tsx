@@ -170,13 +170,13 @@ describe("the rail's targets (#59)", () => {
   const subs = (act: string) => RAIL.find((a) => a.id === act)!.subs.map((s) => s.id)
 
   it.each([
-    ['departments, tier 0', <Departments staged={false} />, 'departments'],
-    ['departments, staged', <DepartmentsStage />, 'departments'],
-    ['events, tier 0', <Events staged={false} />, 'events'],
-    ['events, staged', <EventsStage />, 'events'],
-    ['the light act', <Join />, 'join'],
-  ] as const)('every sub-section of %s is an id on the page', (_, el, act) => {
-    const html = ids(el)
+    ['departments, tier 0', () => <Departments staged={false} />, 'departments'],
+    ['departments, staged', () => <DepartmentsStage />, 'departments'],
+    ['events, tier 0', () => <Events staged={false} />, 'events'],
+    ['events, staged', () => <EventsStage />, 'events'],
+    ['the light act', () => <Join />, 'join'],
+  ] as const)('every sub-section of %s is an id on the page', (_, render, act) => {
+    const html = ids(render())
     for (const id of [act, ...subs(act)]) expect(html).toContain(`id="${id}"`)
   })
 })

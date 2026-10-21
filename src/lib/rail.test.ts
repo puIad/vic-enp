@@ -36,16 +36,18 @@ describe('the name flashes', () => {
   const J = RAIL.indexOf(join)
 
   it('entering a run, the act flashes with the cut it starts on, in the direction of travel', () => {
-    expect(nextFlash(null, { act: D - 1, sub: -1 }, { act: D, sub: -1 })?.label).toBe('Departments · HR')
-    expect(nextFlash(null, { act: E + 1, sub: -1 }, { act: E, sub: 5 })?.label).toBe('Events · Projects')
+    // "Departments · HR"
+    expect(nextFlash(null, { act: D - 1, sub: -1 }, { act: D, sub: -1 })).toEqual({ act: D, sub: -1, namesCut: 0 })
+    // "Events · Projects"
+    expect(nextFlash(null, { act: E + 1, sub: -1 }, { act: E, sub: 5 })).toEqual({ act: E, sub: -1, namesCut: 4 })
   })
 
   it('entering an act that is not a run, the act flashes alone', () => {
-    expect(nextFlash(null, { act: E, sub: 5 }, { act: J, sub: -1 })).toEqual({ act: J, sub: -1, label: 'How to join' })
+    expect(nextFlash(null, { act: E, sub: 5 }, { act: J, sub: -1 })).toEqual({ act: J, sub: -1 })
   })
 
   it('entering a sub-section, its own name flashes beside its sub-dot', () => {
-    expect(nextFlash(null, { act: J, sub: 0 }, { act: J, sub: 1 })).toEqual({ act: J, sub: 1, label: 'Growth' })
+    expect(nextFlash(null, { act: J, sub: 0 }, { act: J, sub: 1 })).toEqual({ act: J, sub: 1 }) // Growth
   })
 
   it("doesn't flash the run's first cut again while the act's flash already names it", () => {
@@ -54,7 +56,7 @@ describe('the name flashes', () => {
   })
 
   it('leaving the last cut for the tunnel, or nothing changing, keeps the flash as it is', () => {
-    const prev = { act: D, sub: 6, label: 'English Bubble' }
+    const prev = { act: D, sub: 6 } // English Bubble
     expect(nextFlash(prev, { act: D, sub: 6 }, { act: D, sub: 7 })).toBe(prev)
     expect(nextFlash(prev, { act: D, sub: 6 }, { act: D, sub: 6 })).toBe(prev)
   })

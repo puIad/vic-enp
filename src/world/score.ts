@@ -43,6 +43,8 @@ export type ScoreIn = {
   hero: number
   line: { up: number; down: number }
   entry: number
+  /** act 2: how far the field is under the benefits, 0..1, measured on the page (lib/scrub.ts) */
+  under: number
   /** the hero's arrival: the gather (0..1 over 3.2 s) and your point's light (0..1 over 0.9 s after it) */
   gather: number
   lit: number
@@ -79,8 +81,8 @@ export function score(s: ScoreIn): Frame {
 
   switch (act) {
     case 'the-600': {
-      // act 2 (#12): the tightened field turns slowly and dims under the benefits, back to full before the door
-      const dim = 1 - 0.5 * ss(0.45, 0.6, p) * (1 - ss(0.8, 0.95, p))
+      // act 2 (#12, #36): the tightened field turns slowly and dims to half under the benefits, back to full before the door
+      const dim = 1 - 0.5 * s.under
       return { ...base, a: 'tight', b: 'tight', mix: 1, camZ: 8.5, turn: p * 0.28, dim, you: at(TR, 1.35) }
     }
 

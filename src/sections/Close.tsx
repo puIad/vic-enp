@@ -1,8 +1,11 @@
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react'
 import { Arrow } from '../components/ApplyPill'
+import { Plain, Words } from '../components/Scrub'
 import { ClosePoster, usePhone } from '../components/Poster'
 import { ADDRESS, EMAIL, SOCIAL } from '../config'
 import type { Cta } from '../lib/opening'
+import { mottoProgress, startsByBlock, type Part } from '../lib/scrub'
+import { useScrub } from '../lib/useScrub'
 import { world } from '../world/store'
 
 // Act 7 (#17). Tier 0 and reduced motion: one still composition, the 600 around a soft clearing (the SVG poster), the
@@ -166,9 +169,19 @@ function Links({ title, links }: { title: string; links: readonly { label: strin
   )
 }
 
-export function Footer() {
+// The closing motto (#36, decisions.md, 62): the same word scrub as act 2's title, so the page opens and closes on one device.
+// Each word lights over a quarter of the motto's progress, the last one whole as the page ends.
+const MOTTO: Part[][] = [['Once a VICer,'], ['Always a VICer.']]
+const MOTTO_AT = startsByBlock(MOTTO, 0, 0.75)
+const mottoAt = (el: HTMLElement) =>
+  mottoProgress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight, document.documentElement.scrollHeight - innerHeight)
+const mottoState = (k: number) => `motto ${MOTTO_AT.flat().filter((a) => k > a).length} of ${MOTTO_AT.flat().length}, whole ${k >= 1}`
+
+export function Footer({ staged = false }: { staged?: boolean }) {
+  const motto = useRef<HTMLParagraphElement>(null)
+  useScrub(motto, staged, mottoAt, mottoState)
   return (
-    <footer id="footer" className="relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) pb-[88px] pl-(--gut) md:pt-28 md:pb-24">
+    <footer id="footer" data-sc-act="flow" className="relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) pb-[88px] pl-(--gut) md:pt-28 md:pb-24">
       <div className="grid gap-12 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4 lg:col-span-3">
           {/* no description line: act 2 says it (decisions.md, 58) */}
@@ -191,8 +204,26 @@ export function Footer() {
           <Links title="More" links={SOCIAL.more} />
         </div>
       </div>
-      <p className="t-display mt-20 border-t border-(--line) pt-14 md:mt-24 md:pt-20">
-        <span className="block">Once a VICer,</span> Always a VICer.
+      <p ref={motto} className={`motto t-display mt-20 border-t border-(--line) pt-14 md:mt-24 md:pt-20 ${staged ? 'staged' : ''}`}>
+        {staged ? (
+          <>
+            <span className="sr-only">{MOTTO.flat().join(' ')}</span>
+            <span aria-hidden="true">
+              {MOTTO.map((line, i) => (
+                <span key={i} className="block">
+                  <Words parts={line} starts={MOTTO_AT[i]} read={false} />
+                </span>
+              ))}
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="block">
+              <Plain parts={MOTTO[0]} />
+            </span>{' '}
+            <Plain parts={MOTTO[1]} />
+          </>
+        )}
       </p>
     </footer>
   )

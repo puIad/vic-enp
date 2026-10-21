@@ -8,6 +8,7 @@ const base: ScoreIn = {
   hero: 0,
   line: { up: -9, down: -9 },
   entry: 0,
+  under: 0,
   gather: 1,
   lit: 1,
   phone: false,
@@ -32,6 +33,13 @@ describe('the score', () => {
     const out = score({ ...base, hero: 1 })
     expect(out.mix).toBe(1)
     expect(out.you).toMatchObject({ x: 0.84, y: 0.6 })
+  })
+
+  it("dims act 2's field to half under the benefits, wherever the act's progress is", () => {
+    for (const progress of [0.2, 0.5, 0.9]) {
+      expect(score({ ...base, act: 'the-600', progress }).dim).toBe(1)
+      expect(score({ ...base, act: 'the-600', progress, under: 1 }).dim).toBe(0.5)
+    }
   })
 
   it('gathers into the icon while the counter climbs', () => {

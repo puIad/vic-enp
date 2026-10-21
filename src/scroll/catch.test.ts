@@ -102,6 +102,23 @@ describe('the catch', () => {
     expect(c.rested(496)).toBeNull()
   })
 
+  it('lets a reverse swipe go once the glide is over, though it began during the glide', () => {
+    const c = fresh()
+    burst(c, 0, 600, 60, 20) // caught on 1000 at 96 ms, at rest by 496 ms
+    const v = []
+    for (let t = 130; t <= 700; t += 30) v.push({ t, v: c.wheel({ t, dy: -100, from: 1000, to: 900 }) })
+    expect(v.filter((e) => e.t < 496).every((e) => e.v === 'hold')).toBe(true)
+    expect(v.filter((e) => e.t > 496).some((e) => e.v === 'hold')).toBe(false)
+  })
+
+  it('still never catches again on the point it rests on after the page is measured again', () => {
+    const c = fresh()
+    burst(c, 0, 600, 60, 20) // rests on 1000
+    // a resize moves every point 30 px down; the scroll stays where it was
+    c.points(POINTS.map((p) => ({ ...p, y: p.y + 30 })))
+    expect(burst(c, 900, 1000, 120, 40).at).toBe(2030)
+  })
+
   it('never catches again on the point it rests on: the next burst moves on', () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20)

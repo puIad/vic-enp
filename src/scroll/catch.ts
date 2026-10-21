@@ -16,8 +16,8 @@ export type Wheel = { t: number; dy: number; from: number; to: number; stalled?:
 /** `pass`: scroll as usual. `hold`: the rest of a caught gesture, dropped. `at`: glide to rest there. */
 export type Verdict = 'pass' | 'hold' | { at: number }
 
-// shortcut: FAST, SLOW, ARM, GAP, INSIST, HOLD, FELL, FADE and REARM are first values from a desktop check and one
-// touchpad; the owner's checks tune them.
+// shortcut: the timings and speeds below are first values from a desktop check, the owner's Windows touchpad and a
+// mouse; a Mac trackpad is still untried (build-plan.md, the owner's checks).
 /** px/s of wheel travel, over the last WINDOW ms, that counts as a fast burst */
 const FAST = 2400
 const WINDOW = 100
@@ -71,7 +71,7 @@ export function catcher() {
     fell: boolean
     queued: boolean
   } | null = null
-  /** this gesture started within INSIST after the last catch came to rest, the same way */
+  /** this gesture started within INSIST after the last catch came to rest, the same way, or is a wheel spun on */
   let quick = false
   /** the swipes in a row that came to rest on a point, each started quickly after the one before */
   let streak = 0
@@ -99,7 +99,11 @@ export function catcher() {
       return { at: next.y }
     },
     points(p: Point[]) {
-      points = [...p].sort((a, b) => a.y - b.y)
+      const next = [...p].sort((a, b) => a.y - b.y)
+      // the point you rest on moves with the page: keep it by its place in the list
+      const i = home === null ? -1 : points.findIndex((q) => Math.abs(q.y - home!) < 2)
+      if (i >= 0) home = next[i]?.y ?? null
+      points = next
     },
     wheel({ t, dy, from, to, stalled }: Wheel): Verdict {
       const d = Math.abs(dy)
@@ -119,7 +123,8 @@ export function catcher() {
       // a mouse wheel spun on sends the same notches with no pause: past the glide, it moves on to the next point
       const spun = !gliding && !!held && !held.fell && !held.fading && gap <= GAP && t - held.at >= HOLD
       if (gap >= REARM) home = null
-      if (!gliding && (gap > GAP || flick || spun || dir !== Math.sign(prev))) {
+      // a reverse made during the glide is held there, and lets go as the glide ends
+      if (!gliding && (gap > GAP || flick || spun || dir !== (held ? held.dir : Math.sign(prev)))) {
         // a wheel spun on is the same swipe going on: it keeps the count but never insists
         quick = !!held && held.dir === dir && (spun || t - rest <= INSIST)
         // the third quick swipe in a row insists (decision 80)

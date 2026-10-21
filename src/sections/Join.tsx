@@ -10,8 +10,6 @@ import { world } from '../world/store'
 
 const WIDE = '(min-width: 1280px)'
 const PHONE = '(max-width: 767px)'
-/** Where a step's node sits on its hairline, from the step's own corner: the node's middle (the classes below). */
-const NODE = { wide: 5, phone: 13 }
 
 /** Moves your point along the steps' hairline (--k) and fills the nodes it has reached (data-on), after every scroll
  *  update. Between a phone and a wide screen the steps sit in two columns with no hairline, so nothing walks. */
@@ -19,22 +17,28 @@ function useWalk(ref: RefObject<HTMLDivElement | null>, on: boolean) {
   useEffect(() => {
     const box = ref.current
     if (!on || !box) return
+    const wideQ = matchMedia(WIDE)
+    const phoneQ = matchMedia(PHONE)
     const items = [...box.querySelectorAll('li')]
+    const nodes = [...box.querySelectorAll<HTMLElement>('.node')]
     let last = ''
     const update = () => {
-      const wide = matchMedia(WIDE).matches
-      const along = wide || matchMedia(PHONE).matches
+      const wide = wideQ.matches
       const r = box.getBoundingClientRect()
       const k = walkAt(r.top, r.height, innerHeight).toFixed(3)
-      const stops = items.map((li) => (wide ? li.offsetLeft + NODE.wide : li.offsetTop + NODE.phone))
-      const lit = along ? reached(+k, wide ? r.width : r.height, stops) : items.length
+      // each node's middle, measured along the hairline from its start
+      const stops = nodes.map((n) => {
+        const b = n.getBoundingClientRect()
+        return wide ? b.left + b.width / 2 - r.left : b.top + b.height / 2 - r.top
+      })
+      const lit = wide || phoneQ.matches ? reached(+k, wide ? r.width : r.height, stops) : items.length
       const now = `walk ${k}, steps ${lit}`
       if (now === last) return
       last = now
       box.style.setProperty('--k', k)
       items.forEach((li, i) => li.toggleAttribute('data-on', i < lit))
-      // for scroll-craft's shoot.mjs
-      box.dataset.scVerifyState = now
+      // for scroll-craft's shoot.mjs, under automation only (docs/quality.md)
+      if (navigator.webdriver) box.dataset.scVerifyState = now
     }
     update()
     world.listeners.add(update)
@@ -214,7 +218,7 @@ export function Join({ staged }: { staged: boolean }) {
 
         <section id="faq" aria-labelledby="h-faq" className="wrap border-t border-(--line-dark) pt-20 pb-28 md:mr-[150px] md:ml-(--gut) md:px-0 md:pt-28 md:pb-36">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-            <div data-rv={rv} className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
+            <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
               <h2 id="h-faq" data-rv={rv} className="t-act text-night">
                 Questions.
               </h2>

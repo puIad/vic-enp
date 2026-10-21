@@ -6,6 +6,11 @@ export const DEPT_STEPS = [0.6, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.6]
 /** Events: five cuts, then the horizon the field lies down into (#15). */
 export const EVENT_STEPS = [0.7, 0.55, 0.55, 0.5, 0.7, 0.6]
 
+/** The peak's resolved group photo holds still over this part of its progress (ClubLifePeak): a catch point rests mid-hold. */
+export const PEAK_HOLD = [0.31, 0.4] as const
+/** Your point lands in its slot at this progress of the close's travel (score.ts): the close is at rest after it. */
+export const CLOSE_LANDS = 0.8
+
 export const total = (w: number[]) => w.reduce((a, b) => a + b, 0)
 
 /** The step holding progress p (0..1 over the whole run) and how far into it p is. */

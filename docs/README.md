@@ -24,6 +24,9 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   a visitor past a cut or an act, a rail with sub-dots, name flashes and a hold on phones, and the rail landing in
   the footer as "Jump back to". Slice 5's new group 4, ahead of the reactions
   ([experience.md](experience.md#reading-and-wayfinding)).
+- 2026-10-21: the catch on desktop ([#60](https://github.com/puIad/vic-enp/issues/60)), tuned with the owner on their
+  Windows touchpad and a mouse ([decisions.md](decisions.md), 79 to 82): three quick swipes skip a run, a flick or
+  spin during the glide moves one more cut, coasting still catches. A Mac trackpad is still untried.
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

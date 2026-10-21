@@ -201,6 +201,7 @@ the cut line. Otherwise phones launch with free scroll and desktop keeps its cat
 | Approve the new-copy list (open question 27) | 22 Oct (copy freeze) |
 | Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |
 | Try the catch inside Instagram on an iPhone and an Android phone (open question 30) | 23 Oct (cut line) |
+| Try the desktop catch on a Mac trackpad, on the preview (tuned on a Windows touchpad and a mouse, decisions 79 to 82) | 23 Oct (cut line) |
 | Gilroy web licence answer | 22 Oct |
 | The Google Form's responder link for `VITE_APPLY_URL` | 23 Oct |
 | The exact opening time | 23 Oct |

@@ -4,6 +4,8 @@ import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
 import { underBenefits } from '../lib/scrub'
+import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, stepMiddle } from '../world/steps'
+import { GLIDE, catcher, type Point } from './catch'
 import { restorer, whereAt, type Range } from './restore'
 
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
@@ -40,8 +42,36 @@ function measure(): Range[] {
   return out
 }
 
+/**
+ * The catch's 16 points (docs/experience.md, The catch): the 12 cuts at their middles (where the pickers land), act 2's
+ * top and the light act's (where the rail lands), the peak's resolved photo in its hold, and the close at rest with your
+ * point in its slot. None on tier 0 or after a lost context, where the runs are cards and nothing is pinned.
+ */
+function catchPoints(ranges: Range[]): Point[] {
+  if (!document.querySelector('#departments[data-pin]')) return []
+  const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
+  const out: Point[] = []
+  const top = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) out.push({ y: abs(el) - pad })
+  }
+  const along = (id: string, p: number, run?: string) => {
+    const r = ranges.find((x) => x.id === id)
+    if (r) out.push({ y: r.start + p * (r.end - r.start), run })
+  }
+  top('the-600')
+  for (let i = 1; i <= 7; i++) along('departments', stepMiddle(DEPT_STEPS, i), 'departments')
+  along('club-life', (PEAK_HOLD[0] + PEAK_HOLD[1]) / 2)
+  for (let i = 0; i < 5; i++) along('events', stepMiddle(EVENT_STEPS, i), 'events')
+  top('join')
+  // the close at rest: a beat after your point lands in its slot
+  const apply = document.getElementById('apply')
+  if (apply?.matches('[data-pin]')) out.push({ y: abs(apply) + (CLOSE_LANDS + 0.05) * (apply.offsetHeight - innerHeight) })
+  return out
+}
+
 /** Where the scroll is, into the store: the act and its progress, act 2's dim, the horizons' lines, the close's entry, the cover. */
-function follow() {
+function follow(measured: (ranges: Range[]) => void) {
   let ranges: Range[] = []
   const up = () => document.querySelector('.horizon:not(.down)')
   const down = () => document.querySelector('.horizon.down')
@@ -91,6 +121,7 @@ function follow() {
 
   const refresh = () => {
     ranges = measure()
+    measured(ranges)
     const y = back.place(ranges)
     if (y !== null && Math.abs(scrollY - y) > 1) scrollTo({ top: y, behavior: 'instant' })
     update()
@@ -119,7 +150,8 @@ function follow() {
 // shortcut: a live switch of the OS setting swaps the acts to their stills but keeps Lenis as it started; a reload settles it.
 export function startScroll() {
   document.documentElement.classList.add('sc-ready') // scroll-craft's shoot.mjs waits for this before it samples
-  const stopFollow = follow()
+  const caught = catcher()
+  const stopFollow = follow((ranges) => caught.points(catchPoints(ranges)))
   const triggers: ScrollTrigger[] = []
   // the hero's hand-over (#11): 0.7 screen in which the copy lifts and fades while the camera dollies into the field.
   // The copy only moves once the world is on screen (.w-ready); tier 0 keeps the still composition.
@@ -139,9 +171,41 @@ export function startScroll() {
   }
   if (matchMedia(REDUCE).matches) return stop
 
-  const lenis = new Lenis({ anchors: true }) // honours the page's scroll-padding-top on its own
+  // the catch works on the wheel only: keys, touch, anchors and every scrollTo (world.go, the restore) never reach it.
+  // shortcut: phones keep free scroll until the phone catch (#61) shares catch.ts's rules.
+  // `?catch=off` turns it off to compare.
+  const catching = new URLSearchParams(location.search).get('catch') !== 'off'
+  const glide = (t: number) => 1 - (1 - t) ** 3
+  // a caught glide; at rest, a flick made during it moves on one more point (catch.ts)
+  const glideTo = (y: number): void => {
+    lenis.scrollTo(y, {
+      duration: GLIDE / 1000,
+      easing: glide,
+      onComplete: () => {
+        const next = caught.rested(performance.now())
+        if (next) glideTo(next.at)
+      },
+    })
+  }
+  let frame = performance.now() // the last frame drawn: none for 100 ms means the page, not the visitor, paused the wheel
+  const lenis: Lenis = new Lenis({
+    anchors: true, // honours the page's scroll-padding-top on its own
+    virtualScroll: ({ deltaY, event }) => {
+      if (!catching || event.type !== 'wheel' || event.ctrlKey || !deltaY || lenis.isStopped || lenis.isLocked) return true
+      const to = Math.min(lenis.limit, Math.max(0, lenis.targetScroll + deltaY))
+      const stalled = performance.now() - frame > 100
+      const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from: lenis.animatedScroll, to, stalled })
+      if (v === 'pass') return true
+      event.preventDefault()
+      if (v !== 'hold') glideTo(v.at)
+      return false
+    },
+  })
   lenis.on('scroll', ScrollTrigger.update)
-  const tick = (time: number) => lenis.raf(time * 1000)
+  const tick = (time: number) => {
+    frame = performance.now()
+    lenis.raf(time * 1000)
+  }
   gsap.ticker.add(tick)
   gsap.ticker.lagSmoothing(0)
   world.go = (y) => lenis.scrollTo(y)

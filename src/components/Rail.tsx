@@ -57,12 +57,19 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
   }, [now, sub])
   useEffect(() => () => clearTimeout(fade.current), [])
 
-  // the lit line runs to the current act's dot, wherever the ticks and the open rows have put it
-  useLayoutEffect(() => {
+  // the lit line runs to the current act's dot, wherever the ticks and the open rows have put it: after each render,
+  // and whenever the rail changes size, since hover and focus open the rows in CSS alone
+  const fill = () => {
     const dot = nav.current?.querySelector<HTMLElement>(':scope > a.now')
     const first = nav.current?.querySelector<HTMLElement>(':scope > a')
     nav.current?.style.setProperty('--fill', dot && first ? `${dot.offsetTop - first.offsetTop}px` : '0px')
-  })
+  }
+  useLayoutEffect(fill)
+  useEffect(() => {
+    const ro = new ResizeObserver(() => fill())
+    if (nav.current) ro.observe(nav.current)
+    return () => ro.disconnect()
+  }, [])
 
   // the hold (phones): about 0.4 s on the rail, a ring filling under the finger, opens the rows. Slide and release on a
   // name, or lift and tap one. A plain tap is left alone, so its click jumps. Touch events, not pointer events: only a
@@ -76,7 +83,9 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
     let held = false
     let slid = false
     const light = (y: number) => {
-      pick.current = rowAt(y, innerHeight)
+      // against the rows' own box: the screen's height can differ from innerHeight while iOS shows its URL bar
+      const box = document.querySelector('.rail-sheet ol')?.getBoundingClientRect()
+      pick.current = box ? rowAt(y - box.top, box.height) : rowAt(y, innerHeight)
       setLitRow(pick.current)
     }
     const reset = () => {

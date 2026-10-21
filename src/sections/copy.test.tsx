@@ -7,6 +7,10 @@ import ClubLifePeak from './ClubLifePeak'
 import { Events } from './Events'
 import EventsStage from './EventsStage'
 import { WhatVic } from './WhatVic'
+import { Departments } from './Departments'
+import DepartmentsStage from './DepartmentsStage'
+import { Join } from './Join'
+import { RAIL } from '../lib/rail'
 import { EVENT_STEPS, stepMiddle } from '../world/steps'
 import { world } from '../world/store'
 
@@ -159,3 +163,21 @@ describe('footer', () => {
     )
   })
 })
+
+describe("the rail's targets (#59)", () => {
+  // the rail, the hold's rows and the footer's "Jump back to" all jump to these ids, in tier 0's cards and the staged cuts
+  const ids = (el: ReactElement) => renderToStaticMarkup(el)
+  const subs = (act: string) => RAIL.find((a) => a.id === act)!.subs.map((s) => s.id)
+
+  it.each([
+    ['departments, tier 0', <Departments staged={false} />, 'departments'],
+    ['departments, staged', <DepartmentsStage />, 'departments'],
+    ['events, tier 0', <Events staged={false} />, 'events'],
+    ['events, staged', <EventsStage />, 'events'],
+    ['the light act', <Join />, 'join'],
+  ] as const)('every sub-section of %s is an id on the page', (_, el, act) => {
+    const html = ids(el)
+    for (const id of [act, ...subs(act)]) expect(html).toContain(`id="${id}"`)
+  })
+})
+

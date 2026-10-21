@@ -165,8 +165,10 @@ the hero goes on scroll.
 - **World:** the hero's field, tightened and far, keeps turning slowly with scroll. Dims to 50% under the
   benefits, back to full before the door.
 - **Layout:** numbers as a four-column row under gradient hairlines on desktop, a 2x2 grid on a phone.
-- **Slice 5 ([plan](build-plan.md#slice-5-polish-and-launch), group 3):** the word scrub, the dim, the counters and the pulse, none built in slices 1
-  to 4.
+- **Slice 5 ([plan](build-plan.md#slice-5-polish-and-launch), group 3):** the word scrub and the dim are built
+  ([#36](https://github.com/puIad/vic-enp/issues/36)): the four numbers rise one after another from 58% and are all
+  in place by 94%, so the pin never holds still. The counters and the pulse are not
+  ([#37](https://github.com/puIad/vic-enp/issues/37)).
 
 ### 3. Departments
 
@@ -280,8 +282,9 @@ the hero goes on scroll.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
 - **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. No description line, and the address
-  reads "10 Rue des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). Slice 5 gives the motto the word
-  scrub ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62).
+  reads "10 Rue des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). The motto has the word scrub
+  ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62; built in
+  [#36](https://github.com/puIad/vic-enp/issues/36)), whole by the bottom of the page.
 
 ## Passages
 

@@ -58,7 +58,7 @@ export function App() {
         <Departments staged={staged} />
         <ClubLife />
         <Events staged={staged} />
-        <Join />
+        <Join staged={staged} />
         <Close cta={cta} staged={staged} />
       </main>
       <Footer staged={staged} />

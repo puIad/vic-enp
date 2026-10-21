@@ -174,7 +174,8 @@ describe("the rail's targets (#59)", () => {
     ['departments, staged', () => <DepartmentsStage />, 'departments'],
     ['events, tier 0', () => <Events staged={false} />, 'events'],
     ['events, staged', () => <EventsStage />, 'events'],
-    ['the light act', () => <Join />, 'join'],
+    ['the light act, tier 0', () => <Join staged={false} />, 'join'],
+    ['the light act, staged', () => <Join staged />, 'join'],
   ] as const)('every sub-section of %s is an id on the page', (_, render, act) => {
     const html = ids(render())
     for (const id of [act, ...subs(act)]) expect(html).toContain(`id="${id}"`)

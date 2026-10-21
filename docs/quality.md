@@ -32,7 +32,8 @@ WCAG 2.1 AA as the floor.
   the whole page without the world.
 - One `h1`, then `h2` per section, landmarks (`header`, `main`, `footer`), a skip link to the CTA.
 - `prefers-reduced-motion`: no smooth scroll, no scrubbing, still compositions ([experience.md](experience.md#motion-rules)).
-- Keyboard: everything focusable is reachable in order, focus is visible, nothing traps focus or scroll.
+- Keyboard: everything focusable is reachable in order, focus is visible, nothing traps focus or scroll. The
+  catch stops a fast fling, never a key press or a jump ([experience.md](experience.md#the-catch)).
 - Contrast: the charter's approved pairings ([brand.md](brand.md#core-charter-p13)), checked in every act where text
   sits over the world. If the world behind a headline is too bright, the world dims, not the text.
 - Touch targets at least 44 px. Nothing is conveyed by colour or motion alone.
@@ -70,6 +71,10 @@ Per slice, before its PR merges:
    headless shell. It samples only acts marked `data-sc-act`, and reads a hand-built act through its
    `data-sc-verify-state` (published only when `navigator.webdriver` is true).
 4. Lighthouse mobile on the preview against the budgets above.
+
+The catch (slice 5) also gets unit tests for its decisions (fast or slow, insisting, re-arming, both directions),
+and in step 2 a wheel burst through each run lands on the next cut while slow wheel steps cross freely. Its phone
+half is judged on real phones only (open question 30): headless touch has no native momentum.
 
 Before launch, once:
 

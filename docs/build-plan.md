@@ -98,15 +98,19 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    the table. Act 2's word scrub with the field's dim under the benefits; the four counters and the 600's pulse
    ([experience.md](experience.md#2-what-vic-is-the-numbers-why-join)). The logos beside names and the photos are
    built ([#33](https://github.com/puIad/vic-enp/issues/33) to [#35](https://github.com/puIad/vic-enp/issues/35)); so are the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)) and the counters ([#37](https://github.com/puIad/vic-enp/issues/37)).
-4. **Reactions, the light act, grain, sound** (63, 64):
+4. **Reading and wayfinding** (68 to 78, added on 2026-10-21): the rail first (sub-dots, name flashes, hover and
+   the phone hold, the footer landing with its one-time hold), then [the catch](experience.md#the-catch), desktop
+   first, then phones on a preview the owner tries inside Instagram (open question 30). Spec in
+   [experience.md](experience.md#reading-and-wayfinding).
+5. **Reactions, the light act, grain, sound** (63, 64):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
    - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's lowest rung.
    - The sound toggle with a low ambient pad, off on arrival. Claude finds CC0 loops and the owner picks one,
      with the owner's OK before each download. No toggle ships without a loop.
-5. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
-   question 25), and again once groups 2 to 4 are in.
-6. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
+6. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
+   question 25), and again once groups 2 to 5 are in.
+7. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
    Instagram, the domain, the production deploy, the share preview check.
 
 The page lengths stay as signed: about 30 screens on a phone and 27.5 on desktop, against the 22 to 24 first
@@ -145,17 +149,19 @@ In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25
 
 1. Finish group 3: the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)), then the counters and the
    600's pulse ([#37](https://github.com/puIad/vic-enp/issues/37)).
-2. Group 4: the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
+2. Group 4, reading and wayfinding (new on 21 Oct, [decisions.md](decisions.md), 68 to 78): ticket it under #25,
+   build the rail, then the catch, and put the phone catch on a preview for the owner (open question 30).
+3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
    ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)),
    the sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)). For the sound, Claude shortlists CC0 loops and
    the owner picks one and approves each download.
-3. The owner's phone check with `?fps` and `?points=N` ([#42](https://github.com/puIad/vic-enp/issues/42)), which
+4. The owner's phone check with `?fps` and `?points=N` ([#42](https://github.com/puIad/vic-enp/issues/42)), which
    unblocks the performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)).
-4. **The application form on this site** (owner's note, 20 Oct): the form is the link between the landing page and
+5. **The application form on this site** (owner's note, 20 Oct): the form is the link between the landing page and
    the recruitment dashboard, so its answers have to reach the Master the dashboard reads. Its scope, its place in
    the plan and how it relates to `VITE_APPLY_URL` and the registration app in `VIC-Recruitment-2026` are not
    settled yet ([open-questions.md](open-questions.md), 29). Settle them with the owner first, then ticket it.
-5. Owner answers that were due on 20 Oct and are still open: the Vercel project (8) and PR reviews (22). Due
+6. Owner answers that were due on 20 Oct and are still open: the Vercel project (8) and PR reviews (22). Due
    22 Oct: content check 9, the Gilroy licence (11), the logo fade (19), the new-copy list (27).
 
 ## The cut line
@@ -174,6 +180,9 @@ first):
 
 Content and the CTA are never cut.
 
+The catch's phone half is judged apart from this list: it ships only if the owner passes it inside Instagram by
+the cut line. Otherwise phones launch with free scroll and desktop keeps its catch ([decisions.md](decisions.md), 77).
+
 ## After launch (v1.1)
 
 - Switch `VITE_APPLY_URL` to the registration app once it is signed off (in `VIC-Recruitment-2026`).
@@ -190,6 +199,7 @@ Content and the CTA are never cut.
 | Content checks 1 to 9 in [content.md](content.md#checks-before-the-copy-is-final) | 22 Oct (copy freeze) |
 | Approve the new-copy list (open question 27) | 22 Oct (copy freeze) |
 | Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |
+| Try the catch inside Instagram on an iPhone and an Android phone (open question 30) | 23 Oct (cut line) |
 | Gilroy web licence answer | 22 Oct |
 | The Google Form's responder link for `VITE_APPLY_URL` | 23 Oct |
 | The exact opening time | 23 Oct |

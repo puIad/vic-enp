@@ -158,13 +158,15 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   @vic.enp, @spark.enp (SPARK), @english.bubble (English Bubble). Facebook: @vic.enpa, @spark.vic.6 (SPARK),
   English Bubble. More: TikTok @vic.enp, YouTube @vic_enp, LinkedIn vicenp. Contact: vic@g.enp.edu.dz,
   10 Rue des Frères OUDEK, El Harrach (§10; the street's current name for the same place, owner, 2026-10-20).
+- Footer's first block (**new**, 2026-10-21): "Jump back to", then every act and sub-section by its rail name.
 - Last line on the page: **Once a VICer, Always a VICer.**
 
 ## Chrome
 
 "Distance to the 600" (readout), "Gathering the 600" (loader), "Sound off" (toggle), the rail's waypoint names
 ("Start", "The 600", "Departments", "Events", "How to join", "Your place"; the peak's waypoint name is set in the
-build). All **new**.
+build). All **new**. The rail's sub-section names (2026-10-21): the seven department names and the events as
+the page writes them (GALA, Ignite, POLYMAZE, AEC), then "Projects", "Steps", "Growth" and "FAQ" (**new**).
 
 ## New lines for the owner's approval
 
@@ -190,6 +192,8 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 15. The chrome lines above.
 16. The 404 page (decision 64, `404.html`): "This page isn't here.", "The address may be mistyped. The rest of VIC
     is one click away.", "Back to the page".
+17. The rail's new sub-section names and the footer's "Jump back to" (2026-10-21, [decisions.md](decisions.md),
+    71, 74).
 
 ### Approved on 2026-10-20
 

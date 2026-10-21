@@ -115,7 +115,7 @@ The plan's row for scroll-craft's fingerprint registry (empty for this workspace
 
 | Grammar | Nav | Hero | Act sequence | Close | Signature |
 |---|---|---|---|---|---|
-| One continuous world at two speeds, with three passages | Waypoint rail with a tick per cut, no menu | Headline beside the VIC icon drawn by the 600, your point lit in its iris; it loosens into a tilted cloud on scroll | 7 acts, 2 cut runs (7 and 5 cuts), 3 passages, 1 hard cut | Your point flies into a slot in the Apply pill ringed by an iris of the 600 | Your point |
+| One continuous world at two speeds, with three passages | Waypoint rail with a sub-dot per cut, opened by hover or a hold, landing in the footer; no menu | Headline beside the VIC icon drawn by the 600, your point lit in its iris; it loosens into a tilted cloud on scroll | 7 acts, 2 cut runs (7 and 5 cuts), 3 passages, 1 hard cut | Your point flies into a slot in the Apply pill ringed by an iris of the 600 | Your point |
 
 ## The acts
 
@@ -282,7 +282,8 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
-- **Footer:** opaque night, no canvas under it. Ends on the motto at 128 px. No description line, and the address
+- **Footer:** opaque night, no canvas under it. Opens on the rail, landed as "Jump back to"
+  ([below](#the-rail-lands-in-the-footer)). Ends on the motto at 128 px. No description line, and the address
   reads "10 Rue des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). The motto has the word scrub
   ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62; built in
   [#36](https://github.com/puIad/vic-enp/issues/36)), whole by the bottom of the page.
@@ -297,9 +298,11 @@ the hero goes on scroll.
 
 ## Motion rules
 
-- Scroll drives everything, damped (Lenis). One speed for the whole page.
+- Scroll drives everything, damped (Lenis). One speed for the whole page, except where [the catch](#the-catch)
+  stops a fast fling on a cut or an act.
 - Never trap the scroll: no section needs a gesture to escape, keyboard and screen readers move normally, anchor
-  links work (the rail is real anchor links).
+  links work (the rail is real anchor links). The catch is no trap: every new gesture moves on, and jumps and keys
+  are never caught.
 - The Apply pill is one tap away from the second waypoint (top right on desktop, bottom right on phones), hidden
   in the hero and at the close, where their own CTA takes over.
 - Text never moves while it's being read. It arrives, then holds.
@@ -308,6 +311,62 @@ the hero goes on scroll.
 - No full-screen loader: "Gathering the 600" under the hero headline is the loader.
 - Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
   reduced motion and on the world's lowest rung ([decisions.md](decisions.md), 64).
+
+## Reading and wayfinding
+
+Added on 2026-10-21 ([decisions.md](decisions.md), 68 to 78). Testers skimmed past whole acts, the departments most
+of all, and didn't realize the rail's dots link back. Slice 5's group 4 builds it
+([build-plan.md](build-plan.md#slice-5-polish-and-launch)).
+
+### The catch
+
+- **What it does:** a fast fling on a phone, or a fast wheel burst, that would carry the visitor past a catch point
+  glides to rest on it in about 0.4 s. A slow scroll crosses freely. It works down and up alike. No control and no
+  cue: the cut's own entrance and the rail already show where you are.
+- **Catch points (16):** the 12 cuts, each at its middle (where the pickers jump); the top of act 2; the peak's
+  hold, the resolved group photo; the top of the light act; the close at rest, your point in its slot. Steps,
+  Growth and FAQ are not catch points.
+- **One gesture, one point:** the point you rest on never catches you again, so every new gesture moves on.
+- **Insisting:** inside a run (the departments or the events), a second fling within about 0.5 s of a catch passes
+  the rest of that run. The catches come back at the run's end, or after about a second at rest.
+- **Never caught:** jumps from the rail, the pickers, the skip link or any anchor; keyboard scrolling; the reload
+  restore.
+- **Off** under reduced motion and on tier 0, where nothing is pinned. `?catch=off` turns it off to compare.
+- **How:** on the wheel, inside Lenis's `virtualScroll` hook; on touch, CSS `scroll-snap-stop` markers that the
+  script switches on and off, so phones keep native momentum ([architecture.md](architecture.md#scroll-to-world)).
+  What counts as fast, and the insist window, are tuned on the owner's phones. The phone half ships only if it
+  feels right inside Instagram ([open-questions.md](open-questions.md), 30); otherwise phones launch with free
+  scroll and desktop keeps its catch.
+
+### The rail
+
+- **Sub-dots:** smaller dots under their act for the 7 departments, the 5 events (GALA, Ignite, POLYMAZE, AEC, the
+  projects) and the light act's Steps, Growth and FAQ. The current act's sub-dots show as ticks, as the runs' ticks
+  do today.
+- **Name flashes:** entering an act or a sub-section, its name shows beside its dot for about 2 s, then the rail is
+  dots again. Entering a run, the act's flash names its first cut with it ("Departments · HR"). Desktop keeps the
+  current act's name on, as now.
+- **Hover (desktop):** every name and every sub-dot shows, each a link. Keyboard focus on the rail shows every name
+  the same way.
+- **Hold (phones):** about 0.4 s on the rail, a ring filling under the finger, opens it over a dark scrim with every
+  name. Slide and release on a name, or lift and tap one, to jump; tap away or scroll to close. The rows share the
+  screen's height, an act's row twice a sub-section's, and the row under the finger lights before release, so a
+  slide picks exactly even on a short phone. A plain tap on a dot still jumps. The rail shows no iOS or Android
+  press menu.
+- **Targets:** on phones the act dots sit 44 px apart and each tap area fills its pitch
+  ([quality.md](quality.md#accessibility)).
+- **Keyboard and screen readers:** sub-dots stay out of the tab order. The pickers and the footer list reach every
+  sub-section.
+- **Jumps land** where the pickers do: a cut at its middle, an act or a block at its top.
+- The department and event pickers stay.
+
+### The rail lands in the footer
+
+- The footer opens on "Jump back to": every act and sub-section, labelled, on the rail's dots and line and on the
+  rail's x. The fixed rail fades as it arrives. The motto stays the page's last line.
+- The first time the list arrives in a visit, the fixed rail acts out its hold once before it fades: the ring fills
+  around its dot, the rail opens with every name for about a second, then closes. Desktop opens it the same way,
+  without the ring. No text hint.
 
 ## Tiers and reduced motion
 
@@ -322,8 +381,8 @@ act are in each act above. Tiers are in [architecture.md](architecture.md#device
 ## Phones first
 
 Most visitors are on a phone in portrait, inside Instagram's browser. Each act is composed for 390x844 on its own:
-the field sits in the top 40% with type below, formations are scaled down, rail shows dots only, the pill sits
-bottom right. Fewer points, the same story.
+the field sits in the top 40% with type below, formations are scaled down, the rail shows dots (names flash as you
+enter, and a hold opens it), the pill sits bottom right. Fewer points, the same story.
 
 ## Before and after opening
 

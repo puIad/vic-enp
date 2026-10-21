@@ -25,5 +25,13 @@ Terms for the VIC-ENP landing page, settled on the wayfinder map (2026-10-19). T
 - **Passage**: one of C's three physical hand-overs (door, tunnel, horizon) between A's speed and B's.
 - **Hand-over**: how one act gives way to the next (a morph, a passage or a hard cut).
 - **The light act**: act 6 (how to join and the FAQ), the only act on Bright Gray.
+- **Waypoint rail**: the fixed column of dots at the left edge, one per act, the page's only navigation. At the
+  end it lands in the footer as "Jump back to".
+- **Sub-dot**: a smaller rail dot for one cut or block inside an act (a department, an event, Steps, Growth, FAQ).
+  The current act's show as ticks; all show with names on hover or a hold.
+- **Catch**: the scroll gliding to rest on a catch point when a fast fling or wheel burst would carry the visitor
+  past it. Slow scrolling is never caught. Avoid: "snap" (the formations snap per cut), "scroll lock".
+- **Catch point**: one of the 16 places a catch can land: each cut, the top of act 2, the peak's resolved photo,
+  the top of the light act, the close at rest.
 - **Tier**: the device class chosen at load (0 no canvas, 1 phones, 2 desktops).
 - **Comp**: a throwaway HTML and three.js mock of an act on a never-merged `prototype/*` branch.

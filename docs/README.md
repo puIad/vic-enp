@@ -20,6 +20,10 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   layout items, the logo formations, the unbuilt parts of the spec, a few extras, then the performance pass,
   reviews and launch, in one priority order ([build-plan.md](build-plan.md#slice-5-polish-and-launch)). Next: slice 5
   as tickets.
+- 2026-10-21: reading and wayfinding ([decisions.md](decisions.md), 68 to 78): a catch so a fast fling can't carry
+  a visitor past a cut or an act, a rail with sub-dots, name flashes and a hold on phones, and the rail landing in
+  the footer as "Jump back to". Slice 5's new group 4, ahead of the reactions
+  ([experience.md](experience.md#reading-and-wayfinding)).
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

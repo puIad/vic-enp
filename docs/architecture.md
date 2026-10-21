@@ -99,6 +99,10 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
 - `gsap.ticker` drives Lenis's `raf`, and Lenis's scroll events update ScrollTrigger, so the two share one clock.
 - Under reduced motion, Lenis is not started and every act jumps to its resting formation (still images per
   section), no scrubbing.
+- The catch (slice 5, [experience.md](experience.md#the-catch)) sits between input and the scroll: on the wheel
+  inside Lenis's `virtualScroll` hook, on touch as CSS `scroll-snap-stop` markers the script switches on and off.
+  Lenis's snap plugin is not used: it ignores touch and snaps only after a pause. Programmatic scrolls (`world.go`,
+  anchors, the reload restore) bypass it.
 
 ## Device tiers
 

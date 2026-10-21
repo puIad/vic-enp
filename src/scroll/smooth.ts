@@ -176,6 +176,17 @@ export function startScroll() {
   // `?catch=off` turns it off to compare.
   const catching = new URLSearchParams(location.search).get('catch') !== 'off'
   const glide = (t: number) => 1 - (1 - t) ** 3
+  // a caught glide; at rest, a flick made during it moves on one more point (catch.ts)
+  const glideTo = (y: number): void => {
+    lenis.scrollTo(y, {
+      duration: GLIDE / 1000,
+      easing: glide,
+      onComplete: () => {
+        const next = caught.rested(performance.now())
+        if (next) glideTo(next.at)
+      },
+    })
+  }
   let frame = performance.now() // the last frame drawn: none for 100 ms means the page, not the visitor, paused the wheel
   const lenis: Lenis = new Lenis({
     anchors: true, // honours the page's scroll-padding-top on its own
@@ -186,7 +197,7 @@ export function startScroll() {
       const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from: lenis.animatedScroll, to, stalled })
       if (v === 'pass') return true
       event.preventDefault()
-      if (v !== 'hold') lenis.scrollTo(v.at, { duration: GLIDE / 1000, easing: glide, onComplete: () => caught.rested(performance.now()) })
+      if (v !== 'hold') glideTo(v.at)
       return false
     },
   })

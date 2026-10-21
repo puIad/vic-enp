@@ -1,8 +1,8 @@
-// The catch's rules (docs/experience.md, The catch; decisions.md, 68, 69, 78 and 79): a fast burst that would carry the
-// visitor past a catch point rests on it, a slow one crosses, the point you rest on never catches again, and a quick
-// second burst just after the rest, inside a run, passes the rest of it for that burst only. No DOM
-// and no clock of its own, so it is tested alone and the phone catch can share it. The speeds are first values, for
-// the owner's checks to tune.
+// The catch's rules (docs/experience.md, The catch; decisions.md, 68, 69, 78 and 80): a fast swipe that would carry
+// the visitor past a catch point rests on it, and so does its coasting; a slow one crosses; the point you rest on never
+// catches again; a flick during the glide moves exactly one more point; and only the third quick swipe in a row passes
+// the rest of a run, never a still section. No DOM and no clock of its own, so it is tested alone and the phone catch
+// can share it. The values are first values, tuned on the owner's touchpad logs.
 
 /** A catch point in scroll px; the cuts of a run share its `run`. */
 export type Point = { y: number; run?: string }
@@ -15,16 +15,21 @@ export type Wheel = { t: number; dy: number; from: number; to: number; stalled?:
 /** `pass`: scroll as usual. `hold`: the rest of a caught gesture, dropped. `at`: glide to rest there. */
 export type Verdict = 'pass' | 'hold' | { at: number }
 
-// shortcut: FAST, GAP, INSIST, HOLD, FELL, FADE and REARM are first values from a desktop check; the owner's checks tune them.
+// shortcut: FAST, SLOW, ARM, GAP, INSIST, HOLD, FELL, FADE and REARM are first values from a desktop check and one
+// touchpad; the owner's checks tune them.
 /** px/s of wheel travel, over the last WINDOW ms, that counts as a fast burst */
 const FAST = 2400
 const WINDOW = 100
+/** a gesture that was fast within the last ARM ms still catches while it moves at SLOW px/s or more: a touchpad
+ *  flick coasts on its momentum well below FAST, and to the visitor it is still that flick */
+const ARM = 1000
+const SLOW = 600
 /** a pause this long between wheel events starts a new gesture */
 const GAP = 150
 /** a caught burst glides to rest on its point in this long */
 export const GLIDE = 400
-/** a second burst this soon after a catch comes to rest, inside a run, passes the rest of the run, for that burst only.
- *  Counted from the rest, never from the last event: a touchpad's momentum runs on for a second or more with no pause. */
+/** a swipe starting this soon after the last catch came to rest is quick; the third quick one in a row passes the rest of
+ *  a run. Counted from the rest, never from the last event: a touchpad's momentum runs on with no pause in it. */
 const INSIST = 500
 /** a caught gesture still pushing at full strength once its glide is over is a wheel spun on, not momentum */
 const HOLD = 600
@@ -40,20 +45,21 @@ export function catcher() {
   let points: Point[] = []
   /** this gesture's events over the last WINDOW ms: their time, size and where the scroll was */
   let recent: { t: number; d: number; from: number }[] = []
+  /** when this gesture last moved at FAST */
+  let armed = -Infinity
   /** the last wheel event's time and delta */
   let last = -Infinity
   let prev = 0
   /** the point last caught: it never catches again */
   let home: number | null = null
   /**
-   * This gesture was caught at `at` and its glide came to rest at `rest` (when the page said so): the rest of it is held,
-   * and a second burst right after it insists. `level` is its events' size, smoothed so that one spike or one stray small
+   * This gesture was caught at `at` and its glide came to rest at `rest` (when the page said so): the rest of it is held. `level` is its events' size, smoothed so that one spike or one stray small
    * event inside a finger stroke barely moves it, and `peak` the highest level since the catch; `fell` once the level
    * drops below FELL of the peak; `fading` while it shrinks by FADE or more over each TREND ms (`mark` is the last
-   * sample). Momentum fades; a finger still pushing holds its level.
+   * sample). Momentum fades; a finger still pushing holds its level. `queued`: a new flick came during the glide, so
+   * the rest moves on exactly one more point.
    */
   let held: {
-    run?: string
     dir: number
     at: number
     rest?: number
@@ -62,14 +68,34 @@ export function catcher() {
     mark: { t: number; level: number }
     fading: boolean
     fell: boolean
+    queued: boolean
   } | null = null
-  /** the run this gesture insists past, in one direction (1 down, -1 up); the next gesture catches again */
-  let insist: { run: string; dir: number } | null = null
+  /** this gesture started within INSIST after the last catch came to rest, the same way */
+  let quick = false
+  /** the swipes in a row that came to rest on a point, each started quickly after the one before */
+  let streak = 0
+  /** this gesture passes every run's cuts in this direction (1 down, -1 up), never a still section; the next one
+   *  catches again unless it too comes quickly */
+  let insist: number | null = null
 
   return {
-    /** The caught glide came to rest at time t: a stalled page can bring it there well after GLIDE. */
-    rested(t: number) {
-      if (held) held.rest = t
+    /**
+     * The caught glide came to rest at time t (a stalled page can bring it there well after GLIDE). A flick made during
+     * the glide moves on exactly one more point: its place to glide to next, or null to stay.
+     */
+    rested(t: number): { at: number } | null {
+      if (!held) return null
+      held.rest = t
+      if (!held.queued || home === null) return null
+      const dir = held.dir
+      const ahead = points.filter((p) => (dir > 0 ? p.y > home! + 1 : p.y < home! - 1))
+      const next = dir > 0 ? ahead[0] : ahead[ahead.length - 1]
+      if (!next) return (held.queued = false), null
+      // the flick counts as a quick swipe; its momentum is held on the new point
+      home = next.y
+      streak += 1
+      held = { ...held, at: t, rest: undefined, peak: held.level, mark: { t, level: held.level }, fading: false, fell: false, queued: false }
+      return { at: next.y }
     },
     points(p: Point[]) {
       points = [...p].sort((a, b) => a.y - b.y)
@@ -82,16 +108,22 @@ export function catcher() {
       // wildly inside itself), so nothing during the glide starts a new one
       const rest = held ? (held.rest ?? held.at + GLIDE) : -Infinity
       const gliding = !!held && t < rest
-      // a trackpad's momentum keeps sending events with no pause, so a new flick inside it shows as a jump in size
-      const flick = !gliding && !!held && (held.fell || held.fading) && d >= 8 && d > Math.abs(prev) * 2
+      // a trackpad's momentum keeps sending events with no pause, so a new flick inside it shows as a jump in size;
+      // during the glide it queues one more point, after it it starts a new gesture
+      const rise = !!held && (held.fell || held.fading) && d >= 8 && d > Math.abs(prev) * 2
+      if (gliding && rise && dir === held!.dir) held!.queued = true
+      const flick = !gliding && rise
       // a mouse wheel spun on sends the same notches with no pause: past the glide, it moves on to the next point
       const spun = !gliding && !!held && !held.fell && !held.fading && gap <= GAP && t - held.at >= HOLD
       if (gap >= REARM) home = null
       if (!gliding && (gap > GAP || flick || spun || dir !== Math.sign(prev))) {
-        // a new gesture catches again, unless it is the quick second burst just after a catch in a run came to rest
-        insist = held?.run && held.dir === dir && !spun && t - rest <= INSIST ? { run: held.run, dir } : null
+        // a wheel spun on is the same swipe going on: it keeps the count but never insists
+        quick = !!held && held.dir === dir && (spun || t - rest <= INSIST)
+        // the third quick swipe in a row insists (decision 80)
+        insist = quick && !spun && streak >= 2 ? dir : null
         held = null
         recent = []
+        armed = -Infinity
       }
       last = t
       prev = dy
@@ -108,14 +140,16 @@ export function catcher() {
       recent = recent.filter((e) => e.t > t - WINDOW)
       recent.push({ t, d, from })
       const speed = recent.reduce((s, e) => s + e.d, 0) / (WINDOW / 1000)
-      const skip = (p: Point) => (home !== null && Math.abs(p.y - home) < 2) || (insist && p.run === insist.run && dir === insist.dir)
+      const skip = (p: Point) => (home !== null && Math.abs(p.y - home) < 2) || (!!p.run && insist === dir)
       // crossed since the window began, so a point passed while the burst got up to speed still catches (a short glide back)
       const start = recent[0].from
       const crossed = points.filter((p) => !skip(p) && (dir > 0 ? p.y > start + 1 && p.y <= to : p.y < start - 1 && p.y >= to))
       const next = dir > 0 ? crossed[0] : crossed[crossed.length - 1]
-      if (!next || speed < FAST) return 'pass'
+      if (speed >= FAST) armed = t
+      if (!next || speed < SLOW || t - armed > ARM) return 'pass'
       home = next.y
-      held = { run: next.run, dir, at: t, level: d, peak: d, mark: { t, level: d }, fading: false, fell: false }
+      streak = quick ? streak + 1 : 1
+      held = { dir, at: t, level: d, peak: d, mark: { t, level: d }, fading: false, fell: false, queued: false }
       return { at: next.y }
     },
   }

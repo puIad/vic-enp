@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { catcher, type Point } from './catch'
 
-// Points 1000 apart; the departments' cuts at 1000..3000, then the peak's photo at 4000.
+// Points 1000 apart: a still section at 500, the departments' cuts at 1000..3000, the peak's photo at 4000 (still),
+// the events' cuts at 5000 and 6000, the light act at 7000 (still).
 const POINTS: Point[] = [
   { y: 500 },
   { y: 1000, run: 'departments' },
   { y: 2000, run: 'departments' },
   { y: 3000, run: 'departments' },
   { y: 4000 },
+  { y: 5000, run: 'events' },
+  { y: 6000, run: 'events' },
+  { y: 7000 },
 ]
 
 /** A wheel burst: n events 16 ms apart from t, each moving dy, starting at scroll y (Lenis's target runs ahead by dy). */
@@ -17,10 +21,13 @@ function burst(c: ReturnType<typeof catcher>, t: number, y: number, dy: number, 
   for (let i = 0; i < n; i++) {
     const v = c.wheel({ t: t + i * 16, dy, from: y, to: (to += dy) })
     out.push(v)
-    if (typeof v === 'object') return { at: v.at, events: out }
+    if (typeof v === 'object') return { at: v.at, t: t + i * 16, events: out }
   }
-  return { at: null, events: out }
+  return { at: null, t: t + (n - 1) * 16, events: out }
 }
+
+/** A swipe starting ms after the catch `a` came to rest (its glide's estimated end, GLIDE after the catch). */
+const after = (a: { t: number }, ms: number) => a.t + 400 + ms
 
 const fresh = () => {
   const c = catcher()
@@ -49,6 +56,33 @@ describe('the catch', () => {
     expect(v).toEqual(['pass', 'pass', { at: 1000 }])
   })
 
+  /** One gesture, events 16 ms apart from scroll 1100, the scroll following each delta. */
+  const drag = (c: ReturnType<typeof catcher>, dys: number[]) => {
+    let y = 1100
+    return dys.map((dy, i) => {
+      const v = c.wheel({ t: i * 16, dy, from: y, to: y + dy })
+      y += dy
+      return v
+    })
+  }
+
+  it("catches on a fast flick's coasting, though it has slowed below fast", () => {
+    // fast for 100 ms (about 3600 px/s), then coasting at about 1500 px/s across 2000
+    const v = drag(fresh(), [...Array(6).fill(60), ...Array(30).fill(25)])
+    expect(v.find((x) => typeof x === 'object')).toEqual({ at: 2000 })
+  })
+
+  it('lets a drag that was never fast cross at the same speed', () => {
+    const v = drag(fresh(), Array(40).fill(25))
+    expect(v.every((x) => x === 'pass')).toBe(true)
+  })
+
+  it("lets a flick's coasting cross once it has slowed to a crawl", () => {
+    // fast to 1820, then about 500 px/s across 2000 within the second
+    const v = drag(fresh(), [...Array(12).fill(60), ...Array(60).fill(8)])
+    expect(v.every((x) => x === 'pass')).toBe(true)
+  })
+
   it('holds the rest of the caught gesture where it rests', () => {
     const c = fresh()
     const { at } = burst(c, 0, 600, 60, 20)
@@ -73,6 +107,41 @@ describe('the catch', () => {
     expect(burst(c, 1050, 990, 60, 30).at).toBe(2000)
   })
 
+  /** Caught on 1000 at 96 ms; the stroke fades during the glide, then the finger flicks again `flicks` times. */
+  const flickInGlide = (c: ReturnType<typeof catcher>, flicks = 1) => {
+    burst(c, 0, 600, 60, 20)
+    let t = 96
+    const v = []
+    for (const dy of [50, 40, 30, 20, 14, 10, 8, 6, 5, 4, 4, 4, 4]) v.push(c.wheel({ t: (t += 16), dy, from: 1000, to: 1000 + dy }))
+    for (let f = 0; f < flicks; f++)
+      for (const dy of [60, 70, 50, 20, 8, 5, 4]) v.push(c.wheel({ t: (t += 8), dy, from: 1000, to: 1000 + dy }))
+    return v
+  }
+
+  it('moves exactly one more cut on a flick made during the glide, once it comes to rest', () => {
+    const c = fresh()
+    expect(flickInGlide(c).every((x) => x === 'hold')).toBe(true)
+    expect(c.rested(496)).toEqual({ at: 2000 })
+    // the flick's own momentum is held on the new cut
+    expect(c.wheel({ t: 520, dy: 6, from: 1500, to: 1506 })).toBe('hold')
+    expect(c.rested(900)).toBeNull()
+  })
+
+  it('never moves more than one cut for flicks made during one glide', () => {
+    const c = fresh()
+    flickInGlide(c, 2)
+    expect(c.rested(560)).toEqual({ at: 2000 })
+    expect(c.rested(960)).toBeNull()
+  })
+
+  it('counts a flick during the glide as a quick swipe: a quick swipe after it is the third', () => {
+    const c = fresh()
+    flickInGlide(c)
+    c.rested(496) // on to 2000
+    c.rested(896)
+    expect(burst(c, 1000, 2000, 120, 40).at).toBe(4000)
+  })
+
   it('never insists on a burst made during the glide: it steps on to the next cut', () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20) // caught on the first cut at 1000 at 96 ms, at rest by 496 ms
@@ -80,46 +149,59 @@ describe('the catch', () => {
     expect(burst(c, 400, 1000, 120, 40).at).toBe(2000)
   })
 
-  it('lets a quick second burst after the rest pass the rest of the run, up to the next point after it', () => {
+  // insisting (decision 80, the owner's three swipes): only the third swipe in a row, each starting within 0.5 s after
+  // the previous one came to rest, passes the rest of a run; the still sections stop every swipe
+  it('stops a quick second swipe on the next cut', () => {
     const c = fresh()
-    burst(c, 0, 600, 60, 20) // caught at 96 ms, at rest by 496 ms
-    // carries past 2000 and 3000; the peak at 4000 still catches
-    expect(burst(c, 560, 1000, 120, 40).at).toBe(4000)
+    const a = burst(c, 0, 600, 60, 20)
+    expect(burst(c, after(a, 100), 1000, 120, 40).at).toBe(2000)
   })
 
-  it('counts the insist window from the moment the glide comes to rest', () => {
+  it('lets a quick third swipe in a row pass the rest of the run, and stops it at the still section after', () => {
     const c = fresh()
-    burst(c, 0, 600, 60, 20) // caught at 96 ms, at rest by 496 ms
-    expect(burst(c, 900, 1000, 120, 40).at).toBe(4000)
+    const a = burst(c, 0, 600, 60, 20)
+    const b = burst(c, after(a, 100), 1000, 120, 40) // 2000
+    expect(burst(c, after(b, 100), 2000, 120, 40).at).toBe(4000)
   })
 
-  it('counts the insist window from when the page says the glide came to rest, however late', () => {
+  it('goes on skipping each further run while the quick swipes go on', () => {
+    const c = fresh()
+    const a = burst(c, 0, 600, 60, 20)
+    const b = burst(c, after(a, 100), 1000, 120, 40) // 2000
+    const d = burst(c, after(b, 100), 2000, 120, 40) // 4000, the peak
+    expect(burst(c, after(d, 100), 4000, 120, 40).at).toBe(7000)
+  })
+
+  it('starts the count again after a slow swipe', () => {
+    const c = fresh()
+    const a = burst(c, 0, 600, 60, 20) // 1000
+    const b = burst(c, after(a, 700), 1000, 120, 40) // 2000, swipe 1 again
+    expect(burst(c, after(b, 100), 2000, 120, 40).at).toBe(3000) // swipe 2: the next cut
+  })
+
+  it('counts the quick window from when the page says the glide came to rest, however late', () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20) // caught at 96 ms; the page stalls and the glide rests at 1200 ms
     c.rested(1200)
-    expect(burst(c, 1500, 1000, 120, 40).at).toBe(4000)
+    const b = burst(c, 1300, 1000, 120, 40) // 2000
+    c.rested(b.t + 800)
+    expect(burst(c, b.t + 900, 2000, 120, 40).at).toBe(4000)
   })
 
-  it('catches the next cut when the second burst comes after the insist window', () => {
+  it('catches the next cut when the next swipe comes after the quick window', () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20)
     expect(burst(c, 1050, 1000, 120, 40).at).toBe(2000)
   })
 
-  it('does not insist outside a run', () => {
-    const c = fresh()
-    expect(burst(c, 0, 0, 60, 20).at).toBe(500) // caught at 128 ms, at rest by 528 ms
-    expect(burst(c, 700, 500, 60, 20).at).toBe(1000)
-  })
-
-  it('reads a new flick inside the caught gesture\'s fading tail, just after the rest, as a second burst', () => {
+  it('reads a new flick inside the caught gesture\'s fading tail, just after the rest, as the next swipe', () => {
     const c = fresh()
     burst(c, 0, 600, 60, 20)
     // the trackpad's momentum fades with no pause past the rest at 496 ms, then the finger flicks again
     let t = 96
     for (let d = 50; d >= 2; d -= 2) expect(c.wheel({ t: (t += 18), dy: d, from: 1000, to: 1000 + d })).toBe('hold')
     expect(t).toBeGreaterThan(496)
-    expect(burst(c, t + 16, 1000, 120, 40).at).toBe(4000)
+    expect(burst(c, t + 16, 1000, 120, 40).at).toBe(2000)
   })
 
   it('steps a mouse wheel still spun at full speed after the glide on to the next point, never freezing the page', () => {
@@ -138,23 +220,26 @@ describe('the catch', () => {
       expect(c.wheel({ t: (t += 16), dy: d, from: 1000, to: 1000 + d })).toBe('hold')
   })
 
-  /** Caught on 1000 (at rest by 496 ms), then a gentle second burst at 600 ms insists while it drifts to 1060; its
-   *  last event at 632 ms. */
+  /** Caught on 1000, then 2000 on a quick second swipe; a gentle quick third swipe insists while it drifts to 2060.
+   *  `last`: its last event's time. */
   const insisting = () => {
     const c = fresh()
-    burst(c, 0, 600, 60, 20)
-    for (let i = 0; i < 3; i++) c.wheel({ t: 600 + i * 16, dy: 20, from: 1000 + i * 20, to: 1020 + i * 20 })
-    return c
+    const a = burst(c, 0, 600, 60, 20)
+    const b = burst(c, after(a, 100), 1000, 120, 40)
+    const t = after(b, 100)
+    for (let i = 0; i < 3; i++) c.wheel({ t: t + i * 16, dy: 20, from: 2000 + i * 20, to: 2020 + i * 20 })
+    return { c, last: t + 32 }
   }
 
   it('ends insisting with its flick: the next flick, after a short pause, catches the next cut again', () => {
-    expect(burst(insisting(), 1100, 1060, 120, 40).at).toBe(2000)
+    const { c, last } = insisting()
+    expect(burst(c, last + 300, 2060, 120, 40).at).toBe(3000)
   })
 
   it('never catches the insisting burst on the run\'s last cut as it passes the end', () => {
-    const c = insisting()
+    const { c, last } = insisting()
     // the same flick goes on; its lagging scroll crosses the last cut at 3000
-    const v = [2900, 2950, 3050, 3150].map((from, i) => c.wheel({ t: 648 + i * 16, dy: 120, from, to: from + 400 }))
+    const v = [2900, 2950, 3050, 3150].map((from, i) => c.wheel({ t: last + 16 + i * 16, dy: 120, from, to: from + 400 }))
     expect(v.filter((x) => typeof x === 'object')).toEqual([])
   })
 
@@ -196,19 +281,20 @@ describe('the catch', () => {
     const t0 = 16 * 5
     const v = [-107, -1, -172, -170, -160, -150].map((dy, i) => c.wheel({ t: t0 + 8 * (i + 1), dy, from: 3000, to: 3000 + dy }))
     expect(v).toEqual(['hold', 'hold', 'hold', 'hold', 'hold', 'hold'])
-  })
-
-  it('re-arms the run after about a second at rest', () => {
-    expect(burst(insisting(), 1500, 1060, 120, 40).at).toBe(2000)
+    // and it queues no extra cut
+    expect(c.rested(500)).toBeNull()
   })
 
   it('works the same scrolling up', () => {
     const c = fresh()
     expect(c.wheel({ t: 0, dy: -100, from: 2050, to: 1950 })).toBe('pass')
-    expect(burst(c, 400, 3500, -60, 20).at).toBe(3000) // caught at 528 ms, at rest by 928 ms
-    // a quick second burst up after the rest passes the rest of the run, to the point before it
-    expect(burst(c, 1000, 3000, -120, 40).at).toBe(500)
-    // after a rest the run catches again
-    expect(burst(c, 3000, 2500, -120, 40).at).toBe(2000)
+    const a = burst(c, 400, 3500, -60, 20) // 3000
+    const b = burst(c, after(a, 100), 3000, -120, 40)
+    expect(b.at).toBe(2000)
+    // a quick third swipe up passes the rest of the run, to the still section before it
+    const d = burst(c, after(b, 100), 2000, -120, 40)
+    expect(d.at).toBe(500)
+    // after a pause the run catches again
+    expect(burst(c, d.t + 3000, 2500, -120, 40).at).toBe(2000)
   })
 })

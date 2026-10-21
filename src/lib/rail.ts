@@ -67,8 +67,8 @@ export function subAt(act: RailAct, at: Where) {
 /** Where the visitor is on the rail: the act's index and its current sub-section (subAt). */
 export type Spot = { act: number; sub: number }
 /** A name showing beside its dot for about 2 s: an act's (sub -1) or a sub-section's. An act's flash on entering a run
- *  also names the cut it starts on (`names`), so that cut doesn't flash a second time. */
-export type Flash = { act: number; sub: number; label: string; names?: number }
+ *  also names the cut it starts on (`namesCut`), so that cut doesn't flash a second time. */
+export type Flash = { act: number; sub: number; label: string; namesCut?: number }
 
 /** The flash after the visitor moves from `from` to `to`; `prev` itself when nothing new should flash. */
 export function nextFlash(prev: Flash | null, from: Spot, to: Spot): Flash | null {
@@ -78,11 +78,11 @@ export function nextFlash(prev: Flash | null, from: Spot, to: Spot): Flash | nul
     if (!act.run) return { act: to.act, sub: -1, label: act.name }
     // at the door the run starts on its first cut; coming up from below, on its last
     const n = act.subs.length
-    const names = to.sub >= 0 && to.sub < n ? to.sub : to.sub < 0 ? 0 : n - 1
-    return { act: to.act, sub: -1, label: `${act.name} · ${act.subs[names].name}`, names }
+    const namesCut = to.sub >= 0 && to.sub < n ? to.sub : to.sub < 0 ? 0 : n - 1
+    return { act: to.act, sub: -1, label: `${act.name} · ${act.subs[namesCut].name}`, namesCut }
   }
   if (to.sub === from.sub || to.sub < 0 || to.sub >= act.subs.length) return prev
-  if (prev && prev.act === to.act && prev.names === to.sub) return prev
+  if (prev && prev.act === to.act && prev.namesCut === to.sub) return prev
   return { act: to.act, sub: to.sub, label: act.subs[to.sub].name }
 }
 

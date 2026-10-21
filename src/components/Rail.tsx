@@ -85,7 +85,7 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
       setRing(null)
     }
     const onStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return reset()
+      if (e.touches.length !== 1 || !phone()) return reset()
       const t = e.touches[0]
       start = { x: t.clientX, y: t.clientY }
       held = false
@@ -116,7 +116,9 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
       reset()
       if (!wasHeld) return
       e.preventDefault() // no click on the dot under the finger: the rows are open now
-      if (slid) document.querySelector<HTMLAnchorElement>(`.rail-sheet a[data-row="${pick.current}"]`)?.click()
+      // after the touch ends everywhere: Lenis's own touchend (on window, after this one) would stop the jump's scroll
+      const row = pick.current
+      if (slid) setTimeout(() => document.querySelector<HTMLAnchorElement>(`.rail-sheet a[data-row="${row}"]`)?.click())
     }
     const noMenu = (e: Event) => e.preventDefault() // no Android press menu on the rail's links
     el.addEventListener('touchstart', onStart, { passive: true })
@@ -176,7 +178,7 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
   }, [landed])
 
   const away = landed && !demo
-  const named = flash && flash.sub < 0 && flash.names !== undefined ? RAIL[flash.act].subs[flash.names].name : null
+  const cutName = flash && flash.sub < 0 && flash.namesCut !== undefined ? RAIL[flash.act].subs[flash.namesCut].name : null
 
   return (
     <>
@@ -187,12 +189,12 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
         inert={away}
       >
         {RAIL.map((a, k) => {
-          const f = flash?.act === k
+          const flashing = flash?.act === k
           return (
             <Fragment key={a.id}>
               <a
                 href={`#${a.id}`}
-                className={`${k <= now ? 'on' : ''} ${k === now ? 'now' : ''} ${f && flash.sub < 0 ? 'flash' : ''}`}
+                className={`${k <= now ? 'on' : ''} ${k === now ? 'now' : ''} ${flashing && flash.sub < 0 ? 'flash' : ''}`}
                 aria-current={k === now ? 'location' : undefined}
                 draggable={false}
                 onClick={() => setSheet(false)}
@@ -200,7 +202,7 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
                 <i aria-hidden="true" />
                 <span>
                   {a.name}
-                  {f && named && <em aria-hidden="true"> · {named}</em>}
+                  {flashing && cutName && <em aria-hidden="true"> · {cutName}</em>}
                 </span>
               </a>
               {a.subs.length > 0 && (
@@ -214,7 +216,7 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
                         href={`#${s.id}`}
                         tabIndex={-1}
                         draggable={false}
-                        className={`${here && t <= sub ? 'on' : ''} ${here && t === sub ? 'now' : ''} ${f && flash.sub === t ? 'flash' : ''}`}
+                        className={`${here && t <= sub ? 'on' : ''} ${here && t === sub ? 'now' : ''} ${flashing && flash.sub === t ? 'flash' : ''}`}
                         onClick={(e) => onRailLink(e, s.id)}
                       >
                         <b aria-hidden="true" />
@@ -231,7 +233,7 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
       {ring && <div className="rail-ring" aria-hidden="true" style={{ left: ring.x, top: ring.y } as CSSProperties} />}
       {sheet && (
         // the hold's rows: a touch view of the rail's own links, so it stays out of the reading order
-        <div className={`rail-sheet ${demo ? 'demo' : ''}`} aria-hidden="true">
+        <div className={`rail-sheet ${demo ? 'demo' : ''}`} aria-hidden="true" onContextMenu={(e) => e.preventDefault()}>
           <div className="rail-scrim" onClick={close} />
           <ol>
             {ROWS.map((r, i) => (

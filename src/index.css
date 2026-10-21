@@ -639,6 +639,11 @@
       gap: 5px;
       margin: -14px 0;
     }
+    /* too small to tap (quality.md: 44 px targets) and tucked into the act dots' pitch: taps pass to the act dots,
+       and the hold reaches every sub-section */
+    .rail-subs {
+      pointer-events: none;
+    }
     .rail-subs a {
       padding-left: 9px;
     }
@@ -669,7 +674,8 @@
     }
   }
 
-  /* the hold's ring, filling under the finger (or around the dot, the one time the rail lands) */
+  /* the hold's ring, filling under the finger (or around the dot, the one time the rail lands). It runs under reduced
+     motion too: it is the hold's only feedback, and the one-time hold never plays there */
   .rail-ring {
     position: fixed;
     z-index: 31;

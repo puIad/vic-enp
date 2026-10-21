@@ -52,7 +52,7 @@ export function App() {
             </div>
           )}
           <Hero cta={cta} />
-          <WhatVic />
+          <WhatVic staged={staged} />
         </div>
         <WhyJoin />
         <Departments staged={staged} />
@@ -61,7 +61,7 @@ export function App() {
         <Join />
         <Close cta={cta} staged={staged} />
       </main>
-      <Footer />
+      <Footer staged={staged} />
     </>
   )
 }

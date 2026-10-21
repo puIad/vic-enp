@@ -16,6 +16,8 @@ export const world = {
   line: { up: -9, down: -9 },
   /** The close: 0..1 as its section enters the screen, before its pinned travel (#17). */
   entry: 0,
+  /** Act 2: how far the field is under the benefits, 0..1 (#36, lib/scrub.ts). */
+  under: 0,
   /** An opaque act (the light act, the footer) covers the whole screen: nothing to draw. */
   covered: false,
   /** The peak's photo as laid out, in screen px (ClubLifePeak), for the points to resolve into. */

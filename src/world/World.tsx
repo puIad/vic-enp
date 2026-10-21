@@ -360,6 +360,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
       hero: world.hero,
       line: world.line,
       entry: world.entry,
+      under: world.under,
       gather,
       lit,
       phone: l.phone,

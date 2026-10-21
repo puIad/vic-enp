@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
+import { underBenefits } from '../lib/scrub'
 import { restorer, whereAt, type Range } from './restore'
 
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
@@ -39,13 +40,15 @@ function measure(): Range[] {
   return out
 }
 
-/** Where the scroll is, into the store: the act and its progress, the horizons' lines, the close's entry, the cover. */
+/** Where the scroll is, into the store: the act and its progress, act 2's dim, the horizons' lines, the close's entry, the cover. */
 function follow() {
   let ranges: Range[] = []
   const up = () => document.querySelector('.horizon:not(.down)')
   const down = () => document.querySelector('.horizon.down')
   const covers = () => [document.getElementById('lightact'), document.getElementById('footer')]
   const apply = () => document.getElementById('apply')
+  const benefits = () => document.getElementById('benefits')
+  const door = () => document.getElementById('departments')
 
   const update = () => {
     const y = scrollY
@@ -68,6 +71,10 @@ function follow() {
       const v = ndc(b.top + b.height * at)
       return v < -3 || v > 3 ? -9 : v
     }
+    // act 2's field dims under the benefits (#36)
+    const b = benefits()
+    const d = door()
+    world.under = b && d ? underBenefits(b.getBoundingClientRect().top, d.getBoundingClientRect().top, vh) : 0
     world.line.up = line(up(), 0.52)
     world.line.down = line(down(), 0.48)
     world.covered = covers().some((el) => {

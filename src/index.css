@@ -997,6 +997,66 @@
       padding-top: 14px;
     }
   }
+  /* ---------- the word scrub (#36): a word lights over --sl of its block's progress (--sk) from its start (--a) ---------- */
+  .sw {
+    --wo: clamp(0, calc((var(--sk, 0) - var(--a)) / var(--sl, 0.05)), 1);
+    display: inline-block;
+    opacity: var(--wo);
+    translate: 0 calc((1 - var(--wo)) * 0.2em);
+  }
+
+  /* ---------- act 2 with the world (#36): two screens pinned; the copy fades from 56% as the numbers rise ---------- */
+  .a2-pin {
+    height: 300svh;
+  }
+  .a2-stage {
+    --fade: clamp(0, calc((var(--sk, 0) - 0.56) * 10), 1);
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    padding-top: 110px;
+    padding-bottom: 64px;
+    overflow: hidden;
+  }
+  .a2-stage > * {
+    grid-area: 1 / 1;
+  }
+  .a2-text {
+    align-self: center;
+  }
+  .a2-title {
+    opacity: calc(1 - 0.7 * var(--fade));
+  }
+  .a2-sent {
+    opacity: calc(1 - var(--fade));
+  }
+  .a2-nums.staged > li {
+    --no: clamp(0, calc((var(--sk, 0) - var(--a)) / 0.12), 1);
+    opacity: var(--no);
+    translate: 0 calc((1 - var(--no)) * 28px);
+  }
+  /* each number's gradient hairline draws out from the left as it rises */
+  .a2-nums.staged > li::before {
+    scale: var(--no) 1;
+    transform-origin: left;
+  }
+  @media (max-width: 767px) {
+    .a2-stage {
+      padding-top: 104px;
+      padding-bottom: 96px;
+    }
+    /* on a phone the numbers take the middle of the screen, so the title leaves with the sentences */
+    .a2-title {
+      opacity: calc(1 - var(--fade));
+    }
+  }
+
+  /* ---------- the closing motto with the world (#36): the word scrub, each word over a quarter of the way ---------- */
+  .motto.staged {
+    --sl: 0.25;
+  }
+
   /* ---------- the close with the world (#17): pinned 230svh, the travel in CSS vars from Close ---------- */
   .close.staged {
     height: 230svh;

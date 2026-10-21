@@ -1,35 +1,11 @@
-import { Fragment, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react'
-import { DEPT_STEPS, EVENT_STEPS, stepAt } from '../world/steps'
-import { world } from '../world/store'
+import { useEffect, useRef, useState } from 'react'
 import type { Cta } from '../lib/opening'
+import { RAIL, subAt } from '../lib/rail'
 import { ApplyPill } from './ApplyPill'
+import { Rail } from './Rail'
 
-// The fixed chrome of #10: logo on its night plate, "Distance to the 600", the waypoint rail, the sticky Apply pill.
+// The fixed chrome of #10: logo on its night plate, "Distance to the 600", the waypoint rail (Rail), the sticky Apply pill.
 // shortcut: the sound toggle waits for its loop asset (docs/assets.md, Missing); a toggle with no sound would be a placeholder.
-
-const WAYPOINTS = [
-  { id: 'top', name: 'Start' },
-  { id: 'the-600', name: 'The 600' },
-  { id: 'departments', name: 'Departments' },
-  { id: 'club-life', name: 'Club life' },
-  { id: 'events', name: 'Events' },
-  { id: 'join', name: 'How to join' },
-  { id: 'apply', name: 'Your place' },
-]
-
-/** The cut runs' ticks (#13, #15): while a staged run holds the screen, its waypoint grows one tick per cut. */
-const RUNS: Record<string, { steps: number[]; first: number; cuts: number }> = {
-  departments: { steps: DEPT_STEPS, first: 1, cuts: 7 },
-  events: { steps: EVENT_STEPS, first: 0, cuts: 5 },
-}
-const subscribe = (cb: () => void) => (world.listeners.add(cb), () => void world.listeners.delete(cb))
-function useCut() {
-  return useSyncExternalStore(subscribe, () => {
-    const run = RUNS[world.act]
-    if (!run || !document.querySelector(`#${world.act}[data-pin]`)) return ''
-    return `${world.act}:${stepAt(run.steps, world.progress).i - run.first}`
-  })
-}
 
 const START = 48 // the readout's distance at the top of the page, as in the hero comp
 
@@ -44,17 +20,18 @@ const overLight = (y: number) => {
 
 export function Chrome({ cta }: { cta: Cta }) {
   const [now, setNow] = useState(0)
+  const [sub, setSub] = useState(-1)
+  const [landed, setLanded] = useState(false)
   const [lit, setLit] = useState({ rail: false, readout: false, logo: false })
   const [pillHidden, setPillHidden] = useState(true)
   const dist = useRef<HTMLElement>(null)
-  const [runAct, runCut] = useCut().split(':')
 
   useEffect(() => {
     let raf = 0
     const update = () => {
       raf = 0
       // looked up each time: the staged acts replace their tier 0 sections after first paint
-      const sections = WAYPOINTS.map((w) => document.getElementById(w.id))
+      const sections = RAIL.map((w) => document.getElementById(w.id))
       const footer = document.getElementById('footer')
       const ctas = ['hero-cta', 'close-cta'].map((id) => document.getElementById(id))
       const vh = innerHeight
@@ -64,6 +41,16 @@ export function Chrome({ cta }: { cta: Cta }) {
         if (s && s.getBoundingClientRect().top <= vh * 0.45) i = k
       })
       setNow(i)
+      // the act's sub-section: a staged run's cut from its pin, otherwise the blocks' tops (tier 0's cards, the light act)
+      const act = RAIL[i]
+      const sec = sections[i]
+      if (!act.subs.length || !sec) setSub(-1)
+      else if (act.run && sec.matches('[data-pin]'))
+        setSub(subAt(act, { progress: Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / Math.max(1, sec.offsetHeight - vh))) }))
+      else setSub(subAt(act, { tops: act.subs.map((s) => document.getElementById(s.id)?.getBoundingClientRect().top ?? Infinity), vh }))
+      // the rail lands in the footer's "Jump back to": the fixed one fades as the list arrives
+      const list = document.getElementById('jump-back')
+      setLanded(list ? list.getBoundingClientRect().top < vh : false)
 
       const close = sections[sections.length - 1]
       const end = close ? close.getBoundingClientRect().top + scrollY : 1
@@ -103,23 +90,7 @@ export function Chrome({ cta }: { cta: Cta }) {
         Distance to the 600
         <b ref={dist}>{START.toFixed(1)}</b>
       </div>
-      <nav className={`rail ${lit.rail ? 'lit' : ''}`} aria-label="Waypoints" style={{ '--fill': `${(now / (WAYPOINTS.length - 1)) * 100}%` } as CSSProperties}>
-        {WAYPOINTS.map((w, k) => (
-          <Fragment key={w.id}>
-            <a href={`#${w.id}`} className={`${k <= now ? 'on' : ''} ${k === now ? 'now' : ''}`} aria-current={k === now ? 'location' : undefined}>
-              <i aria-hidden="true" />
-              <span>{w.name}</span>
-            </a>
-            {runAct === w.id && (
-              <span className="rail-ticks" aria-hidden="true">
-                {Array.from({ length: RUNS[w.id].cuts }, (_, t) => (
-                  <b key={t} className={`${t <= +runCut ? 'on' : ''} ${t === +runCut ? 'now' : ''}`} />
-                ))}
-              </span>
-            )}
-          </Fragment>
-        ))}
-      </nav>
+      <Rail now={now} sub={sub} lit={lit.rail} landed={landed} />
       <ApplyPill cta={cta} className={`corner ${pillHidden ? 'hide' : ''}`} inert={pillHidden} />
     </header>
   )

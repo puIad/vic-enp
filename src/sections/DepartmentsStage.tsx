@@ -17,6 +17,7 @@ function Cut({ d, n, on, open, onToggle }: { d: Department; n: number; on: boole
   const off = on ? undefined : -1
   return (
     <article
+      id={`dept-${d.id}`}
       aria-labelledby={`dc-${d.id}`}
       className={`cut ${on ? 'on' : ''} ${open ? 'open' : ''}`}
       style={{ '--c': d.accent, '--c2': d.accent2 ?? d.accent } as CSSProperties}

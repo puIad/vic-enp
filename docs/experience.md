@@ -335,8 +335,9 @@ of all, and didn't realize the rail's dots link back. Slice 5's group 4 builds i
 - **Never caught:** jumps from the rail, the pickers, the skip link or any anchor; keyboard scrolling; the reload
   restore.
 - **Off** under reduced motion and on tier 0, where nothing is pinned. `?catch=off` turns it off to compare.
-- **How:** on the wheel, inside Lenis's `virtualScroll` hook; on touch, CSS `scroll-snap-stop` markers that the
-  script switches on and off, so phones keep native momentum ([architecture.md](architecture.md#scroll-to-world)).
+- **How:** on the wheel, inside Lenis's `virtualScroll` hook; on touch, by watching the page coast after the finger lifts
+  and gliding back to a point it coasts across, so phones keep native momentum
+  ([architecture.md](architecture.md#scroll-to-world); [decisions.md](decisions.md), 83).
   What counts as fast, and the insist window, are tuned on the owner's phones. The phone half ships only if it
   feels right inside Instagram ([open-questions.md](open-questions.md), 30); otherwise phones launch with free
   scroll and desktop keeps its catch.

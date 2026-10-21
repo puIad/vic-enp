@@ -7,6 +7,7 @@ import { underBenefits } from '../lib/scrub'
 import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, stepMiddle } from '../world/steps'
 import { GLIDE, catcher, type Point } from './catch'
 import { restorer, whereAt, type Range } from './restore'
+import { touchCatch } from './touch'
 
 // Loaded after first paint (App), so GSAP and Lenis stay out of the first view's JS budget (docs/quality.md).
 gsap.registerPlugin(ScrollTrigger)
@@ -150,8 +151,18 @@ function follow(measured: (ranges: Range[]) => void) {
 // shortcut: a live switch of the OS setting swaps the acts to their stills but keeps Lenis as it started; a reload settles it.
 export function startScroll() {
   document.documentElement.classList.add('sc-ready') // scroll-craft's shoot.mjs waits for this before it samples
+  // the catch: on the wheel inside Lenis's virtualScroll hook below, on touch by watching the page coast (touch.ts).
+  // Keys, anchors and every scrollTo (world.go, the restore) never reach it. Off under reduced motion; `?catch=off`
+  // turns it off to compare.
+  const catching = !matchMedia(REDUCE).matches && new URLSearchParams(location.search).get('catch') !== 'off'
   const caught = catcher()
-  const stopFollow = follow((ranges) => caught.points(catchPoints(ranges)))
+  let phone: ReturnType<typeof touchCatch> | null = null
+  let points: Point[] = []
+  const stopFollow = follow((ranges) => {
+    points = catchPoints(ranges)
+    caught.points(points)
+    phone?.points(points)
+  })
   const triggers: ScrollTrigger[] = []
   // the hero's hand-over (#11): 0.7 screen in which the copy lifts and fades while the camera dollies into the field.
   // The copy only moves once the world is on screen (.w-ready); tier 0 keeps the still composition.
@@ -166,15 +177,12 @@ export function startScroll() {
     triggers.push(ScrollTrigger.create({ trigger: hero, start: 'top top', end: () => `+=${innerHeight * 0.7}`, invalidateOnRefresh: true, onUpdate: hand, onRefresh: hand }))
   }
   const stop = () => {
+    phone?.stop()
     stopFollow()
     triggers.forEach((t) => t.kill())
   }
   if (matchMedia(REDUCE).matches) return stop
 
-  // the catch works on the wheel only: keys, touch, anchors and every scrollTo (world.go, the restore) never reach it.
-  // shortcut: phones keep free scroll until the phone catch (#61) shares catch.ts's rules.
-  // `?catch=off` turns it off to compare.
-  const catching = new URLSearchParams(location.search).get('catch') !== 'off'
   const glide = (t: number) => 1 - (1 - t) ** 3
   // a caught glide; at rest, a flick made during it moves on one more point (catch.ts)
   const glideTo = (y: number): void => {
@@ -208,7 +216,18 @@ export function startScroll() {
   }
   gsap.ticker.add(tick)
   gsap.ticker.lagSmoothing(0)
-  world.go = (y) => lenis.scrollTo(y)
+  // on touch, the coasting page glides back to its point the same way, and a finger down stops the glide where it is
+  if (catching) {
+    phone = touchCatch(
+      (y, done) => lenis.scrollTo(y, { duration: GLIDE / 1000, easing: glide, force: true, onComplete: done }),
+      () => lenis.scrollTo(scrollY, { immediate: true, force: true }),
+    )
+    phone.points(points)
+  }
+  world.go = (y) => {
+    phone?.cancel()
+    lenis.scrollTo(y)
+  }
   return () => {
     world.go = null
     gsap.ticker.remove(tick)

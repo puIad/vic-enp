@@ -42,6 +42,13 @@ const TREND = 200
 /** this long with no wheel events lets the point you rest on catch again */
 const REARM = 1000
 
+/** The new catch points, sorted, and the point you rest on moved with the page: it keeps its place in the list. */
+function repoint(points: Point[], p: Point[], home: number | null) {
+  const next = [...p].sort((a, b) => a.y - b.y)
+  const i = home === null ? -1 : points.findIndex((q) => Math.abs(q.y - home) < 2)
+  return { points: next, home: i >= 0 ? (next[i]?.y ?? null) : home }
+}
+
 export function catcher() {
   let points: Point[] = []
   /** this gesture's events over the last WINDOW ms: their time, size and where the scroll was */
@@ -99,11 +106,7 @@ export function catcher() {
       return { at: next.y }
     },
     points(p: Point[]) {
-      const next = [...p].sort((a, b) => a.y - b.y)
-      // the point you rest on moves with the page: keep it by its place in the list
-      const i = home === null ? -1 : points.findIndex((q) => Math.abs(q.y - home!) < 2)
-      if (i >= 0) home = next[i]?.y ?? null
-      points = next
+      ;({ points, home } = repoint(points, p, home))
     },
     wheel({ t, dy, from, to, stalled }: Wheel): Verdict {
       const d = Math.abs(dy)
@@ -159,6 +162,116 @@ export function catcher() {
       streak = quick ? streak + 1 : 1
       held = { dir, at: t, level: d, peak: d, mark: { t, level: d }, fading: false, fell: false, queued: false }
       return { at: next.y }
+    },
+  }
+}
+
+// The phone half (#61): the browser keeps its own momentum, and the catch watches the page coast after the finger lifts.
+// When the coasting page crosses a point while still moving, it glides back to rest there, as a touchpad's coasting
+// does on the wheel. The finger's own drag is never caught: it is direct manipulation. Same rules otherwise: the point
+// you rest on never catches again, and only the third quick fling in a row passes the rest of a run, never a still
+// section. Watching the page instead of guessing from the finger: phones settle where momentum ends at the lift,
+// before the page hears of it, and how far it carries differs between iOS and Android.
+
+// shortcut: both speeds are first values; tuned on the owner's phones inside Instagram (open question 30).
+/** px/s of coasting scroll that counts as a fling's momentum */
+const FLUNG = 700
+/** a flung page still catches while it coasts at this speed or more */
+const COASTING = 300
+/** the momentum's first move may come this long after the lift (a busy page draws late) */
+const LIFT = 500
+/** moves against the fling (a jitter as the finger lifts, the toolbar resizing) end it only past this many px */
+const BACK = 100
+
+export function flinger() {
+  let points: Point[] = []
+  let home: number | null = null
+  /** when the finger went down and where the scroll was, and when the last catch came to rest */
+  let down = -Infinity
+  let from = 0
+  let rest = -Infinity
+  let dir = 0
+  let streak = 0
+  /** the page coasting since the finger lifted, the way the finger dragged it: its last scroll positions, how far it has
+   *  gone back against that way, whether it has moved, and whether at FLUNG */
+  let coast: {
+    /** where the finger lifted: a point within a px of it is the one you're on, never crossed */
+    start: number
+    recent: { t: number; y: number }[]
+    dir: number
+    quick: boolean
+    insist: boolean
+    back: number
+    moved: boolean
+    armed: boolean
+  } | null = null
+
+  return {
+    points(p: Point[]) {
+      ;({ points, home } = repoint(points, p, home))
+    },
+    /** a finger went down at t with the scroll at y */
+    touch(t: number, y: number) {
+      from = y
+      coast = null
+      // a finger down during the glide stops it there: that is its rest, and this fling is a quick one
+      if (rest === Infinity) rest = t
+      if (t - rest >= REARM) home = null
+      down = t
+    },
+    /** the finger lifted at t with the scroll at y: what follows is momentum */
+    release(t: number, y: number) {
+      const d = Math.sign(y - from)
+      if (!d) {
+        coast = null
+        return
+      }
+      const quick = d === dir && down - rest <= INSIST
+      // the third quick fling in a row insists (decision 80)
+      coast = { start: y, recent: [{ t, y }], dir: d, quick, insist: quick && streak >= 2, back: 0, moved: false, armed: false }
+    },
+    /** a jump or a key: nothing to catch until the next finger */
+    cancel() {
+      coast = null
+    },
+    /** The page scrolled to y at time t: the point to glide back to and rest on, or null. */
+    scroll(t: number, y: number): { at: number } | null {
+      if (!coast) return null
+      const prev = coast.recent[coast.recent.length - 1]
+      if (Math.abs(y - prev.y) < 0.5) return null
+      // momentum that stopped (and anything after it) isn't this fling's. A page busy building a cut's formation sends
+      // no scroll events for a while, but the momentum runs on: a pause the page crossed at speed is not a stop.
+      const gap = t - prev.t
+      if (!coast.moved ? gap > LIFT : gap > GAP && (Math.abs(y - prev.y) / gap) * 1000 < COASTING) return (coast = null)
+      coast.moved = true
+      const d = Math.sign(y - prev.y)
+      coast.recent = coast.recent.filter((e) => e.t > t - WINDOW)
+      coast.recent.push({ t, y })
+      // a bounce at the page's end, or the visitor's own reverse: the fling is over; a small jitter is not
+      if (d !== coast.dir) {
+        coast.back += Math.abs(y - prev.y)
+        return coast.back > BACK ? (coast = null) : null
+      }
+      // over the last WINDOW ms, or since the last event if a pause left nothing else in it
+      const first = coast.recent.length > 1 ? coast.recent[0] : prev
+      const speed = Math.max(0, ((y - first.y) * d) / Math.max(t - first.t, 16)) * 1000
+      if (speed >= FLUNG) coast.armed = true
+      const { insist, start } = coast
+      const skip = (p: Point) => (home !== null && Math.abs(p.y - home) < 2) || (!!p.run && insist) || Math.abs(p.y - start) <= 1
+      // crossed since the last event: a frame can land a hair short of a point, so no margin here
+      const crossed = points.filter((p) => !skip(p) && (d > 0 ? p.y > prev.y && p.y <= y : p.y < prev.y && p.y >= y))
+      const next = d > 0 ? crossed[0] : crossed[crossed.length - 1]
+      if (!next || !coast.armed || speed < COASTING) return null
+      home = next.y
+      dir = d
+      streak = coast.quick ? streak + 1 : 1
+      rest = Infinity // until the glide comes to rest
+      coast = null
+      return { at: next.y }
+    },
+    /** the glide came to rest at t */
+    rested(t: number) {
+      rest = t
     },
   }
 }

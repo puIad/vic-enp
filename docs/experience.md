@@ -167,8 +167,9 @@ the hero goes on scroll.
 - **Layout:** numbers as a four-column row under gradient hairlines on desktop, a 2x2 grid on a phone.
 - **Slice 5 ([plan](build-plan.md#slice-5-polish-and-launch), group 3):** the word scrub and the dim are built
   ([#36](https://github.com/puIad/vic-enp/issues/36)): the four numbers rise one after another from 58% and are all
-  in place by 94%, so the pin never holds still. The counters and the pulse are not
-  ([#37](https://github.com/puIad/vic-enp/issues/37)).
+  in place by 94%, so the pin never holds still. The counters and the pulse are built
+  ([#37](https://github.com/puIad/vic-enp/issues/37)): each number counts from when it starts to rise (the year from
+  2000, as in the comp), and the pulse is the Apply wave's ring, sized to the cloud and run from its centre.
 
 ### 3. Departments
 

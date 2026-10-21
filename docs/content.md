@@ -56,7 +56,8 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 - The values line ("What we hold to": Respect, Diversity, Contribution and creativity, Legacy) left the page on
   2026-10-20 ([decisions.md](decisions.md), 54).
 - Numbers (owner, 2026-10-20): **600** members / **40+** trainings a year / **10+** major events / **since 2014**,
-  no caption. "~20 sponsors" stays out. There is no count-up on the page, so "10+" renders as written.
+  no caption. "~20 sponsors" stays out. With the world they count up once ([decisions.md](decisions.md), 63) and
+  "10+" ends with its plus; a screen reader, tier 0 and reduced motion get the figures as written.
 - Why join, title (**new**): What you get. Ten benefits from §3 in three groups (group names **new**):
   - **Lead early:** Real responsibility, early (large events with corporate guests, sponsors and hundreds of
     attendees) / Organizing-team experience / A path to leadership (Project Managers, Department Heads, or run for

@@ -1038,6 +1038,12 @@
     opacity: var(--no);
     translate: 0 calc((1 - var(--no)) * 28px);
   }
+  /* the counters (#37): the figure and its plus keep their room, unseen, while the count runs over them; then they
+     show for good and the count steps out, so nothing on the row moves */
+  .a2-nums.staged > li:not([data-counted]) :is(.a2-final, .a2-plus),
+  .a2-nums.staged > li[data-counted] .a2-count {
+    opacity: 0;
+  }
   /* each number's gradient hairline draws out from the left as it rises */
   .a2-nums.staged > li::before {
     scale: var(--no) 1;

@@ -329,9 +329,9 @@ of all, and didn't realize the rail's dots link back. Slice 5's group 4 builds i
 - **One gesture, one point:** the point you rest on never catches you again, so every new gesture moves on.
 - **Insisting:** the third swipe in a row, each starting within about 0.25 s after the previous one came to rest, passes
   the rest of a run (the departments or the events); the still sections (act 2's top, the peak, the light act, the
-  close) still stop it, and swiping on quickly skips each further run. A flick made during the glide moves exactly one
-  more point. A swipe that has been fast keeps catching while it coasts, down to about 600 px/s
-  ([decisions.md](decisions.md), 80 and 81).
+  close) still stop it, and swiping on quickly skips each further run. A flick made during the glide (on a mouse, a new
+  spin) moves exactly one more point. A swipe that has been fast keeps catching while it coasts, down to about 600 px/s
+  ([decisions.md](decisions.md), 80 to 82).
 - **Never caught:** jumps from the rail, the pickers, the skip link or any anchor; keyboard scrolling; the reload
   restore.
 - **Off** under reduced motion and on tier 0, where nothing is pinned. `?catch=off` turns it off to compare.

@@ -98,6 +98,8 @@ describe('the catch', () => {
     // the page stalls 300 ms entering the cut; the burst's queued tail arrives after it
     expect(c.wheel({ t: 400, dy: 120, from: 1000, to: 1120, stalled: true })).toBe('hold')
     expect(c.wheel({ t: 416, dy: 60, from: 1000, to: 1180 })).toBe('hold')
+    // and that gap is no new spin: nothing more is queued
+    expect(c.rested(496)).toBeNull()
   })
 
   it('never catches again on the point it rests on: the next burst moves on', () => {
@@ -121,10 +123,21 @@ describe('the catch', () => {
   it('moves exactly one more cut on a flick made during the glide, once it comes to rest', () => {
     const c = fresh()
     expect(flickInGlide(c).every((x) => x === 'hold')).toBe(true)
+    // the flick's momentum coasts on with no pause
+    for (let t = 376; t <= 488; t += 16) expect(c.wheel({ t, dy: 4, from: 1000, to: 1004 })).toBe('hold')
     expect(c.rested(496)).toEqual({ at: 2000 })
-    // the flick's own momentum is held on the new cut
-    expect(c.wheel({ t: 520, dy: 6, from: 1500, to: 1506 })).toBe('hold')
+    // and is held on the new cut
+    expect(c.wheel({ t: 504, dy: 4, from: 1500, to: 1504 })).toBe('hold')
     expect(c.rested(900)).toBeNull()
+  })
+
+  // the owner's mouse (2026-10-21): every click 100 px, 16 ms apart in a spin; a new spin is a pause, then more clicks
+  it('moves exactly one more cut on a mouse spin made during the glide, once it comes to rest', () => {
+    const c = fresh()
+    expect(burst(c, 0, 600, 100, 20).at).toBe(1000) // caught at 48 ms, at rest by 448 ms
+    // a 200 ms pause, then a new spin, all inside the glide: held
+    for (let t = 250; t < 400; t += 16) expect(c.wheel({ t, dy: 100, from: 1000, to: 1100 })).toBe('hold')
+    expect(c.rested(448)).toEqual({ at: 2000 })
   })
 
   it('never moves more than one cut for flicks made during one glide', () => {

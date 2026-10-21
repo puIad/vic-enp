@@ -1,8 +1,9 @@
-// The catch's rules (docs/experience.md, The catch; decisions.md, 68, 69, 78, 80 and 81): a fast swipe that would carry
-// the visitor past a catch point rests on it, and so does its coasting; a slow one crosses; the point you rest on never
-// catches again; a flick during the glide moves exactly one more point; and only the third quick swipe in a row passes
-// the rest of a run, never a still section. No DOM and no clock of its own, so it is tested alone and the phone catch
-// can share it. The values are first values, tuned on the owner's touchpad logs.
+// The catch's rules (docs/experience.md, The catch; decisions.md, 68, 69, 78 and 80 to 82): a fast swipe that would
+// carry the visitor past a catch point rests on it, and so does its coasting; a slow one crosses; the point you rest on
+// never catches again; a flick (or a mouse's new spin) during the glide moves exactly one more point; and only the
+// third quick swipe in a row passes the rest of a run, never a still section. No DOM and no clock of its own, so it is
+// tested alone and the phone catch can share it. The values are first values, tuned on the owner's touchpad and mouse
+// logs.
 
 /** A catch point in scroll px; the cuts of a run share its `run`. */
 export type Point = { y: number; run?: string }
@@ -111,7 +112,9 @@ export function catcher() {
       // a trackpad's momentum keeps sending events with no pause, so a new flick inside it shows as a jump in size;
       // during the glide it queues one more point, after it it starts a new gesture
       const rise = !!held && (held.fell || held.fading) && d >= 8 && d > Math.abs(prev) * 2
-      if (gliding && rise && dir === held!.dir) held!.queued = true
+      // a mouse spin is all the same clicks, so a new one shows only as the pause before it (a stalled page's pause
+      // reads as none)
+      if (gliding && (rise || gap > GAP) && dir === held!.dir) held!.queued = true
       const flick = !gliding && rise
       // a mouse wheel spun on sends the same notches with no pause: past the glide, it moves on to the next point
       const spun = !gliding && !!held && !held.fell && !held.fading && gap <= GAP && t - held.at >= HOLD

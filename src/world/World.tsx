@@ -479,14 +479,14 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     const slotW = world.slot ? slotAt(l, world.slot.x, world.slot.y) : [0, 0, 0]
     const wave = world.wave > 0 ? (performance.now() - world.wave) / 650 : -1
     // act 2's 600 lands (#37): the same ring, once, slower and out from the cloud's centre, sized to the cloud
-    const members = world.members > 0 ? (performance.now() - world.members) / 1100 : -1
-    u.uWaveR.value = halfWidth(l) * 1.6
+    const landed = world.landed > 0 ? (performance.now() - world.landed) / 1100 : -1
     if (wave >= 0 && wave <= 1.3) {
       u.uWave.value = wave
       u.uWaveO.value.set(slotW[0], slotW[1], 0)
-    } else if (members >= 0 && members <= 1.3) {
+      u.uWaveR.value = halfWidth(l) * 1.6
+    } else if (landed >= 0 && landed <= 1.3) {
       const { position: c, scale } = heroPlacement(l.phone)
-      u.uWave.value = members
+      u.uWave.value = landed
       u.uWaveO.value.set(c[0], c[1] + K.shift * HH, 0)
       u.uWaveR.value = scale * 3.4
     } else u.uWave.value = -1

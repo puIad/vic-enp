@@ -125,9 +125,11 @@ function useCounters(pin: RefObject<HTMLDivElement | null>, staged: boolean) {
         if (ms < COUNT_MS) raf ||= requestAnimationFrame(tick)
         else {
           li.dataset.counted = ''
+          // the pulse belongs to act 2: a 600 that lands with another act on screen (a restored scroll, a flick
+          // past) passes it up for good
           if (i === 0 && !pulsed.current) {
             pulsed.current = true
-            world.members = now
+            if (world.act === 'the-600') world.landed = now
           }
         }
       })

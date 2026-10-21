@@ -30,7 +30,7 @@ export const world = {
   wave: -1,
   /** performance.now() of act 2's 600 landing at the end of its count, for the members' pulse from the centre (#37);
    *  -1 when none. */
-  members: -1,
+  landed: -1,
   /** performance.now() of a tap on a department's cluster, for its pulse; -1 when none. */
   pulse: -1,
   /** Scrolls the page to y through Lenis when it runs (smooth.ts), natively otherwise. */

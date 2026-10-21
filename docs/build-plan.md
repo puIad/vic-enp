@@ -101,7 +101,7 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
 4. **Reading and wayfinding** (68 to 78, added on 2026-10-21): the rail first (sub-dots, name flashes, hover and
    the phone hold, the footer landing with its one-time hold), then [the catch](experience.md#the-catch), desktop
    first, then phones on a preview the owner tries inside Instagram (open question 30). Spec in
-   [experience.md](experience.md#reading-and-wayfinding).
+   [experience.md](experience.md#reading-and-wayfinding). Tickets [#59](https://github.com/puIad/vic-enp/issues/59), [#60](https://github.com/puIad/vic-enp/issues/60), [#61](https://github.com/puIad/vic-enp/issues/61), in that order.
 5. **Reactions, the light act, grain, sound** (63, 64):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
@@ -149,8 +149,9 @@ In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25
 
 1. Finish group 3: the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)), then the counters and the
    600's pulse ([#37](https://github.com/puIad/vic-enp/issues/37)).
-2. Group 4, reading and wayfinding (new on 21 Oct, [decisions.md](decisions.md), 68 to 78): ticket it under #25,
-   build the rail, then the catch, and put the phone catch on a preview for the owner (open question 30).
+2. Group 4, reading and wayfinding (new on 21 Oct, [decisions.md](decisions.md), 68 to 78): the rail
+   ([#59](https://github.com/puIad/vic-enp/issues/59)), the catch on desktop ([#60](https://github.com/puIad/vic-enp/issues/60)),
+   then the phone catch on a preview for the owner ([#61](https://github.com/puIad/vic-enp/issues/61), open question 30).
 3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
    ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)),
    the sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)). For the sound, Claude shortlists CC0 loops and

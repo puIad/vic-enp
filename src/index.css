@@ -380,6 +380,7 @@
     color: var(--color-night);
   }
 
+  /* ---------- the waypoint rail (#10, #59): act dots, sub-dots, name flashes, every name on hover, focus or a hold ---------- */
   .rail {
     position: fixed;
     left: var(--rail);
@@ -389,6 +390,16 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    transition: opacity 0.5s var(--ease-out-expo);
+    /* a hold on the rail opens its rows: no iOS callout, no text selection */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* the rail has landed in the footer's "Jump back to" */
+  .rail.away {
+    opacity: 0;
+    pointer-events: none;
   }
   .rail::before,
   .rail::after {
@@ -403,7 +414,7 @@
   .rail::after {
     background: var(--grad);
     bottom: auto;
-    height: var(--fill, 0%);
+    height: var(--fill, 0px);
     box-shadow: 0 0 8px rgb(105 196 175 / 0.6);
     transition: height 0.5s var(--ease-out-expo);
   }
@@ -417,6 +428,7 @@
     color: rgb(239 239 239 / 0.45);
     font-size: var(--t-cap);
     line-height: 1;
+    -webkit-user-drag: none;
     transition: color 0.35s var(--ease-out-expo);
   }
   .rail i {
@@ -439,6 +451,11 @@
       transform 0.4s var(--ease-out-expo);
     white-space: nowrap;
   }
+  /* entering a run, the act's flash names the cut it starts on ("Departments · HR") */
+  .rail em {
+    font-style: normal;
+    opacity: 0.7;
+  }
   .rail a.on {
     color: #fff;
   }
@@ -451,12 +468,48 @@
       0 0 0 4px rgb(105 196 175 / 0.18),
       0 0 14px var(--color-aqua);
   }
-  .rail a.now span,
-  .rail:hover span,
-  .rail a:focus-visible span {
+  .rail a.flash span {
     opacity: 1;
     transform: none;
   }
+
+  /* sub-dots: the current act's show as ticks, one per cut or block (#13, #15, #59); the rest wait for the open rail */
+  .rail-subs {
+    position: relative;
+    z-index: 1;
+    display: none;
+    flex-direction: column;
+    gap: 7px;
+    margin: -8px 0 -6px;
+  }
+  .rail-subs.cur {
+    display: flex;
+  }
+  .rail-subs a {
+    height: 3px;
+    padding-left: 3px;
+    gap: 15px;
+    font-size: 12px;
+  }
+  .rail-subs b {
+    flex: none;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgb(239 239 239 / 0.3);
+    transition:
+      background 0.2s,
+      box-shadow 0.2s;
+  }
+  .rail-subs a.on b {
+    background: var(--color-aqua);
+  }
+  .rail-subs a.now b {
+    box-shadow:
+      0 0 0 3px rgb(105 196 175 / 0.22),
+      0 0 8px var(--color-aqua);
+  }
+
   /* over the light act each piece flips on its own (#10) */
   .rail.lit a {
     color: rgb(20 30 39 / 0.4);
@@ -477,37 +530,393 @@
   .rail.lit::before {
     background: var(--line-dark);
   }
+  .rail.lit .rail-subs b {
+    background: rgb(20 30 39 / 0.25);
+  }
+  .rail.lit .rail-subs a.on b {
+    background: var(--color-night);
+  }
+  .rail.lit .rail-subs a.now b {
+    box-shadow: 0 0 0 3px rgb(20 30 39 / 0.12);
+  }
 
-  /* one tick per cut under the current cut run's waypoint (#13, #15) */
-  .rail-ticks {
-    position: relative;
-    z-index: 1;
+  @media (min-width: 768px) {
+    /* desktop keeps the current act's name on */
+    .rail > a.now span {
+      opacity: 1;
+      transform: none;
+    }
+    /* keyboard focus and the one-time hold open every name and every sub-dot, each a link (hover below) */
+    .rail.open span,
+    .rail:has(a:focus-visible) span {
+      opacity: 1;
+      transform: none;
+    }
+    .rail.open .rail-subs,
+    .rail:has(a:focus-visible) .rail-subs {
+      display: flex;
+      gap: 0;
+      margin: -14px 0 -12px;
+    }
+    .rail.open .rail-subs a,
+    .rail:has(a:focus-visible) .rail-subs a {
+      height: 22px;
+      padding-left: 2px;
+      gap: 14px;
+    }
+    .rail.open .rail-subs b,
+    .rail:has(a:focus-visible) .rail-subs b {
+      width: 5px;
+      height: 5px;
+    }
+  }
+  /* the one-time hold opens over the arriving footer list: the names get a night plate */
+  /* the margin and the centring take the padding back, so no dot moves */
+  .rail.open {
+    padding: 18px 22px 18px 14px;
+    margin-left: -14px;
+    border-radius: 16px;
+    background: rgb(20 30 39 / 0.92);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .rail.open::before,
+  .rail.open::after {
+    left: 18px;
+    top: 24px;
+  }
+  .rail.open::before {
+    bottom: 24px;
+  }
+  @media (min-width: 768px) and (hover: hover) {
+    .rail:hover span {
+      opacity: 1;
+      transform: none;
+    }
+    .rail:hover .rail-subs {
+      display: flex;
+      gap: 0;
+      margin: -14px 0 -12px;
+    }
+    .rail:hover .rail-subs a {
+      height: 22px;
+      padding-left: 2px;
+      gap: 14px;
+    }
+    .rail:hover .rail-subs b {
+      width: 5px;
+      height: 5px;
+    }
+    .rail .rail-subs a:hover,
+    .rail > a:hover {
+      color: #fff;
+    }
+    .rail.lit .rail-subs a:hover,
+    .rail.lit > a:hover {
+      color: var(--color-night);
+    }
+  }
+
+  @media (max-width: 767px) {
+    /* phones: dots only, 44 px apart, each tap area filling its pitch (78); a name shows on a plate while it flashes */
+    .rail {
+      gap: 0;
+    }
+    .rail > a {
+      height: 44px;
+      padding: 0 16px 0 6px;
+    }
+    .rail::before,
+    .rail::after {
+      left: 10px;
+    }
+    .rail::before {
+      top: 22px;
+      bottom: 22px;
+    }
+    .rail-subs {
+      gap: 5px;
+      margin: -14px 0;
+    }
+    /* too small to tap (quality.md: 44 px targets) and tucked into the act dots' pitch: taps pass to the act dots,
+       and the hold reaches every sub-section */
+    .rail-subs {
+      pointer-events: none;
+    }
+    .rail-subs a {
+      padding-left: 9px;
+    }
+    .rail span {
+      position: absolute;
+      left: 28px;
+      top: 50%;
+      translate: 0 -50%;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgb(20 30 39 / 0.95);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 13px;
+      pointer-events: none;
+    }
+    .rail.lit span {
+      background: rgb(239 239 239 / 0.92);
+      color: var(--color-night);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* the names appear without sliding */
+    .rail span {
+      transform: none;
+      transition: opacity 0.2s;
+    }
+  }
+
+  /* the hold's ring, filling under the finger (or around the dot, the one time the rail lands). It runs under reduced
+     motion too: it is the hold's only feedback, and the one-time hold never plays there */
+  .rail-ring {
+    position: fixed;
+    z-index: 31;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(var(--color-aqua) calc(var(--hold) * 1turn), rgb(239 239 239 / 0.16) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+    filter: drop-shadow(0 0 6px rgb(105 196 175 / 0.6));
+    animation: hold-fill 0.4s linear forwards;
+  }
+  @keyframes hold-fill {
+    to {
+      --hold: 1;
+    }
+  }
+
+  /* the hold's rows over a dark scrim: they share the screen's height, an act's row twice a sub-section's */
+  .rail-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .rail-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgb(10 15 20 / 0.84);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    animation: sheet-fade 0.25s var(--ease-out-expo);
+  }
+  .rail-sheet ol {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: min(80vw, 320px);
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    margin: -8px 0 -6px 3px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    animation: sheet-in 0.35s var(--ease-out-expo);
   }
-  .rail-ticks b {
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    background: rgb(239 239 239 / 0.3);
+  .rail-sheet ol::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--rail) + 10px);
+    top: 2%;
+    bottom: 2%;
+    width: 1px;
+    background: var(--line);
+  }
+  .rail-sheet li {
+    flex-basis: 0;
+    min-height: 0;
+    display: flex;
+  }
+  .rail-sheet a {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-left: calc(var(--rail) + 6px);
+    color: rgb(239 239 239 / 0.6);
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-user-drag: none;
     transition:
-      background 0.2s,
-      box-shadow 0.2s;
+      color 0.15s,
+      background 0.15s;
   }
-  .rail-ticks b.on {
+  .rail-sheet .act a {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .rail-sheet i {
+    position: relative;
+    flex: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid rgb(239 239 239 / 0.45);
+    background: var(--color-night);
+  }
+  .rail-sheet .sub a {
+    gap: 16px;
+  }
+  .rail-sheet .sub i {
+    width: 5px;
+    height: 5px;
+    margin-left: 2px;
+    border: 0;
+    background: rgb(239 239 239 / 0.35);
+  }
+  .rail-sheet a.here i {
+    border-color: var(--color-aqua);
     background: var(--color-aqua);
+    box-shadow: 0 0 10px var(--color-aqua);
   }
-  .rail-ticks b.now {
+  /* the row under the finger lights before release */
+  .rail-sheet a.lit {
+    color: #fff;
+    background: linear-gradient(90deg, rgb(105 196 175 / 0.26), rgb(105 196 175 / 0));
+  }
+  .rail-sheet a.lit i {
+    border-color: var(--color-aqua);
     box-shadow:
-      0 0 0 3px rgb(105 196 175 / 0.22),
-      0 0 8px var(--color-aqua);
+      0 0 0 4px rgb(105 196 175 / 0.2),
+      0 0 14px var(--color-aqua);
+  }
+  @keyframes sheet-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translateX(-12px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rail-scrim,
+    .rail-sheet ol {
+      animation: none;
+    }
+  }
+
+  /* ---------- the rail landed: the footer's "Jump back to" (#59), on the rail's dots, line and x ---------- */
+  .foot {
+    padding-left: var(--gut);
+  }
+  .jump {
+    margin: 0 0 72px calc(var(--rail) - var(--gut));
+  }
+  .jump-title {
+    margin-left: 21px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-mute);
+  }
+  .jump ol {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .jump > ol {
+    margin-top: 14px;
+  }
+  .jump > ol::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 16px;
+    bottom: 16px;
+    width: 1px;
+    background: var(--grad);
+    opacity: 0.55;
+  }
+  .jump a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .jump-act {
+    min-height: 44px;
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .jump-act i {
+    flex: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-aqua);
+    box-shadow: 0 0 10px rgb(105 196 175 / 0.6);
+  }
+  .jump-sub {
+    min-height: 30px;
+    gap: 14px;
+    padding-left: 2px;
+    font-size: 14px;
+    color: var(--color-gray);
+  }
+  .jump-sub b {
+    flex: none;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-aqua);
+    opacity: 0.6;
+  }
+  .jump a:hover,
+  .jump a:focus-visible {
+    color: var(--color-aqua);
+  }
+  .jump ol ol {
+    margin: -6px 0 6px;
   }
   @media (max-width: 767px) {
-    .rail-ticks {
-      margin-left: 9px;
-      gap: 5px;
+    /* the phone rail's links pad their dots 6 px in */
+    .jump {
+      margin-left: calc(var(--rail) - var(--gut) + 6px);
+    }
+  }
+  @media (min-width: 768px) {
+    /* the list sits in the gutter, beside the links; the motto follows both */
+    .foot {
+      display: grid;
+      grid-template-columns: calc(var(--gut) - var(--rail)) minmax(0, 1fr);
+      align-items: start;
+      padding-left: var(--rail);
+    }
+    .foot > * {
+      grid-column: 2;
+    }
+    .foot > .jump {
+      grid-column: 1;
+      grid-row: 1;
+      margin: -4px 0 0;
+    }
+    .jump-act {
+      min-height: 36px;
+      font-size: 15px;
+    }
+    .jump-sub {
+      min-height: 26px;
+      font-size: 13px;
     }
   }
 
@@ -555,24 +964,6 @@
     }
     .readout b {
       font-size: 17px;
-    }
-    .rail {
-      gap: 16px;
-    }
-    .rail span {
-      /* dots only on phones; the names stay for screen readers */
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-    }
-    .rail a {
-      padding: 6px;
-    }
-    .rail::before,
-    .rail::after {
-      left: 10px;
     }
     .pill.corner {
       top: auto;
@@ -1137,4 +1528,11 @@
   font: 600 12px/1.4 ui-monospace, monospace;
   white-space: nowrap;
   pointer-events: none;
+}
+
+/* the hold's ring fills through a typed property (Rail, .rail-ring) */
+@property --hold {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
 }

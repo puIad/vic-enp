@@ -316,7 +316,7 @@ the hero goes on scroll.
 
 Added on 2026-10-21 ([decisions.md](decisions.md), 68 to 78). Testers skimmed past whole acts, the departments most
 of all, and didn't realize the rail's dots link back. Slice 5's group 4 builds it
-([build-plan.md](build-plan.md#slice-5-polish-and-launch)).
+([build-plan.md](build-plan.md#slice-5-polish-and-launch)). The rail and its footer landing are built in [#59](https://github.com/puIad/vic-enp/issues/59).
 
 ### The catch
 

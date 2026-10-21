@@ -29,7 +29,7 @@ function Cards() {
       </h2>
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {EVENTS.map((e) => (
-          <article key={e.id} aria-labelledby={`e-${e.id}`} className="card flex flex-col p-6 md:p-8" style={accent(e.accent)}>
+          <article key={e.id} id={`event-${e.id}`} aria-labelledby={`e-${e.id}`} className="card flex flex-col p-6 md:p-8" style={accent(e.accent)}>
             {e.photo && !e.photo2 && (
               <Photo
                 id={e.photo}
@@ -72,7 +72,7 @@ function Cards() {
           </article>
         ))}
 
-        <article aria-labelledby="e-projects" className="card p-6 md:col-span-2 md:p-8" style={accent('#69C4AF')}>
+        <article id="event-projects" aria-labelledby="e-projects" className="card p-6 md:col-span-2 md:p-8" style={accent('#69C4AF')}>
           <div className="grid gap-8 md:grid-cols-12">
             <div className="md:col-span-4">
               <h3 id="e-projects" className="text-[clamp(34px,3.4vw,52px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">

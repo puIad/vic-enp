@@ -9,6 +9,7 @@ const Stage = lazy(() => import('./DepartmentsStage'))
 function Card({ d }: { d: Department }) {
   return (
     <article
+      id={`dept-${d.id}`}
       aria-labelledby={`d-${d.id}`}
       className="card flex flex-col px-6 pt-[26px] pb-7"
       style={{ '--c': d.accent, '--c2': d.accent2 ?? d.accent } as CSSProperties}

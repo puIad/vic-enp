@@ -64,6 +64,7 @@ export default function EventsStage() {
         {EVENTS.map((e, i) => (
           <article
             key={e.id}
+            id={`event-${e.id}`}
             aria-labelledby={`ec-${e.id}`}
             className={`cut ev ${i === cut ? 'on' : ''} ${e.photo ? 'has-photo' : ''} ${e.photo2 ? 'has-pair' : ''}`}
             style={{ '--c': e.accent } as CSSProperties}
@@ -104,7 +105,7 @@ export default function EventsStage() {
             </div>
           </article>
         ))}
-        <article aria-labelledby="ec-projects" className={`cut ev projects ${cut === 4 ? 'on' : ''}`} style={{ '--c': '#69C4AF' } as CSSProperties}>
+        <article id="event-projects" aria-labelledby="ec-projects" className={`cut ev projects ${cut === 4 ? 'on' : ''}`} style={{ '--c': '#69C4AF' } as CSSProperties}>
           <div className="ev-text">
             <h3 id="ec-projects" className="cut-line">
               <Peel text="Four more projects." />

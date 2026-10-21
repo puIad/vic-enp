@@ -7,7 +7,7 @@ import { FAQ, RUNGS, STEPS } from '../content/join'
 
 function Steps() {
   return (
-    <ol className="relative mt-12 grid gap-10 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-16 md:grid-cols-2 md:gap-x-8 md:gap-y-14 xl:grid-cols-4 xl:border-t xl:border-night/70 xl:pt-0">
+    <ol id="steps" className="relative mt-12 grid gap-10 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-16 md:grid-cols-2 md:gap-x-8 md:gap-y-14 xl:grid-cols-4 xl:border-t xl:border-night/70 xl:pt-0">
       {STEPS.map((s, i) => (
         <li key={s.title} className="relative xl:pt-12">
           {/* the node on the hairline: left edge on a phone, top edge on a wide screen */}
@@ -119,7 +119,7 @@ export function Join() {
           <Steps />
         </section>
 
-        <section aria-labelledby="h-grow" className="wrap border-t border-(--line-dark) py-20 md:mr-[150px] md:ml-(--gut) md:px-0 md:py-28">
+        <section id="grow" aria-labelledby="h-grow" className="wrap border-t border-(--line-dark) py-20 md:mr-[150px] md:ml-(--gut) md:px-0 md:py-28">
           <h2 id="h-grow" className="t-act text-night">
             Then grow.
           </h2>
@@ -127,7 +127,7 @@ export function Join() {
           <Grow />
         </section>
 
-        <section aria-labelledby="h-faq" className="wrap border-t border-(--line-dark) pt-20 pb-28 md:mr-[150px] md:ml-(--gut) md:px-0 md:pt-28 md:pb-36">
+        <section id="faq" aria-labelledby="h-faq" className="wrap border-t border-(--line-dark) pt-20 pb-28 md:mr-[150px] md:ml-(--gut) md:px-0 md:pt-28 md:pb-36">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
             <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
               <h2 id="h-faq" className="t-act text-night">

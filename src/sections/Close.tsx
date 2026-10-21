@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react'
 import { Arrow } from '../components/ApplyPill'
+import { JumpBack } from '../components/JumpBack'
 import { Plain, Words } from '../components/Scrub'
 import { ClosePoster, usePhone } from '../components/Poster'
 import { ADDRESS, EMAIL, SOCIAL } from '../config'
@@ -181,7 +182,9 @@ export function Footer({ staged = false }: { staged?: boolean }) {
   const motto = useRef<HTMLParagraphElement>(null)
   useScrub(motto, staged, mottoAt, mottoState)
   return (
-    <footer id="footer" data-sc-act="flow" className="relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) pb-[88px] pl-(--gut) md:pt-28 md:pb-24">
+    <footer id="footer" data-sc-act="flow" className="foot relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) pb-[88px] md:pt-28 md:pb-24">
+      {/* the footer opens on the rail, landed: in the gutter beside the links on a wide screen, above them on a phone */}
+      <JumpBack />
       <div className="grid gap-12 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4 lg:col-span-3">
           {/* no description line: act 2 says it (decisions.md, 58) */}

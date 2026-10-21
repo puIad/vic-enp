@@ -407,6 +407,20 @@ describe('the catch on phones', () => {
     expect(fling(f, a.t + 2000, 1000, 3000).at).toBe(2000)
   })
 
+  it('skips the point you rest on while you drift off it, and catches it again after a pause', () => {
+    const f = phone()
+    const a = fling(f, 0, 600, 3000)
+    expect(a.at).toBe(1000)
+    f.rested(a.t + 400)
+    // 0.5 s after the rest (not quick), from just short of 1000: it passes 1000 and rests on 2000
+    expect(fling(f, a.t + 900, 950, 3000).at).toBe(2000)
+    const g = phone()
+    const b = fling(g, 0, 600, 3000)
+    g.rested(b.t + 400)
+    // after a pause longer than REARM, 1000 catches again
+    expect(fling(g, b.t + 1900, 950, 3000).at).toBe(1000)
+  })
+
   it('passes the rest of a run on the third quick fling, never a still section', () => {
     const f = phone()
     const a = fling(f, 0, 600, 4000)
@@ -458,6 +472,15 @@ describe('the catch on phones', () => {
     f.release(2100, 900)
     f.cancel()
     expect(f.scroll(2116, 1100)).toBeNull()
+  })
+
+  it('catches a point the last frame landed a hair short of', () => {
+    const f = phone()
+    f.touch(0, 1800)
+    f.release(100, 1900)
+    expect(f.scroll(116, 1950)).toBeNull()
+    expect(f.scroll(132, 1999.5)).toBeNull()
+    expect(f.scroll(148, 2049)).toEqual({ at: 2000 })
   })
 
   it('takes the way the finger dragged, and lets a small jitter the other way pass', () => {

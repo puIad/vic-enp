@@ -42,6 +42,13 @@ const TREND = 200
 /** this long with no wheel events lets the point you rest on catch again */
 const REARM = 1000
 
+/** The new catch points, sorted, and the point you rest on moved with the page: it keeps its place in the list. */
+function repoint(points: Point[], p: Point[], home: number | null) {
+  const next = [...p].sort((a, b) => a.y - b.y)
+  const i = home === null ? -1 : points.findIndex((q) => Math.abs(q.y - home) < 2)
+  return { points: next, home: i >= 0 ? (next[i]?.y ?? null) : home }
+}
+
 export function catcher() {
   let points: Point[] = []
   /** this gesture's events over the last WINDOW ms: their time, size and where the scroll was */
@@ -99,11 +106,7 @@ export function catcher() {
       return { at: next.y }
     },
     points(p: Point[]) {
-      const next = [...p].sort((a, b) => a.y - b.y)
-      // the point you rest on moves with the page: keep it by its place in the list
-      const i = home === null ? -1 : points.findIndex((q) => Math.abs(q.y - home!) < 2)
-      if (i >= 0) home = next[i]?.y ?? null
-      points = next
+      ;({ points, home } = repoint(points, p, home))
     },
     wheel({ t, dy, from, to, stalled }: Wheel): Verdict {
       const d = Math.abs(dy)
@@ -192,6 +195,8 @@ export function flinger() {
   /** the page coasting since the finger lifted, the way the finger dragged it: its last scroll positions, how far it has
    *  gone back against that way, whether it has moved, and whether at FLUNG */
   let coast: {
+    /** where the finger lifted: a point within a px of it is the one you're on, never crossed */
+    start: number
     recent: { t: number; y: number }[]
     dir: number
     quick: boolean
@@ -203,10 +208,7 @@ export function flinger() {
 
   return {
     points(p: Point[]) {
-      const next = [...p].sort((a, b) => a.y - b.y)
-      const i = home === null ? -1 : points.findIndex((q) => Math.abs(q.y - home!) < 2)
-      if (i >= 0) home = next[i]?.y ?? null
-      points = next
+      ;({ points, home } = repoint(points, p, home))
     },
     /** a finger went down at t with the scroll at y */
     touch(t: number, y: number) {
@@ -226,7 +228,7 @@ export function flinger() {
       }
       const quick = d === dir && down - rest <= INSIST
       // the third quick fling in a row insists (decision 80)
-      coast = { recent: [{ t, y }], dir: d, quick, insist: quick && streak >= 2, back: 0, moved: false, armed: false }
+      coast = { start: y, recent: [{ t, y }], dir: d, quick, insist: quick && streak >= 2, back: 0, moved: false, armed: false }
     },
     /** a jump or a key: nothing to catch until the next finger */
     cancel() {
@@ -254,9 +256,10 @@ export function flinger() {
       const first = coast.recent.length > 1 ? coast.recent[0] : prev
       const speed = Math.max(0, ((y - first.y) * d) / Math.max(t - first.t, 16)) * 1000
       if (speed >= FLUNG) coast.armed = true
-      const insist = coast.insist
-      const skip = (p: Point) => (home !== null && Math.abs(p.y - home) < 2) || (!!p.run && insist)
-      const crossed = points.filter((p) => !skip(p) && (d > 0 ? p.y > prev.y + 1 && p.y <= y : p.y < prev.y - 1 && p.y >= y))
+      const { insist, start } = coast
+      const skip = (p: Point) => (home !== null && Math.abs(p.y - home) < 2) || (!!p.run && insist) || Math.abs(p.y - start) <= 1
+      // crossed since the last event: a frame can land a hair short of a point, so no margin here
+      const crossed = points.filter((p) => !skip(p) && (d > 0 ? p.y > prev.y && p.y <= y : p.y < prev.y && p.y >= y))
       const next = d > 0 ? crossed[0] : crossed[crossed.length - 1]
       if (!next || !coast.armed || speed < COASTING) return null
       home = next.y

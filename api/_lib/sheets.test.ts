@@ -61,7 +61,9 @@ function flakyGoogle(answers: (number | 'network')[]) {
     const a = answers[i++] ?? 200
     if (a === 'network') throw new TypeError('fetch failed')
     if (a !== 200) return new Response('{}', { status: a })
-    return Response.json(url.includes(':append') ? { updates: { updatedRows: 1 } } : { values: [['Timestamp', 'Email address']] })
+    return Response.json(
+      url.includes(':append') ? { updates: { updatedRange: "'Registration Responses'!A42:AH42", updatedRows: 1 } } : { values: [['Timestamp', 'Email address']] },
+    )
   }) as typeof fetch
   const sheetCalls = () => calls.filter((c) => c.url.startsWith('https://sheets.googleapis.com/'))
   return { fetchFn, calls, sheetCalls }
@@ -81,6 +83,10 @@ describe('registrations', () => {
     expect(append.init!.method).toBe('POST')
     expect(new Headers(append.init!.headers).get('authorization')).toBe('Bearer tok')
     expect(JSON.parse(String(append.init!.body))).toEqual({ values: [['=1+1', 46320.5, '0555000000']] })
+  })
+
+  it('answers the range the row landed in, so a caller can read back exactly that row', async () => {
+    expect(await registrations(ENV, flakyGoogle([]).fetchFn, async () => {}).append(['x'])).toBe("'Registration Responses'!A42:AH42")
   })
 
   it('backs off with jitter and tries again on 429 and 5xx, getting the token once', async () => {

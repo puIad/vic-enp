@@ -15,16 +15,21 @@ const REG = `reg:${sha256(EMAIL)}`
 /** a Registration Responses tab holding the rows appended to it; `failing` makes every append throw */
 function fakeTab(opts: { failing?: boolean; headers?: string[] } = {}) {
   const rows: (string | number)[][] = []
+  // the most appends ever in flight at once
+  const load = { now: 0, max: 0 }
   const sheet: Registrations = {
     headers: async () => opts.headers ?? [...SITE_HEADERS],
     append: async (row) => {
+      load.max = Math.max(load.max, ++load.now)
       // a real append takes a moment, so two sends can overlap
       await new Promise((r) => setTimeout(r, 5))
+      load.now--
       if (opts.failing) throw new Error('sheets: append 503')
       rows.push(row)
+      return `'Registration Responses'!A${rows.length + 1}:AH${rows.length + 1}`
     },
   }
-  return { sheet, rows }
+  return { sheet, rows, load }
 }
 
 function setup(tab = fakeTab()) {
@@ -85,6 +90,29 @@ describe('POST /api/submit', () => {
     expect(s.tab.rows).toHaveLength(1)
     expect((await send(s.d, s.cookie, { answers: IT_LETTER })).status).toBe(409)
     expect(s.tab.rows).toHaveLength(1)
+  })
+
+  it('appends one letter at a time behind lock:append, so a burst never crowds the Sheets API, and frees the lock after', async () => {
+    const tab = fakeTab()
+    const s = setup(tab)
+    const cookies = Array.from({ length: 8 }, (_, i) => proofCookie(`burst-${i}@g.enp.edu.dz`, s.clock.now, KEY).header.split(';')[0])
+    const res = await Promise.all(cookies.map((c) => send(s.d, c, { answers: IT_LETTER })))
+    expect(res.map((r) => r.status)).toEqual(Array(8).fill(200))
+    expect(tab.rows).toHaveLength(8)
+    expect(tab.load.max).toBe(1)
+    expect(s.r.keys).toContain('lock:append')
+    expect(Number(await s.r.redis.command(['EXISTS', 'lock:append']))).toBe(0)
+  })
+
+  it('gives up waiting for the lock 30 s into the submit: 503, and the mark released', async () => {
+    const s = setup()
+    // another send holds the lock and never lets go
+    await s.r.redis.command(['SET', 'lock:append', 'x'])
+    let calls = 0
+    const res = await send({ ...s.d, now: () => s.clock.now + 10_000 * calls++ }, s.cookie, { answers: IT_LETTER })
+    expect(res.status).toBe(503)
+    expect(s.tab.rows).toHaveLength(0)
+    expect(Number(await s.r.redis.command(['EXISTS', REG]))).toBe(0)
   })
 
   it('releases the mark when the append fails after its retries, answering 503, so a second send can save', async () => {

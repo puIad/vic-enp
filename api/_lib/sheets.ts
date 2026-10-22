@@ -9,7 +9,7 @@ const TOKEN_URL = 'https://oauth2.googleapis.com/token'
 const SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
 const b64url = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url')
 
-async function accessToken(keyB64: string, fetchFn: typeof fetch): Promise<string> {
+export async function accessToken(keyB64: string, fetchFn: typeof fetch): Promise<string> {
   if (!keyB64) throw new Error('sheets: no key')
   const key = JSON.parse(Buffer.from(keyB64, 'base64').toString()) as { client_email: string; private_key: string }
   const now = Math.floor(Date.now() / 1000)
@@ -59,12 +59,12 @@ class SheetError extends Error {
 export type Registrations = {
   /** row 1 of the tab */
   headers(): Promise<string[]>
-  /** one new row at the end of the tab: RAW (a formula or a phone number stays text), as inserted rows */
-  append(row: (string | number)[]): Promise<void>
+  /** one new row at the end of the tab: RAW (a formula or a phone number stays text), as inserted rows; answers the A1 range it landed in */
+  append(row: (string | number)[]): Promise<string>
 }
 
-// 3 tries keep a failing submit (3 header reads at 5 s, 3 appends at 8 s, two backoffs) inside the route's 60 s, so
-// the registration mark is always given back before the function is stopped
+// 3 tries keep a failing submit inside the route's 60 s (the header reads and the wait for lock:append end by 30 s in,
+// then 3 appends at 8 s and two backoffs), so the registration mark is always given back before the function is stopped
 const TRIES = 3
 const BASE_MS = 400
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
@@ -102,6 +102,7 @@ export function registrations(env: SheetEnv, fetchFn: typeof fetch = fetch, slee
           signal: AbortSignal.timeout(8000),
         })
         if (!res.ok) throw new SheetError(`sheets: append ${res.status}`, res.status)
+        return ((await res.json()) as { updates: { updatedRange: string } }).updates.updatedRange
       }),
   }
 }

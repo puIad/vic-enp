@@ -1,9 +1,10 @@
-import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
+import { Component, lazy, Suspense, useEffect, type ReactNode } from 'react'
+import { gatherStarted, reveal, startCap } from './arrival'
 import { TIER, html, type WorldState } from './boot'
 import { forcedTier } from './tier'
 
-// The world's door into the content layer. Tiny on purpose: three, R3F and the scene live in the World chunk, which
-// loads on an idle callback after first paint, so the first view's JS budget and the content's LCP don't carry it.
+// The world's door into the content layer. Tiny on purpose: three, R3F and the scene live in the World chunk, so the
+// first view's JS budget doesn't carry it. It starts loading at once: the hero's copy waits for the 600 (decision 109).
 
 const World = lazy(() => import('./World'))
 const params = new URLSearchParams(location.search)
@@ -24,25 +25,17 @@ class Fallback extends Component<{ onError: () => void; children: ReactNode }, {
 }
 
 export function WorldLayer({ state, setState }: { state: WorldState; setState: (s: WorldState) => void }) {
-  const [go, setGo] = useState(false)
-
-  useEffect(() => {
-    if (state === 'off') return
-    // after first paint, when the main thread is free (Safari has no requestIdleCallback)
-    if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(() => setGo(true), { timeout: 2500 })
-      return () => cancelIdleCallback(id)
-    }
-    const id = setTimeout(() => setGo(true), 700)
-    return () => clearTimeout(id)
-  }, [state])
+  // React's first effects run once the first frame is painted
+  useEffect(startCap, [])
 
   useEffect(() => {
     html.classList.toggle('w-on', state !== 'off')
     html.classList.toggle('w-ready', state === 'ready')
+    // a world that failed or lost its context shows the hero's copy at once (decision 109)
+    if (state === 'off') reveal()
   }, [state])
 
-  if (state === 'off' || !go) return null
+  if (state === 'off') return null
   const off = () => setState('off')
   return (
     <Fallback onError={off}>
@@ -51,7 +44,11 @@ export function WorldLayer({ state, setState }: { state: WorldState; setState: (
           tier={TIER as 1 | 2}
           forced={forcedTier(location.search) !== null}
           still={STILL}
-          onReady={() => setState('ready')}
+          onReady={() => {
+            gatherStarted()
+            setState('ready')
+          }}
+          onLit={reveal}
           onLost={off}
         />
       </Suspense>

@@ -330,21 +330,22 @@
     opacity: 1;
   }
   /* the hand-over (#11): the hero's copy lifts 64 px and fades between 30% and 80% of its 0.7 screen */
-  .w-ready #top > * {
+  .w-ready #top > :not(#gather) {
     translate: 0 calc(var(--hand, 0) * -64px);
     opacity: calc(1 - var(--fade, 0));
   }
   /* a keyboard user moving back into the hero lands on copy they can see */
-  .w-ready #top:focus-within > * {
+  .w-ready #top:focus-within > :not(#gather) {
     translate: none;
     opacity: 1;
   }
-  /* "Gathering the 600": the loader, beside the pill on desktop, under it on a phone */
+  /* "Gathering the 600": the loader, centred just under the icon's place (formations.ts, iconPlacement, projected
+     through the page's camera onto the canvas, 100lvh tall), so it never moves when the world arrives (#82) */
   .gather {
     position: absolute;
-    left: calc(100% + 22px);
-    top: 50%;
-    translate: 0 -50%;
+    left: calc(50% + 42lvh);
+    top: 75.5lvh;
+    translate: -50% 0;
     display: flex;
     gap: 8px;
     align-items: baseline;
@@ -361,7 +362,8 @@
     color: #fff;
     font-variant-numeric: tabular-nums;
   }
-  .gather[data-state='on'] {
+  .gather[data-state='on'],
+  .w-wait .gather {
     opacity: 1;
   }
   html:not(.w-on) .gather {
@@ -369,10 +371,45 @@
   }
   @media (max-width: 767px) {
     .gather {
-      left: 0;
-      top: calc(100% + 18px);
-      translate: none;
+      left: calc(50% + 1lvh);
+      top: 41.7lvh;
     }
+  }
+
+  /* the hero waits for the icon (world/arrival.ts, decision 107): only the night, the 600 and the line until your point
+     lights. Hidden is inert too: nothing in it can be focused, clicked or read. */
+  html.w-wait #top > :not(#gather),
+  html.w-wait :is(.logo, .logoplate, .readout, .rail, .skip, .pill.corner) {
+    opacity: 0;
+    visibility: hidden;
+  }
+  /* then the headline, the lead and the pill rise about 24 px, 120 ms apart, into wherever the hand-over holds them;
+     the chrome comes in alongside, the corner logo the way it leaves at the footer */
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 24px;
+    }
+  }
+  @keyframes chrome-in {
+    from {
+      opacity: 0;
+    }
+  }
+  html.w-rise #top > :not(#gather) {
+    animation: rise 0.9s var(--ease-out-expo) backwards;
+  }
+  html.w-rise #top > :nth-child(2) {
+    animation-delay: 120ms;
+  }
+  html.w-rise #top > :nth-child(3) {
+    animation-delay: 240ms;
+  }
+  html.w-rise :is(.logo, .logoplate, .readout) {
+    animation: chrome-in 0.35s var(--ease-out-expo) backwards;
+  }
+  html.w-rise .rail {
+    animation: chrome-in 0.5s var(--ease-out-expo) backwards;
   }
 
   /* ---------- chrome ---------- */

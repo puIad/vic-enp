@@ -25,16 +25,83 @@ async function accessToken(keyB64: string, fetchFn: typeof fetch): Promise<strin
   return ((await res.json()) as { access_token: string }).access_token
 }
 
-/** Row 1 of the tab, as the sheet holds it (titles untrimmed). Throws when the tab can't be read. */
-export async function readHeaderRow(env: SheetEnv, fetchFn: typeof fetch = fetch): Promise<string[]> {
-  if (!env.sheetId || !env.tab) throw new Error('sheets: not configured')
-  const token = await accessToken(env.keyB64, fetchFn)
-  const range = encodeURIComponent(`'${env.tab}'!1:1`)
-  const res = await fetchFn(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(env.sheetId)}/values/${range}`, {
+const valuesUrl = (env: SheetEnv, range: string) =>
+  `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(env.sheetId)}/values/${encodeURIComponent(range)}`
+
+/** the tab as an A1 range: quoted, a quote inside doubled */
+const tabRange = (tab: string) => `'${tab.replaceAll("'", "''")}'`
+
+async function getHeaderRow(env: SheetEnv, token: string, fetchFn: typeof fetch): Promise<string[]> {
+  const res = await fetchFn(valuesUrl(env, `${tabRange(env.tab)}!1:1`), {
     headers: { authorization: `Bearer ${token}` },
     signal: AbortSignal.timeout(5000),
   })
-  if (!res.ok) throw new Error(`sheets: read ${res.status}`)
+  if (!res.ok) throw new SheetError(`sheets: read ${res.status}`, res.status)
   const out = (await res.json()) as { values?: string[][] }
   return out.values?.[0] ?? []
+}
+
+/** Row 1 of the tab, as the sheet holds it (titles untrimmed). One try; throws when the tab can't be read. */
+export async function readHeaderRow(env: SheetEnv, fetchFn: typeof fetch = fetch): Promise<string[]> {
+  if (!env.sheetId || !env.tab) throw new Error('sheets: not configured')
+  return getHeaderRow(env, await accessToken(env.keyB64, fetchFn), fetchFn)
+}
+
+/** an HTTP answer from the Sheets API that was not 2xx */
+class SheetError extends Error {
+  readonly status: number
+  constructor(message: string, status: number) {
+    super(message)
+    this.status = status
+  }
+}
+
+export type Registrations = {
+  /** row 1 of the tab */
+  headers(): Promise<string[]>
+  /** one new row at the end of the tab: RAW (a formula or a phone number stays text), as inserted rows */
+  append(row: (string | number)[]): Promise<void>
+}
+
+// 3 tries keep a failing submit (3 header reads at 5 s, 3 appends at 8 s, two backoffs) inside the route's 60 s, so
+// the registration mark is always given back before the function is stopped
+const TRIES = 3
+const BASE_MS = 400
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
+
+/**
+ * The Registration Responses tab for one submit: one token, and each call tried up to 3 times with exponential backoff
+ * and jitter on 429 (the service account's 60 writes a minute), 5xx and network errors. Another 4xx is final.
+ */
+export function registrations(env: SheetEnv, fetchFn: typeof fetch = fetch, sleep: (ms: number) => Promise<void> = wait): Registrations {
+  let token: Promise<string> | undefined
+  const tokenOnce = () => (token ??= accessToken(env.keyB64, fetchFn))
+
+  async function retry<T>(call: (token: string) => Promise<T>): Promise<T> {
+    if (!env.sheetId || !env.tab) throw new Error('sheets: not configured')
+    const t = await tokenOnce()
+    for (let i = 0; ; i++) {
+      try {
+        return await call(t)
+      } catch (e) {
+        const status = e instanceof SheetError ? e.status : 0
+        if (i + 1 >= TRIES || (status !== 0 && status !== 429 && status < 500)) throw e
+        await sleep(BASE_MS * 2 ** i * (1 + Math.random()))
+      }
+    }
+  }
+
+  return {
+    headers: () => retry((t) => getHeaderRow(env, t, fetchFn)),
+    append: (row) =>
+      retry(async (t) => {
+        const res = await fetchFn(`${valuesUrl(env, tabRange(env.tab))}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
+          method: 'POST',
+          headers: { authorization: `Bearer ${t}`, 'content-type': 'application/json' },
+          body: JSON.stringify({ values: [row] }),
+          signal: AbortSignal.timeout(8000),
+        })
+        if (!res.ok) throw new SheetError(`sheets: append ${res.status}`, res.status)
+      }),
+  }
 }

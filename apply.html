@@ -14,7 +14,8 @@
   </head>
   <body>
     <!-- The registration form (vic-recruitment-2026 docs/registration-form.md, the comp's direction A), its own entry:
-         no landing script, no 3D bundle. The ticket works (main.ts); the stops get their questions in later slices. -->
+         no landing script, no 3D bundle. The ticket (main.ts) unlocks the 8 stops; form.ts fills them with the 31 questions,
+         the review and the send, and swaps the letter for Received. -->
     <div class="ap-sky" aria-hidden="true"></div>
     <div class="ap-grain" aria-hidden="true"></div>
     <div class="ap-app">
@@ -22,7 +23,7 @@
         <a href="/" class="ap-logo"><img src="/brand/vic-logo-on-dark.svg" alt="Vision &amp; Innovation Club, home" width="75" height="30" /></a>
       </header>
 
-      <main>
+      <main id="letter-app">
         <section class="ap-hero">
           <p class="ap-eyebrow">Registrations 2026</p>
           <h1 class="ap-serif">Your letter has arrived</h1>
@@ -45,7 +46,7 @@
           <li class="ap-chip"><i></i>ENP mail only</li>
         </ul>
 
-        <div class="ap-road">
+        <div class="ap-road" id="letter">
           <section class="ap-stop is-live" id="ticket" aria-labelledby="tk-h">
             <span class="ap-pin" aria-hidden="true">0</span>
             <p class="ap-eyebrow">Step one</p>
@@ -94,56 +95,75 @@
 
           <p class="ap-unlock" id="tk-unlock">The rest of the letter unlocks once your ticket is checked.</p>
 
-          <section class="ap-stop is-locked" aria-labelledby="s1">
+          <section class="ap-stop is-locked" id="stop-1" aria-labelledby="s1">
             <span class="ap-pin" aria-hidden="true">1</span>
             <p class="ap-eyebrow">Stop 1</p>
             <h2 class="ap-serif" id="s1">Who you are</h2>
             <p class="ap-sub">The basics, so we know who is writing.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s2">
+          <section class="ap-stop is-locked" id="stop-2" aria-labelledby="s2">
             <span class="ap-pin" aria-hidden="true">2</span>
             <p class="ap-eyebrow">Stop 2</p>
             <h2 class="ap-serif" id="s2">Where we can reach you</h2>
             <p class="ap-sub">Facebook and Discord are how VIC keeps in touch.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s3">
+          <section class="ap-stop is-locked" id="stop-3" aria-labelledby="s3">
             <span class="ap-pin" aria-hidden="true">3</span>
             <p class="ap-eyebrow">Stop 3</p>
             <h2 class="ap-serif" id="s3">Your studies</h2>
             <p class="ap-sub">Where you are at ENP.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s4">
+          <section class="ap-stop is-locked" id="stop-4" aria-labelledby="s4">
             <span class="ap-pin" aria-hidden="true">4</span>
             <p class="ap-eyebrow">Stop 4</p>
             <h2 class="ap-serif" id="s4">Your story</h2>
             <p class="ap-sub">Tell us how you got here, in your own words.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s5">
+          <section class="ap-stop is-locked" id="stop-5" aria-labelledby="s5">
             <span class="ap-pin" aria-hidden="true">5</span>
             <p class="ap-eyebrow">Stop 5</p>
             <h2 class="ap-serif" id="s5">The choosing</h2>
-            <p class="ap-sub">Four departments, one first choice. Read each, then tap the one that calls to you. Your house takes the colour of the room.</p>
+            <p class="ap-sub">Four departments, one first choice. Read each, then pick the one that calls to you.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s6">
+          <section class="ap-stop is-locked" id="stop-6" aria-labelledby="s6">
             <span class="ap-pin" aria-hidden="true">6</span>
-            <p class="ap-eyebrow">Your department</p>
+            <p class="ap-eyebrow" id="dept-eyebrow">Your department</p>
             <h2 class="ap-serif" id="s6">Waiting for your choosing</h2>
-            <p class="ap-skeleton">The questions for your department appear here once you have chosen. Each department asks 3 to 5.</p>
+            <p class="ap-sub" id="dept-sub" hidden>A few questions just for this team.</p>
+            <p class="ap-skeleton" id="dept-skeleton">The questions for your department appear here once you have chosen. Each department asks 3 to 5.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s7">
+          <section class="ap-stop is-locked" id="stop-7" aria-labelledby="s7">
             <span class="ap-pin" aria-hidden="true">7</span>
             <p class="ap-eyebrow">Stop 7</p>
             <h2 class="ap-serif" id="s7">Interview details</h2>
             <p class="ap-sub">Next comes an in-person interview for those selected. Tell us when suits you.</p>
+            <div class="ap-qs"></div>
           </section>
-          <section class="ap-stop is-locked" aria-labelledby="s8">
+          <section class="ap-stop is-locked" id="stop-8" aria-labelledby="s8">
             <span class="ap-pin" aria-hidden="true">8</span>
             <p class="ap-eyebrow">Stop 8</p>
             <h2 class="ap-serif" id="s8">Almost done</h2>
             <p class="ap-sub">One last chance to add something. Double-check, then send.</p>
+            <div class="ap-qs"></div>
+            <!-- the short review: who is writing, from which address, and the two choices -->
+            <dl class="ap-review" id="letter-review" aria-label="Your letter in short"></dl>
+            <div class="ap-send">
+              <p class="ap-summary" id="letter-summary" role="alert" hidden></p>
+              <button type="button" class="ap-btn" id="letter-send">Send by owl</button>
+              <p class="ap-err" id="letter-send-err" role="alert" hidden></p>
+            </div>
           </section>
         </div>
       </main>
+
+      <!-- after a send: a receipt, not an answer -->
+      <section class="ap-done" id="received" aria-live="polite" hidden></section>
     </div>
   </body>
 </html>

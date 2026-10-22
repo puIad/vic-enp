@@ -15,13 +15,13 @@ export type Question = {
   /** an "Other" choice with free text */
   other?: true
   help?: string
-  /** the Google Form's field id, for a prefilled link */
+  /** the Google Form's field id, as the doc lists it (kept so the two stay equal; the site never links to the form) */
   entry: string
   /** only in the 1st choice's department block */
   dept?: Dept
 }
 
-const YN = ['Yes', 'No', 'A Little']
+const EXPERIENCE = ['Yes', 'No', 'A Little']
 const DEPTS = ['COMM', 'FLER', 'HR', 'IT']
 const RATING = ['1', '2', '3', '4', '5']
 
@@ -71,9 +71,9 @@ export const FORM_QUESTIONS: readonly Question[] = [
   { n: 14, title: "What's your 2nd department choice?", kind: 'one', required: true, choices: DEPTS, entry: 'entry.496540556' },
 
   { n: 15, title: 'Why did you choose the IT Department as your top preference?  ', kind: 'long', required: true, entry: 'entry.1090978357', dept: 'IT' },
-  { n: 16, title: 'Do you have any experience with Graphic Design?', kind: 'one', required: true, choices: YN, entry: 'entry.233826173', dept: 'IT' },
-  { n: 17, title: 'Do you have any experience with Video Editing?', kind: 'one', required: true, choices: YN, entry: 'entry.1967637681', dept: 'IT' },
-  { n: 18, title: 'Do you have any experience with Photography and/or Videography?', kind: 'one', required: true, choices: YN, entry: 'entry.681291850', dept: 'IT' },
+  { n: 16, title: 'Do you have any experience with Graphic Design?', kind: 'one', required: true, choices: EXPERIENCE, entry: 'entry.233826173', dept: 'IT' },
+  { n: 17, title: 'Do you have any experience with Video Editing?', kind: 'one', required: true, choices: EXPERIENCE, entry: 'entry.1967637681', dept: 'IT' },
+  { n: 18, title: 'Do you have any experience with Photography and/or Videography?', kind: 'one', required: true, choices: EXPERIENCE, entry: 'entry.681291850', dept: 'IT' },
   // "A little" with a lower-case l, as the form has it
   { n: 19, title: 'Do you have any experience with Web Development?', kind: 'one', required: true, choices: ['Yes', 'No', 'A little'], entry: 'entry.391031100', dept: 'IT' },
 
@@ -83,7 +83,7 @@ export const FORM_QUESTIONS: readonly Question[] = [
   { n: 23, title: 'How would you rate your language level across the languages you chose?', kind: 'rating', required: true, choices: RATING, entry: 'entry.2006024896', dept: 'COMM' },
 
   { n: 24, title: 'Why did you choose the HR Department as your top preference?  ', kind: 'long', required: true, entry: 'entry.1049844885', dept: 'HR' },
-  { n: 25, title: 'Are you comfortable using Google Tools (Sheets , Forms, Docs)', kind: 'one', required: true, choices: YN, entry: 'entry.126027182', dept: 'HR' },
+  { n: 25, title: 'Are you comfortable using Google Tools (Sheets , Forms, Docs)', kind: 'one', required: true, choices: EXPERIENCE, entry: 'entry.126027182', dept: 'HR' },
   { n: 26, title: 'Do you enjoy working in a team?  ', kind: 'one', required: true, choices: ['Yes', 'No', "I'd like to work on it"], entry: 'entry.1120459983', dept: 'HR' },
 
   { n: 27, title: 'Why did you choose the FLER Department as your top preference?  ', kind: 'long', required: true, entry: 'entry.790099582', dept: 'FLER' },

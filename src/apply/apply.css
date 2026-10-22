@@ -6,7 +6,8 @@
 @import '@fontsource-variable/cormorant-garamond/wght.css';
 @import '@fontsource-variable/cormorant-garamond/wght-italic.css';
 
-/* the comp's night (no house yet: the wash comes with the choosing), the charter's tokens as index.css sets them */
+/* the comp's tokens: --bg, --bg2, --accent and --ink are what the house wash swaps once the choosing is built (night and
+   aquamarine until then); the rest are the charter's colours as index.css sets them */
 :root {
   --bg: #141e27;
   --bg2: #1c2c3a;
@@ -265,8 +266,14 @@ ul {
   color: #cfd8df;
   margin-bottom: 22px;
 }
-.ap-stop.is-locked {
-  opacity: 0.55;
+/* locked until the ticket is checked: dimmed by colour, not opacity, so every line keeps AA contrast on the night */
+.ap-stop.is-locked h2 {
+  color: var(--muted);
+}
+.ap-stop.is-locked .ap-eyebrow,
+.ap-stop.is-locked .ap-sub,
+.ap-stop.is-locked .ap-skeleton {
+  color: #8d9aa6;
 }
 .ap-skeleton {
   margin-top: 4px;

@@ -9,7 +9,7 @@ function fakeRedis(opts: { down?: boolean } = {}) {
   const counts = new Map<string, number>()
   const keys: string[] = []
   const redis: Redis = {
-    async command([cmd, key]) {
+    async command([cmd, key, ...rest]) {
       if (opts.down) throw new Error('unreachable')
       if (key !== undefined) keys.push(String(key))
       if (cmd === 'PING') return 'PONG'
@@ -18,7 +18,12 @@ function fakeRedis(opts: { down?: boolean } = {}) {
         counts.set(String(key), n)
         return n
       }
-      if (cmd === 'EXPIRE') return 1
+      if (cmd === 'SET') {
+        // SET key value EX seconds NX: only opens a window that isn't open
+        if (counts.has(String(key))) return null
+        counts.set(String(key), Number(rest[0]))
+        return 'OK'
+      }
       throw new Error(`unexpected ${cmd}`)
     },
   }

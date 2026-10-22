@@ -68,6 +68,9 @@ Code blue `#2F80ED` (kept for the charter; Hour of Code is not on the page). Eac
 - **Gilroy** for everything, in three weights: **Heavy 900** for every headline, act title, cut line and figure;
   **Bold 700** for controls and labels; **Regular 400** for leads, body and captions. Medium is not used. Sentence
   case throughout, never all caps, never all lowercase.
+- **The registration form at `/apply`** keeps the page's font and adds **Cormorant Garamond** (OFL, self-hosted) on
+  the letter and the step titles only, at 500 to 700 with its italic ([decisions.md](decisions.md), 86). The landing's
+  acts never use it.
 - **Gotham** is the logo's typeface only. The page never sets text in Gotham.
 - Arabic (not needed now, the page is English only): Madani, about 15% larger than Latin; Ubuntu Arabic as the
   alternative.

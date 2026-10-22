@@ -7,7 +7,7 @@ const { privateKey, publicKey } = generateKeyPairSync('rsa', { modulusLength: 20
 const KEY = { client_email: 'vic-registration@example.iam.gserviceaccount.com', private_key: privateKey.export({ type: 'pkcs8', format: 'pem' }).toString() }
 const KEY_B64 = Buffer.from(JSON.stringify(KEY)).toString('base64')
 
-const b64url = (s: string) => JSON.parse(Buffer.from(s, 'base64url').toString())
+const decodePart = (s: string) => JSON.parse(Buffer.from(s, 'base64url').toString())
 
 function fakeGoogle(row: string[] | null) {
   const calls: { url: string; init?: RequestInit }[] = []
@@ -30,8 +30,8 @@ describe('readHeaderRow', () => {
     const [token, values] = g.calls
     const assertion = new URLSearchParams(String(token.init!.body)).get('assertion')!
     const [head, claims, sig] = assertion.split('.')
-    expect(b64url(head)).toEqual({ alg: 'RS256', typ: 'JWT' })
-    expect(b64url(claims)).toMatchObject({ iss: KEY.client_email, aud: 'https://oauth2.googleapis.com/token' })
+    expect(decodePart(head)).toEqual({ alg: 'RS256', typ: 'JWT' })
+    expect(decodePart(claims)).toMatchObject({ iss: KEY.client_email, aud: 'https://oauth2.googleapis.com/token' })
     expect(verify('RSA-SHA256', Buffer.from(`${head}.${claims}`), publicKey, Buffer.from(sig, 'base64url'))).toBe(true)
 
     expect(decodeURIComponent(values.url)).toBe("https://sheets.googleapis.com/v4/spreadsheets/SHEET/values/'Registration Responses'!1:1")

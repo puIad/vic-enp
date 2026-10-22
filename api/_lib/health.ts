@@ -2,7 +2,8 @@
 // opens it in a browser; a landing deploy's preview must read all "ok" before the live check (docs/architecture.md).
 
 import { SITE_HEADERS } from '../../src/apply/questions.js'
-import { clientIp, sha256 } from './hash.js'
+import { sha256 } from './hash.js'
+import { clientIp } from './ip.js'
 import { logLine, type Log } from './log.js'
 import { key, type Redis } from './redis.js'
 
@@ -23,13 +24,15 @@ const WINDOW_S = 60
 const ok = (b: boolean): Check => (b ? 'ok' : 'fail')
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } })
 
-/** Counts this address's checks in the minute. Redis down means no count: the answer then says so. */
+/**
+ * Counts this address's checks in the minute. The window opens with its expiry in one command, so a failed call can't
+ * leave a count that never resets. Redis down means no count (fails open): the answer then reads redis "fail".
+ */
 async function overLimit(req: Request, d: HealthDeps): Promise<boolean> {
   const k = key(d.keyPrefix, `rl:h:${sha256(clientIp(req))}`)
   try {
-    const n = Number(await d.redis.command(['INCR', k]))
-    if (n === 1) await d.redis.command(['EXPIRE', k, WINDOW_S])
-    return n > LIMIT
+    await d.redis.command(['SET', k, 0, 'EX', WINDOW_S, 'NX'])
+    return Number(await d.redis.command(['INCR', k])) > LIMIT
   } catch {
     return false
   }

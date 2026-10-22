@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { remember } from '../scroll/restore'
-import { atTop, firstLoad, holds, waits, type WaitEnv } from './arrival'
+import { RISE, arrival, atTop, firstLoad, holds, reveal, startWait, waits, type WaitEnv } from './arrival'
 
 // The hero waits for the icon (decisions 107 to 109): when a load waits, which load locks, and the keys the lock holds.
 
@@ -72,5 +72,69 @@ describe('the keys the lock holds', () => {
     expect(holds(k('ArrowLeft', true))).toBe(false)
     expect(holds(k('F5'))).toBe(false)
     expect(holds(k('r'))).toBe(false)
+  })
+})
+
+// The lock and its release, with the window's listeners and the root's classes stubbed (no DOM).
+describe('the lock lets go at the reveal', () => {
+  type Reg = { type: string; f: (e: unknown) => void; capture: boolean }
+  let regs: Reg[]
+  let classes: Set<string>
+  const capture = (o: unknown) => (typeof o === 'boolean' ? o : !!(o as { capture?: boolean } | undefined)?.capture)
+  const fire = (type: string, e: object = {}) => {
+    let prevented = false
+    let stopped = false
+    const ev = { touches: [{}], key: '', altKey: false, ctrlKey: false, button: 0, preventDefault: () => (prevented = true), stopImmediatePropagation: () => (stopped = true), ...e }
+    for (const r of regs.filter((r) => r.type === type)) r.f(ev)
+    return { prevented, stopped }
+  }
+
+  beforeEach(() => {
+    regs = []
+    classes = new Set()
+    vi.useFakeTimers()
+    vi.stubGlobal('addEventListener', (type: string, f: (e: unknown) => void, o?: unknown) => regs.push({ type, f, capture: capture(o) }))
+    vi.stubGlobal('removeEventListener', (type: string, f: (e: unknown) => void, o?: unknown) => {
+      regs = regs.filter((r) => !(r.type === type && r.f === f && r.capture === capture(o)))
+    })
+    vi.stubGlobal('document', { documentElement: { classList: { add: (...c: string[]) => c.forEach((x) => classes.add(x)), remove: (...c: string[]) => c.forEach((x) => classes.delete(x)) } } })
+    vi.stubGlobal('scrollY', 0)
+    vi.stubGlobal('scrollTo', () => {})
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it('holds the wheel, a swipe and the keys, then releases every one of them', () => {
+    startWait(true)
+    expect([...classes]).toEqual(expect.arrayContaining(['w-wait', 'w-lock']))
+    expect(fire('wheel').prevented).toBe(true)
+    expect(fire('touchmove').prevented).toBe(true)
+    expect(fire('keydown', { key: 'Tab' }).prevented).toBe(true)
+    // zoom still works
+    expect(fire('wheel', { ctrlKey: true }).prevented).toBe(false)
+    expect(fire('touchmove', { touches: [{}, {}] }).prevented).toBe(false)
+    reveal()
+    expect(classes.has('w-wait') || classes.has('w-lock')).toBe(false)
+    expect(arrival.phase).toBe('rise')
+    // only the rise's own scroll listener is left, and it goes with the rise
+    expect(regs.map((r) => r.type)).toEqual(['scroll'])
+    vi.advanceTimersByTime(RISE + 100)
+    expect(regs).toEqual([])
+    expect(arrival.phase).toBe('done')
+    expect(fire('wheel').prevented).toBe(false)
+  })
+
+  it('on a reload, any key reveals and goes on as it would', () => {
+    startWait(false)
+    expect(classes.has('w-lock')).toBe(false)
+    expect(fire('keydown', { key: 'PageDown' }).prevented).toBe(false)
+    expect(classes.has('w-wait')).toBe(false)
+    expect(arrival.phase).toBe('rise')
+    // a scroll ends the rise at once
+    fire('scroll')
+    expect(arrival.phase).toBe('done')
+    expect(regs).toEqual([])
   })
 })

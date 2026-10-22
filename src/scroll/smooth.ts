@@ -2,6 +2,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
+import { arrival } from '../world/arrival'
 import { notify, world } from '../world/store'
 import { underBenefits } from '../lib/scrub'
 import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, peakRest, stepMiddle } from '../world/steps'
@@ -173,7 +174,15 @@ function follow(measured: (ranges: Range[]) => void) {
 // Under reduced motion Lenis never starts and nothing scrubs; the acts render their still compositions instead.
 // shortcut: a live switch of the OS setting swaps the acts to their stills but keeps Lenis as it started; a reload settles it.
 export function startScroll() {
-  document.documentElement.classList.add('sc-ready') // scroll-craft's shoot.mjs waits for this before it samples
+  // scroll-craft's shoot.mjs waits for this before it samples: once the hero has stopped waiting for the icon, so a
+  // fresh browser's first load (and its lock, world/arrival.ts) never reads as dead scroll
+  const ready = () => {
+    if (arrival.phase === 'wait') return
+    document.documentElement.classList.add('sc-ready')
+    arrival.listeners.delete(ready)
+  }
+  arrival.listeners.add(ready)
+  ready()
   // the catch (decisions 87 to 98): on the wheel inside Lenis's virtualScroll hook below, on touch in touch.ts, where
   // the page owns its touch scrolling; both drag, glide to a stop, or coast on with the page's own momentum. Keys, anchors and every scrollTo (world.go, the restore) never reach it. Off
   // under reduced motion; `?catch=off` turns it off to compare.

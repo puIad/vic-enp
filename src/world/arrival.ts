@@ -50,7 +50,7 @@ export function firstLoad(store: Pick<Storage, 'getItem' | 'setItem'> | null): b
   }
 }
 
-const MOVES = new Set(['Tab', ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'])
+const MOVES = new Set(['Tab', ' ', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'])
 
 /**
  * The keys the lock holds: everything that scrolls the page or moves focus, with Ctrl or Cmd too (Ctrl+End). Alt
@@ -130,8 +130,7 @@ export function startWait(lock: boolean) {
     // anything that still moved it (the scrollbar dragged) goes back to the top
     on('scroll', () => scrollY > 0 && scrollTo(0, 0))
   } else {
-    const skip = () => reveal()
-    for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const) on(type, skip)
+    for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const) on(type, reveal)
     on('scroll', () => scrollY > 0 && reveal())
   }
   undo = () => off.forEach((f) => f())

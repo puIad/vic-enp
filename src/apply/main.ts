@@ -1,6 +1,8 @@
 // /apply's script: the ticket (Platform 9¾). Ask for a code with the local part, type the six digits, and on a checked
-// ticket the address locks and the 8 stops unlock. The words come from ticket.ts; this file only moves the page.
+// ticket the address locks and the 8 stops unlock (form.ts fills them). The words come from ticket.ts; this file only
+// moves the page.
 
+import { openLetter } from './form'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
@@ -107,6 +109,22 @@ function proven() {
   $('ticket').classList.replace('is-live', 'is-done')
   $('tk-unlock').hidden = true
   for (const stop of document.querySelectorAll('.ap-stop.is-locked')) stop.classList.remove('is-locked')
+  openLetter(email, { backToTicket })
+}
+
+/**
+ * The cookie's hour ran out before the send: the ticket asks again, saying why. The address unlocks (any ENP address
+ * may prove itself); the stops and their answers stay as they are, and the send works again once a ticket is checked.
+ */
+function backToTicket(text: string) {
+  local.disabled = false
+  send.hidden = false
+  $('tk-help').hidden = false
+  $('tk-ok').hidden = true
+  $('ticket').classList.replace('is-done', 'is-live')
+  showAsk()
+  lead.textContent = text
+  $('ticket').scrollIntoView({ block: 'start' })
 }
 
 ask.addEventListener('submit', async (e) => {

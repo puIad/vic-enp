@@ -10,8 +10,9 @@ export type Draft = {
   house?: string
   /** the stop the candidate last answered in, 0 to 7 */
   step: number
-  /** the proven address and when its ticket was checked; the cookie lasts the same hour */
+  /** whose answers these are: the address last proven on this phone, kept after the hour */
   email?: string
+  /** when that address's ticket was checked; the cookie lasts the same hour */
   provenAt?: number
 }
 
@@ -56,10 +57,8 @@ export function loadDraft(store: Store | null, now: number): { draft: Draft; pro
   if (!isFields(d.fields) || typeof d.step !== 'number') return null
   const draft: Draft = { fields: d.fields, step: d.step }
   if (typeof d.house === 'string') draft.house = d.house
-  if (typeof d.email === 'string' && typeof d.provenAt === 'number') {
-    draft.email = d.email
-    draft.provenAt = d.provenAt
-  }
+  if (typeof d.email === 'string') draft.email = d.email
+  if (draft.email && typeof d.provenAt === 'number') draft.provenAt = d.provenAt
   const proven = draft.provenAt !== undefined && draft.provenAt <= now && now - draft.provenAt < PROOF_MS
   return { draft, proven }
 }

@@ -27,7 +27,8 @@ export function softCheck(n: number, value: string, ctx: CheckContext): string {
   switch (n) {
     case 4: {
       const a = age(v, ctx.today)
-      return a === null || (a >= 15 && a <= 35) ? '' : `Check the date: that would make you ${a}.`
+      if (a === null || (a >= 15 && a <= 35)) return ''
+      return a < 0 ? 'Check the date: it is in the future.' : `Check the date: that would make you ${a}.`
     }
     case 5: {
       const digits = v.replace(/[\s.\-()]/g, '').replace(/^(?:\+|00)213/, '0')

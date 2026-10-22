@@ -35,6 +35,10 @@ describe('the age check', () => {
     expect(check(4, '2011-10-26')).toMatch(/would make you 14/)
     expect(check(4, '1990-10-25')).toMatch(/would make you 36/)
   })
+
+  it('says a date after today is in the future, not a negative age', () => {
+    expect(check(4, '2030-01-01')).toMatch(/in the future/)
+  })
 })
 
 describe('the 2nd choice check', () => {

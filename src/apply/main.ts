@@ -8,7 +8,7 @@ import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
 
-// tier 0 (reduced motion, Save-Data, a small phone, ?tier=0) gets the same form with nothing animated (apply.css)
+// tier 0 (reduced motion, Save-Data, 2 GB of memory or less, ?tier=0) gets the same form with nothing animated (apply.css)
 document.documentElement.dataset.tier = String(detectTier())
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T

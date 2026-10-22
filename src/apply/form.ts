@@ -277,7 +277,7 @@ function snapshot(): Draft['fields'] {
 }
 
 function persist() {
-  saveDraft(store, { fields: snapshot(), house: firstChoice(), step, ...(provenAt ? { email, provenAt } : {}) })
+  saveDraft(store, { fields: snapshot(), house: firstChoice(), step, email, ...(provenAt ? { provenAt } : {}) })
 }
 
 /** puts a saved draft's answers back on the page, then everything that follows from them */
@@ -340,8 +340,10 @@ export function openLetter(provenEmail: string, at: number, hooks: LetterHooks) 
         box.append(h('div', { class: 'ap-dept', 'data-dept': d.code, hidden: true }, ...ASKED.filter((q) => q.dept === d.code).map(field)))
   })
 
+  // a draft is put back only for the address that wrote it: on a shared phone, another proven address starts blank
   const saved = loadDraft(store, Date.now())?.draft
-  if (saved) {
+  if (saved && saved.email !== email) washRoom(undefined)
+  else if (saved) {
     restore(saved.fields)
     step = Math.min(7, Math.max(0, Math.trunc(saved.step)))
     if (step) $(`stop-${step + 1}`).scrollIntoView({ block: 'start' })
@@ -429,12 +431,12 @@ async function send(hooks: LetterHooks) {
   } catch {
     // a network failure reads as status 0: "could not save, try again"
   }
-  await flight
+  const a = sendAnswer(status, body)
+  // the owl finishes its flight before Received; a send that did not land comes back at once
+  if (a.kind === 'received') await flight
   sending = false
   btn.disabled = false
   btn.textContent = 'Send by owl'
-
-  const a = sendAnswer(status, body)
   if (a.kind === 'received') return received()
   landOwl()
   if (a.kind === 'ticket') {

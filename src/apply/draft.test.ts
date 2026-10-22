@@ -45,6 +45,12 @@ describe('the draft', () => {
     expect(loadDraft(s, T0)).toEqual({ draft: { fields: { q1: 'Test' }, step: 0 }, proven: false })
   })
 
+  it('keeps whose answers they are after the hour, even once the proof is dropped', () => {
+    const s = memory()
+    saveDraft(s, { fields: { q1: 'Test' }, step: 0, email: 'test.candidate@g.enp.edu.dz' })
+    expect(loadDraft(s, T0)).toEqual({ draft: { fields: { q1: 'Test' }, step: 0, email: 'test.candidate@g.enp.edu.dz' }, proven: false })
+  })
+
   it('is gone once cleared (a successful send)', () => {
     const s = memory()
     saveDraft(s, draft)

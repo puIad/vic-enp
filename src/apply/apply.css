@@ -827,7 +827,7 @@ ul {
 }
 .ap-tile-house {
   color: var(--h);
-  font: italic 600 24px/1 var(--serif);
+  font: italic 700 20px/1 var(--sans);
 }
 .ap-tile-name {
   display: block;
@@ -853,11 +853,10 @@ ul {
 .ap-tile-badge {
   display: none;
 }
+/* under the description, so it never covers the house name on a narrow phone */
 .ap-tile:has(input:checked) .ap-tile-badge {
-  display: block;
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  display: inline-block;
+  margin-top: 12px;
   padding: 6px 10px;
   border-radius: 99px;
   background: var(--accent);
@@ -937,7 +936,7 @@ ul {
   border-radius: 50%;
   background: #4d3800;
   color: #fff4d6;
-  font: 900 12px/1 var(--serif);
+  font: 900 12px/1 var(--sans);
 }
 
 /* ---------- almost done: the review and the send ---------- */

@@ -241,9 +241,14 @@ describe('POST /api/code', () => {
     expect(s.mails[0].code).toMatch(/^\d{6}$/)
   })
 
-  it('refuses a local part that carries its own domain or whitespace: the site never takes a full address', async () => {
+  it('takes the characters an ENP local part uses: letters, digits, dot, hyphen, underscore', async () => {
     const s = setup()
-    for (const local of ['amina@gmail.com', 'amina@g.enp.edu.dz', 'ami na', ' amina', 'amina\t', '']) {
+    for (const local of ['amina.benali', 'a_benali', 'ben-ali2']) expect((await ask(s.d, local)).status, local).toBe(200)
+  })
+
+  it('refuses any other local part: a full address, whitespace, or a +tag or comma that reaches another inbox', async () => {
+    const s = setup()
+    for (const local of ['amina@gmail.com', 'amina@g.enp.edu.dz', 'ami na', ' amina', 'amina\t', '', 'amina+1', 'x,amina', 'amina;x', 'a'.repeat(65)]) {
       const res = await ask(s.d, local)
       expect(res.status, JSON.stringify(local)).toBe(400)
     }
@@ -306,13 +311,12 @@ describe('POST /api/code', () => {
     expect((await ask(s.d, 'c10', '198.51.100.1')).status).toBe(200)
   })
 
-  it('does not spend the hourly count when the mailer fails, and says it was not sent', async () => {
+  it('spends neither hourly count, the address\'s or the IP\'s, when the mailer fails, and says it was not sent', async () => {
     const s = setup({ sendCode: async () => false })
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 12; i++) {
       const res = await ask(s.d, 'amina')
       expect(res.status).toBe(502)
       expect(await res.json()).toEqual({ status: 'not_sent' })
-      s.later(31)
     }
   })
 

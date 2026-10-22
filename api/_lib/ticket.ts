@@ -32,11 +32,12 @@ const json = (body: unknown, status = 200, headers: Record<string, string> = {})
   Response.json(body, { status, headers: { 'cache-control': 'no-store', ...headers } })
 
 /**
- * The proven address is always lowercase(local) + "@" + EMAIL_DOMAIN: a local part carrying an @, whitespace or a
- * control character is refused (null), so the client can never pick the domain.
+ * The proven address is always lowercase(local) + "@" + EMAIL_DOMAIN, and the local part takes only what an ENP one
+ * uses (letters, digits, dot, hyphen, underscore). Anything else is refused (null): an @ would pick the domain, a +tag
+ * reaches the same inbox under another hash, and a comma makes the mailer send to a second recipient.
  */
 function emailOf(local: unknown, domain: string): string | null {
-  if (typeof local !== 'string' || !local || local.length > 64 || /[@\s\p{Cc}]/u.test(local)) return null
+  if (typeof local !== 'string' || !/^[a-z0-9._-]{1,64}$/i.test(local)) return null
   return `${local.toLowerCase()}@${domain}`
 }
 
@@ -65,7 +66,8 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     const gap = Number(await d.redis.command(['TTL', k(`gap:${h}`)]))
     if (gap > 0) return { name: 'gap', res: json({ retryIn: gap }, 429) }
     // the IP's count first, so asking about many addresses (registered or not) spends it
-    const ip = await count(d.redis, k(`rl:ip:${sha256(clientIp(req))}`))
+    const ipKey = k(`rl:ip:${sha256(clientIp(req))}`)
+    const ip = await count(d.redis, ipKey)
     if (ip.n > PER_IP) return { name: 'limited', res: json({ retryIn: ip.ttl }, 429) }
     if (Number(await d.redis.command(['EXISTS', k(`reg:${h}`)]))) return { name: 'registered', res: json({ status: 'registered' }) }
     const mine = await count(d.redis, k(`rl:e:${h}`))
@@ -77,8 +79,9 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     await d.redis.command(['HSET', k(`otp:${h}`), 'code', sha256(code), 'at', d.now(), 'tries', 0])
     await d.redis.command(['EXPIRE', k(`otp:${h}`), CODE_S])
     if (!(await d.sendCode(email, code).catch(() => false))) {
-      // nothing went out: give back the count and the gap, and drop the code nobody has
+      // nothing went out: give back both counts and the gap, and drop the code nobody has
       await d.redis.command(['DECR', k(`rl:e:${h}`)])
+      await d.redis.command(['DECR', ipKey])
       await d.redis.command(['DEL', k(`gap:${h}`)])
       await d.redis.command(['DEL', k(`otp:${h}`)])
       return { name: 'not_sent', res: json({ status: 'not_sent' }, 502) }

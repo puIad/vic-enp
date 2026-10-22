@@ -14,6 +14,8 @@ export function localPart(raw: string): { local: string } | { error: string } {
   if (!local) return { error: `Type the part of your ENP address before @${DOMAIN}.` }
   if (local.includes('@')) return { error: `Only ENP addresses can register here. Type the part before @${DOMAIN}, not a Gmail address.` }
   if (/\s/.test(local)) return { error: 'An address has no spaces. Check what you typed.' }
+  // what the API takes: a +tag or a comma would prove an address that isn't the inbox's own
+  if (!/^[a-z0-9._-]{1,64}$/i.test(local)) return { error: 'An ENP address has only letters, digits, dots, hyphens and underscores before the @.' }
   return { local }
 }
 
@@ -27,7 +29,8 @@ export function codeAnswer(status: number, body: Json): { sent: true; resendIn: 
     const s = Math.max(1, Number(body?.retryIn) || 30)
     if (s <= 30) return { sent: false, text: `Wait ${s} s before asking for another ticket.` }
     const m = Math.ceil(s / 60)
-    return { sent: false, text: `You have asked for the most tickets allowed this hour. Try again in ${m} ${m === 1 ? 'minute' : 'minutes'}.` }
+    // the limit may be this address's or the connection's (a campus or carrier IP is shared), so no "you asked"
+    return { sent: false, text: `Too many tickets were asked for this hour. Try again in ${m} ${m === 1 ? 'minute' : 'minutes'}.` }
   }
   if (status === 400) return { sent: false, text: `Type only the part of your ENP address before @${DOMAIN}.` }
   return { sent: false, text: 'We could not send your ticket just now. Try again in a moment.' }

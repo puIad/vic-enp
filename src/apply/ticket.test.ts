@@ -10,12 +10,13 @@ describe('localPart: what the candidate typed before @g.enp.edu.dz', () => {
     expect(localPart('Amina.Benali@G.ENP.edu.dz')).toEqual({ local: 'Amina.Benali' })
   })
 
-  it('refuses another domain, a space inside, and nothing at all, each with its own line', () => {
+  it('refuses another domain, a space inside, other characters, and nothing at all, each with its own line', () => {
     const gmail = localPart('amina@gmail.com')
     const space = localPart('amina benali')
     const empty = localPart('   ')
-    for (const r of [gmail, space, empty]) expect(r).toHaveProperty('error')
-    expect(new Set([gmail, space, empty].map((r) => 'error' in r && r.error)).size).toBe(3)
+    const plus = localPart('amina+1')
+    for (const r of [gmail, space, empty, plus, localPart('x,amina')]) expect(r).toHaveProperty('error')
+    expect(new Set([gmail, space, empty, plus].map((r) => 'error' in r && r.error)).size).toBe(4)
     expect('error' in gmail && gmail.error).toMatch(/only ENP/i)
   })
 })
@@ -32,6 +33,8 @@ describe('codeAnswer: what /api/code said, in words', () => {
   it('reads a short wait in seconds and the hourly limit in minutes', () => {
     expect(codeAnswer(429, { retryIn: 18 })).toEqual({ sent: false, text: expect.stringContaining('18 s') })
     expect(codeAnswer(429, { retryIn: 3507 })).toEqual({ sent: false, text: expect.stringContaining('59 minutes') })
+    // the limit may be the connection's (a shared campus or carrier IP), so the line never says "you asked"
+    expect(codeAnswer(429, { retryIn: 3507 })).toEqual({ sent: false, text: expect.not.stringMatching(/you have asked/i) })
     expect(codeAnswer(429, { retryIn: 40 })).toEqual({ sent: false, text: expect.stringContaining('1 minute.') })
   })
 

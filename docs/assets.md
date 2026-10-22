@@ -47,7 +47,11 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
   the ENP building"), not "photo 3".
 - `sharp`'s prebuilt binaries don't decode HEIC, hence the JPEG export for `IMG_8095`.
 - The footer's committee cutout (`footer.png`, 3380x2402) keeps its transparency and is baked to high-contrast
-  black and white ([decisions.md](decisions.md), 103). It has no focal point: it is never cropped (104).
+  black and white ([decisions.md](decisions.md), 103): luminance stretched over the cutout and pushed through an
+  S-curve, the alpha untouched (`mono` in `photos.ts`), at 640 to 2560 px. It has no focal point: it is never cropped
+  (104). The light fringe around some heads is in the owner's cutout, not the bake.
+- `npm run photos -- --only <id>` bakes one photo and leaves the others' committed files alone, for a checkout that
+  has only that original.
 
 ## Brand files
 
@@ -116,4 +120,4 @@ Every file in `public/` that isn't code, one row each, filled during the build.
 | `public/og.png` | Rendered in slice 1 from the page's own tier 0 hero (seeded cloud, white logo, tagline in the page font), 1200×630 | VIC | Share tags (open question 26) |
 | `public/apple-touch-icon.png` | `vic-icon-white.svg` on night, 180×180 | VIC | Home-screen icon |
 | Outfit (npm `@fontsource-variable/outfit`, bundled) | Google Fonts via Fontsource | SIL OFL 1.1 | Every word, until the Gilroy web licence is settled (open question 11) |
-| `public/photos/*` | `assets/pics/` (club photos) | VIC | Peak, events |
+| `public/photos/*` | `assets/pics/` (club photos, the committee cutout) | VIC | Peak, events, footer |

@@ -33,7 +33,7 @@ export function Photo({ id, sizes, className, style, eager, decorative, first }:
         fetchPriority={first ? 'high' : undefined}
         decoding="async"
         className={className}
-        style={{ objectPosition: `${p.focal[0]}% ${p.focal[1]}%`, ...style }}
+        style={{ objectPosition: p.focal && `${p.focal[0]}% ${p.focal[1]}%`, ...style }}
       />
     </picture>
   )

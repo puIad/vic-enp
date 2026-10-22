@@ -1583,9 +1583,58 @@
     }
   }
 
-  /* ---------- the closing motto with the world (#36): the word scrub, each word over a quarter of the way ---------- */
-  .motto.staged {
-    --sl: 0.25;
+  /* ---------- the page's end (#81, decisions 103 to 105): the motto, centred, and the committee under it ---------- */
+  /* Out of the footer's side padding to the screen's edges. The cutout is --r tall per unit of width, and its top --band
+     is empty above the tallest hair, so the photo pulls up by that much and the hair starts where the motto's last line
+     ends (the motto's bottom padding clears the descenders). Where the full-width photo and the motto at its display
+     size don't fit one screen, the motto steps down to 64 px, then the photo narrows until both fit: a smooth change,
+     the motto's two lines taking 1.96 of its size. The photo's sides fade once it is narrower than the screen. */
+  .foot-end {
+    --pt: 56px;
+    --r: 0.7107;
+    --band: 0.022;
+    --m: clamp(min(64px, var(--t-display)), (100svh - var(--pt) - 100vw * var(--r) * (1 - var(--band))) / 1.96, var(--t-display));
+    --pw: calc((100svh - var(--pt) - 1.96 * var(--m)) / (var(--r) * (1 - var(--band))));
+    --fade: clamp(0px, (100vw - var(--pw)) / 2, 0.05 * var(--pw));
+    position: relative;
+    margin: 80px calc(-1 * var(--edge)) 0 calc(-1 * var(--gut));
+    padding-top: var(--pt);
+  }
+  /* the hairline keeps to the links' column, as before the photo */
+  .foot-end::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--gut);
+    right: var(--edge);
+    border-top: 1px solid var(--line);
+  }
+  .motto {
+    position: relative;
+    padding: 0 var(--edge) 0.12em;
+    font-size: var(--m);
+    text-align: center;
+  }
+  .foot-photo {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: min(100%, var(--pw));
+    height: auto;
+    margin: calc(-1 * min(100%, var(--pw)) * var(--r) * var(--band)) auto 0;
+    mask-image: linear-gradient(90deg, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  }
+  /* with the world, the photo brightens from dim with the motto's second line, whole as its last word lights (Footer);
+     tier 0 and reduced motion show it still, at full contrast */
+  .foot-end.staged .foot-photo {
+    opacity: calc(0.3 + 0.7 * clamp(0, (var(--sk, 0) - var(--pa)) / (var(--pb) - var(--pa)), 1));
+  }
+  @media (min-width: 768px) {
+    .foot > .foot-end {
+      --pt: 80px;
+      grid-column: 1 / -1;
+      margin: 96px calc(-1 * var(--edge)) 0 calc(-1 * var(--rail));
+    }
   }
 
   /* ---------- the close with the world (#17): pinned 230svh, the travel in CSS vars from Close ---------- */

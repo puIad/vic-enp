@@ -267,6 +267,31 @@ describe("an event's logo formation (#32)", () => {
   })
 })
 
+describe("the projects' rings on a phone", () => {
+  const px = (f: ReturnType<typeof shape>, l: Layout, i: number) => {
+    const d = (CAM_Z - f.pos[i * 4 + 2]) / CAM_Z
+    return [((f.pos[i * 4] / d / halfWidth(l) + 1) / 2) * l.w, ((1 - f.pos[i * 4 + 1] / d / HH) / 2) * l.h]
+  }
+
+  it('sit beside the title, level with its middle, in the 96 px it leaves them, on a short phone and a tall one', () => {
+    const layouts: Layout[] = [{ phone: true, w: 360, h: 640 }, { phone: true, w: 411, h: 740 }, phone]
+    for (const l of layouts) {
+      const f = shape('more', 4000, 4000, l)
+      const pts = Array.from({ length: 4000 }, (_, i) => i)
+        .filter((i) => i % 10 < 8)
+        .map((i) => px(f, l, i))
+      const xs = pts.map((p) => p[0])
+      const ys = pts.map((p) => p[1])
+      // the title starts 84 px down and the first row about 170 px down (stages.css, .ev.projects)
+      expect((Math.min(...ys) + Math.max(...ys)) / 2).toBeCloseTo(122, -1)
+      expect(Math.min(...ys)).toBeGreaterThan(70)
+      expect(Math.max(...ys)).toBeLessThan(180)
+      expect(Math.min(...xs)).toBeGreaterThan(l.w - 20 - 96)
+      expect(Math.max(...xs)).toBeLessThan(l.w)
+    }
+  })
+})
+
 describe("IT's painting palette", () => {
   // the palette in its own comp units: undo the cut's placement (IT has no tilt, so a scale and a move)
   const local = (l: Layout) => {

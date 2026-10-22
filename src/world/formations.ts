@@ -197,6 +197,10 @@ type Shape = {
   /** where the shape sits on a phone, in world y: below the logo for the departments (#13), in the gap between the
    * photo and the copy for the events (#15) */
   py?: number
+  /** a shape beside a title on a phone (the projects' rings) rather than over the middle: its centre in from the
+   * screen's right edge in world units, since the shape scales with them, and down from the top in CSS pixels, since
+   * the title is placed in them */
+  beside?: [number, number]
   /** where the shape sits on desktop instead of the comps' right of centre: world x, y and a scale */
   desk?: [number, number, number]
   /** the shape's size on a phone against the other cuts': smaller where it has to fit a gap, larger where its parts
@@ -400,9 +404,10 @@ export const SHAPES = {
   },
   more: {
     color: '#69C4AF',
-    py: -0.95,
-    pscale: 0.5,
-    // above the title, clear of the project rows on the right, so no text sits over the rings
+    // on a phone beside the title, at the top right of its one column; on desktop above the title, clear of the project
+    // rows on the right. No text sits over the rings
+    beside: [0.9, 122],
+    pscale: 0.42,
     desk: [-4.3, 1.6, 0.6],
     at: ({ ell }) => (i) => {
       const c = [[-13, 7], [13, 7], [-13, -8], [13, -8]][i % 4]
@@ -432,7 +437,8 @@ export function cutPlacement(key: ShapeKey, l: Layout): Placement {
   // the comps' group: right of centre on desktop; small at the top on a phone (the events' rows sit lower)
   const desk = !l.phone && sh.desk
   const k = l.phone && !centred ? K_PHONE * 0.5 * (sh.pscale ?? 1) : desk ? K_DESK * desk[2] : K_DESK
-  const off: Vec = centred ? [0, 0, 0] : l.phone ? [0, sh.py ?? 3.35, 0] : desk ? [desk[0], desk[1], 0] : [17 * K_DESK, 0, 0]
+  const phone: Vec = sh.beside ? [halfWidth(l) - sh.beside[0], HH * (1 - (2 * sh.beside[1]) / l.h), 0] : [0, sh.py ?? 3.35, 0]
+  const off: Vec = centred ? [0, 0, 0] : l.phone ? phone : desk ? [desk[0], desk[1], 0] : [17 * K_DESK, 0, 0]
   const [tx, ty] = sh.tilt ?? [0, 0]
   return { scale: k, rotation: [tx, ty, 0], position: off }
 }

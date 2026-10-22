@@ -30,14 +30,22 @@ export default function EventsStage() {
     // The stage is watched too: a resize moves the box without always resizing it.
     const box = stage.querySelector<HTMLElement>('.ev-logo')!
     const pin = stage.querySelector<HTMLElement>('.cuts-stage')!
+    // --ev-fit: the projects' rows at full size against the room left under the title, above the picker. Where they
+    // don't fit (a 360x640 screen, a larger text size) they shrink, to 85% at most
+    const proj = stage.querySelector<HTMLElement>('.ev.projects')!
+    const rows = proj.querySelector<HTMLElement>('.ev-rows')!
     const measure = () => {
       stage.style.setProperty('--ev-copy', `${tallestCopy(copies.map((c) => c.offsetHeight))}px`)
+      proj.style.setProperty('--ev-fit', '1')
+      const room = proj.clientHeight - parseFloat(getComputedStyle(proj).paddingBottom) - rows.offsetTop
+      proj.style.setProperty('--ev-fit', String(Math.min(1, Math.max(0.85, room / rows.offsetHeight))))
       const r = box.getBoundingClientRect()
       const o = pin.getBoundingClientRect()
       world.logoBox = r.width && r.height ? { cx: r.left - o.left + r.width / 2, cy: r.top - o.top + r.height / 2, w: r.width, h: r.height } : null
     }
     const ro = new ResizeObserver(measure)
     copies.forEach((c) => ro.observe(c))
+    ro.observe(rows)
     ro.observe(box)
     ro.observe(pin)
     measure()

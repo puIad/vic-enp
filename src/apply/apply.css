@@ -771,8 +771,11 @@ ul {
 .ap-tile:has(input:checked)::before {
   background: var(--accent);
 }
-.ap-tile:has(input:checked)::after {
-  content: 'Your 1st choice';
+.ap-tile-badge {
+  display: none;
+}
+.ap-tile:has(input:checked) .ap-tile-badge {
+  display: block;
   position: absolute;
   top: 14px;
   right: 14px;
@@ -834,7 +837,6 @@ ul {
   font: 700 14.5px/1.35 var(--sans);
 }
 .ap-summary .ap-link {
-  min-height: 0;
   color: inherit;
   font: inherit;
 }

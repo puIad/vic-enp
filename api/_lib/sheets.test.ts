@@ -84,16 +84,16 @@ describe('registrations', () => {
   })
 
   it('backs off with jitter and tries again on 429 and 5xx, getting the token once', async () => {
-    const g = flakyGoogle([429, 503, 500])
+    const g = flakyGoogle([429, 503])
     const waits: number[] = []
     const sheet = registrations(ENV, g.fetchFn, async (ms) => void waits.push(ms))
     await sheet.append(['x'])
-    expect(g.sheetCalls()).toHaveLength(4)
+    expect(g.sheetCalls()).toHaveLength(3)
     expect(g.calls.filter((c) => c.url.includes('oauth2'))).toHaveLength(1)
-    expect(waits).toHaveLength(3)
-    // each wait grows, and none is the bare base: jitter
+    expect(waits).toHaveLength(2)
+    // the wait grows, and is never the bare base: jitter
     expect(waits[1]).toBeGreaterThan(waits[0])
-    expect(waits[2]).toBeGreaterThan(waits[1])
+    expect(waits[0]).toBeGreaterThan(400)
   })
 
   it('reads the header row with the same retries', async () => {
@@ -103,9 +103,9 @@ describe('registrations', () => {
   })
 
   it('gives up after its retries, and at once on a 4xx that a retry cannot fix', async () => {
-    const busy = flakyGoogle([429, 429, 429, 429, 429])
+    const busy = flakyGoogle([429, 429, 429, 429])
     await expect(registrations(ENV, busy.fetchFn, async () => {}).append(['x'])).rejects.toThrow()
-    expect(busy.sheetCalls()).toHaveLength(4)
+    expect(busy.sheetCalls()).toHaveLength(3)
 
     const denied = flakyGoogle([403])
     await expect(registrations(ENV, denied.fetchFn, async () => {}).append(['x'])).rejects.toThrow()

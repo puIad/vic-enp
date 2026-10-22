@@ -63,12 +63,14 @@ export type Registrations = {
   append(row: (string | number)[]): Promise<void>
 }
 
-const TRIES = 4
+// 3 tries keep a failing submit (3 header reads at 5 s, 3 appends at 8 s, two backoffs) inside the route's 60 s, so
+// the registration mark is always given back before the function is stopped
+const TRIES = 3
 const BASE_MS = 400
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 
 /**
- * The Registration Responses tab for one submit: one token, and each call tried up to 4 times with exponential backoff
+ * The Registration Responses tab for one submit: one token, and each call tried up to 3 times with exponential backoff
  * and jitter on 429 (the service account's 60 writes a minute), 5xx and network errors. Another 4xx is final.
  */
 export function registrations(env: SheetEnv, fetchFn: typeof fetch = fetch, sleep: (ms: number) => Promise<void> = wait): Registrations {

@@ -8,7 +8,7 @@ import { ASKED, type Dept, type Question } from './questions.js'
 export type Answers = Record<string, string | string[]>
 
 export const LONG_MAX = 5000
-export const SHORT_MAX = 300
+export const SHORT_MAX = 1000
 
 const DEPT_CHOICE = 13
 

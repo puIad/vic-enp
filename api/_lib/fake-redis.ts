@@ -2,7 +2,7 @@
 
 import type { Redis } from './redis.js'
 
-/** An in-memory Redis speaking the commands the ticket uses, on a clock the test moves. Remembers every key it saw. */
+/** An in-memory Redis speaking the commands the ticket and the submit use, on a clock the test moves. Remembers every key it saw. */
 export function fakeRedis(clock: { now: number }) {
   const data = new Map<string, string | Map<string, string>>()
   /** expiry as a clock time in ms; a key missing here never expires */

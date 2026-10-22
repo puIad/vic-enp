@@ -2,9 +2,9 @@
 // the words from letter.ts; this file only builds and moves the page. Answers live in the page itself: going back to the
 // ticket, a 422 or a failed save never clears them.
 
-import { askedFor, missing, type Answers } from './answers'
+import { askedFor, LONG_MAX, missing, SHORT_MAX, type Answers } from './answers'
 import { DEPARTMENTS, RECEIVED, STOPS, sendAnswer } from './letter'
-import { ASKED, type Dept, type Question } from './questions'
+import { ASKED, type Question } from './questions'
 
 const OTHER = '__other'
 const byN = new Map(ASKED.map((q) => [q.n, q]))
@@ -56,12 +56,12 @@ function field(q: Question): HTMLElement {
   if (q.kind === 'short' || q.kind === 'long' || q.kind === 'date') {
     const control =
       q.kind === 'long'
-        ? h('textarea', { id: `q${q.n}`, name: `q${q.n}`, rows: '4', maxlength: '5000', 'aria-describedby': described })
+        ? h('textarea', { id: `q${q.n}`, name: `q${q.n}`, rows: '4', maxlength: String(LONG_MAX), 'aria-describedby': described })
         : h('input', {
             id: `q${q.n}`,
             name: `q${q.n}`,
             type: q.kind === 'date' ? 'date' : 'text',
-            maxlength: q.kind === 'short' ? '300' : undefined,
+            maxlength: q.kind === 'short' ? String(SHORT_MAX) : undefined,
             min: q.kind === 'date' ? '1980-01-01' : undefined,
             max: q.kind === 'date' ? '2015-12-31' : undefined,
             'aria-describedby': described,
@@ -83,6 +83,7 @@ function field(q: Question): HTMLElement {
           h('span', { class: 'ap-tile-code' }, d.code),
           h('span', { class: 'ap-tile-name' }, d.name),
           h('span', { class: 'ap-tile-about' }, d.about),
+          h('span', { class: 'ap-tile-badge' }, 'Your 1st choice'),
         ),
       ),
     )
@@ -93,7 +94,7 @@ function field(q: Question): HTMLElement {
       'div',
       {},
       h('div', { class: 'ap-rate' }, ...q.choices!.map((c) => h('label', {}, h('input', { type: 'radio', name: `q${q.n}`, value: c, 'aria-label': `${c} of 5` }), h('span', { 'aria-hidden': 'true' }, c)))),
-      h('p', { class: 'ap-rate-ends', 'aria-hidden': 'true' }, h('span', {}, '1 · just starting'), h('span', {}, '5 · very strong')),
+      h('p', { class: 'ap-rate-ends' }, h('span', {}, '1 · just starting'), h('span', {}, '5 · very strong')),
     )
   } else {
     const cols = q.n === 8 ? 'is-3 is-plain' : q.choices!.length === 3 && q.choices!.every((c) => c.length < 10) ? 'is-3' : q.n === 30 ? '' : 'is-2'
@@ -101,17 +102,19 @@ function field(q: Question): HTMLElement {
     if (q.other) opts.append(choice(q, OTHER, ['Other']))
   }
   const other = q.other
-    ? [h('input', { class: 'ap-other', id: `q${q.n}-other`, type: 'text', maxlength: '300', placeholder: 'Tell us more', 'aria-label': `Other: ${shown(q)}`, hidden: true })]
+    ? [h('input', { class: 'ap-other', id: `q${q.n}-other`, type: 'text', maxlength: String(SHORT_MAX), placeholder: 'Tell us more', 'aria-label': `Other: ${shown(q)}`, hidden: true })]
     : []
   return h('fieldset', { class: 'ap-q', id: `f${q.n}`, 'data-q': String(q.n), 'aria-describedby': described }, head(q, 'legend'), ...(help ? [help] : []), opts, ...other, err)
 }
+
+/** the department picked as the 1st choice, if any */
+const firstChoice = () => document.querySelector<HTMLInputElement>('input[name="q13"]:checked')?.value
 
 /** What the page holds now, as the API takes it, and the questions whose "Other" is ticked with nothing typed. */
 function collect(): { answers: Answers; otherBlank: number[] } {
   const answers: Answers = {}
   const otherBlank: number[] = []
-  const first = (document.querySelector<HTMLInputElement>('input[name="q13"]:checked')?.value ?? '') as Dept
-  for (const q of askedFor(first)) {
+  for (const q of askedFor(firstChoice())) {
     if (q.kind === 'short' || q.kind === 'long' || q.kind === 'date') {
       const v = $<HTMLInputElement>(`q${q.n}`).value
       if (v.trim()) answers[q.n] = v
@@ -182,7 +185,7 @@ function sayAtSend(text: string) {
 
 /** stop 6 follows the 1st choice: a placeholder until it is picked, then only that department's block */
 function showDepartment() {
-  const first = document.querySelector<HTMLInputElement>('input[name="q13"]:checked')?.value
+  const first = firstChoice()
   const d = DEPARTMENTS.find((x) => x.code === first)
   $('dept-skeleton').hidden = !!d
   $('dept-sub').hidden = !d

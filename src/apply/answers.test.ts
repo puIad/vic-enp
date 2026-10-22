@@ -49,10 +49,10 @@ describe('checkAnswers', () => {
     expect(checkAnswers(['x'])).toEqual({ ok: false, fields: [] })
   })
 
-  it('caps long answers at 5,000 characters and short ones at 300', () => {
+  it('caps long answers at 5,000 characters and short ones at 1,000', () => {
     expect(checkAnswers({ ...IT_LETTER, '11': 'a'.repeat(5000) }).ok).toBe(true)
     expect(checkAnswers({ ...IT_LETTER, '11': 'a'.repeat(5001) })).toEqual({ ok: false, fields: ['11'] })
-    expect(checkAnswers({ ...IT_LETTER, '1': 'a'.repeat(301) })).toEqual({ ok: false, fields: ['1'] })
+    expect(checkAnswers({ ...IT_LETTER, '1': 'a'.repeat(1001) })).toEqual({ ok: false, fields: ['1'] })
   })
 
   it('refuses control characters; a long answer may keep its line breaks', () => {

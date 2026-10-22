@@ -299,7 +299,7 @@ the hero goes on scroll.
 ## Motion rules
 
 - Scroll drives everything, damped (Lenis). One speed for the whole page, except where [the catch](#the-catch)
-  stops a fast fling on a cut or an act.
+  steps the runs one cut per gesture and stops coasting on a still point.
 - Never trap the scroll: no section needs a gesture to escape, keyboard and screen readers move normally, anchor
   links work (the rail is real anchor links). The catch is no trap: every new gesture moves on, and jumps and keys
   are never caught.
@@ -323,27 +323,39 @@ of all, and didn't realize the rail's dots link back. Slice 5's group 4 builds i
 
 ### The catch
 
-- **What it does:** a fast fling on a phone, or a fast wheel burst, that would carry the visitor past a catch point
-  glides to rest on it in about 0.4 s. A slow scroll crosses freely. It works down and up alike. No control and no
-  cue: the cut's own entrance and the rail already show where you are.
+Rebuilt strict on 2026-10-22 ([decisions.md](decisions.md), 87 to 96), after the speed-gated catch (68 to 83) caught
+only sometimes and, on phones, let a fling go as the phone kept coasting.
+
+- **What it does:** inside the two runs, every gesture moves exactly one cut. Outside them, the page scrolls freely,
+  but momentum never carries past a still point. No speed thresholds, so it behaves the same every time on every
+  device. No control and no cue: the cut's own entrance and the rail already show where you are.
 - **Catch points (16):** the 12 cuts, each at its middle (where the pickers jump); the top of act 2; the peak's
   hold, the resolved group photo; the top of the light act; the close at rest, your point in its slot. Steps,
   Growth and FAQ are not catch points.
-- **One gesture, one point:** the point you rest on never catches you again, so every new gesture moves on.
-- **Insisting:** the third swipe in a row, each starting within about 0.25 s after the previous one came to rest, passes
-  the rest of a run (the departments or the events); the still sections (act 2's top, the peak, the light act, the
-  close) still stop it, and swiping on quickly skips each further run. A flick made during the glide (on a mouse, a new
-  spin) moves exactly one more point. A swipe that has been fast keeps catching while it coasts, down to about 600 px/s
-  ([decisions.md](decisions.md), 80 to 82).
+- **In a run, one gesture, one cut:** a swipe, flick, wheel spin or trackpad swipe fires its cut as soon as it has
+  gone about 30 px one way (about 40 px on the wheel), without waiting for the lift, and glides to the next cut in
+  about 0.4 s; the rest of that gesture does nothing. Nothing rests between two cuts, and a tap or a small nudge never
+  moves one. A new swipe during the glide retargets it one more cut and the glide flows on; one the other way turns
+  it back one. A mouse wheel kept spinning at full strength moves on one cut per glide; a trackpad's fading momentum
+  never does. Skipping a run is the rail's and the pickers' job.
+- **Entering and leaving a run:** a fling, or a drag, that reaches a run's door stops on its first cut: runs are only
+  ever stepped. A gesture at the last cut going down (the first going up) leaves with its own momentum, always at least
+  past the tunnel (the door), so nothing rests on an empty stage, and further if flung.
+- **In the flow, coasting never passes a still point:** the finger, a mouse wheel or a trackpad stroke drags past
+  freely, but momentum that would cross act 2's top, the peak's photo, the light act's top or the close stops on it,
+  whatever its speed. On touch, a fling that would die within about a fifth of a screen of a still point settles on
+  it; a drag lifted without a fling stays where it was left. Down and up alike.
 - **Never caught:** jumps from the rail, the pickers, the skip link or any anchor; keyboard scrolling; the reload
   restore.
 - **Off** under reduced motion and on tier 0, where nothing is pinned. `?catch=off` turns it off to compare.
-- **How:** on the wheel, inside Lenis's `virtualScroll` hook; on touch, by watching the page coast after the finger lifts
-  and gliding back to a point it coasts across, so phones keep native momentum
-  ([architecture.md](architecture.md#scroll-to-world); [decisions.md](decisions.md), 83).
-  What counts as fast, and the insist window, are tuned on the owner's phones. The phone half ships only if it
-  feels right inside Instagram ([open-questions.md](open-questions.md), 30); otherwise phones launch with free
-  scroll and desktop keeps its catch.
+- **How:** it decides from the input, before the page moves, never by watching the page. On the wheel, inside Lenis's
+  `virtualScroll` hook. On touch the page runs its own momentum (Lenis's touch mode, `syncTouch`), so where a flick
+  will land is known at the lift; the browser's address bar no longer hides on scroll, so the stages' bottom-anchored
+  parts sit in `svh`. A trackpad's momentum comes from the system, so on the wheel coasting is caught where it
+  crosses a point and a mouse is caught only at a run's door. Every formation is built during the hero's gather, so
+  no first-pass stall reaches the finger ([architecture.md](architecture.md#scroll-to-world)).
+- **Shipping:** on phones and desktop, with no gate and no fallback; anything wrong is fixed forward
+  ([decisions.md](decisions.md), 96).
 
 ### The rail
 

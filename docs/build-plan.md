@@ -178,8 +178,8 @@ first):
 
 Content and the CTA are never cut.
 
-The catch's phone half is judged apart from this list: it ships only if the owner passes it inside Instagram by
-the cut line. Otherwise phones launch with free scroll and desktop keeps its catch ([decisions.md](decisions.md), 77).
+The catch is not on this list: the strict catch ships on phones and desktop with no gate and no fallback, and
+anything wrong is fixed forward ([decisions.md](decisions.md), 96).
 
 ## After launch (v1.1)
 
@@ -198,8 +198,7 @@ the cut line. Otherwise phones launch with free scroll and desktop keeps its cat
 | Content checks 1 to 9 in [content.md](content.md#checks-before-the-copy-is-final) | 22 Oct (copy freeze) |
 | Approve the new-copy list (open question 27) | 22 Oct (copy freeze) |
 | Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |
-| Try the catch inside Instagram on an iPhone and an Android phone (open question 30) | 23 Oct (cut line) |
-| Try the desktop catch on a Mac trackpad, on the preview (tuned on a Windows touchpad and a mouse, decisions 79 to 82) | 23 Oct (cut line) |
+| Try the strict catch (decisions 87 to 96) inside Instagram on an iPhone and an Android phone, and on a Mac trackpad, on the preview: tuning, not a gate | 23 Oct (cut line) |
 | Gilroy web licence answer | 22 Oct |
 | The Google Form's responder link for `VITE_APPLY_URL` | 23 Oct |
 | The exact opening time | 23 Oct |

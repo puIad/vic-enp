@@ -104,12 +104,13 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
 - `gsap.ticker` drives Lenis's `raf`, and Lenis's scroll events update ScrollTrigger, so the two share one clock.
 - Under reduced motion, Lenis is not started and every act jumps to its resting formation (still images per
   section), no scrubbing.
-- The catch (slice 5, [experience.md](experience.md#the-catch)) sits between input and the scroll: on the wheel
-  inside Lenis's `virtualScroll` hook; on touch by watching the page coast after the finger lifts (`src/scroll/touch.ts`):
-  when the browser's own momentum carries the page across a point while still moving, Lenis glides it back to rest there,
-  which also stops the momentum ([decisions.md](decisions.md), 83).
-  Lenis's snap plugin is not used: it ignores touch and snaps only after a pause. Programmatic scrolls (`world.go`,
-  anchors, the reload restore) bypass it.
+- The catch (slice 5, [experience.md](experience.md#the-catch)) sits between input and the scroll and decides from the
+  input, never by watching the page ([decisions.md](decisions.md), 87): on the wheel inside Lenis's `virtualScroll`
+  hook; on touch through the same hook, with Lenis's touch mode (`syncTouch`) on so the page runs its own momentum and
+  knows where a flick will land at the lift. Inside the runs it steps one cut per gesture; in the flow it stops
+  coasting on a still point. The stages' bottom-anchored parts sit in `svh`, since the address bar no longer hides on
+  scroll. Lenis's snap plugin is not used: it ignores touch and snaps only after a pause. Programmatic scrolls
+  (`world.go`, anchors, the reload restore) bypass it.
 
 ## Device tiers
 

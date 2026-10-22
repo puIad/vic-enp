@@ -85,6 +85,44 @@ describe('registrations', () => {
     expect(JSON.parse(String(append.init!.body))).toEqual({ values: [['=1+1', 46320.5, '0555000000']] })
   })
 
+  it('never retries an append Google accepted, even when its answer cannot be read: that would write the row twice', async () => {
+    const calls: string[] = []
+    const fetchFn = (async (url: string) => {
+      calls.push(url)
+      if (url.includes('oauth2')) return Response.json({ access_token: 'tok' })
+      return new Response('not json', { status: 200 })
+    }) as typeof fetch
+    expect(await registrations(ENV, fetchFn, async () => {}).append(['x'])).toBe('')
+    expect(calls.filter((u) => u.includes(':append'))).toHaveLength(1)
+  })
+
+  it('asks for its token as soon as it is made, so a send gets it before its turn at the append, not during it', async () => {
+    const g = flakyGoogle([])
+    const sheet = registrations(ENV, g.fetchFn, async () => {})
+    expect(g.calls.map((c) => c.url)).toEqual(['https://oauth2.googleapis.com/token'])
+    await sheet.append(['x'])
+    expect(g.calls.filter((c) => c.url.includes('oauth2'))).toHaveLength(1)
+  })
+
+  it('tries the token again on a timeout or a 5xx, like any other call, but not on a 400 (a bad key stays bad)', async () => {
+    let tokenTries = 0
+    const flakyToken = (answers: (number | 'timeout')[]) =>
+      (async (url: string) => {
+        if (url.includes('oauth2')) {
+          const a = answers[tokenTries++] ?? 200
+          if (a === 'timeout') throw new DOMException('timed out', 'TimeoutError')
+          return a === 200 ? Response.json({ access_token: 'tok' }) : new Response('{}', { status: a })
+        }
+        return Response.json({ updates: { updatedRange: "'Registration Responses'!A42:AH42" } })
+      }) as typeof fetch
+    expect(await registrations(ENV, flakyToken(['timeout', 503]), async () => {}).append(['x'])).toBe("'Registration Responses'!A42:AH42")
+    expect(tokenTries).toBe(3)
+
+    tokenTries = 0
+    await expect(registrations(ENV, flakyToken([400]), async () => {}).append(['x'])).rejects.toThrow(/token 400/)
+    expect(tokenTries).toBe(1)
+  })
+
   it('answers the range the row landed in, so a caller can read back exactly that row', async () => {
     expect(await registrations(ENV, flakyGoogle([]).fetchFn, async () => {}).append(['x'])).toBe("'Registration Responses'!A42:AH42")
   })

@@ -29,6 +29,14 @@ export function firstRow(ranges: (string | undefined)[]): number | undefined {
   return rows.length ? Math.min(...rows) : undefined
 }
 
+const addressOf = (r: ReadRow, headers: string[]) => r.values[headers.indexOf('Email address')]?.effectiveValue?.stringValue ?? ''
+
+/** the burst's rows among `read`: those holding one of the sent addresses */
+function oursOf(sends: Send[], headers: string[], read: ReadRow[]) {
+  const sent = new Set(sends.map((s) => s.email))
+  return read.filter((r) => sent.has(addressOf(r, headers)))
+}
+
 /**
  * Judges the burst from the rows read back below `firstRow`, found by address. Passes when every send was saved, each
  * address sits on exactly one row, and each of those rows' Timestamp and Birth Date carry a date format (so the
@@ -36,9 +44,8 @@ export function firstRow(ranges: (string | undefined)[]): number | undefined {
  */
 export function verdict(sends: Send[], headers: string[], read: ReadRow[]) {
   const at = (name: string) => headers.indexOf(name)
-  const sent = new Set(sends.map((s) => s.email))
-  const ours = read.filter((r) => sent.has(r.values[at('Email address')]?.effectiveValue?.stringValue ?? ''))
-  const rowsOf = (email: string) => ours.filter((r) => r.values[at('Email address')].effectiveValue!.stringValue === email).length
+  const ours = oursOf(sends, headers, read)
+  const rowsOf = (email: string) => ours.filter((r) => addressOf(r, headers) === email).length
   const saved = sends.filter((s) => s.status === 200)
   const notSaved = sends.filter((s) => s.status !== 200).map((s) => s.email)
   const lost = saved.filter((s) => rowsOf(s.email) === 0).map((s) => s.email)
@@ -121,7 +128,7 @@ export async function main(n = Number(process.env.LOADTEST_N || 30)): Promise<nu
         new Request('https://vic-enp.vercel.app/api/submit', {
           method: 'POST',
           headers: { 'content-type': 'application/json', cookie: proofCookie(email, Date.now(), sessionKey).header.split(';')[0] },
-          body: JSON.stringify({ answers: { ...IT_LETTER, '2': `Loadtest ${nn}` } }),
+          body: JSON.stringify({ answers: IT_LETTER }),
         }),
         {
           redis,
@@ -158,7 +165,7 @@ export async function main(n = Number(process.env.LOADTEST_N || 30)): Promise<nu
 
   const v = verdict(sends, headers, read)
   const ms = sends.map((s) => s.ms!).sort((a, b) => a - b)
-  const ours = read.filter((r) => sends.some((s) => s.email === r.values[headers.indexOf('Email address')]?.effectiveValue?.stringValue))
+  const ours = oursOf(sends, headers, read)
   const formats = (h: string) => tally(ours.map((r) => r.values[headers.indexOf(h)]?.effectiveFormat?.numberFormat?.type ?? 'none'))
   const slowest = (kind: string) => Math.max(0, ...attempts.filter((a) => a.label.startsWith(kind)).map((a) => a.ms))
   const list = (l: (string | number)[]) => (l.length ? l.join(', ') : 'none')

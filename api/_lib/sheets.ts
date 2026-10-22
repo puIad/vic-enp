@@ -21,7 +21,7 @@ export async function accessToken(keyB64: string, fetchFn: typeof fetch): Promis
     body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: `${unsigned}.${sig}` }).toString(),
     signal: AbortSignal.timeout(5000),
   })
-  if (!res.ok) throw new Error(`sheets: token ${res.status}`)
+  if (!res.ok) throw new SheetError(`sheets: token ${res.status}`, res.status)
   return ((await res.json()) as { access_token: string }).access_token
 }
 
@@ -59,36 +59,43 @@ class SheetError extends Error {
 export type Registrations = {
   /** row 1 of the tab */
   headers(): Promise<string[]>
-  /** one new row at the end of the tab: RAW (a formula or a phone number stays text), as inserted rows; answers the A1 range it landed in */
+  /** one new row at the end of the tab: RAW (a formula or a phone number stays text), as inserted rows; answers the A1 range it landed in (empty if Google's answer can't be read) */
   append(row: (string | number)[]): Promise<string>
 }
 
-// 3 tries keep a failing submit inside the route's 60 s (the header reads and the wait for lock:append end by 30 s in,
-// then 3 appends at 8 s and two backoffs), so the registration mark is always given back before the function is stopped
+// 3 tries keep a failing submit inside the route's 60 s (its turn at lock:append starts by 30 s in, then 3 appends at
+// 8 s and two backoffs), so the registration mark is given back before the function is stopped. The one case past it:
+// a turn starting late that also finds row 1's cache empty and reads it slowly (3 reads at 5 s); the cache makes that rare
 const TRIES = 3
 const BASE_MS = 400
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 
+/** `call` up to 3 times, backing off with jitter on 429, 5xx and network errors (a timeout among them); another 4xx is final */
+async function withTries<T>(sleep: (ms: number) => Promise<void>, call: () => Promise<T>): Promise<T> {
+  for (let i = 0; ; i++) {
+    try {
+      return await call()
+    } catch (e) {
+      const status = e instanceof SheetError ? e.status : 0
+      if (i + 1 >= TRIES || (status !== 0 && status !== 429 && status < 500)) throw e
+      await sleep(BASE_MS * 2 ** i * (1 + Math.random()))
+    }
+  }
+}
+
 /**
- * The Registration Responses tab for one submit: one token, and each call tried up to 3 times with exponential backoff
- * and jitter on 429 (the service account's 60 writes a minute), 5xx and network errors. Another 4xx is final.
+ * The Registration Responses tab for one submit: one token, and the token and each call tried up to 3 times (429 being
+ * the service account's 60 writes a minute).
  */
 export function registrations(env: SheetEnv, fetchFn: typeof fetch = fetch, sleep: (ms: number) => Promise<void> = wait): Registrations {
-  let token: Promise<string> | undefined
-  const tokenOnce = () => (token ??= accessToken(env.keyB64, fetchFn))
+  // asked for at once, so a submit holds it before its turn at lock:append; a failure surfaces at the first call
+  const token = withTries(sleep, () => accessToken(env.keyB64, fetchFn))
+  token.catch(() => {})
 
   async function retry<T>(call: (token: string) => Promise<T>): Promise<T> {
     if (!env.sheetId || !env.tab) throw new Error('sheets: not configured')
-    const t = await tokenOnce()
-    for (let i = 0; ; i++) {
-      try {
-        return await call(t)
-      } catch (e) {
-        const status = e instanceof SheetError ? e.status : 0
-        if (i + 1 >= TRIES || (status !== 0 && status !== 429 && status < 500)) throw e
-        await sleep(BASE_MS * 2 ** i * (1 + Math.random()))
-      }
-    }
+    const t = await token
+    return withTries(sleep, () => call(t))
   }
 
   return {
@@ -102,7 +109,9 @@ export function registrations(env: SheetEnv, fetchFn: typeof fetch = fetch, slee
           signal: AbortSignal.timeout(8000),
         })
         if (!res.ok) throw new SheetError(`sheets: append ${res.status}`, res.status)
-        return ((await res.json()) as { updates: { updatedRange: string } }).updates.updatedRange
+        // the row is written: an unreadable answer must not throw into a retry, which would write it twice
+        const out = (await res.json().catch(() => ({}))) as { updates?: { updatedRange?: string } }
+        return out.updates?.updatedRange ?? ''
       }),
   }
 }

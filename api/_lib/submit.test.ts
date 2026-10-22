@@ -16,9 +16,12 @@ const REG = `reg:${sha256(EMAIL)}`
 function fakeTab(opts: { failing?: boolean; headers?: string[] } = {}) {
   const rows: (string | number)[][] = []
   // the most appends ever in flight at once
-  const load = { now: 0, max: 0 }
+  const load = { now: 0, max: 0, headerReads: 0 }
   const sheet: Registrations = {
-    headers: async () => opts.headers ?? [...SITE_HEADERS],
+    headers: async () => {
+      load.headerReads++
+      return opts.headers ?? [...SITE_HEADERS]
+    },
     append: async (row) => {
       load.max = Math.max(load.max, ++load.now)
       // a real append takes a moment, so two sends can overlap
@@ -102,6 +105,31 @@ describe('POST /api/submit', () => {
     expect(tab.load.max).toBe(1)
     expect(s.r.keys).toContain('lock:append')
     expect(Number(await s.r.redis.command(['EXISTS', 'lock:append']))).toBe(0)
+  })
+
+  it('reads row 1 once for a burst, in the first turn, and from Redis for 60 s after', async () => {
+    const tab = fakeTab()
+    const s = setup(tab)
+    const cookie = (i: number) => proofCookie(`burst-${i}@g.enp.edu.dz`, s.clock.now, KEY).header.split(';')[0]
+    await Promise.all([0, 1, 2, 3, 4].map((i) => send(s.d, cookie(i), { answers: IT_LETTER })))
+    expect(tab.rows).toHaveLength(5)
+    expect(tab.load.headerReads).toBe(1)
+    s.clock.now += 61_000
+    await send(s.d, cookie(5), { answers: IT_LETTER })
+    expect(tab.load.headerReads).toBe(2)
+  })
+
+  it("frees only its own lock: once its 2 s ran out and another send took the lock, it leaves that one alone", async () => {
+    const tab = fakeTab()
+    const s = setup(tab)
+    const append = tab.sheet.append
+    // mid-append, the lock expires and another send takes it
+    tab.sheet.append = async (row) => {
+      await s.r.redis.command(['SET', 'lock:append', 'another send'])
+      return append(row)
+    }
+    expect((await send(s.d, s.cookie, { answers: IT_LETTER })).status).toBe(200)
+    expect(s.r.data.get('lock:append')).toBe('another send')
   })
 
   it('gives up waiting for the lock 30 s into the submit: 503, and the mark released', async () => {

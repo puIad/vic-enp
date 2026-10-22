@@ -42,7 +42,8 @@ const POLL_MS = 150
 async function inTurn<T>(d: SubmitDeps, turnBy: number, run: () => Promise<T>): Promise<T> {
   const lock = key(d.keyPrefix, 'lock:append')
   const mine = randomUUID()
-  while ((await d.redis.command(['SET', lock, mine, 'NX', 'EX', LOCK_S])) === null) {
+  // a Redis error counts as the turn: the send appends unthrottled, as before the lock, rather than failing
+  while ((await d.redis.command(['SET', lock, mine, 'NX', 'EX', LOCK_S]).catch(() => 'OK')) === null) {
     if (d.now() >= turnBy) throw new Error('submit: no turn at lock:append')
     await new Promise((r) => setTimeout(r, POLL_MS * (1 + Math.random())))
   }

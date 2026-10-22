@@ -116,7 +116,12 @@ export async function main(n = Number(process.env.LOADTEST_N || 30)): Promise<nu
 
   let headers: string[] = []
   const sessionKey = randomBytes(32).toString('base64')
-  const redis = fakeRedis({ now: Date.now() }).redis
+  // a live clock, so the 2 s lock and the 60 s row 1 expire here as they do on Upstash
+  const redis = fakeRedis({
+    get now() {
+      return Date.now()
+    },
+  }).redis
   const burst = performance.now()
   const sends = await Promise.all(
     Array.from({ length: n }, async (_, i): Promise<Send> => {

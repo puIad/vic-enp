@@ -132,6 +132,18 @@ describe('POST /api/submit', () => {
     expect(s.r.data.get('lock:append')).toBe('another send')
   })
 
+  it('appends without its turn when Redis fails at the lock: a Redis blip never costs a letter that could be saved', async () => {
+    const s = setup()
+    const redis = {
+      command: async (args: (string | number)[]) => {
+        if (args[0] === 'SET' && args[1] === 'lock:append') throw new Error('redis: 503')
+        return s.r.redis.command(args)
+      },
+    }
+    expect((await send({ ...s.d, redis }, s.cookie, { answers: IT_LETTER })).status).toBe(200)
+    expect(s.tab.rows).toHaveLength(1)
+  })
+
   it('gives up waiting for the lock 30 s into the submit: 503, and the mark released', async () => {
     const s = setup()
     // another send holds the lock and never lets go

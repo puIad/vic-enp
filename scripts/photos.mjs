@@ -17,7 +17,7 @@ const BUDGET = { 640: 70_000, 1280: 200_000 } // AVIF bytes (docs/assets.md targ
  * stretched over the cutout's own range and pushed through an S-curve; the alpha channel passes through untouched.
  */
 async function mono(file) {
-  const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
+  const { data, info } = await sharp(file).toColourspace('srgb').ensureAlpha().raw().toBuffer({ resolveWithObject: true })
   const s = (t) => 1 / (1 + Math.exp(-6 * (t - 0.5)))
   const lut = Array.from({ length: 256 }, (_, g) => {
     const t = Math.min(1, Math.max(0, (g - 4) / 246)) ** 0.85
@@ -61,6 +61,7 @@ for (const p of PHOTOS.filter((x) => !only || x.id === only)) {
 }
 
 console.log(`AVIF total ${(total / 1e6).toFixed(2)} MB across ${baked} photos`)
+if (only && !baked) errors.push(`--only ${only}: no such photo in photos.ts`)
 if (errors.length) {
   console.error(errors.join('\n'))
   process.exit(1)

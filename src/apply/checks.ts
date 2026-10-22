@@ -7,6 +7,9 @@ export type CheckContext = {
   today: Date
 }
 
+/** the questions softCheck looks at: form.ts builds a chip under each */
+export const SOFT = new Set([4, 5, 6, 14])
+
 const PHONE = /^0(?:[5-7]\d{8}|[2-4]\d{7})$/
 // a profile path after the domain; a bare facebook.com is not a profile
 const FACEBOOK = /^(?:https?:\/\/)?(?:[a-z]+\.)?(?:facebook\.com|fb\.com|fb\.me)\/\S+/i

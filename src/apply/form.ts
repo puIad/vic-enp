@@ -4,14 +4,12 @@
 // ticket, a 422 or a failed save never clears them; only Received does.
 
 import { askedFor, LONG_MAX, missing, SHORT_MAX, type Answers } from './answers'
-import { softCheck } from './checks'
+import { SOFT, softCheck } from './checks'
 import { browserStore, clearDraft, loadDraft, saveDraft, type Draft } from './draft'
 import { DEPARTMENTS, RECEIVED, STOPS, sendAnswer } from './letter'
 import { ASKED, type Question } from './questions'
 
 const OTHER = '__other'
-/** the questions with a soft check (checks.ts): a chip that warns, never blocks */
-const SOFT = new Set([4, 5, 6, 14])
 const byN = new Map(ASKED.map((q) => [q.n, q]))
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -405,6 +403,8 @@ function landOwl() {
   $('owl').hidden = true
   $('letter-app').hidden = false
   $('letter-send').scrollIntoView({ block: 'center' })
+  // hiding the letter dropped focus to the body: put it back where the candidate pressed
+  $('letter-send').focus({ preventScroll: true })
 }
 
 async function send(hooks: LetterHooks) {

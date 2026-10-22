@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { softCheck } from './checks'
+import { SOFT, softCheck } from './checks'
 
 const TODAY = new Date(2026, 9, 25)
 const check = (n: number, v: string, first?: string) => softCheck(n, v, { first, today: TODAY })
@@ -47,6 +47,12 @@ describe('the 2nd choice check', () => {
     expect(check(14, 'HR', 'IT')).toBe('')
     expect(check(14, 'HR')).toBe('')
   })
+})
+
+it('lists exactly the questions it checks, so each one gets its chip', () => {
+  // an answer every check would flag: a date a century back, otherwise a word that is no phone, link or other choice
+  const warns = (n: number) => check(n, n === 4 ? '1900-01-01' : 'x', 'x') !== ''
+  expect([...Array(33).keys()].filter(warns)).toEqual([...SOFT].sort((a, b) => a - b))
 })
 
 it('never checks a blank answer or a question without a soft check', () => {

@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "photos": "node scripts/photos.mjs",
     "posters": "node scripts/posters.mjs",
-    "loadtest": "node --env-file-if-exists=.env.loadtest scripts/loadtest.mjs"
+    "loadtest": "node --env-file-if-exists=.env.loadtest scripts/loadtest.mjs",
+    "mailburst": "node --env-file-if-exists=.env.loadtest scripts/mailburst.mjs"
   },
   "dependencies": {
     "@fontsource-variable/cormorant-garamond": "^5.3.0",

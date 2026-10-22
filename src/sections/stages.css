@@ -467,6 +467,8 @@
   width: 22vw;
   pointer-events: none;
   opacity: 0;
+  /* hidden once it has passed: a blend layer at opacity 0 still costs a phone its compositing every frame (#42) */
+  visibility: hidden;
   background: linear-gradient(90deg, transparent, var(--c) 70%, #fff);
   mix-blend-mode: screen;
   animation: ev-streak 0.3s cubic-bezier(0.5, 0, 0.2, 1) 1;
@@ -475,10 +477,12 @@
   0% {
     transform: translateX(-30vw);
     opacity: 0.9;
+    visibility: visible;
   }
   100% {
     transform: translateX(112vw);
     opacity: 0.9;
+    visibility: visible;
   }
 }
 

@@ -27,7 +27,7 @@ import { meter, watchLoop } from './loop'
 import { ring, watchTaps } from './ripple'
 import { has } from './steps'
 import { world } from './store'
-import { BUDGET, LADDER, flatBudget, forcedPoints, startRung, type Budget, type Tier } from './tier'
+import { BUDGET, LADDER, flatBudget, forcedPoints, nextRung, startRung, type Budget, type Tier } from './tier'
 
 // The world layer (docs/architecture.md, Two layers): one canvas fixed behind the whole page, one WebGL context, one
 // field of points that holds a formation per act (formations.ts), driven by the score (score.ts), plus your point.
@@ -168,7 +168,8 @@ const RAMP = forcedPoints(location.search)
 const FPS = new URLSearchParams(location.search).has('fps')
 
 /**
- * `?fps`: a small live readout of the frame rate, the points drawn and the pixel ratio, for the owner's phone checks.
+ * `?fps`: a small live readout of the frame rate, the points drawn, the pixel ratio and the rung, for the owner's phone
+ * checks, and under it the lowest rate seen in each act so far (#42). A second that spans two acts counts for neither.
  * While the world isn't drawing (a hidden tab, an opaque act over it) it says so, so it never shows a stale act.
  */
 function useFpsReadout() {
@@ -187,19 +188,32 @@ function useFpsReadout() {
     const m = meter()
     let rate = '…'
     let line = ''
+    let act = ''
+    const lows = new Map<string, number>()
     const show = (text: string) => el.current && text !== line && (el.current.textContent = line = text)
+    const low = () => [...lows].map(([a, r]) => `${a} ${r}`).join(' · ')
     return {
       // the rate settles once a second; the act is read every frame, so it is never one the scroll has left
       frame(now: number, points: number, dpr: number) {
         if (!el.current) return
+        const at = world.act || 'top'
+        if (at !== act) {
+          act = at
+          m.pause()
+        }
         const r = m(now)
-        if (r !== null) rate = String(Math.round(r))
-        show(`${rate} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · ${world.act || 'top'}`)
+        if (r !== null) {
+          rate = String(Math.round(r))
+          lows.set(at, Math.min(lows.get(at) ?? Infinity, Math.round(r)))
+        }
+        const rung = document.documentElement.dataset.worldRung
+        show(`${rate} fps · ${points.toLocaleString('en')} points · DPR ${dpr} · rung ${rung} · ${at}\nlowest: ${low() || '…'}`)
       },
       idle() {
         m.pause()
+        act = ''
         rate = '…'
-        show('idle · not drawing')
+        show(`idle · not drawing\nlowest: ${low() || '…'}`)
       },
     }
   })
@@ -613,13 +627,19 @@ function usePointer() {
 
 export default function World({ tier, forced, still, onReady, onLost }: WorldProps) {
   const [rung, setRung] = useState(startRung(tier))
-  const { budget, dpr } = LADDER[rung]
+  const { budget, dpr, grain } = LADDER[rung]
+  // the monitor waits out the arrival: the gather and the formations built one per frame after it are a one-off cost,
+  // and a step down is final (nextRung)
+  const [watch, setWatch] = useState(false)
+  const fell = useRef(false)
   usePointer()
   useEffect(() => {
-    document.documentElement.dataset.worldRung = String(rung)
-    // the lowest rung holds the grain still (index.css, .grain)
-    document.documentElement.classList.toggle('w-low', rung === LADDER.length - 1)
-  }, [rung])
+    const html = document.documentElement
+    html.dataset.worldRung = String(rung)
+    // the last two rungs hold the grain still, then drop it (index.css, .grain)
+    html.classList.toggle('w-low', grain !== 'moving')
+    html.classList.toggle('w-nograin', grain === 'off')
+  }, [rung, grain])
 
   return (
     <Canvas
@@ -637,14 +657,23 @@ export default function World({ tier, forced, still, onReady, onLost }: WorldPro
         gl.domElement.addEventListener('webglcontextlost', onLost, { once: true })
       }}
     >
-      {!forced && !still && !RAMP && (
+      {watch && !forced && !still && !RAMP && (
         <PerformanceMonitor
-          flipflops={3}
-          onDecline={() => setRung((r) => Math.min(LADDER.length - 1, r + 1))}
-          onIncline={() => setRung((r) => Math.max(0, r - 1))}
+          onDecline={() => {
+            fell.current = true
+            setRung((r) => nextRung(r, 'down', { fell: true, act: world.act }))
+          }}
+          onIncline={() => setRung((r) => nextRung(r, 'up', { fell: fell.current, act: world.act }))}
         />
       )}
-      <Field budget={budget} still={still} onReady={onReady} />
+      <Field
+        budget={budget}
+        still={still}
+        onReady={() => {
+          onReady()
+          setTimeout(() => setWatch(true), (GATHER + LIGHT + 1) * 1000)
+        }}
+      />
     </Canvas>
   )
 }

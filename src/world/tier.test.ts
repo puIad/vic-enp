@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BUDGET, LADDER, forcedPoints, forcedTier, pickTier, startRung } from './tier'
+import { BUDGET, HEAVY, LADDER, forcedPoints, forcedTier, nextRung, pickTier, startRung } from './tier'
 
 const base = { search: '', reduce: false, saveData: false, memory: 8, phone: false }
 
@@ -27,8 +27,8 @@ describe('pickTier', () => {
 
 describe('the ladder', () => {
   it('starts each tier on its own budget from #11 and #5', () => {
-    expect(LADDER[startRung(2)]).toEqual({ budget: 2, dpr: 2 })
-    expect(LADDER[startRung(1)]).toEqual({ budget: 1, dpr: 1.5 })
+    expect(LADDER[startRung(2)]).toMatchObject({ budget: 2, dpr: 2 })
+    expect(LADDER[startRung(1)]).toMatchObject({ budget: 1, dpr: 1.5 })
     expect(BUDGET[2].hero).toBe(9000)
     expect(BUDGET[1].hero).toBe(5000)
   })
@@ -38,6 +38,32 @@ describe('the ladder', () => {
     expect(Math.min(...LADDER.map((r) => r.dpr))).toBe(1)
     expect(BUDGET[2].peak).toBe(24000)
     expect(BUDGET[1].peak).toBe(12000)
+  })
+
+  it('stills the grain on the second-last rung and drops it on the last', () => {
+    expect(LADDER.map((r) => r.grain)).toEqual(['moving', 'moving', 'moving', 'still', 'off'])
+  })
+})
+
+describe('nextRung', () => {
+  const top = { fell: false, act: 'top' }
+  const peak = { fell: false, act: 'club-life' }
+
+  it('steps down on any act, down to the last rung and no further', () => {
+    expect(nextRung(2, 'down', top)).toBe(3)
+    expect(nextRung(3, 'down', peak)).toBe(4)
+    expect(nextRung(LADDER.length - 1, 'down', peak)).toBe(LADDER.length - 1)
+  })
+
+  it('steps up only on headroom shown in a heavy act', () => {
+    expect(nextRung(2, 'up', top)).toBe(2)
+    expect(nextRung(2, 'up', { fell: false, act: 'apply' })).toBe(2)
+    for (const act of HEAVY) expect(nextRung(2, 'up', { fell: false, act })).toBe(1)
+    expect(nextRung(0, 'up', peak)).toBe(0)
+  })
+
+  it('never climbs again once it has stepped down', () => {
+    expect(nextRung(3, 'up', { fell: true, act: 'club-life' })).toBe(3)
   })
 })
 

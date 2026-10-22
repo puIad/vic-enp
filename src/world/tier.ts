@@ -49,17 +49,33 @@ export const BUDGET = {
 export type Budget = { hero: number; cuts: number; peak: number; light: number }
 
 /**
- * What the world draws: a budget and the pixel-ratio cap. The world starts on its tier's rung and PerformanceMonitor
- * moves it along the ladder: down when frames drop, up (phones too) when there is headroom.
+ * What the world draws: a budget, the pixel-ratio cap and the grain. The world starts on its tier's rung and
+ * PerformanceMonitor moves it along the ladder (nextRung): down when frames drop, up (phones too) when there is
+ * headroom. The grain's overlay blend reads back the whole page under it every frame, about 40% of a phone's
+ * compositing (#42), so the last rung drops it.
  */
 export const LADDER = [
-  { budget: 2, dpr: 2 }, // tier 2
-  { budget: 2, dpr: 1.5 },
-  { budget: 1, dpr: 1.5 }, // tier 1
-  { budget: 1, dpr: 1 },
+  { budget: 2, dpr: 2, grain: 'moving' }, // tier 2
+  { budget: 2, dpr: 1.5, grain: 'moving' },
+  { budget: 1, dpr: 1.5, grain: 'moving' }, // tier 1
+  { budget: 1, dpr: 1, grain: 'still' },
+  { budget: 1, dpr: 1, grain: 'off' },
 ] as const
 
 export const startRung = (tier: Tier) => (tier === 2 ? 0 : 2)
+
+/** The acts that draw the cut runs' or the peak's budget: the only ones whose headroom says anything about the rest. */
+export const HEAVY = new Set(['departments', 'club-life', 'events'])
+
+/**
+ * Where a PerformanceMonitor verdict moves the world. A step down is always taken and is final: the world never climbs
+ * again after one, so a phone can't flip back up in a quiet act and stall in the next heavy one. A step up needs the
+ * headroom to show in a heavy act: sixty frames on the hero's 5k points say nothing about the peak's 12k (#42).
+ */
+export function nextRung(rung: number, move: 'up' | 'down', at: { fell: boolean; act: string }) {
+  if (move === 'down') return Math.min(LADDER.length - 1, rung + 1)
+  return at.fell || !HEAVY.has(at.act) ? rung : Math.max(0, rung - 1)
+}
 
 /**
  * `?points=20000` draws that many points in every act and holds the rung: the owner's point ramp on a real phone (open

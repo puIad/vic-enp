@@ -118,7 +118,12 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
 
 ## Device tiers
 
-Chosen at load, stepped down at runtime if the frame rate drops (drei's `PerformanceMonitor`).
+Chosen at load, then moved along a ladder at runtime by drei's `PerformanceMonitor` (`LADDER` and `nextRung` in
+`src/world/tier.ts`): budget 2 at DPR 2, budget 2 at 1.5, budget 1 at 1.5 (where phones start), budget 1 at DPR 1 with
+the grain still, then the same with no grain. It steps down when the frame rate stays under 40 and up when it stays at
+the refresh rate, with two rules ([decisions.md](decisions.md), 98): a step up needs that headroom in a heavy act (the
+departments, the peak, the events), and after a step down the world never climbs again. The monitor starts once the
+arrival is over, so the gather and the formations built after it can't push the world down for good.
 
 | Tier | Who | World |
 |---|---|---|

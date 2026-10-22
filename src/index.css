@@ -185,7 +185,12 @@
     inset: -160px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  /* tiers 1 and 2 run it like film grain, ten jumps a second; tier 0, reduced motion and the world's lowest rung
+  /* the world's last rung drops it (html.w-nograin, World): its overlay blend reads back the whole page under it every
+     frame, the largest single cost in a phone's compositing (#42) */
+  html.w-nograin .grain {
+    display: none;
+  }
+  /* tiers 1 and 2 run it like film grain, ten jumps a second; tier 0, reduced motion and the world's lower rungs
      (html.w-low, World) keep it still (decision 64, #40). Transforms only, so the compositor moves it without a repaint */
   @media (prefers-reduced-motion: no-preference) {
     html.w-on:not(.w-low) .grain::before {
@@ -1648,12 +1653,14 @@
   top: 6px;
   z-index: 30;
   translate: -50% 0;
+  max-width: calc(100vw - 12px);
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: rgb(0 0 0 / 0.75);
   color: #9ef0d8;
   font: 600 12px/1.4 ui-monospace, monospace;
-  white-space: nowrap;
+  white-space: pre-wrap;
+  text-align: center;
   pointer-events: none;
 }
 

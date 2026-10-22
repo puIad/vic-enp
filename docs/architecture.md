@@ -1,7 +1,8 @@
 # Architecture
 
-A static single page: no server, no database, no cookies, no candidate data. Everything that varies (the
-registration link, the opening time) is configuration.
+A static single page: the landing page has no server, no database, no cookies and no candidate data. Everything that
+varies (the registration link, the opening time) is configuration. Beside it, `/apply` and `api/` hold the registration
+form ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md), settled 2026-10-22 on wayfinder map #110) with its own Redis and secrets; see Hosting and Privacy.
 
 ## Stack
 
@@ -137,7 +138,7 @@ Phone browsers resize the viewport as the toolbar shows and hides. The canvas is
 
 | Name | Where | Value |
 |---|---|---|
-| `VITE_APPLY_URL` | Vercel env var (build time) | The Google Form's responder link at launch, the registration app's `/apply` later. The registration plan calls it `APPLY_URL`; Vite only exposes `VITE_`-prefixed names. |
+| `VITE_APPLY_URL` | Vercel env var (build time) | The Google Form's responder link until the 24 Oct live check passes, then `/apply`; flipping it back is the fallback (an env change plus a Redeploy, 1 to 2 minutes). |
 | `OPENS_AT` | `src/config.ts` | `2026-10-25T00:00:00+01:00` (Algiers time) until the owner gives the exact time |
 | Social links | `src/config.ts` | From the source brief §10 |
 
@@ -153,11 +154,25 @@ link is an env var change plus a Redeploy.
 - `vercel.json` headers: a strict CSP (`default-src 'self'`; images, fonts and scripts from self only; no inline
   scripts; `frame-ancestors 'none'`), `Referrer-Policy: strict-origin-when-cross-origin`, long immutable caching
   for hashed assets and `public/photos/`.
-- Handed over after the season with the dashboard.
+- **The registration form lives here too** (settled 22 Oct): `/apply` is its own Vite entry (the 3D bundle never loads
+  there) and the `api/` functions (`code`, `verify`, `submit`, `health`) run in the same Vercel project, on the same
+  origin. Secrets and its own new Upstash Redis are in this project only, nothing shared with the dashboard's project.
+  Production env vars point at the real Master, Preview ones at a copy of it. `form-action` in the CSP moves from `'none'`
+  to `'self'`; the rest of the CSP is unchanged and `/apply` uses no inline scripts or styles.
+- **Deploy safety:** until the 24 Oct evening live check, a landing deploy must pass a `/apply` smoke check on its preview
+  (`/apply` returns 200, `/api/health` all `ok`). After the live check, production changes only for a rollback or the
+  `VITE_APPLY_URL` switch.
+- Handed over after the season with the dashboard: the project, its Redis, the service account key and the mailer script.
 - The build reads only committed files (no `assets/pics/`, no local env files), so a clean clone builds the same
   as the owner's machine. Check with a build from a fresh clone before the first production deploy.
 
 ## Privacy
 
-No cookies, no forms, no third-party scripts or fonts, no tracking unless the owner approves cookieless analytics
-([open-questions.md](open-questions.md)). Photos have EXIF stripped. The CTA is a plain link.
+**The landing page itself:** no cookies, no forms, no third-party scripts or fonts, no tracking unless the owner approves
+cookieless analytics ([open-questions.md](open-questions.md)). Photos have EXIF stripped. The CTA is a plain link.
+
+**`/apply` and `/api`** (amended 22 Oct, wayfinder map #110): they show the registration form and may set **one HttpOnly
+cookie**, only after the candidate's email code is verified (60 minutes, sealed). The form holds candidate data in the
+candidate's own browser (a localStorage draft, cleared on send) and sends it to the Master's Registration Responses tab
+through a service account; Redis keeps only hashes of emails, codes and IPs. Logs carry route, outcome and milliseconds
+only. No candidate data in the repo.

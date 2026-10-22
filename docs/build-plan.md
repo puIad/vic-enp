@@ -13,7 +13,7 @@ ships and the rest becomes v1.1 during the recruitment window.
 | 21 Oct | Wed | Slices 2 and 3 |
 | 22 Oct | Thu | Slice 4. Copy freeze in the evening |
 | 23 Oct | Fri | Slice 4 finish, slice 5 starts. **Cut line** in the evening |
-| 24 Oct | Sat | Slice 5: verification, reviews, real phones, production. **Live in the evening** with the countdown |
+| 24 Oct | Sat | Slice 5: verification, reviews, real phones, production. **Live in the evening** with the countdown. The registration form's live check also runs this evening ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md)); `VITE_APPLY_URL` flips to `/apply` only after it passes |
 | 25 Oct | Sun | Recruitment opens. The CTA switches on by itself at `OPENS_AT` |
 
 ## Gate 0: docs signed off
@@ -183,7 +183,8 @@ the cut line. Otherwise phones launch with free scroll and desktop keeps its cat
 
 ## After launch (v1.1)
 
-- Switch `VITE_APPLY_URL` to the registration app once it is signed off (in `VIC-Recruitment-2026`).
+- The registration form is built on 23 and 24 Oct and opens on 25 Oct if it passes its live check, so `VITE_APPLY_URL`
+  stays the Google Form's link until then ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md)); nothing here waits for v1.1.
 - Real testimonials, if collected.
 - Anything cut at the cut line.
 - More photos, `IMG_8095` once exported.

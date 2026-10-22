@@ -1,103 +1,121 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { touchCatch } from './touch'
+import type { Layout, Move } from './catch'
+import { touchCatch, type Page } from './touch'
 
-// The page's listeners without a DOM: window's addEventListener and scrollY, stubbed. Events are plain objects with the
-// fields touch.ts reads.
+// The page's listeners without a DOM: window's addEventListener and innerHeight, stubbed. Events are plain objects with
+// the fields touch.ts reads.
 let on: Map<string, (e: unknown) => void>
-let y = 0
-const fire = (type: string, e: object = {}) => on.get(type)?.({ timeStamp: performance.now(), touches: [], ...e })
-const finger = (n = 1) => ({ touches: Array.from({ length: n }, () => ({})) })
+let prevented: number
+const fire = (type: string, e: object = {}) => {
+  const ev = { timeStamp: 0, touches: [], cancelable: true, defaultPrevented: false, preventDefault: () => prevented++, ...e }
+  on.get(type)?.(ev)
+}
+const at = (y: number, n = 1, x = 0) => ({ touches: Array.from({ length: n }, () => ({ clientX: x, clientY: y })) })
+
+const L: Layout = { still: [1000], runs: [{ stops: [2800, 3200], lo: 2500, hi: 3500, up: 1700, down: 4300 }], limit: 9000 }
+
+function page(y = 0, anim: number | null = null) {
+  const moves: Move[] = []
+  const p: Page & { moves: Move[]; halts: number } = {
+    moves,
+    halts: 0,
+    y: () => y,
+    anim: () => anim,
+    play: (m) => {
+      moves.push(m)
+      if ('scroll' in m) y = m.scroll
+    },
+    halt: () => p.halts++,
+  }
+  return p
+}
 
 beforeEach(() => {
   on = new Map()
-  y = 600
+  prevented = 0
   vi.stubGlobal('addEventListener', (type: string, f: (e: unknown) => void) => on.set(type, f))
   vi.stubGlobal('removeEventListener', (type: string) => on.delete(type))
-  Object.defineProperty(globalThis, 'scrollY', { get: () => y, configurable: true })
+  vi.stubGlobal('innerHeight', 800)
+  vi.stubGlobal('visualViewport', { scale: 1 })
 })
 afterEach(() => {
   vi.unstubAllGlobals()
-  delete (globalThis as { scrollY?: number }).scrollY
 })
 
-/** A one-finger fling from 600 down: the finger drags 100 px, lifts, and the page coasts at about 3000 px/s. */
-function fling(t: number) {
-  fire('touchstart', { ...finger(), timeStamp: t })
-  y += 100
-  fire('touchend', { timeStamp: t + 100 })
-  for (let i = 1; i <= 20; i++) {
-    y += 48
-    fire('scroll', { timeStamp: t + 100 + i * 16 })
-  }
-}
-
 describe('the catch on touch', () => {
-  it('glides a coasting fling back to the point it crossed', () => {
-    const glide = vi.fn()
-    const c = touchCatch(glide, vi.fn())
-    c.points([{ y: 1000 }])
-    fling(0)
-    expect(glide).toHaveBeenCalledTimes(1)
-    expect(glide.mock.calls[0][0]).toBe(1000)
+  it('drags the page itself, holding the browser off', () => {
+    const p = page(0)
+    touchCatch(p).layout(L)
+    fire('touchstart', at(600))
+    fire('touchmove', { ...at(500), timeStamp: 16 })
+    expect(p.moves).toEqual([{ scroll: 100 }])
+    expect(prevented).toBe(1)
   })
 
-  it('never flings from a pinch', () => {
-    const glide = vi.fn()
-    const c = touchCatch(glide, vi.fn())
-    c.points([{ y: 1000 }])
-    fire('touchstart', { ...finger(2), timeStamp: 0 })
-    y += 100
-    // one finger lifts, then the other
-    fire('touchend', { ...finger(1), timeStamp: 80 })
-    fire('touchend', { timeStamp: 100 })
-    for (let i = 1; i <= 20; i++) {
-      y += 48
-      fire('scroll', { timeStamp: 100 + i * 16 })
-    }
-    expect(glide).not.toHaveBeenCalled()
+  it('steps a run and coasts a fling, through the toucher', () => {
+    const p = page(2800)
+    touchCatch(p).layout(L)
+    fire('touchstart', at(600))
+    fire('touchmove', { ...at(560), timeStamp: 16 })
+    expect(p.moves).toEqual([{ glide: 3200 }])
+    const q = page(300)
+    touchCatch(q).layout(L)
+    fire('touchstart', at(600))
+    for (let i = 1; i <= 5; i++) fire('touchmove', { ...at(600 - 40 * i), timeStamp: 16 * i })
+    fire('touchend', { timeStamp: 88 })
+    expect(q.moves.at(-1)).toMatchObject({ coast: 1000 })
   })
 
-  it('stops a glide where it is when a finger comes down, and only then', () => {
-    const halt = vi.fn()
-    const c = touchCatch(vi.fn(), halt)
-    c.points([{ y: 1000 }])
-    fire('touchstart', { ...finger(), timeStamp: 0 })
-    expect(halt).not.toHaveBeenCalled()
-    fire('touchend', { timeStamp: 50 })
-    fling(1000)
-    // the glide is under way: a finger down halts it
-    fire('touchstart', { ...finger(), timeStamp: 1500 })
-    expect(halt).toHaveBeenCalledTimes(1)
+  it('leaves a pinch, and a zoomed-in page, to the browser', () => {
+    const p = page(0)
+    touchCatch(p).layout(L)
+    fire('touchstart', at(600, 2))
+    fire('touchmove', { ...at(500, 2), timeStamp: 16 })
+    fire('touchend', { ...at(500, 1), timeStamp: 30 })
+    fire('touchend', { timeStamp: 40 })
+    vi.stubGlobal('visualViewport', { scale: 2 })
+    fire('touchstart', at(600))
+    fire('touchmove', { ...at(500), timeStamp: 16 })
+    fire('touchend', { timeStamp: 30 })
+    expect(p.moves).toEqual([])
+    expect(prevented).toBe(0)
   })
 
-  it("doesn't halt a glide that came to rest", () => {
-    const halt = vi.fn()
-    const c = touchCatch((_, done) => done(), halt)
-    c.points([{ y: 1000 }])
-    fling(0)
-    fire('touchstart', { ...finger(), timeStamp: 2000 })
-    expect(halt).not.toHaveBeenCalled()
+  it("lets the rail's hold keep a slide it took", () => {
+    const p = page(0)
+    touchCatch(p).layout(L)
+    fire('touchstart', at(600))
+    fire('touchmove', { ...at(595), timeStamp: 16 })
+    fire('touchmove', { ...at(400), timeStamp: 500, defaultPrevented: true })
+    fire('touchend', { timeStamp: 520 })
+    expect(p.moves).toEqual([{ scroll: 5 }])
   })
 
-  it('never catches the momentum after a cancel (a jump)', () => {
-    const glide = vi.fn()
-    const c = touchCatch(glide, vi.fn())
-    c.points([{ y: 1000 }])
-    fire('touchstart', { ...finger(), timeStamp: 0 })
-    y += 100
-    fire('touchend', { timeStamp: 100 })
-    c.cancel()
-    for (let i = 1; i <= 20; i++) {
-      y += 48
-      fire('scroll', { timeStamp: 100 + i * 16 })
-    }
-    expect(glide).not.toHaveBeenCalled()
+  it('stays out of the way where nothing is pinned (tier 0, a lost context)', () => {
+    const p = page(0)
+    touchCatch(p).layout({ still: [], runs: [], limit: 9000 })
+    fire('touchstart', at(600))
+    fire('touchmove', { ...at(500), timeStamp: 16 })
+    expect(p.moves).toEqual([])
+    expect(prevented).toBe(0)
   })
 
-  it('removes its listeners on stop', () => {
-    const c = touchCatch(vi.fn(), vi.fn())
-    expect(on.size).toBe(4)
-    c.stop()
-    expect(on.size).toBe(0)
+  it('stops a coast where it is when a finger comes down, never a glide onto a stop', () => {
+    const p = page(1500, 1800)
+    touchCatch(p).layout(L)
+    fire('touchstart', at(600))
+    expect(p.halts).toBe(1)
+    const q = page(2900, 3200)
+    touchCatch(q).layout(L)
+    fire('touchstart', at(600))
+    expect(q.halts).toBe(0)
+  })
+
+  it('does nothing for a tap', () => {
+    const p = page(2800)
+    touchCatch(p).layout(L)
+    fire('touchstart', at(600))
+    fire('touchend', { timeStamp: 80 })
+    expect(p.moves).toEqual([])
   })
 })

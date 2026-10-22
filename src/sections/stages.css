@@ -1,19 +1,20 @@
 /* The staged cut runs (#13, #15), loaded with their chunks (DepartmentsStage, EventsStage), so the first view's CSS
    stays inside the first round trip. Tier 0 never loads it: the cards are in index.css. */
 
-/* one pinned stage, a hard cut per step, no easing */
+/* one pinned stage, a hard cut per step, no easing. The stages are the small viewport's height: the page owns its touch
+   scrolling (decision 87), so a phone's address bar never hides and a 100lvh stage would end under it */
 .cuts {
   position: relative;
   z-index: 2;
 }
 .cuts.events {
   /* pins the moment the peak lets go: the hard cut from the resolved photo to the Gala (#14) */
-  margin-top: -100lvh;
+  margin-top: -100svh;
 }
 .cuts-stage {
   position: sticky;
   top: 0;
-  height: 100lvh;
+  height: 100svh;
   overflow: hidden;
 }
 .cut {

@@ -5,7 +5,7 @@ import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { LEAD, LEDGER, PEAK_ONE, STACK, TITLE } from '../content/clubLife'
 import { photo } from '../content/photos'
-import { PEAK_HOLD } from '../world/steps'
+import { PEAK_HOLD, PEAK_STACK } from '../world/steps'
 import { world } from '../world/store'
 
 // Act 4, the peak (#14), with motion: six screens pinned, photo 1 then a depth stack of ten, the ledger over it.
@@ -18,9 +18,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 // the act's progress p runs 0..1 over 6 screens; photo i lives from START + i * STEP for LIFE. Ten photos share the
 // window seven had (decisions.md, 65): LIFE stays under 2 * STEP, so at most two stack photos are on screen at once.
-const START = 0.42
-const STEP = 0.05
-const LIFE = 0.093
+const { start: START, step: STEP, life: LIFE, enter: ENTER } = PEAK_STACK
 
 function slot(s: (typeof STACK)[number], i: number): CSSProperties {
   const p = photo(s.id)
@@ -112,7 +110,7 @@ export default function ClubLifePeak() {
       // the stack: no two neighbours enter the same way; every photo leaves toward the camera
       root.querySelectorAll<HTMLElement>('.peak-card').forEach((card, i) => {
         const s = START + i * STEP
-        const d = LIFE * 0.45
+        const d = LIFE * ENTER
         const img = card.querySelectorAll('img')
         const fade = (dur: number) => tl.fromTo(card, { opacity: 0 }, { opacity: 1, duration: dur }, s)
         tl.set(card, { opacity: 1 }, s) // on from s; the fading entrances below restart it at 0, the exit ends it at 0

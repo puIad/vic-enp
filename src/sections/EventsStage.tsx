@@ -10,7 +10,7 @@ import { jump, tallestCopy, useStep } from './stage'
 import './stages.css'
 
 // Act 5 with the world (#15): one pinned stage, five sideways hard cuts, then the horizon. It starts a screen early
-// (margin-top: -100lvh), so it pins the moment the peak lets go: the resolved photo cuts straight to the Gala, with no
+// (margin-top: -100svh), so it pins the moment the peak lets go: the resolved photo cuts straight to the Gala, with no
 // passage and no fade (#14). Photo-led where the departments are formation-led; the world snaps behind the frame.
 // The four projects have no photos (docs/assets.md, Missing), so their cut carries no frame: no placeholder ships.
 

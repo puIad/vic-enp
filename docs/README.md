@@ -29,7 +29,8 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   spin during the glide moves one more cut, coasting still catches. A Mac trackpad is still untried.
 - 2026-10-22: the strict catch ([decisions.md](decisions.md), 87 to 96). The owner found the live catch working only
   sometimes, and on phones letting a fling go mid-coast. Rebuilt to decide from the input: one gesture, one cut in the
-  runs, coasting never passes a still point, and the page runs its own momentum on phones. Ships with no gate.
+  runs, coasting never passes a still point, and the page runs its own momentum on phones. Ships with no gate. The
+  peak became a third run, one gesture per photo (97).
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

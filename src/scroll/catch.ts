@@ -76,28 +76,25 @@ export function leave(l: Layout, r: Run, y: number, dir: number): number {
  * and doesn't end a gesture.
  */
 export type Wheel = { t: number; dy: number; from: number; to: number; glide: number | null; stalled?: boolean }
-/** `pass`: scroll as usual. `hold`: dropped, the rest of a gesture already spent. `at`: glide to rest there. */
-export type Verdict = 'pass' | 'hold' | { at: number }
+/** `pass`: scroll as usual. `hold`: dropped, the rest of a gesture already spent. `halt`: stop our glide where it is,
+ *  then scroll as usual. `at`: glide to rest there, or with `v` (px/ms) coast there as a fling does on touch. */
+export type Verdict = 'pass' | 'hold' | 'halt' | { at: number; v?: number }
 
 // shortcut: the timings and sizes below are first values from the owner's Windows touchpad and a mouse (decisions 80 to
-// 82); a Mac trackpad is still untried. They only tell a stroke, a spin and momentum apart: no speed decides a catch.
-/** a run's gesture fires its stop once it has moved this many px one way: a small nudge never moves a stop (89) */
-export const STEP_WHEEL = 40
+// 82); a Mac trackpad is still untried. They only tell a stroke from momentum: no speed decides a catch.
+/** a run's gesture fires its stop once it has moved this many px one way, as on touch: a small nudge never moves a stop (89, 98) */
+export const STEP_WHEEL = 30
 /** a pause this long between wheel events starts a new gesture */
 const GAP = 150
-/** a gesture still turning at full strength this long after it fired, with its glide over, is a wheel spun on (91) */
-const HOLD = 600
 /** momentum has faded once a gesture's smoothed size drops below this share of its peak */
 const FELL = 0.35
-/** a gesture whose last three events shrank (none grew), below this share of its biggest, is coasting off it as far as a still
- *  point is concerned: told early, before FELL or FADE can, so a quick trackpad flick doesn't blow through a still point
- *  in its first 0.2 s of momentum. A mouse's equal clicks never shrink. */
+/** a gesture whose last three events shrank (none grew), below this share of its biggest, is coasting off it: told
+ *  early, before FELL or FADE can, so the page's coast takes over in a flick's first 0.2 s of momentum. A mouse's equal
+ *  clicks never shrink. */
 const EASED = 0.85
 /** a gesture whose smoothed size shrinks by FADE or more over TREND ms is momentum, not a push */
 const FADE = 0.15
 const TREND = 200
-/** this long with no wheel events lets the still point you rest on catch again */
-const REARM = 1000
 
 type Gesture = {
   dir: number
@@ -112,26 +109,34 @@ type Gesture = {
   /** its last three events' sizes, and its biggest */
   sizes: number[]
   top: number
+  /** its events over the last READ ms, for its speed when the page takes over its momentum */
+  recent: { t: number; dy: number }[]
   /** px moved one way, while a run's gesture hasn't fired */
   moved: number
-  /** when it last fired a stop or was caught; the rest of it is held */
-  fired: number | null
+  /** it fired a stop, was caught, or its momentum became the page's coast; the rest of it is held */
+  fired: boolean
+  /** its momentum became the page's coast: a new flick inside the system's that follows shows as a jump in size */
+  coasted: boolean
   /** it left the peak upward into its opening: it scrolls on as the flow's */
   free: boolean
 }
 
-export function catcher() {
+/**
+ * The desktop half, played as touch is (98). A stroke or a mouse drags the page through Lenis; once a trackpad's
+ * momentum shows, the page coasts on with its own from the gesture's speed, landing by `land` as a fling does at the
+ * lift, and the system's momentum is held. Telling the momentum from the stroke is the fade heuristic: the wheel has no lift.
+ */
+export function catcher(vh: () => number) {
   let layout = EMPTY
   let g: Gesture | null = null
   let last = -Infinity
   let prev = 0
-  /** the still point last caught: it never catches the momentum leaving it */
-  let home: number | null = null
 
-  const fire = (t: number, at: number): Verdict => {
-    g!.fired = t
-    return { at }
+  const fire = (at: number, v?: number): Verdict => {
+    g!.fired = true
+    return v === undefined ? { at } : { at, v }
   }
+  const onStop = (y: number) => !!runAt(layout, y)?.stops.some((s) => Math.abs(s - y) <= EPS)
 
   return {
     layout(l: Layout) {
@@ -146,12 +151,12 @@ export function catcher() {
       const dir = Math.sign(dy)
       if (!dir) return 'pass'
       const gap = stalled ? 0 : t - last
-      if (gap >= REARM) home = null
       // a trackpad's momentum keeps sending events with no pause, so a new flick inside it shows as a jump in size; a
       // mouse spin is all the same clicks, so a new one shows only as the pause before it (a stalled page's reads as none)
-      const rise = !!g && (g.fell || g.fading) && d >= 8 && d > Math.abs(prev) * 2
-      if (!g || gap > GAP || dir !== g.dir || rise) {
-        g = { dir, level: d, peak: d, mark: { t, level: d }, fell: false, fading: false, sizes: [], top: 0, moved: 0, fired: null, free: false }
+      const rise = !!g && (g.fell || g.fading || g.coasted) && d >= 8 && d > Math.abs(prev) * 2
+      const fresh = !g || gap > GAP || dir !== g.dir || rise
+      if (!g || fresh) {
+        g = { dir, level: d, peak: d, mark: { t, level: d }, fell: false, fading: false, sizes: [], top: 0, recent: [], moved: 0, fired: false, coasted: false, free: false }
       } else {
         g.level += (d - g.level) * 0.3
         g.peak = Math.max(g.peak, g.level)
@@ -163,40 +168,48 @@ export function catcher() {
       }
       g.sizes = [...g.sizes, d].slice(-3)
       g.top = Math.max(g.top, d)
+      g.recent = [...g.recent.filter((e) => e.t > t - READ), { t, dy }]
       last = t
       prev = dy
-      const coasting = g.fell || g.fading
-      const [a, b, c] = g.sizes
-      const easing = c !== undefined && a >= b && b >= c && a > c && c < g.top * EASED
+      // a new gesture stops a glide or coast of ours where it is and scrolls on from there, as a finger down does; a
+      // glide onto a run's stop runs on, to be retargeted (90)
+      if (fresh && glide !== null && !onStop(glide)) return 'halt'
+      // the rest of a gesture that fired a stop, was caught or coasts on does nothing (88, 95, 98)
+      if (g.fired) return 'hold'
       // where the page is heading: a glide's end, or Lenis's target
       const at = glide ?? from
       const run = g.free ? null : runAt(layout, at)
 
       if (run) {
-        // a run: nothing scrolls but a stop. The gesture fires once it has moved STEP_WHEEL px; the rest is held, unless
-        // a wheel spun on at full strength past the glide moves on one more (91). A new gesture during the glide
-        // retargets it one more stop from where the glide is going (90).
-        const spun = g.fired !== null && glide === null && !coasting && gap <= GAP && t - g.fired >= HOLD
-        if (g.fired !== null && !spun) return 'hold'
-        if (g.fired === null && (g.moved += d) < STEP_WHEEL) return 'hold'
+        // a run: nothing scrolls but a stop. The gesture fires once it has moved STEP_WHEEL px. A new gesture during
+        // the glide retargets it one more stop from where the glide is going (90).
+        if ((g.moved += d) < STEP_WHEEL) return 'hold'
         const next = nextStop(run, at, dir)
-        if (next !== null) return fire(t, next)
+        if (next !== null) return fire(next)
         // the run's end: the gesture leaves it, at least past its edge (94); the peak's opening is the flow's
         const out = leave(layout, run, at, dir)
-        if (Math.abs(out - at) > EPS) return fire(t, out)
+        if (Math.abs(out - at) > EPS) return fire(out)
         g.free = true
         return 'pass'
       }
-      if (g.fired !== null) {
-        // caught in the flow, or gliding out of a run: held, unless a wheel spun on goes on scrolling
-        if (glide !== null || coasting || gap > GAP || t - g.fired < HOLD) return 'hold'
-        g.fired = null
+      const [a, b, c] = g.sizes
+      const easing = c !== undefined && a >= b && b >= c && a > c && c < g.top * EASED
+      if (g.fell || g.fading || easing) {
+        // momentum: the page's own from here, carried on from the gesture's speed as a fling is from the lift's (93, 98)
+        const r = g.recent
+        const span = r[r.length - 1].t - r[0].t
+        const v = span > 0 ? r.slice(1).reduce((s, e) => s + e.dy, 0) / span : 0
+        const rest = Math.abs(v) >= FLUNG ? land(layout, from, from + v / DECAY, { near: NEAR * vh() }) : from
+        if (Math.abs(rest - from) > EPS) {
+          g.coasted = true
+          return fire(rest, v)
+        }
+        // too slow to coast: a slow, uneven stroke reads as easing, so it drags on
       }
-      // whatever reaches a run's door lands on its first stop (92, 95); momentum stops on the still point it would cross
-      const rest = caught(layout, from, to, { still: coasting || easing })
-      if (rest === null || (home !== null && Math.abs(rest - home) < 2)) return 'pass'
-      if (!runAt(layout, rest)) home = rest
-      return fire(t, rest)
+      // a stroke or a mouse drags: it crosses still points freely, but whatever reaches a run's door lands on its
+      // first stop (92, 95)
+      const rest = caught(layout, from, to, { still: false })
+      return rest === null ? 'pass' : fire(rest)
     },
   }
 }

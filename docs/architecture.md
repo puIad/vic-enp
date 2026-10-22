@@ -140,7 +140,8 @@ it is not shown under the canvas while the world loads, because a formed cloud t
 as a glitch, and a late full-screen image would take over as the page's LCP element.
 
 Context loss falls back to tier 0 (iOS in-app browsers can kill the page with no context-lost event, so keep GPU
-memory low). Every point count is unmeasured on a real phone until open question 25.
+memory low). Tier 1's counts (5k, 10k, 12k) were measured on the owner's Oppo Reno 2F in Chrome on 2026-10-22
+(decisions.md, 101); tier 2's on a phone and the ramp past 12k were not.
 
 Phone browsers resize the viewport as the toolbar shows and hides. The canvas is sized to the large viewport
 (`lvh`) so it doesn't re-allocate on every scroll; sections use `svh`/`dvh` where height matters.

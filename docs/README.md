@@ -31,6 +31,10 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   sometimes, and on phones letting a fling go mid-coast. Rebuilt to decide from the input: one gesture, one cut in the
   runs, coasting never passes a still point, and the page runs its own momentum on phones. Ships with no gate. The
   peak became a third run, one gesture per photo (97).
+- 2026-10-22: the phone frame rate ([#42](https://github.com/puIad/vic-enp/issues/42), [decisions.md](decisions.md),
+  99 to 101). On the owner's Oppo Reno 2F the world steps down and stays down, and a fifth rung drops the grain.
+  Between dips the acts read 42 to 60 fps; the dips under 30 go to the performance pass. The ramp and the
+  Instagram run were skipped.
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

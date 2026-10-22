@@ -102,12 +102,10 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    the phone hold, the footer landing with its one-time hold), then [the catch](experience.md#the-catch), desktop
    first, then phones on a preview the owner tries inside Instagram (open question 30). Spec in
    [experience.md](experience.md#reading-and-wayfinding). Tickets [#59](https://github.com/puIad/vic-enp/issues/59), [#60](https://github.com/puIad/vic-enp/issues/60), [#61](https://github.com/puIad/vic-enp/issues/61), in that order.
-5. **Reactions, the light act, grain, sound** (63, 64):
+5. **Reactions, the light act, grain** (63, 64; the sound was dropped, 84):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
    - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's lowest rung.
-   - The sound toggle with a low ambient pad, off on arrival. Claude finds CC0 loops and the owner picks one,
-     with the owner's OK before each download. No toggle ships without a loop.
 6. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
    question 25), and again once groups 2 to 5 are in.
 7. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
@@ -153,9 +151,8 @@ In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25
    ([#59](https://github.com/puIad/vic-enp/issues/59)), the catch on desktop ([#60](https://github.com/puIad/vic-enp/issues/60)),
    then the phone catch on a preview for the owner ([#61](https://github.com/puIad/vic-enp/issues/61), open question 30).
 3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
-   ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)),
-   the sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)). For the sound, Claude shortlists CC0 loops and
-   the owner picks one and approves each download.
+   ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)).
+   The sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)) is dropped (decision 84).
 4. The owner's phone check with `?fps` and `?points=N` ([#42](https://github.com/puIad/vic-enp/issues/42)), which
    unblocks the performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)).
 5. **The application form on this site** (owner's note, 20 Oct): the form is the link between the landing page and

@@ -163,7 +163,7 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
 
 ## Chrome
 
-"Distance to the 600" (readout), "Gathering the 600" (loader), "Sound off" (toggle), the rail's waypoint names
+"Distance to the 600" (readout), "Gathering the 600" (loader), the rail's waypoint names
 ("Start", "The 600", "Departments", "Events", "How to join", "Your place"; the peak's waypoint name is set in the
 build). All **new**. The rail's sub-section names (2026-10-21): the seven department names and the events as
 the page writes them (GALA, Ignite, POLYMAZE, AEC), then "Projects", "Steps", "Growth" and "FAQ" (**new**).

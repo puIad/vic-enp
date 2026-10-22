@@ -121,7 +121,7 @@ The plan's row for scroll-craft's fingerprint registry (empty for this workspace
 
 Shared by every act: Gilroy Heavy, Bold and Regular; night `#141E27` except the light act; static grain and
 vignette over canvas and photos; the waypoint rail as navigation and progress; the Apply pill from the second
-waypoint; the optional sound toggle; the logo on its own night plate ([brand.md](brand.md),
+waypoint; the logo on its own night plate ([brand.md](brand.md),
 [#10](https://github.com/puIad/vic-enp/issues/10), comp on
 [`prototype/system`](https://github.com/puIad/vic-enp/tree/prototype/system/prototype/system)). Copy for every act
 is in [content.md](content.md).
@@ -307,7 +307,7 @@ the hero goes on scroll.
   in the hero and at the close, where their own CTA takes over.
 - Text never moves while it's being read. It arrives, then holds.
 - Pointer and touch reactions are a bonus, never required to read anything. Native cursor, no custom cursor.
-- Sound: an optional toggle, off on arrival, bottom left. Never starts by itself ([#10](https://github.com/puIad/vic-enp/issues/10)).
+- No sound: the optional toggle was dropped ([decisions.md](decisions.md), 84).
 - No full-screen loader: "Gathering the 600" under the hero headline is the loader.
 - Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
   reduced motion and on the world's lowest rung ([decisions.md](decisions.md), 64).

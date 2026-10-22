@@ -5,7 +5,6 @@ import { ApplyPill } from './ApplyPill'
 import { Rail } from './Rail'
 
 // The fixed chrome of #10: logo on its night plate, "Distance to the 600", the waypoint rail (Rail), the sticky Apply pill.
-// shortcut: the sound toggle waits for its loop asset (docs/assets.md, Missing); a toggle with no sound would be a placeholder.
 
 const START = 48 // the readout's distance at the top of the page, as in the hero comp
 

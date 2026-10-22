@@ -14,3 +14,6 @@ assets/pics/
 # the owner's logo files (Illustrator): scripts/logos.py commits web-ready copies to public/logos
 assets/logos/
 __pycache__/
+# local env vars (the load test's optional .env.loadtest) and a `vercel link`: secrets never land in git
+.env*
+.vercel

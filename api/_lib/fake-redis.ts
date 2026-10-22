@@ -33,6 +33,8 @@ export function fakeRedis(clock: { now: number }) {
           if (ex >= 0) exp.set(k, clock.now + Number(rest[ex + 1]) * 1000)
           return 'OK'
         }
+        case 'GET':
+          return typeof cur === 'string' ? cur : null
         case 'EXISTS':
           return cur === undefined ? 0 : 1
         case 'TTL':

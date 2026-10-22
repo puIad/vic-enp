@@ -75,8 +75,10 @@ VIC-ENP/
    except where an act needs pointer input. One WebGL context for the whole page (in-app browsers limit contexts,
    and a context per section would reload resources).
 
-The content layer never waits for the world. The world is a `React.lazy` chunk loaded after first paint (idle
-callback), and fades in when its first frame is ready.
+The first paint never waits for the world. The world is a `React.lazy` chunk requested on the frame after
+first paint, and fades in when its first frame is ready. On a load at the top, the hero's copy and the chrome wait
+for the 600 instead, at most 3 s if they haven't started ([decisions.md](decisions.md), 107 to 109;
+`src/world/arrival.ts`).
 
 ## Scroll to world
 

@@ -302,18 +302,18 @@ describe('POST /api/code', () => {
     expect((await ask(s.d, 'amina')).status).toBe(200)
   })
 
-  it('sends 10 tickets from one address in an hour, then refuses that IP but not another', async () => {
+  it('sends 60 tickets from one IP in an hour (a lecture hall on one Wi-Fi), then refuses that IP but not another', async () => {
     const s = setup()
-    for (let i = 0; i < 10; i++) expect((await ask(s.d, `c${i}`)).status).toBe(200)
-    const res = await ask(s.d, 'c10')
+    for (let i = 0; i < 60; i++) expect((await ask(s.d, `c${i}`)).status).toBe(200)
+    const res = await ask(s.d, 'c60')
     expect(res.status).toBe(429)
     expect((await res.json()).retryIn).toBe(3600)
-    expect((await ask(s.d, 'c10', '198.51.100.1')).status).toBe(200)
+    expect((await ask(s.d, 'c60', '198.51.100.1')).status).toBe(200)
   })
 
   it('spends neither hourly count, the address\'s or the IP\'s, when the mailer fails, and says it was not sent', async () => {
     const s = setup({ sendCode: async () => false })
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 62; i++) {
       const res = await ask(s.d, 'amina')
       expect(res.status).toBe(502)
       expect(await res.json()).toEqual({ status: 'not_sent' })

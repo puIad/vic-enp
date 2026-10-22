@@ -26,7 +26,8 @@ const RESEND_S = 30
 const CODE_S = 10 * 60
 const HOUR_S = 3600
 const PER_EMAIL = 3
-const PER_IP = 10
+// high enough for a lecture hall on one Wi-Fi or one carrier's NAT; the per-address limit and 5 tries stop guessing
+const PER_IP = 60
 const MAX_TRIES = 5
 const json = (body: unknown, status = 200, headers: Record<string, string> = {}) =>
   Response.json(body, { status, headers: { 'cache-control': 'no-store', ...headers } })

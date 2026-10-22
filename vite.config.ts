@@ -22,13 +22,31 @@ function preloadFont(): Plugin {
   }
 }
 
+/** `/apply` is apply.html, as vercel.json rewrites it, in `npm run dev` and `npm run preview` too. */
+function applyRoute(): Plugin {
+  const rewrite = (req: { url?: string }, _: unknown, next: () => void) => {
+    if (req.url === '/apply' || req.url?.startsWith('/apply?')) req.url = req.url.replace('/apply', '/apply.html')
+    next()
+  }
+  return {
+    name: 'vic:apply-route',
+    configureServer: (server) => void server.middlewares.use(rewrite),
+    configurePreviewServer: (server) => void server.middlewares.use(rewrite),
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), preloadFont()],
+  plugins: [react(), tailwindcss(), preloadFont(), applyRoute()],
   build: {
     rollupOptions: {
       // 404.html: what Vercel serves, with a 404 status, for any path that isn't a file
-      input: { main: resolve(import.meta.dirname, 'index.html'), notFound: resolve(import.meta.dirname, '404.html') },
+      // apply.html: the registration form at /apply, its own entry so the landing's 3D bundle never loads there
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        notFound: resolve(import.meta.dirname, '404.html'),
+        apply: resolve(import.meta.dirname, 'apply.html'),
+      },
     },
   },
 })

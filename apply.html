@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Registrations 2026 · Vision &amp; Innovation Club</title>
+    <!-- nothing links here until VITE_APPLY_URL flips to /apply after the live check; search engines keep out -->
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#141E27" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <link rel="stylesheet" href="/src/apply/apply.css" />
+  </head>
+  <body>
+    <!-- The registration form (vic-recruitment-2026 docs/registration-form.md, the comp's direction A), its own entry:
+         no landing script, no 3D bundle. Static for now: the ticket and the stops get their behaviour in later slices. -->
+    <div class="ap-sky" aria-hidden="true"></div>
+    <div class="ap-grain" aria-hidden="true"></div>
+    <div class="ap-app">
+      <header class="ap-top">
+        <a href="/" class="ap-logo"><img src="/brand/vic-logo-on-dark.svg" alt="Vision &amp; Innovation Club, home" width="75" height="30" /></a>
+      </header>
+
+      <main>
+        <section class="ap-hero">
+          <p class="ap-eyebrow">Registrations 2026</p>
+          <h1 class="ap-serif">Your letter has arrived</h1>
+        </section>
+
+        <article class="ap-letter" aria-label="Letter from the VIC team">
+          <p class="ap-greet">Dear future VICer,</p>
+          <p>The Vision &amp; Innovation Club is opening its doors, and we would love to see you inside.</p>
+          <p>
+            You will board at <b>Platform 9¾</b> with a code we send to your ENP mail, answer a few short stops, and then you
+            choose your department. It takes about ten minutes, and your answers wait for you on this phone if you need to stop.
+          </p>
+          <p class="ap-sign">The VIC team</p>
+          <div class="ap-seal" aria-hidden="true">✦</div>
+        </article>
+
+        <ul class="ap-meta" aria-label="At a glance">
+          <li class="ap-chip"><i></i>About 10 minutes</li>
+          <li class="ap-chip"><i></i>31 questions</li>
+          <li class="ap-chip"><i></i>ENP mail only</li>
+        </ul>
+
+        <div class="ap-road">
+          <section class="ap-stop is-live" aria-labelledby="tk-h">
+            <span class="ap-pin" aria-hidden="true">0</span>
+            <p class="ap-eyebrow">Step one</p>
+            <h2 class="ap-serif ap-ticket-title" id="tk-h">Platform 9¾</h2>
+            <p class="ap-lead">Enter your ENP address and we will mail you a 6&#8209;digit ticket. Typing it in proves the address is yours.</p>
+            <div class="ap-field">
+              <label for="tk-local">ENP email</label>
+              <div class="ap-email">
+                <input id="tk-local" type="text" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="name" aria-describedby="tk-help tk-domain" />
+                <span class="ap-domain" id="tk-domain">@g.enp.edu.dz</span>
+              </div>
+              <p class="ap-help" id="tk-help">Only addresses ending in @g.enp.edu.dz can register here.</p>
+            </div>
+            <button type="button" class="ap-btn" disabled>Send my ticket</button>
+          </section>
+
+          <p class="ap-unlock">The rest of the letter unlocks once your ticket is checked.</p>
+
+          <section class="ap-stop is-locked" aria-labelledby="s1">
+            <span class="ap-pin" aria-hidden="true">1</span>
+            <p class="ap-eyebrow">Stop 1</p>
+            <h2 class="ap-serif" id="s1">Who you are</h2>
+            <p class="ap-sub">The basics, so we know who is writing.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s2">
+            <span class="ap-pin" aria-hidden="true">2</span>
+            <p class="ap-eyebrow">Stop 2</p>
+            <h2 class="ap-serif" id="s2">Where we can reach you</h2>
+            <p class="ap-sub">Facebook and Discord are how VIC keeps in touch.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s3">
+            <span class="ap-pin" aria-hidden="true">3</span>
+            <p class="ap-eyebrow">Stop 3</p>
+            <h2 class="ap-serif" id="s3">Your studies</h2>
+            <p class="ap-sub">Where you are at ENP.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s4">
+            <span class="ap-pin" aria-hidden="true">4</span>
+            <p class="ap-eyebrow">Stop 4</p>
+            <h2 class="ap-serif" id="s4">Your story</h2>
+            <p class="ap-sub">Tell us how you got here, in your own words.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s5">
+            <span class="ap-pin" aria-hidden="true">5</span>
+            <p class="ap-eyebrow">Stop 5</p>
+            <h2 class="ap-serif" id="s5">The choosing</h2>
+            <p class="ap-sub">Four departments, one first choice. Read each, then tap the one that calls to you. Your house takes the colour of the room.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s6">
+            <span class="ap-pin" aria-hidden="true">6</span>
+            <p class="ap-eyebrow">Your department</p>
+            <h2 class="ap-serif" id="s6">Waiting for your choosing</h2>
+            <p class="ap-skeleton">The questions for your department appear here once you have chosen. Each department asks 3 to 5.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s7">
+            <span class="ap-pin" aria-hidden="true">7</span>
+            <p class="ap-eyebrow">Stop 7</p>
+            <h2 class="ap-serif" id="s7">Interview details</h2>
+            <p class="ap-sub">Next comes an in-person interview for those selected. Tell us when suits you.</p>
+          </section>
+          <section class="ap-stop is-locked" aria-labelledby="s8">
+            <span class="ap-pin" aria-hidden="true">8</span>
+            <p class="ap-eyebrow">Stop 8</p>
+            <h2 class="ap-serif" id="s8">Almost done</h2>
+            <p class="ap-sub">One last chance to add something. Double-check, then send.</p>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

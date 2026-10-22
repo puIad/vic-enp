@@ -142,9 +142,13 @@ the hero goes on scroll.
 - **Layout:** desktop, copy bottom left at the rail gutter, headline capped at 128 px; the icon sits whole in the
   right two thirds, clear of the headline, and the cloud after it fills the same area. Phone, the icon fills the
   field in the top 40%, copy in the bottom 60%, headline 52 px.
-- **Arrival:** night, then the words (HTML, first paint), then the 600 stream in over 3.2 s and land on the icon
-  while "Gathering the 600" climbs; at 600 the counter fades and your point lights in the iris. The icon holds
-  until the first scroll.
+- **Arrival** (amended 2026-10-22, [decisions.md](decisions.md), 107 to 109): night and "Gathering the 600" at first
+  paint, centred under the icon's place, then the 600 stream in over 3.2 s and land on the icon while the counter
+  climbs to 600, and your point lights in the iris (0.9 s). Only then does the line fade and the copy rise in,
+  headline, lead, pill, about 24 px and 120 ms apart, with the chrome alongside. On the first load in a tab session
+  the scroll, keys and Tab wait for it; a reload plays it too, and any scroll, key or tap skips to the copy. A load
+  that opens away from the top, or one where the 600 haven't started 3 s after first paint, shows the copy at once
+  and the 600 gather behind it. The icon holds until the first scroll.
 - **Scroll:** over 0.7 screen the headline lifts and fades, the icon loosens into the cloud as the camera dollies
   into the field, the field tightens 38%, your point drifts out of the iris to top right, and the sticky pill
   appears at 92%.
@@ -278,15 +282,20 @@ the hero goes on scroll.
   on desktop. The iris slot, added on 2026-10-20 with no comp ([ADR 0001](adr/0001-the-icon-formation.md)): the 600 ring the slot as an
   iris, so your point lights in an iris at the start and lands in one at the end. Slice 4 settles the ring's size
   against the pill.
-- **Travel:** headline wipes up, the clearing opens, the pill rises, the readout counts to 0.0, your point swoops
+- **Travel:** headline wipes up, the clearing opens, the pill rises, the readout counts down to 0, your point swoops
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
 - **Footer:** opaque night, no canvas under it. Opens on the rail, landed as "Jump back to"
-  ([below](#the-rail-lands-in-the-footer)). Ends on the motto at 128 px. No description line, and the address
-  reads "10 Rue des Frères OUDEK, El Harrach" ([decisions.md](decisions.md), 58). The motto has the word scrub
-  ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19; [decisions.md](decisions.md), 62; built in
-  [#36](https://github.com/puIad/vic-enp/issues/36)), whole by the bottom of the page.
+  ([below](#the-rail-lands-in-the-footer)). No description line, and the address reads "10 Rue des Frères OUDEK,
+  El Harrach" ([decisions.md](decisions.md), 58). Ends on the motto, centred, and the committee photo under it
+  ([decisions.md](decisions.md), 103 to 106): a cutout of 13 members in high-contrast black and white, one layer
+  above the motto, its bottom edge on the end of the page, the motto's last line ending where the tallest heads
+  begin. Phones and portrait tablets: the photo edge to edge, the motto at its display size. Landscape screens: the
+  motto at about 64 px and the photo narrowed, never cropped, until both fit one screen, centred, its sides fading
+  into the night. The motto has the word scrub ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), item 19;
+  [decisions.md](decisions.md), 62; built in [#36](https://github.com/puIad/vic-enp/issues/36)), and the photo
+  brightens from dim with it, both whole by the bottom of the page.
 
 ## Passages
 
@@ -302,13 +311,15 @@ the hero goes on scroll.
   steps the runs one cut per gesture and stops coasting on a still point.
 - Never trap the scroll: no section needs a gesture to escape, keyboard and screen readers move normally, anchor
   links work (the rail is real anchor links). The catch is no trap: every new gesture moves on, and jumps and keys
-  are never caught.
+  are never caught. The one exception is the hero's first load in a tab session, which waits for the icon
+  ([decisions.md](decisions.md), 108).
 - The Apply pill is one tap away from the second waypoint (top right on desktop, bottom right on phones), hidden
-  in the hero and at the close, where their own CTA takes over.
+  in the hero and at the close, where their own CTA takes over, and over the footer's photo.
 - Text never moves while it's being read. It arrives, then holds.
 - Pointer and touch reactions are a bonus, never required to read anything. Native cursor, no custom cursor.
 - No sound: the optional toggle was dropped ([decisions.md](decisions.md), 84).
-- No full-screen loader: "Gathering the 600" under the hero headline is the loader.
+- No full-screen loader: the 600 gathering into the icon, with "Gathering the 600" under it, is the loader, and
+  the hero's copy waits for it ([decisions.md](decisions.md), 107).
 - Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
   reduced motion and on the world's second-last rung ([decisions.md](decisions.md), 64); the last rung drops it (100).
 - The tap ripple is built ([#38](https://github.com/puIad/vic-enp/issues/38)): a short, still tap sends one soft ring
@@ -387,7 +398,7 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
 ### The rail lands in the footer
 
 - The footer opens on "Jump back to": every act and sub-section, labelled, on the rail's dots and line and on the
-  rail's x. The fixed rail fades as it arrives. The motto stays the page's last line.
+  rail's x. The fixed rail fades as it arrives. The motto and the committee photo stay the page's end.
 - The first time the list arrives in a visit, the fixed rail acts out its hold once before it fades: the ring fills
   around its dot, the rail opens with every name for about a second, then closes. Desktop opens it the same way,
   without the ring. No text hint.
@@ -401,6 +412,7 @@ act are in each act above. Tiers are in [architecture.md](architecture.md#device
 - **Tier 0** (no WebGL, Save-Data, `deviceMemory` at most 2, context lost) and **reduced motion** share one
   composition per act: no canvas, a baked poster of the same scene, all copy and controls visible, nothing pinned
   or scrubbed. The department and event acts give tier 0 cards; reduced motion with WebGL on stacks their cuts.
+  The hero shows its copy at first paint with no wait, and the footer's photo is still, at full contrast.
 
 ## Phones first
 

@@ -35,6 +35,10 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   99 to 101). On the owner's Oppo Reno 2F the world steps down and stays down, and a fifth rung drops the grain.
   Between dips the acts read 42 to 60 fps; the dips under 30 go to the performance pass. The ramp and the
   Instagram run were skipped.
+- 2026-10-22: the footer photo and the hero loader ([decisions.md](decisions.md), 103 to 112). The footer ends on
+  the committee in black and white under the motto, and the hero's copy and chrome wait until the 600 have built
+  the icon, with the first load's scroll waiting too. Slice 5's new group 6, the first cut at the cut line
+  ([#81](https://github.com/puIad/vic-enp/issues/81), [#82](https://github.com/puIad/vic-enp/issues/82)).
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

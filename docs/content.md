@@ -160,10 +160,12 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   10 Rue des Frères OUDEK, El Harrach (§10; the street's current name for the same place, owner, 2026-10-20).
 - Footer's first block (**new**, 2026-10-21): "Jump back to", then every act and sub-section by its rail name.
 - Last line on the page: **Once a VICer, Always a VICer.**
+- Under it, the committee photo (**new**, 2026-10-22), alt text "Tiramisu", on purpose ([decisions.md](decisions.md),
+  103 and 106).
 
 ## Chrome
 
-"Distance to the 600" (readout), "Gathering the 600" (loader), the rail's waypoint names
+"Distance to the 600" (readout, 600 down to 0; [decisions.md](decisions.md), 110), "Gathering the 600" (loader), the rail's waypoint names
 ("Start", "The 600", "Departments", "Events", "How to join", "Your place"; the peak's waypoint name is set in the
 build). All **new**. The rail's sub-section names (2026-10-21): the seven department names and the events as
 the page writes them (GALA, Ignite, POLYMAZE, AEC), then "Projects", "Steps", "Growth" and "FAQ" (**new**).

@@ -46,6 +46,8 @@ only guides the alt text. Use per photo as signed in [#14](https://github.com/pu
 - Captions and alt text in the same file. Alt text describes the scene ("Around 80 VIC members in front of
   the ENP building"), not "photo 3".
 - `sharp`'s prebuilt binaries don't decode HEIC, hence the JPEG export for `IMG_8095`.
+- The footer's committee cutout (`footer.png`, 3380x2402) keeps its transparency and is baked to high-contrast
+  black and white ([decisions.md](decisions.md), 103). It has no focal point: it is never cropped (104).
 
 ## Brand files
 

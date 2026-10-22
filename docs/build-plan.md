@@ -106,9 +106,13 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
    - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's second-last rung, and is off on its last ([decisions.md](decisions.md), 100).
-6. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
-   question 25), and again once groups 2 to 5 are in.
-7. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
+6. **The footer photo and the hero loader** (103 to 112, added on 2026-10-22), the first cut at the cut line:
+   - The committee photo under the motto, high-contrast black and white, never cropped ([#81](https://github.com/puIad/vic-enp/issues/81)).
+   - The hero waits for the icon, the first load's scroll waits with it, and the readout counts from 600
+     ([#82](https://github.com/puIad/vic-enp/issues/82)).
+7. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
+   question 25), and again once groups 2 to 6 are in.
+8. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
    Instagram, the domain, the production deploy, the share preview check.
 
 The page lengths stay as signed: about 30 screens on a phone and 27.5 on desktop, against the 22 to 24 first

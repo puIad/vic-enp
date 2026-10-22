@@ -8,7 +8,7 @@ Measured with Lighthouse mobile (Moto G Power class, slow 4G throttling) on the 
 
 | Measure | Budget |
 |---|---|
-| Largest Contentful Paint | ≤ 2.5 s |
+| Largest Contentful Paint | ≤ 2.5 s, measured on "Gathering the 600": the hero's copy waits for the icon by design ([decisions.md](decisions.md), 111) |
 | Cumulative Layout Shift | < 0.1 |
 | Interaction to Next Paint | < 200 ms |
 | JS before the world loads (gzip) | ≤ 120 KB |
@@ -32,7 +32,8 @@ WCAG 2.1 AA as the floor.
   the whole page without the world.
 - One `h1`, then `h2` per section, landmarks (`header`, `main`, `footer`), a skip link to the CTA.
 - `prefers-reduced-motion`: no smooth scroll, no scrubbing, still compositions ([experience.md](experience.md#motion-rules)).
-- Keyboard: everything focusable is reachable in order, focus is visible, nothing traps focus or scroll. The
+- Keyboard: everything focusable is reachable in order, focus is visible, nothing traps focus or scroll, except the
+  hero's first load in a tab session, which waits for the icon ([decisions.md](decisions.md), 108). The
   catch steps gestures and stops momentum, never a key press or a jump ([experience.md](experience.md#the-catch)).
 - Contrast: the charter's approved pairings ([brand.md](brand.md#core-charter-p13)), checked in every act where text
   sits over the world. If the world behind a headline is too bright, the world dims, not the text.

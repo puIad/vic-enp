@@ -12,4 +12,6 @@ export const env = () => ({
   saKeyB64: v('SA_KEY_B64'),
   masterId: v('MASTER_ID'),
   regTab: v('REG_TAB'),
+  emailDomain: v('EMAIL_DOMAIN') || 'g.enp.edu.dz',
+  sessionKey: v('SESSION_KEY'),
 })

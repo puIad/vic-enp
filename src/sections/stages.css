@@ -559,15 +559,16 @@
     top: 84px;
     width: auto;
   }
+  /* --ev-fit shrinks the rows where the four would run into the picker (EventsStage measures it) */
   .ev-rows li {
-    padding: 9px 0;
+    padding: calc(9px * var(--ev-fit, 1)) 0;
   }
   .ev-rows h4 {
-    font-size: 22px;
+    font-size: calc(22px * var(--ev-fit, 1));
   }
   .ev-rows p {
     margin-top: 3px;
-    font-size: 13px;
+    font-size: calc(13px * var(--ev-fit, 1));
   }
   /* a photo cut on a phone is one column, frame then copy. The frame is as tall on every cut, so the name sits on the
      same line on each (56), and gives up height so the tallest copy never runs over it or the picker (AEC's long lead
@@ -601,8 +602,27 @@
     width: calc((100% - var(--gut) - 20px - 8px) / 3);
     height: clamp(88px, calc(100% - 216px - var(--ev-copy, 0px)), 25svh);
   }
+  /* the projects cut on a phone is one column too, the title then the rows, so the rows can't run under the title however
+     tall they grow (a 360x640 screen, a larger text size); where they would reach the picker, --ev-fit shrinks them. It
+     leaves the names' line (56): the title is a size smaller, with the world's four rings beside it (formations.ts) */
+  .ev.projects {
+    padding: 84px 20px 132px var(--gut);
+  }
+  .ev.projects .ev-text,
+  .ev.projects .ev-rows {
+    position: relative;
+    inset: auto;
+    width: auto;
+    flex: none;
+  }
   .ev.projects .ev-text {
-    bottom: 150px;
+    padding-right: 96px;
+  }
+  .ev.projects .cut-line {
+    font-size: clamp(32px, 9.5vw, 44px);
+  }
+  .ev.projects .ev-rows {
+    margin-top: 16px;
   }
   .ev-pick {
     right: 0;

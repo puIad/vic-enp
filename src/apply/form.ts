@@ -1,8 +1,11 @@
-// /apply's letter: the 8 stops' questions, the review, the send and Received. The questions come from questions.ts and
-// the words from letter.ts; this file only builds and moves the page. Answers live in the page itself: going back to the
-// ticket, a 422 or a failed save never clears them.
+// /apply's letter: the 8 stops' questions, the choosing's house wash, the soft checks, the review, owl post and
+// Received. The questions come from questions.ts, the words from letter.ts, the checks from checks.ts and the draft from
+// draft.ts; this file only builds and moves the page. Answers live in the page and in the draft: going back to the
+// ticket, a 422 or a failed save never clears them; only Received does.
 
 import { askedFor, LONG_MAX, missing, SHORT_MAX, type Answers } from './answers'
+import { SOFT, softCheck } from './checks'
+import { browserStore, clearDraft, loadDraft, saveDraft, type Draft } from './draft'
 import { DEPARTMENTS, RECEIVED, STOPS, sendAnswer } from './letter'
 import { ASKED, type Question } from './questions'
 
@@ -47,10 +50,13 @@ function choice(q: Question, value: string, label: (Node | string)[], cls = ''):
   )
 }
 
+const WASH_IDLE = 'Take your time. Nothing is final until you send the letter.'
+
 /** one question as the page asks it */
 function field(q: Question): HTMLElement {
   const help = q.help ? h('p', { class: 'ap-help', id: `q${q.n}-help` }, q.help) : null
   const err = h('p', { class: 'ap-err', id: `q${q.n}-err`, role: 'alert', hidden: true })
+  const warn = SOFT.has(q.n) ? [h('p', { class: 'ap-warn', id: `q${q.n}-warn`, role: 'status', hidden: true })] : []
   const described = q.help ? `q${q.n}-help` : undefined
 
   if (q.kind === 'short' || q.kind === 'long' || q.kind === 'date') {
@@ -67,7 +73,7 @@ function field(q: Question): HTMLElement {
             'aria-describedby': described,
             ...AUTOCOMPLETE[q.n],
           })
-    return h('div', { class: 'ap-q', id: `f${q.n}`, 'data-q': String(q.n) }, head(q, 'label'), ...(help ? [help] : []), control, err)
+    return h('div', { class: 'ap-q', id: `f${q.n}`, 'data-q': String(q.n) }, head(q, 'label'), ...(help ? [help] : []), control, err, ...warn)
   }
 
   let opts: HTMLElement
@@ -78,9 +84,9 @@ function field(q: Question): HTMLElement {
       ...DEPARTMENTS.map((d) =>
         h(
           'label',
-          { class: 'ap-tile' },
+          { class: `ap-tile is-${d.code.toLowerCase()}` },
           h('input', { type: 'radio', name: 'q13', value: d.code }),
-          h('span', { class: 'ap-tile-code' }, d.code),
+          h('span', { class: 'ap-tile-code' }, d.code, ' ', h('span', { class: 'ap-tile-house' }, d.house)),
           h('span', { class: 'ap-tile-name' }, d.name),
           h('span', { class: 'ap-tile-about' }, d.about),
           h('span', { class: 'ap-tile-badge' }, 'Your 1st choice'),
@@ -88,7 +94,11 @@ function field(q: Question): HTMLElement {
       ),
     )
   } else if (q.n === 14) {
-    opts = h('div', { class: 'ap-opts is-2' }, ...DEPARTMENTS.map((d) => choice(q, d.code, [d.code, h('small', {}, d.name)])))
+    opts = h(
+      'div',
+      { class: 'ap-opts is-2' },
+      ...DEPARTMENTS.map((d) => choice(q, d.code, [d.code, h('small', {}, d.house)], `is-house is-${d.code.toLowerCase()}`)),
+    )
   } else if (q.kind === 'rating') {
     opts = h(
       'div',
@@ -104,7 +114,24 @@ function field(q: Question): HTMLElement {
   const other = q.other
     ? [h('input', { class: 'ap-other', id: `q${q.n}-other`, type: 'text', maxlength: String(SHORT_MAX), placeholder: 'Tell us more', 'aria-label': `Other: ${shown(q)}`, hidden: true })]
     : []
-  return h('fieldset', { class: 'ap-q', id: `f${q.n}`, 'data-q': String(q.n), 'aria-describedby': described }, head(q, 'legend'), ...(help ? [help] : []), opts, ...other, err)
+  // the choosing's lines: the 1st choice says the room took its house, the 2nd only earns a badge
+  const after =
+    q.n === 13
+      ? [h('p', { class: 'ap-washnote', id: 'wash-note', 'aria-live': 'polite' }, WASH_IDLE)]
+      : q.n === 14
+        ? [h('p', { class: 'ap-badge', id: 'second-badge', hidden: true })]
+        : []
+  return h(
+    'fieldset',
+    { class: 'ap-q', id: `f${q.n}`, 'data-q': String(q.n), 'aria-describedby': described },
+    head(q, 'legend'),
+    ...(help ? [help] : []),
+    opts,
+    ...other,
+    ...after,
+    err,
+    ...warn,
+  )
 }
 
 /** the department picked as the 1st choice, if any */
@@ -194,7 +221,81 @@ function showDepartment() {
   for (const block of document.querySelectorAll<HTMLElement>('.ap-dept')) block.hidden = block.dataset.dept !== first
 }
 
+/** the room takes the 1st choice's house (apply.css :root[data-house]); none leaves the night and aquamarine */
+export function washRoom(code: string | undefined) {
+  const d = DEPARTMENTS.find((x) => x.code === code)
+  if (d) document.documentElement.dataset.house = d.code
+  else delete document.documentElement.dataset.house
+}
+
+/** the choosing's lines: the wash note, which 2nd option is the 1st, and the 2nd choice's badge */
+function showChoosing() {
+  const first = DEPARTMENTS.find((d) => d.code === firstChoice())
+  washRoom(first?.code)
+  $('wash-note').textContent = first ? `The room takes ${first.house}’s colour. Pick another and it changes with you.` : WASH_IDLE
+  for (const opt of document.querySelectorAll<HTMLInputElement>('input[name="q14"]')) {
+    const d = DEPARTMENTS.find((x) => x.code === opt.value)!
+    opt.closest('label')!.querySelector('small')!.textContent = d === first ? `${d.house} · your 1st` : d.house
+  }
+  const second = DEPARTMENTS.find((d) => d.code === document.querySelector<HTMLInputElement>('input[name="q14"]:checked')?.value)
+  const badge = $('second-badge')
+  badge.hidden = !second
+  badge.className = `ap-badge is-${second?.code.toLowerCase() ?? 'none'}`
+  badge.textContent = second ? `2nd choice · ${second.house}` : ''
+}
+
+/** a soft check's chip under question n: shown while the answer looks off, never blocking the send */
+function softMark(n: number) {
+  const chip = document.getElementById(`q${n}-warn`)
+  if (!chip) return
+  const value = n === 14 ? (document.querySelector<HTMLInputElement>('input[name="q14"]:checked')?.value ?? '') : $<HTMLInputElement>(`q${n}`).value
+  const text = softCheck(n, value, { first: firstChoice(), today: new Date() })
+  chip.textContent = text
+  chip.hidden = !text
+}
+
 let email = ''
+/** when this visit's ticket was checked; unset once the hour ran out */
+let provenAt: number | undefined
+/** the stop last answered in, 0 to 7: a reload scrolls back there */
+let step = 0
+const store = browserStore()
+
+/** the page's answers by control: text by id (q5, q10-other), ticks by name (q10), "Other" ticks included */
+function snapshot(): Draft['fields'] {
+  const fields: Draft['fields'] = {}
+  for (const el of document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('.ap-q input, .ap-q textarea')) {
+    if (el instanceof HTMLInputElement && el.type === 'radio') {
+      if (el.checked) fields[el.name] = el.value
+    } else if (el instanceof HTMLInputElement && el.type === 'checkbox') {
+      if (el.checked) fields[el.name] = [...((fields[el.name] as string[] | undefined) ?? []), el.value]
+    } else if (el.value) fields[el.id] = el.value
+  }
+  return fields
+}
+
+function persist() {
+  saveDraft(store, { fields: snapshot(), house: firstChoice(), step, email, ...(provenAt ? { provenAt } : {}) })
+}
+
+/** puts a saved draft's answers back on the page, then everything that follows from them */
+function restore(fields: Draft['fields']) {
+  for (const [key, v] of Object.entries(fields)) {
+    const ticks = [...document.querySelectorAll<HTMLInputElement>(`.ap-q input[name="${CSS.escape(key)}"]`)].filter(
+      (i) => i.type === 'radio' || i.type === 'checkbox',
+    )
+    if (ticks.length) for (const i of ticks) i.checked = [v].flat().includes(i.value)
+    else if (typeof v === 'string') {
+      const el = document.getElementById(key)
+      if ((el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) && el.closest('.ap-q')) el.value = v
+    }
+  }
+  for (const other of document.querySelectorAll<HTMLInputElement>('.ap-other'))
+    other.hidden = !document.querySelector(`input[name="${other.id.replace(/-other$/, '')}"][value="${OTHER}"]:checked`)
+  showDepartment()
+  showChoosing()
+  for (const n of SOFT) softMark(n)
+}
 
 function review() {
   const a = collect().answers
@@ -216,10 +317,17 @@ export type LetterHooks = {
   backToTicket: (text: string) => void
 }
 
-/** Builds the stops' questions once (the first checked ticket) and keeps the proven address for the review. */
-export function openLetter(provenEmail: string, hooks: LetterHooks) {
+/**
+ * Builds the stops' questions once (the first checked ticket), puts back a saved draft's answers and scrolls to its stop,
+ * and keeps the proven address and when it was proven for the review and the draft.
+ */
+export function openLetter(provenEmail: string, at: number, hooks: LetterHooks) {
   email = provenEmail
-  if (built) return review()
+  provenAt = at
+  if (built) {
+    review()
+    return persist()
+  }
   built = true
 
   STOPS.forEach((stop, i) => {
@@ -230,10 +338,22 @@ export function openLetter(provenEmail: string, hooks: LetterHooks) {
         box.append(h('div', { class: 'ap-dept', 'data-dept': d.code, hidden: true }, ...ASKED.filter((q) => q.dept === d.code).map(field)))
   })
 
+  // a draft is put back only for the address that wrote it: on a shared phone, another proven address starts blank
+  const saved = loadDraft(store, Date.now())?.draft
+  if (saved && saved.email !== email) washRoom(undefined)
+  else if (saved) {
+    restore(saved.fields)
+    step = Math.min(7, Math.max(0, Math.trunc(saved.step)))
+    if (step) $(`stop-${step + 1}`).scrollIntoView({ block: 'start' })
+  }
+
   const road = $('letter')
   const changed = (e: Event) => {
     const t = e.target as HTMLInputElement
+    if (!t.closest('.ap-q')) return
     const n = Number(t.name?.replace(/^q/, ''))
+    const stop = /^stop-(\d)$/.exec(t.closest('.ap-stop')?.id ?? '')
+    if (stop) step = Number(stop[1]) - 1
     if (t.classList.contains('ap-other')) {
       const f = t.closest<HTMLElement>('.ap-q')
       if (f?.classList.contains('is-err')) markField(Number(f.dataset.q), '')
@@ -247,15 +367,44 @@ export function openLetter(provenEmail: string, hooks: LetterHooks) {
       }
       if ($(`f${n}`).classList.contains('is-err')) markField(n, '')
       if (n === 13) showDepartment()
+      if (n === 13 || n === 14) showChoosing()
+      // a typed answer is checked once the candidate leaves it (no chip mid-typing); a chip already up clears as soon as
+      // the answer looks right
+      if (SOFT.has(n) && (e.type === 'change' || !$(`q${n}-warn`).hidden)) softMark(n)
+      if (n === 13) softMark(14)
     }
     if (!$('letter-summary').hidden) summarize()
     sayAtSend('')
     review()
+    persist()
   }
   road.addEventListener('input', changed)
   road.addEventListener('change', changed)
   $('letter-send').addEventListener('click', () => void send(hooks))
   review()
+  persist()
+}
+
+/** how long the owl flies before the answer shows (apply.css .ap-owl-flyer); no flight on tier 0 or reduced motion */
+const OWL_MS = 3200
+const STILL_MS = 600
+
+/** Owl post: the letter gives way to the owl while the send runs, for at least one flight. */
+function flyOwl(): Promise<void> {
+  $('letter-app').hidden = true
+  $('owl').hidden = false
+  window.scrollTo(0, 0)
+  const still = document.documentElement.dataset.tier === '0' || matchMedia('(prefers-reduced-motion: reduce)').matches
+  return new Promise((done) => setTimeout(done, still ? STILL_MS : OWL_MS))
+}
+
+/** the send did not land: back to the letter, at the send */
+function landOwl() {
+  $('owl').hidden = true
+  $('letter-app').hidden = false
+  $('letter-send').scrollIntoView({ block: 'center' })
+  // hiding the letter dropped focus to the body: put it back where the candidate pressed
+  $('letter-send').focus({ preventScroll: true })
 }
 
 async function send(hooks: LetterHooks) {
@@ -272,6 +421,7 @@ async function send(hooks: LetterHooks) {
   sending = true
   btn.disabled = true
   btn.textContent = 'Sending…'
+  const flight = flyOwl()
   let status = 0
   let body: Record<string, unknown> | null = null
   try {
@@ -281,19 +431,27 @@ async function send(hooks: LetterHooks) {
   } catch {
     // a network failure reads as status 0: "could not save, try again"
   }
+  const a = sendAnswer(status, body)
+  // the owl finishes its flight before Received; a send that did not land comes back at once
+  if (a.kind === 'received') await flight
   sending = false
   btn.disabled = false
   btn.textContent = 'Send by owl'
-
-  const a = sendAnswer(status, body)
   if (a.kind === 'received') return received()
-  if (a.kind === 'ticket') return hooks.backToTicket(a.text)
+  landOwl()
+  if (a.kind === 'ticket') {
+    // the hour is up: a reload asks for the ticket too
+    provenAt = undefined
+    persist()
+    return hooks.backToTicket(a.text)
+  }
   if (a.kind === 'fields') showProblems(new Map(a.fields.map((n) => [n, 'Check this answer: it cannot be sent as it is.'])))
   sayAtSend(a.text)
 }
 
 function received() {
-  $('letter-app').hidden = true
+  clearDraft(store)
+  $('owl').hidden = true
   const done = $('received')
   done.replaceChildren(
     h('div', { class: 'ap-seal', 'aria-hidden': 'true' }, '✦'),

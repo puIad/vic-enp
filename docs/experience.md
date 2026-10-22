@@ -327,8 +327,10 @@ Rebuilt strict on 2026-10-22 ([decisions.md](decisions.md), 87 to 96), after the
 only sometimes and, on phones, let a fling go as the phone kept coasting.
 
 - **What it does:** inside the two runs, every gesture moves exactly one cut. Outside them, the page scrolls freely,
-  but momentum never carries past a still point. No speed thresholds, so it behaves the same every time on every
-  device. No control and no cue: the cut's own entrance and the rail already show where you are.
+  but momentum never carries past a still point. No speed decides whether a gesture moves a cut or whether a fling
+  stops on a point, so that part behaves the same every time on every device. On the wheel, telling a trackpad's
+  fading momentum from a stroke or a spinning mouse still takes today's fade heuristic (`catch.ts`), tuned on the
+  owner's touchpad and mouse. No control and no cue: the cut's own entrance and the rail already show where you are.
 - **Catch points (16):** the 12 cuts, each at its middle (where the pickers jump); the top of act 2; the peak's
   hold, the resolved group photo; the top of the light act; the close at rest, your point in its slot. Steps,
   Growth and FAQ are not catch points.

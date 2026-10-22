@@ -100,7 +100,7 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    built ([#33](https://github.com/puIad/vic-enp/issues/33) to [#35](https://github.com/puIad/vic-enp/issues/35)); so are the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)) and the counters ([#37](https://github.com/puIad/vic-enp/issues/37)).
 4. **Reading and wayfinding** (68 to 78, added on 2026-10-21): the rail first (sub-dots, name flashes, hover and
    the phone hold, the footer landing with its one-time hold), then [the catch](experience.md#the-catch), desktop
-   first, then phones on a preview the owner tries inside Instagram (open question 30). Spec in
+   first, then phones. Rebuilt strict on 22 Oct, on phones and desktop with no gate ([decisions.md](decisions.md), 87 to 96). Spec in
    [experience.md](experience.md#reading-and-wayfinding). Tickets [#59](https://github.com/puIad/vic-enp/issues/59), [#60](https://github.com/puIad/vic-enp/issues/60), [#61](https://github.com/puIad/vic-enp/issues/61), in that order.
 5. **Reactions, the light act, grain** (63, 64; the sound was dropped, 84):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
@@ -149,7 +149,8 @@ In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25
    600's pulse ([#37](https://github.com/puIad/vic-enp/issues/37)).
 2. Group 4, reading and wayfinding (new on 21 Oct, [decisions.md](decisions.md), 68 to 78): the rail
    ([#59](https://github.com/puIad/vic-enp/issues/59)), the catch on desktop ([#60](https://github.com/puIad/vic-enp/issues/60)),
-   then the phone catch on a preview for the owner ([#61](https://github.com/puIad/vic-enp/issues/61), open question 30).
+   then the phone catch ([#61](https://github.com/puIad/vic-enp/issues/61)), since rebuilt as the strict catch on phones
+   and desktop ([decisions.md](decisions.md), 87 to 96).
 3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
    ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)).
    The sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)) is dropped (decision 84).

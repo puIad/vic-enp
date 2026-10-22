@@ -196,14 +196,15 @@ export function catcher(vh: () => number) {
       const easing = c !== undefined && a >= b && b >= c && a > c && c < g.top * EASED
       if (g.fell || g.fading || easing) {
         // momentum: the page's own from here, carried on from the gesture's speed as a fling is from the lift's (93, 98)
-        g.coasted = true
         const r = g.recent
         const span = r[r.length - 1].t - r[0].t
         const v = span > 0 ? r.slice(1).reduce((s, e) => s + e.dy, 0) / span : 0
         const rest = Math.abs(v) >= FLUNG ? land(layout, from, from + v / DECAY, { near: NEAR * vh() }) : from
-        if (Math.abs(rest - from) > EPS) return fire(rest, v)
-        g.fired = true
-        return 'hold'
+        if (Math.abs(rest - from) > EPS) {
+          g.coasted = true
+          return fire(rest, v)
+        }
+        // too slow to coast: a slow, uneven stroke reads as easing, so it drags on
       }
       // a stroke or a mouse drags: it crosses still points freely, but whatever reaches a run's door lands on its
       // first stop (92, 95)

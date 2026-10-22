@@ -237,6 +237,14 @@ describe('the wheel in the flow', () => {
     expect(short.run(flick(30))).toEqual([1000])
   })
 
+  it('lets a slow, uneven trackpad stroke drag on, never held for momentum', () => {
+    const s = wheel()
+    s.at(1200)
+    const stroke = Array.from({ length: 30 }, (_, i) => [3, 2, 1][i % 3])
+    expect(stroke.map((dy) => s.send(dy, 25)).every((v) => v === 'pass')).toBe(true)
+    expect(s.target).toBe(1260)
+  })
+
   it('coasts on off the still point it starts on', () => {
     const s = wheel()
     s.at(1000)

@@ -978,6 +978,93 @@
     transform: translateY(-6px);
   }
 
+  /* the optional sound toggle (#41): off on arrival, bottom left, as in the prototype/system comp */
+  .sound {
+    position: fixed;
+    left: calc(var(--rail) - 12px);
+    bottom: 20px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 14px 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgb(20 30 39 / 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--color-mute);
+    font: inherit;
+    font-weight: 700;
+    font-size: var(--t-cap);
+    cursor: pointer;
+    transition:
+      color 0.35s var(--ease-out-expo),
+      background 0.35s var(--ease-out-expo),
+      border-color 0.35s var(--ease-out-expo);
+  }
+  .sound:hover {
+    color: #fff;
+    border-color: rgb(239 239 239 / 0.3);
+  }
+  .sound .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+  }
+  .sound .bars i {
+    display: block;
+    width: 2px;
+    height: 6px;
+    border-radius: 1px;
+    background: currentColor;
+  }
+  .sound .bars i:nth-child(2) {
+    height: 10px;
+  }
+  .sound .bars i:nth-child(3) {
+    height: 4px;
+  }
+  .sound[aria-pressed='true'] {
+    color: var(--color-aqua);
+    border-color: rgb(105 196 175 / 0.45);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sound[aria-pressed='true'] .bars i {
+      animation: eq 1.1s var(--ease-out-expo) infinite alternate;
+    }
+    .sound[aria-pressed='true'] .bars i:nth-child(2) {
+      animation-delay: -0.4s;
+    }
+    .sound[aria-pressed='true'] .bars i:nth-child(3) {
+      animation-delay: -0.8s;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sound[aria-pressed='true'] .bars i {
+      height: 9px;
+    }
+  }
+  @keyframes eq {
+    from {
+      height: 3px;
+    }
+    to {
+      height: 14px;
+    }
+  }
+  /* over the light act */
+  .sound.lit {
+    background: rgb(239 239 239 / 0.8);
+    color: #4a5762;
+    border-color: rgb(20 30 39 / 0.16);
+  }
+  .sound.lit[aria-pressed='true'] {
+    color: var(--color-night);
+  }
+
   .skip {
     position: fixed;
     left: var(--edge);
@@ -1017,6 +1104,18 @@
     }
     .pill.corner.hide {
       transform: translateY(6px);
+    }
+    /* a round button on phones: the label stays for screen readers in aria-label */
+    .sound {
+      left: 12px;
+      bottom: 16px;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      justify-content: center;
+    }
+    .sound .lbl {
+      display: none;
     }
   }
 

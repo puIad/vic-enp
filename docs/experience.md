@@ -308,6 +308,9 @@ the hero goes on scroll.
 - Text never moves while it's being read. It arrives, then holds.
 - Pointer and touch reactions are a bonus, never required to read anything. Native cursor, no custom cursor.
 - Sound: an optional toggle, off on arrival, bottom left. Never starts by itself ([#10](https://github.com/puIad/vic-enp/issues/10)).
+  Turned on, a low pad with no beat follows the visitor's place: a chord per act, one step per department or event
+  cut, and a soft chime when a cut lands, so scrolling back up plays it back. A hidden tab pauses it
+  ([decisions.md](decisions.md), 84; [#41](https://github.com/puIad/vic-enp/issues/41)).
 - No full-screen loader: "Gathering the 600" under the hero headline is the loader.
 - Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
   reduced motion and on the world's lowest rung ([decisions.md](decisions.md), 64).

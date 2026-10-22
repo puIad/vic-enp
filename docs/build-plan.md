@@ -106,8 +106,8 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
    - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's lowest rung.
-   - The sound toggle with a low ambient pad, off on arrival. Claude finds CC0 loops and the owner picks one,
-     with the owner's OK before each download. No toggle ships without a loop.
+   - The sound toggle, off on arrival: a low pad Claude writes, played live, that follows the visitor's place,
+     a chord per act and a step per cut, with a soft chime on each cut (decision 84 replaced 63's CC0 loop).
 6. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
    question 25), and again once groups 2 to 5 are in.
 7. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside
@@ -154,8 +154,7 @@ In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25
    then the phone catch on a preview for the owner ([#61](https://github.com/puIad/vic-enp/issues/61), open question 30).
 3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
    ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)),
-   the sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)). For the sound, Claude shortlists CC0 loops and
-   the owner picks one and approves each download.
+   the sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)), a live pad that follows the cuts (decision 84).
 4. The owner's phone check with `?fps` and `?points=N` ([#42](https://github.com/puIad/vic-enp/issues/42)), which
    unblocks the performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)).
 5. **The application form on this site** (owner's note, 20 Oct): the form is the link between the landing page and

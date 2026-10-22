@@ -3,9 +3,10 @@ import type { Cta } from '../lib/opening'
 import { RAIL, subAt } from '../lib/rail'
 import { ApplyPill } from './ApplyPill'
 import { Rail } from './Rail'
+import { SoundToggle } from './SoundToggle'
 
-// The fixed chrome of #10: logo on its night plate, "Distance to the 600", the waypoint rail (Rail), the sticky Apply pill.
-// shortcut: the sound toggle waits for its loop asset (docs/assets.md, Missing); a toggle with no sound would be a placeholder.
+// The fixed chrome of #10: logo on its night plate, "Distance to the 600", the waypoint rail (Rail), the sticky Apply pill,
+// the sound toggle (SoundToggle).
 
 const START = 48 // the readout's distance at the top of the page, as in the hero comp
 
@@ -22,7 +23,7 @@ export function Chrome({ cta }: { cta: Cta }) {
   const [now, setNow] = useState(0)
   const [sub, setSub] = useState(-1)
   const [landed, setLanded] = useState(false)
-  const [lit, setLit] = useState({ rail: false, readout: false, logo: false })
+  const [lit, setLit] = useState({ rail: false, readout: false, logo: false, sound: false })
   const [pillHidden, setPillHidden] = useState(true)
   const dist = useRef<HTMLElement>(null)
 
@@ -58,9 +59,9 @@ export function Chrome({ cta }: { cta: Cta }) {
       if (dist.current) dist.current.textContent = (START * (1 - p)).toFixed(1)
 
       const footerIn = footer ? footer.getBoundingClientRect().top < vh * 0.9 : false
-      const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn }
+      const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn, sound: overLight(vh - 40) }
       // keep the same object when nothing changed, so React skips the re-render on most scroll frames
-      setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo ? l : next))
+      setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo && l.sound === next.sound ? l : next))
       // a CTA counts while it is on screen and visible: the hero's fades out over the world's hand-over (#11)
       setPillHidden(ctas.some((c) => c && c.getBoundingClientRect().bottom > 0 && c.getBoundingClientRect().top < vh && +getComputedStyle(c).opacity > 0.5))
     }
@@ -91,6 +92,7 @@ export function Chrome({ cta }: { cta: Cta }) {
         <b ref={dist}>{START.toFixed(1)}</b>
       </div>
       <Rail now={now} sub={sub} lit={lit.rail} landed={landed} />
+      <SoundToggle act={now} sub={sub} lit={lit.sound} />
       <ApplyPill cta={cta} className={`corner ${pillHidden ? 'hide' : ''}`} inert={pillHidden} />
     </header>
   )

@@ -987,8 +987,8 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    height: 40px;
-    padding: 0 14px 0 12px;
+    height: 44px;
+    padding: 0 16px 0 14px;
     border-radius: 999px;
     border: 1px solid var(--line);
     background: rgb(20 30 39 / 0.7);
@@ -1105,7 +1105,7 @@
     .pill.corner.hide {
       transform: translateY(6px);
     }
-    /* a round button on phones: the label stays for screen readers in aria-label */
+    /* a round button on phones: the label leaves the screen but still names the button, like sr-only */
     .sound {
       left: 12px;
       bottom: 16px;
@@ -1115,7 +1115,12 @@
       justify-content: center;
     }
     .sound .lbl {
-      display: none;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 

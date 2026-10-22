@@ -10,6 +10,7 @@ export function SoundToggle({ act, sub, lit }: { act: number; sub: number; lit: 
   const ctx = useRef<AudioContext | null>(null)
   const pad = useRef<Pad | null>(null)
   const want = useRef(false)
+  const sleep = useRef(0)
   const here = useRef({ act, sub })
 
   useEffect(() => {
@@ -25,7 +26,13 @@ export function SoundToggle({ act, sub, lit }: { act: number; sub: number; lit: 
     return () => document.removeEventListener('visibilitychange', onVis)
   }, [on])
 
-  useEffect(() => () => void ctx.current?.close(), [])
+  useEffect(
+    () => () => {
+      clearTimeout(sleep.current)
+      void ctx.current?.close()
+    },
+    [],
+  )
 
   const toggle = () => {
     want.current = !on
@@ -33,9 +40,12 @@ export function SoundToggle({ act, sub, lit }: { act: number; sub: number; lit: 
     if (!want.current) {
       pad.current?.stop()
       pad.current = null
-      setTimeout(() => !want.current && ctx.current?.suspend(), 1000)
+      sleep.current = window.setTimeout(() => !want.current && ctx.current?.suspend(), 1000)
       return
     }
+    // the visitor asked for sound: on iOS, play it even with the ringer on silent (Safari 16.4+)
+    const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession
+    if (session) session.type = 'playback'
     // made and resumed inside the click, so every browser counts it as the visitor's own
     const c = (ctx.current ??= new AudioContext())
     void c.resume()
@@ -45,7 +55,7 @@ export function SoundToggle({ act, sub, lit }: { act: number; sub: number; lit: 
   }
 
   return (
-    <button type="button" className={`sound ${lit ? 'lit' : ''}`} aria-label="Sound" aria-pressed={on} onClick={toggle}>
+    <button type="button" className={`sound ${lit ? 'lit' : ''}`} aria-pressed={on} onClick={toggle}>
       <span className="bars" aria-hidden="true">
         <i />
         <i />

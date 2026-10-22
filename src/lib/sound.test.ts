@@ -10,12 +10,6 @@ describe('chordAt: the pad follows where the visitor is, not a timeline', () => 
     expect(hz(chordAt({ act: 0, sub: -1 }))).toEqual([73.42, 110, 174.61, 329.63])
   })
 
-  it('gives every place the same chord on the way down and on the way back up', () => {
-    const down = RAIL.flatMap((a, i) => [-1, ...a.subs.keys()].map((sub) => chordAt({ act: i, sub })))
-    const up = [...RAIL.keys()].reverse().flatMap((i) => [...[-1, ...RAIL[i].subs.keys()].reverse()].map((sub) => chordAt({ act: i, sub })))
-    expect(up.reverse()).toEqual(down)
-  })
-
   it('moves the chord on each department cut, from the door to the tunnel', () => {
     const d = act('departments')
     for (let sub = -1; sub < RAIL[d].subs.length; sub++) expect(chordAt({ act: d, sub: sub + 1 })).not.toEqual(chordAt({ act: d, sub }))

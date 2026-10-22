@@ -9,7 +9,7 @@ import { chimeAt, chordAt } from './sound'
 const LEVEL = 0.5 // the pad's master gain once faded in
 const VOICE = 0.035 // each oscillator's gain: 8 of them under a low-pass
 const CHIME = 0.06
-const FADE_IN = 2.5 // s, on turning the sound on
+const FADE_IN = 1.5 // s, on turning the sound on, as in the prototype/system comp
 const XFADE = 0.6 // s, the time constant of a chord's crossfade (about 2 s to settle)
 const DETUNE = 7 // cents, the two oscillators of a voice either side of the note
 
@@ -102,8 +102,13 @@ export class Pad {
       old.oscs.forEach((o) => o.stop(t + XFADE * 6))
       this.fading.push(old)
       old.oscs[0].onended = () => (this.fading = this.fading.filter((l) => l !== old))
-      // a fast fling through a run: never more than two chords fading at once
-      while (this.fading.length > 2) this.fading.shift()!.oscs.forEach((o) => o.stop())
+      // a fast fling through a run: never more than two chords fading at once, the oldest let go in 30 ms, no click
+      while (this.fading.length > 2) {
+        const gone = this.fading.shift()!
+        gone.gain.gain.cancelScheduledValues(t)
+        gone.gain.gain.setTargetAtTime(0, t, 0.01)
+        gone.oscs.forEach((o) => o.stop(t + 0.05))
+      }
     }
     const gain = this.ctx.createGain()
     gain.gain.setValueAtTime(0, t)

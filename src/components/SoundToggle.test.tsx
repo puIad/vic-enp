@@ -9,11 +9,11 @@ describe('SoundToggle', () => {
 
   it('arrives off, as a button that tells screen readers its state', () => {
     expect(html).toMatch(/^<button[^>]*type="button"/)
-    expect(html).toContain('aria-label="Sound"')
     expect(html).toContain('aria-pressed="false"')
   })
 
-  it('reads "Sound off" on arrival', () => {
+  it('is named by what it reads, "Sound off" on arrival', () => {
+    expect(html).not.toContain('aria-label')
     expect(html.replace(/<[^>]+>/g, '')).toBe('Sound off')
   })
 })

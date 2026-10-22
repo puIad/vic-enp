@@ -25,14 +25,16 @@ const ok = (b: boolean): Check => (b ? 'ok' : 'fail')
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } })
 
 /**
- * Counts this address's checks in the minute. The window opens with its expiry in one command, so a failed call can't
- * leave a count that never resets. Redis down means no count (fails open): the answer then reads redis "fail".
+ * Counts this address's checks in the minute. Every check sets the expiry if the count has none, so a count that ever
+ * lost it (a failed call, a window that ran out between two calls) is repaired on the next check and never refuses an
+ * address for good. Redis down means no count (fails open): the answer then reads redis "fail".
  */
 async function overLimit(req: Request, d: HealthDeps): Promise<boolean> {
   const k = key(d.keyPrefix, `rl:h:${sha256(clientIp(req))}`)
   try {
-    await d.redis.command(['SET', k, 0, 'EX', WINDOW_S, 'NX'])
-    return Number(await d.redis.command(['INCR', k])) > LIMIT
+    const n = Number(await d.redis.command(['INCR', k]))
+    await d.redis.command(['EXPIRE', k, WINDOW_S, 'NX'])
+    return n > LIMIT
   } catch {
     return false
   }

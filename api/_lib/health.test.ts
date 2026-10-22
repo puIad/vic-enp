@@ -7,6 +7,8 @@ import type { Redis } from './redis.js'
 /** An in-memory Redis that speaks the commands the site uses, and remembers every key it was given. */
 function fakeRedis(opts: { down?: boolean } = {}) {
   const counts = new Map<string, number>()
+  /** each key's expiry in seconds; a key missing here never expires */
+  const ttls = new Map<string, number>()
   const keys: string[] = []
   const redis: Redis = {
     async command([cmd, key, ...rest]) {
@@ -18,16 +20,16 @@ function fakeRedis(opts: { down?: boolean } = {}) {
         counts.set(String(key), n)
         return n
       }
-      if (cmd === 'SET') {
-        // SET key value EX seconds NX: only opens a window that isn't open
-        if (counts.has(String(key))) return null
-        counts.set(String(key), Number(rest[0]))
-        return 'OK'
+      if (cmd === 'EXPIRE') {
+        // EXPIRE key seconds NX: only sets an expiry on a key that has none
+        if (!counts.has(String(key)) || (rest[1] === 'NX' && ttls.has(String(key)))) return 0
+        ttls.set(String(key), Number(rest[0]))
+        return 1
       }
       throw new Error(`unexpected ${cmd}`)
     },
   }
-  return { redis, keys }
+  return { redis, keys, counts, ttls }
 }
 
 /** A mailer web app that answers a ping, and records what it was sent. */
@@ -109,6 +111,18 @@ describe('GET /api/health', () => {
     expect(limited.status).toBe(429)
     expect(await limited.json()).toEqual({ retryIn: 60 })
     expect((await health(req('198.51.100.1'), d)).status).toBe(200)
+  })
+
+  it('gives a count that lost its expiry a new one on the next check, so no address is refused for good', async () => {
+    const r = fakeRedis()
+    await health(req(), deps({ redis: r.redis }))
+    const [k] = r.counts.keys()
+    expect(r.ttls.get(k)).toBe(60)
+    // a window that slipped through without an expiry, already over the limit
+    r.ttls.delete(k)
+    r.counts.set(k, 50)
+    expect((await health(req(), deps({ redis: r.redis }))).status).toBe(429)
+    expect(r.ttls.get(k)).toBe(60)
   })
 
   it('keeps its Redis keys under KEY_PREFIX and never stores the address itself', async () => {

@@ -41,7 +41,7 @@ describe('where scroll lands', () => {
 
 /** Lenis on the wheel, simulated: a pass moves its target; a catch starts a glide that `rest` ends. */
 function wheel() {
-  const c = catcher()
+  const c = catcher(() => VH)
   c.layout(L)
   let target = 0
   let glide: number | null = null
@@ -64,7 +64,10 @@ function wheel() {
       const to = Math.min(L.limit, Math.max(0, from + dy))
       const v = c.wheel({ t, dy, from, to, glide, stalled })
       if (v === 'pass') target = to
-      else if (v !== 'hold') glide = v.at
+      else if (v === 'halt') {
+        glide = null
+        target = to
+      } else if (v !== 'hold') glide = v.at
       return v
     },
     /** every glide a series of events started, in order */
@@ -99,10 +102,10 @@ describe('the wheel in a run', () => {
     expect(s.send(100)).toEqual({ at: 3200 })
   })
 
-  it('never moves a cut for a nudge under 40 px', () => {
+  it('never moves a cut for a nudge under 30 px', () => {
     const s = wheel()
     s.at(2800)
-    expect(s.run([10, 10, 10])).toEqual([])
+    expect(s.run([10, 10])).toEqual([])
     expect(s.target).toBe(2800)
     expect(s.send(10)).toEqual({ at: 3200 })
   })
@@ -133,16 +136,16 @@ describe('the wheel in a run', () => {
     expect(s.run(flick(120))).toEqual([3600])
   })
 
-  it('steps on one cut per glide while a mouse wheel keeps spinning, never for fading momentum', () => {
+  it('moves one cut however long a mouse wheel keeps spinning, as one swipe does', () => {
     const s = wheel()
     s.at(2800)
     const fired: number[] = []
     for (let i = 0; i < 30; i++) {
       const v = s.send(100, 50)
       if (typeof v === 'object') fired.push(v.at)
-      if (i % 9 === 8) s.rest() // each glide is over well before the next 600 ms
+      if (i % 9 === 8) s.rest()
     }
-    expect(fired).toEqual([3200, 3600, 4000])
+    expect(fired).toEqual([3200])
     const t = wheel()
     t.at(2800)
     expect(t.run(flick(200, 0.97))).toEqual([3200])
@@ -213,10 +216,42 @@ describe('the wheel in the flow', () => {
     }
   })
 
-  it('lets the momentum leaving a still point go', () => {
+  it("coasts a trackpad's momentum on with the page's own, as a fling, and holds the system's", () => {
+    const s = wheel()
+    s.at(1200)
+    const verdicts = flick(30).map((dy) => s.send(dy))
+    const i = verdicts.findIndex((v) => typeof v === 'object')
+    const { at, v } = verdicts[i] as { at: number; v: number }
+    expect(v).toBeGreaterThan(0)
+    expect(at).toBeGreaterThan(1500)
+    expect(at).toBeLessThan(2500)
+    expect(verdicts.slice(i + 1).every((x) => x === 'hold')).toBe(true)
+  })
+
+  it('pulls trackpad momentum that dies just short of a still point onto it', () => {
+    const s = wheel()
+    s.at(1200)
+    const [coast] = s.run(flick(30))
+    const short = wheel()
+    short.at(1000 - (coast - 1200) - 0.1 * VH)
+    expect(short.run(flick(30))).toEqual([1000])
+  })
+
+  it('coasts on off the still point it starts on', () => {
     const s = wheel()
     s.at(1000)
-    expect(s.run(flick(30))).toEqual([])
+    const [coast] = s.run(flick(30))
+    expect(coast).toBeGreaterThan(1300)
+    expect(coast).toBeLessThan(2500)
+  })
+
+  it('stops a coast where it is for a new gesture, which scrolls on from there', () => {
+    const s = wheel()
+    s.at(1200)
+    expect(s.run(flick(30).slice(0, 8))).toHaveLength(1)
+    expect(s.send(60)).toBe('halt')
+    expect(s.glide).toBeNull()
+    expect(s.send(60)).toBe('pass')
   })
 })
 

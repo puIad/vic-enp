@@ -324,14 +324,9 @@ ul {
   color: #cfd8df;
   margin-bottom: 22px;
 }
-/* locked until the ticket is checked: dimmed by colour, not opacity, so every line keeps AA contrast on the night */
-.ap-stop.is-locked h2 {
-  color: var(--muted);
-}
-.ap-stop.is-locked .ap-eyebrow,
-.ap-stop.is-locked .ap-sub,
-.ap-stop.is-locked .ap-skeleton {
-  color: #8d9aa6;
+/* locked until the ticket is checked: the rest of the letter is not there to scroll to or read, only the unlock line */
+.ap-stop.is-locked {
+  display: none;
 }
 .ap-skeleton {
   margin-top: 4px;
@@ -603,11 +598,6 @@ ul {
 }
 
 /* ---------- the questions ---------- */
-/* the review and the send wait with the stops until the ticket is checked */
-.ap-stop.is-locked .ap-review,
-.ap-stop.is-locked .ap-send {
-  display: none;
-}
 .ap-q {
   min-width: 0;
   margin: 0 0 26px;

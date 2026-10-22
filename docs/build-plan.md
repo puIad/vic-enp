@@ -105,7 +105,7 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
 5. **Reactions, the light act, grain** (63, 64; the sound was dropped, 84):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
    - The light act: your point walks the steps' hairline, and the blocks reveal once.
-   - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's second-last rung, and is off on its last ([decisions.md](decisions.md), 99).
+   - Moving grain on tiers 1 and 2. It stays still on tier 0, under reduced motion and on the world's second-last rung, and is off on its last ([decisions.md](decisions.md), 100).
 6. **The performance pass** against the budgets, after the owner's phone check with `?fps` and `?points=N` (open
    question 25), and again once groups 2 to 5 are in.
 7. **Reviews and launch**: the finish review, Brand Guardian, Reality Checker, the owner's real-phone check inside

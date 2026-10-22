@@ -5,7 +5,7 @@ import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
 import { underBenefits } from '../lib/scrub'
 import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, peakRest, stepMiddle } from '../world/steps'
-import { GLIDE, catcher, coastCurve, type Layout, type Run } from './catch'
+import { GLIDE, catcher, coastCurve, type Layout, type Move, type Run } from './catch'
 import { restorer, whereAt, type Range } from './restore'
 import { touchCatch } from './touch'
 
@@ -174,11 +174,11 @@ function follow(measured: (ranges: Range[]) => void) {
 // shortcut: a live switch of the OS setting swaps the acts to their stills but keeps Lenis as it started; a reload settles it.
 export function startScroll() {
   document.documentElement.classList.add('sc-ready') // scroll-craft's shoot.mjs waits for this before it samples
-  // the catch (decisions 87 to 97): on the wheel inside Lenis's virtualScroll hook below, on touch in touch.ts, where
-  // the page owns its touch scrolling. Keys, anchors and every scrollTo (world.go, the restore) never reach it. Off
+  // the catch (decisions 87 to 98): on the wheel inside Lenis's virtualScroll hook below, on touch in touch.ts, where
+  // the page owns its touch scrolling; both drag, glide to a stop, or coast on with the page's own momentum. Keys, anchors and every scrollTo (world.go, the restore) never reach it. Off
   // under reduced motion; `?catch=off` turns it off to compare.
   const catching = !matchMedia(REDUCE).matches && new URLSearchParams(location.search).get('catch') !== 'off'
-  const caught = catcher()
+  const caught = catcher(() => innerHeight)
   let phone: ReturnType<typeof touchCatch> | null = null
   let layout: Layout = { runs: [], still: [], limit: 0 }
   const stopFollow = follow((ranges) => {
@@ -213,6 +213,21 @@ export function startScroll() {
     return typeof at === 'number' ? at : null
   }
   const glideTo = (y: number) => lenis.scrollTo(y, { duration: GLIDE / 1000, easing: ease, force: true, userData: { catch: y } })
+  const play = (m: Move) => {
+    if ('scroll' in m) lenis.scrollTo(m.scroll, { immediate: true, force: true })
+    else if ('glide' in m) glideTo(m.glide)
+    else {
+      const c = coastCurve(lenis.animatedScroll, m.coast, m.v)
+      if (!c) glideTo(m.coast)
+      else lenis.scrollTo(m.coast, { duration: c.ms / 1000, easing: c.easing, force: true, userData: { catch: m.coast } })
+    }
+  }
+  // a finger down or a new wheel gesture stops a coast where it is, as it stops a fling (Lenis's own reset, through its
+  // public switch)
+  const halt = () => {
+    lenis.stop()
+    lenis.start()
+  }
   let frame = performance.now() // the last frame drawn: none for 100 ms means the page, not the visitor, paused the wheel
   const lenis: Lenis = new Lenis({
     anchors: true, // honours the page's scroll-padding-top on its own
@@ -226,8 +241,12 @@ export function startScroll() {
       const stalled = performance.now() - frame > 100
       const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from, to, glide: anim(), stalled })
       if (v === 'pass') return true
+      if (v === 'halt') {
+        halt()
+        return true
+      }
       event.preventDefault()
-      if (v !== 'hold') glideTo(v.at)
+      if (v !== 'hold') play(v.v === undefined ? { glide: v.at } : { coast: v.at, v: v.v })
       return false
     },
   })
@@ -243,20 +262,8 @@ export function startScroll() {
     phone = touchCatch({
       y: () => lenis.animatedScroll,
       anim,
-      play: (m) => {
-        if ('scroll' in m) lenis.scrollTo(m.scroll, { immediate: true, force: true })
-        else if ('glide' in m) glideTo(m.glide)
-        else {
-          const c = coastCurve(lenis.animatedScroll, m.coast, m.v)
-          if (!c) glideTo(m.coast)
-          else lenis.scrollTo(m.coast, { duration: c.ms / 1000, easing: c.easing, force: true, userData: { catch: m.coast } })
-        }
-      },
-      // a finger down stops a coast where it is, as it stops a fling (Lenis's own reset, through its public switch)
-      halt: () => {
-        lenis.stop()
-        lenis.start()
-      },
+      play,
+      halt,
     })
     phone.layout(layout)
   }

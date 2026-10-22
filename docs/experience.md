@@ -310,7 +310,7 @@ the hero goes on scroll.
 - No sound: the optional toggle was dropped ([decisions.md](decisions.md), 84).
 - No full-screen loader: "Gathering the 600" under the hero headline is the loader.
 - Slice 5 adds a tap ripple through the 600 on phones and moving grain on tiers 1 and 2, still on tier 0, under
-  reduced motion and on the world's second-last rung ([decisions.md](decisions.md), 64); the last rung drops it (99).
+  reduced motion and on the world's second-last rung ([decisions.md](decisions.md), 64); the last rung drops it (100).
 - The tap ripple is built ([#38](https://github.com/puIad/vic-enp/issues/38)): a short, still tap sends one soft ring
   from the finger that lights the points it passes and nudges them outward, fading in about 0.9 s. One ring at a
   time: a tap while the Apply wave, the 600's landing or another tap runs is let go.
@@ -328,19 +328,19 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
 
 - **What it does:** inside the two runs, every gesture moves exactly one cut. Outside them, the page scrolls freely,
   but momentum never carries past a still point. No speed decides whether a gesture moves a cut or whether a fling
-  stops on a point, so that part behaves the same every time on every device. On the wheel, telling a trackpad's
-  fading momentum from a stroke or a spinning mouse still takes today's fade heuristic (`catch.ts`), tuned on the
-  owner's touchpad and mouse. No control and no cue: the cut's own entrance and the rail already show where you are.
+  stops on a point, so that part behaves the same every time on every device, and desktop plays as the phone does
+  ([decisions.md](decisions.md), 98). On the wheel, telling a trackpad's fading momentum from a stroke or a spinning
+  mouse still takes today's fade heuristic (`catch.ts`), tuned on the owner's touchpad and mouse. No control and no cue: the cut's own entrance and the rail already show where you are.
 - **Catch points (26):** three runs and three still points. The runs: the 7 departments and the 5 events, each cut at
   its middle (where the pickers jump), and the peak from its resolved group photo, then each of its ten photos at its
   rest, fully in with the one before gone ([decisions.md](decisions.md), 97). The still points: the top of act 2, the
   top of the light act, and the close at rest, your point in its slot. Steps, Growth and FAQ are not catch points.
 - **In a run, one gesture, one cut** (or one photo in the peak): a swipe, flick, wheel spin or trackpad swipe fires its cut as soon as it has
-  gone about 30 px one way (about 40 px on the wheel), without waiting for the lift, and glides to the next cut in
+  gone about 30 px one way, on the wheel too, without waiting for the lift, and glides to the next cut in
   about 0.4 s; the rest of that gesture does nothing. Nothing rests between two cuts, and a tap or a small nudge never
   moves one. A new swipe during the glide retargets it one more cut and the glide flows on; one the other way turns
-  it back one. A mouse wheel kept spinning at full strength moves on one cut per glide; a trackpad's fading momentum
-  never does. Skipping a run is the rail's and the pickers' job.
+  it back one. A mouse wheel kept spinning moves one cut, as one swipe does; the next spin, after a pause, moves the
+  next. Skipping a run is the rail's and the pickers' job.
 - **Entering and leaving a run:** a fling, or a drag, that reaches a run's door stops on its first cut: runs are only
   ever stepped. The peak's door is its group photo: its opening (the title, the 600 resolving into the photo) stays
   free to drag. A gesture at the last cut going down (the first going up) leaves with its own momentum, always at least
@@ -348,16 +348,16 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
   with no flow between (the Gala pins the moment the peak lets go), so leaving one lands on the other's nearest stop.
 - **In the flow, coasting never passes a still point:** the finger, a mouse wheel or a trackpad stroke drags past
   freely, but momentum that would cross act 2's top, the light act's top or the close stops on it (or on a run's door),
-  whatever its speed. On touch, a fling that would die within about a fifth of a screen of a still point settles on
-  it; a drag lifted without a fling stays where it was left. Down and up alike.
+  whatever its speed. A fling, or a trackpad's momentum, that would die within about a fifth of a screen of a still
+  point settles on it; a drag lifted without a fling stays where it was left. Down and up alike.
 - **Never caught:** jumps from the rail, the pickers, the skip link or any anchor; keyboard scrolling; the reload
   restore.
 - **Off** under reduced motion and on tier 0, where nothing is pinned. `?catch=off` turns it off to compare.
 - **How:** it decides from the input, before the page moves, never by watching the page. On the wheel, inside Lenis's
   `virtualScroll` hook. On touch the page owns its scrolling (`src/scroll/touch.ts`: its own drag and momentum, played through Lenis), so where a flick
   will land is known at the lift; the browser's address bar no longer hides on scroll, so the stages' bottom-anchored
-  parts sit in `svh`. A trackpad's momentum comes from the system, so on the wheel coasting is caught where it
-  crosses a point and a mouse is caught only at a run's door. Every formation is built in the hero once the 600 have
+  parts sit in `svh`. On the wheel the page takes a trackpad's momentum over the moment it shows: it coasts on with
+  its own, as a fling does, and holds the system's; a mouse, which has none, is caught only at a run's door. Every formation is built in the hero once the 600 have
   gathered, so no first-pass stall reaches the finger ([architecture.md](architecture.md#scroll-to-world)).
 - **Shipping:** on phones and desktop, with no gate and no fallback; anything wrong is fixed forward
   ([decisions.md](decisions.md), 96).

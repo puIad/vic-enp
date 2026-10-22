@@ -1,16 +1,19 @@
 // Every photo the page shows (docs/assets.md, Photos). scripts/photos.mjs reads this list and writes
 // public/photos/<id>-<width>.{avif,webp}; the originals stay git-ignored in assets/pics/.
 // w and h are the original's size after orientation (the script checks them). focal is the object-position in %,
-// set by eye so phone crops keep the faces. Alt text describes only what the photo shows (no captions, #14).
+// set by eye so phone crops keep the faces; a photo that is never cropped has none. Alt text describes only what the
+// photo shows (no captions, #14), except the footer's (decision 106).
 
 export type Photo = {
   id: string
   src: string
   w: number
   h: number
-  focal: [number, number]
+  focal?: [number, number]
   alt: string
   widths: number[]
+  /** baked to high-contrast black and white, transparency kept (the footer's cutout) */
+  mono?: boolean
 }
 
 const W = [640, 1280, 1920]
@@ -36,6 +39,9 @@ export const PHOTOS: Photo[] = [
   // POLYMAZE's second frame (decision 65). It is never drawn wider than about 500 CSS px (it covers its frame by
   // height), so 1280 covers a retina screen
   { id: 'img-0257', src: 'IMG_0257.JPG', w: 6000, h: 4000, focal: [40, 70], widths: [640, 1280], alt: 'A small wheeled robot, its wires and battery showing, driving between the white walls of a maze.' },
+  // the committee under the closing motto (#81, decisions 103 to 106): a transparent cutout, never cropped, drawn up
+  // to about 1,300 CSS px wide on a laptop. The alt text is the owner's, on purpose (106)
+  { id: 'footer', src: 'footer.png', w: 3380, h: 2402, mono: true, widths: [...W, 2560], alt: 'Tiramisu' },
 ]
 
 export function photo(id: string): Photo {

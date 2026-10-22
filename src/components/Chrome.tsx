@@ -61,7 +61,9 @@ export function Chrome({ cta }: { cta: Cta }) {
       // keep the same object when nothing changed, so React skips the re-render on most scroll frames
       setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo ? l : next))
       // a CTA counts while it is on screen and visible: the hero's fades out over the world's hand-over (#11)
-      setPillHidden(ctas.some((c) => c && c.getBoundingClientRect().bottom > 0 && c.getBoundingClientRect().top < vh && +getComputedStyle(c).opacity > 0.5))
+      // and it stays hidden while any of the footer's committee photo is on screen, dim or not (decision 105)
+      const onScreen = (el: Element | null) => !!el && el.getBoundingClientRect().bottom > 0 && el.getBoundingClientRect().top < vh
+      setPillHidden(ctas.some((c) => onScreen(c) && +getComputedStyle(c!).opacity > 0.5) || onScreen(document.querySelector('.foot-photo')))
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update)

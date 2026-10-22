@@ -19,7 +19,7 @@ import {
 } from 'three'
 import { MEMBERS, heroPlacement, random } from './cloud'
 import { REDUCE } from '../lib/motion'
-import { CAM_Z, HH, arrive, close, cloud, eventLogo, halfWidth, icon, irisAt, logo, logoCount, photo, shape, shapeCount, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
+import { CAM_Z, HH, SHAPES, arrive, close, cloud, eventLogo, halfWidth, icon, irisAt, logo, logoCount, photo, shape, shapeCount, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
 import { EVENT_LOGOS, LOGO_CUTS, sampleLogo, type EventKey, type LogoCut, type Pixels } from './logo'
 import { loadLogo, sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
@@ -43,6 +43,8 @@ export type WorldProps = {
 }
 
 const GATHER = 3.2 // s, points stream in from the edges while the counter climbs to 600
+/** every formation, built ahead in the hero (decision 95) */
+const WARM: Key[] = [...(Object.keys(SHAPES) as ShapeKey[]), 'arrive', 'icon', 'cloud', 'tight', 'photo', 'closeRest', 'closeIris']
 const LIGHT = 0.9 // s, your point lights once the counter lands
 const TRAIL = 16 // your point's light trail in flight (#17)
 /** frame-rate independent easing toward a target, `k` per second */
@@ -418,6 +420,13 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     }
     const drawn = Math.max(countOf(fr.b, B), snapped ? 0 : countOf(fr.a, B))
     f.points.geometry.setDrawRange(0, Math.min(f.n, drawn))
+    // the rest, one a frame once the 600 have gathered: a cut entered for the first time never stalls the page (or the
+    // finger, which the page owns) building its own (decision 95). A layout change or a file landing empties the cache
+    // and this fills it again.
+    if (gather >= 1) {
+      const ahead = WARM.find((key) => !cache.current.has(key))
+      if (ahead) get(ahead)
+    }
 
     // B's cuts land at once with a white flash that decays in about 0.17 s; A's blends ease
     if ((fr.snap && fr.snap !== K.snap) || f.relit) K.flash = 1

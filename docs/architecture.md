@@ -104,12 +104,17 @@ scroll (Lenis) → ScrollTrigger per act → act progress 0..1 → world store {
 - `gsap.ticker` drives Lenis's `raf`, and Lenis's scroll events update ScrollTrigger, so the two share one clock.
 - Under reduced motion, Lenis is not started and every act jumps to its resting formation (still images per
   section), no scrubbing.
-- The catch (slice 5, [experience.md](experience.md#the-catch)) sits between input and the scroll: on the wheel
-  inside Lenis's `virtualScroll` hook; on touch by watching the page coast after the finger lifts (`src/scroll/touch.ts`):
-  when the browser's own momentum carries the page across a point while still moving, Lenis glides it back to rest there,
-  which also stops the momentum ([decisions.md](decisions.md), 83).
-  Lenis's snap plugin is not used: it ignores touch and snaps only after a pause. Programmatic scrolls (`world.go`,
-  anchors, the reload restore) bypass it.
+- The catch (slice 5, [experience.md](experience.md#the-catch)) sits between input and the scroll and decides from the
+  input, never by watching the page ([decisions.md](decisions.md), 87 to 97). Its rules are pure (`src/scroll/catch.ts`:
+  the runs, the still points, `land`, the wheel's `catcher` and touch's `toucher`); `smooth.ts` measures the layout and
+  plays the moves through Lenis. On the wheel it sits inside Lenis's `virtualScroll` hook. On touch the page owns its
+  scrolling (`src/scroll/touch.ts`): a vertical drag's touchmove is cancelled so the browser starts no momentum, the
+  finger drags the page 1:1 and the lift coasts on with decaying momentum, all through Lenis's `scrollTo`; Lenis's hook
+  keeps out of touch while the catch owns it. A pinch, a zoomed-in page, a sideways swipe in a sideways scroller and a
+  slide the rail's hold took stay the browser's. Lenis's `syncTouch` is not used: its inertia depends on the frame rate,
+  so where a flick lands couldn't be known at the lift. The stages' bottom-anchored parts sit in `svh`, since the
+  address bar no longer hides on scroll. Lenis's snap plugin is not used either: it ignores touch and snaps only after
+  a pause. Programmatic scrolls (`world.go`, anchors, the reload restore) bypass the catch.
 
 ## Device tiers
 

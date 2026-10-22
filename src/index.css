@@ -1237,15 +1237,15 @@
     position: sticky;
     top: 0;
     z-index: 0;
-    height: 100lvh;
+    height: 100svh; /* the small viewport, as the cut runs' stages (stages.css) */
     overflow: hidden;
   }
   .peak-words {
     position: sticky;
     top: 0;
     z-index: 2;
-    height: 100lvh;
-    margin-top: -100lvh;
+    height: 100svh;
+    margin-top: -100svh;
     pointer-events: none;
     overflow-x: clip; /* the pools of night under the words reach past the screen's edge and widened the page */
   }

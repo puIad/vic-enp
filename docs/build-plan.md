@@ -100,7 +100,7 @@ to [After launch](#after-launch-v11), starting from the bottom of this order. Co
    built ([#33](https://github.com/puIad/vic-enp/issues/33) to [#35](https://github.com/puIad/vic-enp/issues/35)); so are the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)) and the counters ([#37](https://github.com/puIad/vic-enp/issues/37)).
 4. **Reading and wayfinding** (68 to 78, added on 2026-10-21): the rail first (sub-dots, name flashes, hover and
    the phone hold, the footer landing with its one-time hold), then [the catch](experience.md#the-catch), desktop
-   first, then phones on a preview the owner tries inside Instagram (open question 30). Spec in
+   first, then phones. Rebuilt strict on 22 Oct, on phones and desktop with no gate ([decisions.md](decisions.md), 87 to 96). Spec in
    [experience.md](experience.md#reading-and-wayfinding). Tickets [#59](https://github.com/puIad/vic-enp/issues/59), [#60](https://github.com/puIad/vic-enp/issues/60), [#61](https://github.com/puIad/vic-enp/issues/61), in that order.
 5. **Reactions, the light act, grain** (63, 64; the sound was dropped, 84):
    - A tap ripple on phones: a tap sends one soft ripple through the 600 from the touch.
@@ -149,7 +149,8 @@ In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25
    600's pulse ([#37](https://github.com/puIad/vic-enp/issues/37)).
 2. Group 4, reading and wayfinding (new on 21 Oct, [decisions.md](decisions.md), 68 to 78): the rail
    ([#59](https://github.com/puIad/vic-enp/issues/59)), the catch on desktop ([#60](https://github.com/puIad/vic-enp/issues/60)),
-   then the phone catch on a preview for the owner ([#61](https://github.com/puIad/vic-enp/issues/61), open question 30).
+   then the phone catch ([#61](https://github.com/puIad/vic-enp/issues/61)), since rebuilt as the strict catch on phones
+   and desktop ([decisions.md](decisions.md), 87 to 96).
 3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
    ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)).
    The sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)) is dropped (decision 84).
@@ -178,8 +179,8 @@ first):
 
 Content and the CTA are never cut.
 
-The catch's phone half is judged apart from this list: it ships only if the owner passes it inside Instagram by
-the cut line. Otherwise phones launch with free scroll and desktop keeps its catch ([decisions.md](decisions.md), 77).
+The catch is not on this list: the strict catch ships on phones and desktop with no gate and no fallback, and
+anything wrong is fixed forward ([decisions.md](decisions.md), 96).
 
 ## After launch (v1.1)
 
@@ -198,8 +199,7 @@ the cut line. Otherwise phones launch with free scroll and desktop keeps its cat
 | Content checks 1 to 9 in [content.md](content.md#checks-before-the-copy-is-final) | 22 Oct (copy freeze) |
 | Approve the new-copy list (open question 27) | 22 Oct (copy freeze) |
 | Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |
-| Try the catch inside Instagram on an iPhone and an Android phone (open question 30) | 23 Oct (cut line) |
-| Try the desktop catch on a Mac trackpad, on the preview (tuned on a Windows touchpad and a mouse, decisions 79 to 82) | 23 Oct (cut line) |
+| Try the strict catch (decisions 87 to 96) inside Instagram on an iPhone and an Android phone, and on a Mac trackpad, on the preview: tuning, not a gate | 23 Oct (cut line) |
 | Gilroy web licence answer | 22 Oct |
 | The Google Form's responder link for `VITE_APPLY_URL` | 23 Oct |
 | The exact opening time | 23 Oct |

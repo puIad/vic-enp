@@ -8,6 +8,19 @@ export const EVENT_STEPS = [0.7, 0.55, 0.55, 0.5, 0.7, 0.6]
 
 /** The peak's resolved group photo holds still over this part of its progress (ClubLifePeak): a catch point rests mid-hold. */
 export const PEAK_HOLD = [0.31, 0.4] as const
+/**
+ * The peak's stack (ClubLifePeak): photo i lives from START + i * STEP for LIFE of the act's progress, entering over its
+ * first ENTER of LIFE. Ten photos share the window seven had (decisions.md, 65), so neighbours overlap.
+ */
+export const PEAK_STACK = { start: 0.42, step: 0.05, life: 0.093, enter: 0.45 } as const
+
+/** Where photo i of the stack rests (decision 97): fully in, the one before gone, the next not yet begun. */
+export function peakRest(i: number) {
+  const { start, step, life, enter } = PEAK_STACK
+  const s = start + i * step
+  return (Math.max(s + life * enter, s - step + life) + s + step) / 2
+}
+
 /** Your point lands in its slot at this progress of the close's travel (score.ts): the close is at rest after it. */
 export const CLOSE_LANDS = 0.8
 

@@ -4,8 +4,8 @@ import Lenis from 'lenis'
 import { REDUCE } from '../lib/motion'
 import { notify, world } from '../world/store'
 import { underBenefits } from '../lib/scrub'
-import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, stepMiddle } from '../world/steps'
-import { GLIDE, catcher, type Point } from './catch'
+import { CLOSE_LANDS, DEPT_STEPS, EVENT_STEPS, PEAK_HOLD, peakRest, stepMiddle } from '../world/steps'
+import { GLIDE, catcher, coastCurve, type Layout, type Run } from './catch'
 import { restorer, whereAt, type Range } from './restore'
 import { touchCatch } from './touch'
 
@@ -44,31 +44,54 @@ function measure(): Range[] {
 }
 
 /**
- * The catch's 16 points (docs/experience.md, The catch): the 12 cuts at their middles (where the pickers land), act 2's
- * top and the light act's (where the rail lands), the peak's resolved photo in its hold, and the close at rest with your
- * point in its slot. None on tier 0 or after a lost context, where the runs are cards and nothing is pinned.
+ * The catch's 26 points (docs/experience.md, The catch; decisions.md, 88, 92 and 97). Three runs: the 7 departments and
+ * the 5 events at their cuts' middles (where the pickers land), the peak from its resolved group photo through its ten
+ * photos at their rests. Each run's zone is its pinned stage; leaving the departments or the events goes at least a
+ * screen past it, so nothing rests on the door or the tunnel; the peak's opening is the flow's. Three still points: act
+ * 2's top and the light act's (where the rail lands) and the close at rest with your point in its slot. None on tier 0
+ * or after a lost context, where the runs are cards and nothing is pinned.
  */
-function catchPoints(ranges: Range[]): Point[] {
-  if (!document.querySelector('#departments[data-pin]')) return []
+function catchLayout(ranges: Range[]): Layout {
+  const vh = innerHeight
+  const limit = document.documentElement.scrollHeight - vh
+  if (!document.querySelector('#departments[data-pin]')) return { runs: [], still: [], limit }
   const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
-  const out: Point[] = []
+  const range = (id: string) => ranges.find((x) => x.id === id)
+  const along = (r: Range, p: number) => r.start + p * (r.end - r.start)
+  const runs: Run[] = []
+  const cuts = (id: string, steps: number[], from: number, to: number) => {
+    const r = range(id)
+    if (!r || !document.querySelector(`#${id}[data-pin]`)) return
+    const stops = []
+    for (let i = from; i <= to; i++) stops.push(along(r, stepMiddle(steps, i)))
+    runs.push({ stops, lo: r.start, hi: r.end, up: r.start - vh, down: r.end + vh })
+  }
+  cuts('departments', DEPT_STEPS, 1, 7)
+  const peak = range('club-life')
+  if (peak && document.querySelector('#club-life [data-pin]')) {
+    const photos = document.querySelectorAll('#club-life .peak-card').length
+    const stops = [along(peak, (PEAK_HOLD[0] + PEAK_HOLD[1]) / 2)]
+    for (let i = 0; i < photos; i++) stops.push(along(peak, peakRest(i)))
+    runs.push({ stops, lo: stops[0], hi: peak.end, up: stops[0], down: peak.end + vh })
+  }
+  cuts('events', EVENT_STEPS, 0, 4)
+  const still: number[] = []
   const top = (id: string) => {
     const el = document.getElementById(id)
-    if (el) out.push({ y: abs(el) - pad })
-  }
-  const along = (id: string, p: number, run?: string) => {
-    const r = ranges.find((x) => x.id === id)
-    if (r) out.push({ y: r.start + p * (r.end - r.start), run })
+    if (el) still.push(abs(el) - pad)
   }
   top('the-600')
-  for (let i = 1; i <= 7; i++) along('departments', stepMiddle(DEPT_STEPS, i), 'departments')
-  along('club-life', (PEAK_HOLD[0] + PEAK_HOLD[1]) / 2)
-  for (let i = 0; i < 5; i++) along('events', stepMiddle(EVENT_STEPS, i), 'events')
   top('join')
   // the close at rest: a beat after your point lands in its slot
   const apply = document.getElementById('apply')
-  if (apply?.matches('[data-pin]')) out.push({ y: abs(apply) + (CLOSE_LANDS + 0.05) * (apply.offsetHeight - innerHeight) })
-  return out
+  if (apply?.matches('[data-pin]')) still.push(abs(apply) + (CLOSE_LANDS + 0.05) * (apply.offsetHeight - vh))
+  // a run's exit carries on to a still point within half a screen past it: the events' onto the light act's top, past
+  // the horizon between them
+  for (const r of runs) {
+    r.down = still.find((p) => p >= r.down && p - r.down <= vh / 2) ?? r.down
+    r.up = [...still].reverse().find((p) => p <= r.up && r.up - p <= vh / 2) ?? r.up
+  }
+  return { runs, still, limit }
 }
 
 /** Where the scroll is, into the store: the act and its progress, act 2's dim, the horizons' lines, the close's entry, the cover. */
@@ -151,17 +174,17 @@ function follow(measured: (ranges: Range[]) => void) {
 // shortcut: a live switch of the OS setting swaps the acts to their stills but keeps Lenis as it started; a reload settles it.
 export function startScroll() {
   document.documentElement.classList.add('sc-ready') // scroll-craft's shoot.mjs waits for this before it samples
-  // the catch: on the wheel inside Lenis's virtualScroll hook below, on touch by watching the page coast (touch.ts).
-  // Keys, anchors and every scrollTo (world.go, the restore) never reach it. Off under reduced motion; `?catch=off`
-  // turns it off to compare.
+  // the catch (decisions 87 to 97): on the wheel inside Lenis's virtualScroll hook below, on touch in touch.ts, where
+  // the page owns its touch scrolling. Keys, anchors and every scrollTo (world.go, the restore) never reach it. Off
+  // under reduced motion; `?catch=off` turns it off to compare.
   const catching = !matchMedia(REDUCE).matches && new URLSearchParams(location.search).get('catch') !== 'off'
   const caught = catcher()
   let phone: ReturnType<typeof touchCatch> | null = null
-  let points: Point[] = []
+  let layout: Layout = { runs: [], still: [], limit: 0 }
   const stopFollow = follow((ranges) => {
-    points = catchPoints(ranges)
-    caught.points(points)
-    phone?.points(points)
+    layout = catchLayout(ranges)
+    caught.layout(layout)
+    phone?.layout(layout)
   })
   const triggers: ScrollTrigger[] = []
   // the hero's hand-over (#11): 0.7 screen in which the copy lifts and fades while the camera dollies into the field.
@@ -183,26 +206,25 @@ export function startScroll() {
   }
   if (matchMedia(REDUCE).matches) return stop
 
-  const glide = (t: number) => 1 - (1 - t) ** 3
-  // a caught glide; at rest, a flick made during it moves on one more point (catch.ts)
-  const glideTo = (y: number): void => {
-    lenis.scrollTo(y, {
-      duration: GLIDE / 1000,
-      easing: glide,
-      onComplete: () => {
-        const next = caught.rested(performance.now())
-        if (next) glideTo(next.at)
-      },
-    })
+  const ease = (t: number) => 1 - (1 - t) ** 3
+  // our glides carry their end in Lenis's userData, so a jump that replaces one (an anchor, the rail) ends it too
+  const anim = () => {
+    const at = lenis.isScrolling === 'smooth' ? lenis.userData?.catch : undefined
+    return typeof at === 'number' ? at : null
   }
+  const glideTo = (y: number) => lenis.scrollTo(y, { duration: GLIDE / 1000, easing: ease, force: true, userData: { catch: y } })
   let frame = performance.now() // the last frame drawn: none for 100 ms means the page, not the visitor, paused the wheel
   const lenis: Lenis = new Lenis({
     anchors: true, // honours the page's scroll-padding-top on its own
     virtualScroll: ({ deltaY, event }) => {
-      if (!catching || event.type !== 'wheel' || event.ctrlKey || !deltaY || lenis.isStopped || lenis.isLocked) return true
-      const to = Math.min(lenis.limit, Math.max(0, lenis.targetScroll + deltaY))
+      if (!catching) return true
+      // touch is touch.ts's while it owns it: Lenis would stop our glides on every touch event
+      if (event.type.startsWith('touch')) return !phone?.owns()
+      if (event.type !== 'wheel' || event.ctrlKey || !deltaY || lenis.isStopped || lenis.isLocked) return true
+      const from = lenis.targetScroll
+      const to = Math.min(lenis.limit, Math.max(0, from + deltaY))
       const stalled = performance.now() - frame > 100
-      const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from: lenis.animatedScroll, to, stalled })
+      const v = caught.wheel({ t: event.timeStamp, dy: deltaY, from, to, glide: anim(), stalled })
       if (v === 'pass') return true
       event.preventDefault()
       if (v !== 'hold') glideTo(v.at)
@@ -216,16 +238,31 @@ export function startScroll() {
   }
   gsap.ticker.add(tick)
   gsap.ticker.lagSmoothing(0)
-  // on touch, the coasting page glides back to its point the same way, and a finger down stops the glide where it is
+  // on touch the page drags under the finger, glides to a stop, or coasts on with the lift's momentum
   if (catching) {
-    phone = touchCatch(
-      (y, done) => lenis.scrollTo(y, { duration: GLIDE / 1000, easing: glide, force: true, onComplete: done }),
-      () => lenis.scrollTo(scrollY, { immediate: true, force: true }),
-    )
-    phone.points(points)
+    phone = touchCatch({
+      y: () => lenis.animatedScroll,
+      anim,
+      play: (m) => {
+        if ('scroll' in m) lenis.scrollTo(m.scroll, { immediate: true, force: true })
+        else if ('glide' in m) glideTo(m.glide)
+        else {
+          const c = coastCurve(lenis.animatedScroll, m.coast, m.v)
+          if (!c) glideTo(m.coast)
+          else lenis.scrollTo(m.coast, { duration: c.ms / 1000, easing: c.easing, force: true, userData: { catch: m.coast } })
+        }
+      },
+      // a finger down stops a coast where it is, as it stops a fling (Lenis's own reset, through its public switch)
+      halt: () => {
+        lenis.stop()
+        lenis.start()
+      },
+    })
+    phone.layout(layout)
   }
   world.go = (y) => {
     phone?.cancel()
+    caught.cancel()
     lenis.scrollTo(y)
   }
   return () => {

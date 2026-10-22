@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Cta } from '../lib/opening'
 import { RAIL, subAt } from '../lib/rail'
+import { READOUT_START, readout } from '../lib/readout'
+import { arrival } from '../world/arrival'
 import { ApplyPill } from './ApplyPill'
 import { Rail } from './Rail'
 
 // The fixed chrome of #10: logo on its night plate, "Distance to the 600", the waypoint rail (Rail), the sticky Apply pill.
-
-const START = 48 // the readout's distance at the top of the page, as in the hero comp
 
 /** The light band: the light act plus the lighter half of each horizon around it. */
 const overLight = (y: number) => {
@@ -54,16 +54,17 @@ export function Chrome({ cta }: { cta: Cta }) {
       const close = sections[sections.length - 1]
       const end = close ? close.getBoundingClientRect().top + scrollY : 1
       const p = Math.min(1, Math.max(0, scrollY / Math.max(1, end)))
-      if (dist.current) dist.current.textContent = (START * (1 - p)).toFixed(1)
+      if (dist.current) dist.current.textContent = readout(p)
 
       const footerIn = footer ? footer.getBoundingClientRect().top < vh * 0.9 : false
       const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn }
       // keep the same object when nothing changed, so React skips the re-render on most scroll frames
       setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo ? l : next))
       // a CTA counts while it is on screen and visible: the hero's fades out over the world's hand-over (#11)
-      // and it stays hidden while any of the footer's committee photo is on screen, dim or not (decision 105)
+      // and it stays hidden while any of the footer's committee photo is on screen, dim or not (decision 105). While
+      // the hero waits for the icon and its copy rises in, the hero's CTA is as good as shown (world/arrival.ts)
       const onScreen = (el: Element | null) => !!el && el.getBoundingClientRect().bottom > 0 && el.getBoundingClientRect().top < vh
-      setPillHidden(ctas.some((c) => onScreen(c) && +getComputedStyle(c!).opacity > 0.5) || onScreen(document.querySelector('.foot-photo')))
+      setPillHidden(arrival.phase !== 'done' || ctas.some((c) => onScreen(c) && +getComputedStyle(c!).opacity > 0.5) || onScreen(document.querySelector('.foot-photo')))
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update)
@@ -71,7 +72,9 @@ export function Chrome({ cta }: { cta: Cta }) {
     update()
     addEventListener('scroll', onScroll, { passive: true })
     addEventListener('resize', onScroll)
+    arrival.listeners.add(onScroll)
     return () => {
+      arrival.listeners.delete(onScroll)
       removeEventListener('scroll', onScroll)
       removeEventListener('resize', onScroll)
       cancelAnimationFrame(raf)
@@ -89,7 +92,7 @@ export function Chrome({ cta }: { cta: Cta }) {
       </a>
       <div className={`readout ${lit.readout ? 'lit' : ''}`} aria-hidden="true">
         Distance to the 600
-        <b ref={dist}>{START.toFixed(1)}</b>
+        <b ref={dist}>{READOUT_START}</b>
       </div>
       <Rail now={now} sub={sub} lit={lit.rail} landed={landed} />
       <ApplyPill cta={cta} className={`corner ${pillHidden ? 'hide' : ''}`} inert={pillHidden} />

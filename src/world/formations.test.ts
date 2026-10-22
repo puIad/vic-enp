@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { MEMBERS } from './cloud'
-import { CAM_Z, EVENT_INK, HH, PALETTE, SHAPES, close, cutPlacement, cloud, eventLogo, halfWidth, icon, logo, logoCount, onLogo, photo, photoGrid, rgb, shape, shapeCount, type IconSample, type Layout, type Rect, type ShapeKey } from './formations'
+import { CAM_Z, EVENT_INK, HH, PALETTE, iconPlacement, place, SHAPES, close, cutPlacement, cloud, eventLogo, halfWidth, icon, logo, logoCount, onLogo, photo, photoGrid, rgb, shape, shapeCount, type IconSample, type Layout, type Rect, type ShapeKey } from './formations'
 import { BUDGET } from './tier'
 import type { EventKey, LogoSample } from './logo'
 
@@ -345,5 +346,26 @@ describe("IT's painting palette", () => {
       const f = shape('it', 2000, 2000, l)
       for (let i = 0; i < 2000; i++) if (i % 10 < 8) expect(inside([f.pos[i * 4] / halfWidth(l), f.pos[i * 4 + 1] / HH])).toBe(true)
     }
+  })
+})
+
+// "Gathering the 600" sits under the icon before the world loads, so its place is CSS (index.css, .gather): the icon's
+// bottom projected through the page's camera by hand. Moving the icon or the camera must move the line too (#82).
+describe('the loader under the icon', () => {
+  const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
+  // the desktop place, then the phone's (in the media query after it), in file order
+  const [desk, phone] = [...css.matchAll(/left: calc\(50% \+ ([\d.-]+)lvh\);\s*top: ([\d.]+)lvh;/g)].map((m) => ({ x: Number(m[1]), y: Number(m[2]) }))
+  /** the icon's bottom centre on the canvas, in lvh from its centre (x) and from its top (y) */
+  const bottom = (p: boolean) => {
+    const pl = iconPlacement(p)
+    const [x, y, z] = place([0, -0.5 * pl.height, 0], pl)
+    const k = (HH / CAM_Z) * (CAM_Z - z)
+    return { x: (x / k) * 50, y: 50 - (y / k) * 50 }
+  }
+  it.each([['desktop', desk, false], ['phone', phone, true]] as const)('%s: just under the icon, centred on it', (_, at, p) => {
+    const b = bottom(p)
+    expect(at.y - b.y).toBeGreaterThan(1)
+    expect(at.y - b.y).toBeLessThan(6)
+    expect(Math.abs(at.x - b.x)).toBeLessThan(3)
   })
 })

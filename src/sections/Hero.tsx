@@ -3,7 +3,8 @@ import type { Cta } from '../lib/opening'
 import { TIER } from '../world/boot'
 
 // Act 1 (#11): copy bottom left at the rail gutter, the cloud on the right two thirds behind it. On tier 1 and 2 the
-// world gathers behind the words, "Gathering the 600" is the loader, and the copy lifts away on the hand-over.
+// world is the loader: "Gathering the 600" sits under the icon's place, and on a load at the top the copy waits until
+// your point lights (world/arrival.ts), then rises in; it lifts away on the hand-over.
 export function Hero({ cta }: { cta: Cta }) {
   return (
     <section id="top" aria-labelledby="h-hero" data-sc-act="flow" className="wrap grid min-h-svh content-end pt-[40svh] pb-[14svh] md:pt-36 md:pb-[12vh]">
@@ -14,15 +15,13 @@ export function Hero({ cta }: { cta: Cta }) {
         <b className="font-bold text-white">Vision &amp; Innovation Club.</b>
       </p>
       <div id="hero-cta" className="mt-7 flex md:mt-[34px]">
-        <div className="relative">
-          <ApplyPill cta={cta} className="pill-lg" />
-          {TIER > 0 && (
-            <p id="gather" className="gather" aria-hidden="true">
-              Gathering the 600 <b id="gather-n">0</b>
-            </p>
-          )}
-        </div>
+        <ApplyPill cta={cta} className="pill-lg" />
       </div>
+      {TIER > 0 && (
+        <p id="gather" className="gather" aria-hidden="true">
+          Gathering the 600 <b id="gather-n">0</b>
+        </p>
+      )}
     </section>
   )
 }

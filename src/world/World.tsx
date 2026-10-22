@@ -39,6 +39,8 @@ export type WorldProps = {
   /** the field formed, time frozen and your point lit, for the baked posters */
   still: boolean
   onReady: () => void
+  /** your point has lit in the iris: the hero's copy comes in (arrival.ts) */
+  onLit: () => void
   onLost: () => void
 }
 
@@ -220,7 +222,7 @@ function useFpsReadout() {
   return read
 }
 
-function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onReady: () => void }) {
+function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolean; onReady: () => void; onLit: () => void }) {
   const scene = useThree((s) => s.scene)
   const gl = useThree((s) => s.gl)
   const setFrameloop = useThree((s) => s.setFrameloop)
@@ -322,6 +324,7 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     layout: '',
     sc: '',
     land: '',
+    lit: false,
   })
   const tmp = useRef({
     par: new Vector2(),
@@ -370,6 +373,10 @@ function Field({ budget, still, onReady }: { budget: 1 | 2; still: boolean; onRe
     if (count !== K.count) {
       K.count = count
       if (T.countEl) T.countEl.textContent = String(count)
+    }
+    if (lit >= 1 && !K.lit) {
+      K.lit = true
+      onLit()
     }
     const shown = gather >= 1 ? 'done' : 'on'
     if (T.gatherEl && T.gatherEl.dataset.state !== shown) T.gatherEl.dataset.state = shown
@@ -625,7 +632,7 @@ function usePointer() {
   }, [])
 }
 
-export default function World({ tier, forced, still, onReady, onLost }: WorldProps) {
+export default function World({ tier, forced, still, onReady, onLit, onLost }: WorldProps) {
   const [rung, setRung] = useState(startRung(tier))
   const { budget, dpr, grain } = LADDER[rung]
   // the monitor waits out the arrival: the gather and the formations built one per frame after it are a one-off cost,
@@ -669,6 +676,7 @@ export default function World({ tier, forced, still, onReady, onLost }: WorldPro
       <Field
         budget={budget}
         still={still}
+        onLit={onLit}
         onReady={() => {
           onReady()
           setTimeout(() => setWatch(true), (GATHER + LIGHT + 1) * 1000)

@@ -353,12 +353,8 @@ describe("IT's painting palette", () => {
 // bottom projected through the page's camera by hand. Moving the icon or the camera must move the line too (#82).
 describe('the loader under the icon', () => {
   const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
-  const line = (block: string) => {
-    const m = block.match(/left: calc\(50% \+ ([\d.-]+)lvh\);\s*top: ([\d.]+)lvh;/)
-    if (!m) throw new Error('index.css: the .gather place is missing')
-    return { x: Number(m[1]), y: Number(m[2]) }
-  }
-  const [desk, phone] = css.split('@media (max-width: 767px) {\n    .gather {').map(line)
+  // the desktop place, then the phone's (in the media query after it), in file order
+  const [desk, phone] = [...css.matchAll(/left: calc\(50% \+ ([\d.-]+)lvh\);\s*top: ([\d.]+)lvh;/g)].map((m) => ({ x: Number(m[1]), y: Number(m[2]) }))
   /** the icon's bottom centre on the canvas, in lvh from its centre (x) and from its top (y) */
   const bottom = (p: boolean) => {
     const pl = iconPlacement(p)

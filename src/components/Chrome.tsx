@@ -60,9 +60,11 @@ export function Chrome({ cta }: { cta: Cta }) {
       const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn }
       // keep the same object when nothing changed, so React skips the re-render on most scroll frames
       setLit((l) => (l.rail === next.rail && l.readout === next.readout && l.logo === next.logo ? l : next))
-      // a CTA counts while it is on screen and visible: the hero's fades out over the world's hand-over (#11). While
+      // a CTA counts while it is on screen and visible: the hero's fades out over the world's hand-over (#11)
+      // and it stays hidden while any of the footer's committee photo is on screen, dim or not (decision 105). While
       // the hero waits for the icon and its copy rises in, the hero's CTA is as good as shown (world/arrival.ts)
-      setPillHidden(arrival.phase !== 'done' || ctas.some((c) => c && c.getBoundingClientRect().bottom > 0 && c.getBoundingClientRect().top < vh && +getComputedStyle(c).opacity > 0.5))
+      const onScreen = (el: Element | null) => !!el && el.getBoundingClientRect().bottom > 0 && el.getBoundingClientRect().top < vh
+      setPillHidden(arrival.phase !== 'done' || ctas.some((c) => onScreen(c) && +getComputedStyle(c!).opacity > 0.5) || onScreen(document.querySelector('.foot-photo')))
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update)

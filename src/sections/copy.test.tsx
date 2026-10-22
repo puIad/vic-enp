@@ -157,6 +157,17 @@ describe('footer', () => {
     expect(readHtml(inner(html, 'address'))).toBe('vic@g.enp.edu.dz 10 Rue des Frères OUDEK, El Harrach')
   })
 
+  it('ends on the committee photo under the motto, lazy, its alt text "Tiramisu" (103, 106)', () => {
+    for (const staged of [false, true]) {
+      const html = renderToStaticMarkup(<Footer staged={staged} />)
+      const img = html.match(/<img\s[^>]*src="\/photos\/footer-[^>]*>/)?.[0] ?? ''
+      expect(attr(img, 'alt')).toBe('Tiramisu')
+      expect(attr(img, 'loading')).toBe('lazy')
+      expect(html.indexOf('class="motto')).toBeLessThan(html.indexOf(img))
+      expect(html.indexOf(img), 'the page ends on the photo').toBe(html.lastIndexOf('<img'))
+    }
+  })
+
   it('leaves the description line to act 2 (58)', () => {
     expect(read(<WhatVic />)).toContain(
       "VIC is an English-speaking scientific club at École Nationale Polytechnique d'Alger, a branch of the El-Maarifa Scientific Association.",

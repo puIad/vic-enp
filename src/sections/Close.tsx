@@ -1,6 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
 import { Arrow } from '../components/ApplyPill'
 import { JumpBack } from '../components/JumpBack'
+import { Photo } from '../components/Photo'
 import { Plain, Words } from '../components/Scrub'
 import { ClosePoster, usePhone } from '../components/Poster'
 import { ADDRESS, EMAIL, SOCIAL } from '../config'
@@ -171,18 +172,21 @@ function Links({ title, links }: { title: string; links: readonly { label: strin
 }
 
 // The closing motto (#36, decisions.md, 62): the same word scrub as act 2's title, so the page opens and closes on one device.
-// Each word lights over a quarter of the motto's progress, the last one whole as the page ends.
+// Each word lights over a quarter of the motto's progress. The progress runs on the motto and the committee photo under
+// it together, so it ends with the page, and the photo brightens with the motto's second line (decision 105).
 const MOTTO: Part[][] = [['Once a VICer,'], ['Always a VICer.']]
 const MOTTO_AT = startsByBlock(MOTTO, 0, 0.75)
+const MOTTO_SL = 0.25
+const END_STYLE = { '--sl': MOTTO_SL, '--pa': MOTTO_AT[1][0], '--pb': MOTTO_AT[1].at(-1)! + MOTTO_SL } as CSSProperties
 const mottoAt = (el: HTMLElement) =>
   mottoProgress(scrollY, el.getBoundingClientRect().top + scrollY, el.offsetHeight, innerHeight, document.documentElement.scrollHeight - innerHeight)
 const mottoState = (k: number) => `motto ${MOTTO_AT.flat().filter((a) => k > a).length} of ${MOTTO_AT.flat().length}, whole ${k >= 1}`
 
 export function Footer({ staged = false }: { staged?: boolean }) {
-  const motto = useRef<HTMLParagraphElement>(null)
-  useScrub(motto, staged, mottoAt, mottoState)
+  const end = useRef<HTMLDivElement>(null)
+  useScrub(end, staged, mottoAt, mottoState)
   return (
-    <footer id="footer" data-sc-act="flow" className="foot relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) pb-[88px] md:pt-28 md:pb-24">
+    <footer id="footer" data-sc-act="flow" className="foot relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) md:pt-28">
       {/* the footer opens on the rail, landed: in the gutter beside the links on a wide screen, above them on a phone */}
       <JumpBack />
       <div className="grid gap-12 md:grid-cols-12 md:gap-8">
@@ -207,27 +211,33 @@ export function Footer({ staged = false }: { staged?: boolean }) {
           <Links title="More" links={SOCIAL.more} />
         </div>
       </div>
-      <p ref={motto} className={`motto t-display mt-20 border-t border-(--line) pt-14 md:mt-24 md:pt-20 ${staged ? 'staged' : ''}`}>
-        {staged ? (
-          <>
-            <span className="sr-only">{MOTTO.flat().join(' ')}</span>
-            <span aria-hidden="true">
-              {MOTTO.map((line, i) => (
-                <span key={i} className="block">
-                  <Words parts={line} starts={MOTTO_AT[i]} read={false} />
-                </span>
-              ))}
-            </span>
-          </>
-        ) : (
-          <>
-            <span className="block">
-              <Plain parts={MOTTO[0]} />
-            </span>{' '}
-            <Plain parts={MOTTO[1]} />
-          </>
-        )}
-      </p>
+      {/* the page's end (decisions 103 and 104): the motto centred, the committee one layer above it, the tallest heads
+          starting where its last line ends, the photo's bottom edge on the end of the page */}
+      <div ref={end} className={`foot-end ${staged ? 'staged' : ''}`} style={staged ? END_STYLE : undefined}>
+        <p className="motto t-display">
+          {staged ? (
+            <>
+              <span className="sr-only">{MOTTO.flat().join(' ')}</span>
+              <span aria-hidden="true">
+                {MOTTO.map((line, i) => (
+                  <span key={i} className="block">
+                    <Words parts={line} starts={MOTTO_AT[i]} read={false} />
+                  </span>
+                ))}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="block">
+                <Plain parts={MOTTO[0]} />
+              </span>{' '}
+              <Plain parts={MOTTO[1]} />
+            </>
+          )}
+        </p>
+        {/* lazy, as every photo below the hero; the width is the photo's, full or narrowed (index.css, .foot-end) */}
+        <Photo id="footer" sizes="(orientation: landscape) 70vw, 100vw" className="foot-photo" />
+      </div>
     </footer>
   )
 }

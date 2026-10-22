@@ -56,6 +56,8 @@ export function report(shots: Shot[], wall: number): { text: string; pass: boole
 
 /** Runs the burst and prints its numbers; resolves to the exit code. */
 export async function main(n = Number(process.env.MAILBURST_N || 40), to = (process.env.MAILBURST_TO ?? '').split(',').map((s) => s.trim()).filter(Boolean)): Promise<number> {
+  // every mail spends one of vic.rh's 1,500 recipients a day, which live registration shares
+  if (!Number.isInteger(n) || n < 1 || n > 100) throw new Error(`mail count must be a whole number from 1 to 100, got ${n}`)
   const e = env()
   const wrong = to.filter((a) => !a.toLowerCase().endsWith('@' + e.emailDomain))
   if (!to.length || wrong.length) throw new Error(`addresses must end in @${e.emailDomain}: ${wrong.join(', ') || 'none given'}`)

@@ -10,25 +10,33 @@ import type { Dept } from './questions'
  */
 export const STOPS: readonly (number[] | null)[] = [[1, 2, 4, 5], [6, 7], [8, 9], [10, 11, 12], [13, 14], null, [30, 31], [32]]
 
-/** The Google Form's four department descriptions, word for word (its intro), in its choice order. */
-export const DEPARTMENTS: readonly { code: Dept; name: string; about: string }[] = [
+/**
+ * The Google Form's four department descriptions, word for word (its intro), in its choice order, each with its house
+ * on the registration form (vic-recruitment-2026#119; the Master's sheets keep their own pairing). apply.css holds each
+ * house's wash under :root[data-house].
+ */
+export const DEPARTMENTS: readonly { code: Dept; name: string; house: string; about: string }[] = [
   {
     code: 'COMM',
+    house: 'Ravenclaw',
     name: 'Communication',
     about: 'The voice of VIC! Responsible for sharing our events and activities across social media platforms and creating engaging, creative content.',
   },
   {
     code: 'FLER',
+    house: 'Hufflepuff',
     name: 'Finance, Logistics & External Relations',
     about: 'Represents VIC to the outside world  finding sponsors, building partnerships, and maintaining strong external relations.',
   },
   {
     code: 'HR',
+    house: 'Slytherin',
     name: 'Human Resources',
     about: 'The heart of the club, The people behind the harmony. HR manages internal organization, motivates members, and ensures a strong and positive club atmosphere.',
   },
   {
     code: 'IT',
+    house: 'Gryffindor',
     name: 'Information & Technology',
     about: 'Brings ideas to life through design, the creative force behind VIC’s visuals, designs, reels, videos, goodies, and everything that shapes our visual identity.',
   },

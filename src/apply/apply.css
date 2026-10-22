@@ -1,13 +1,34 @@
 /* The registration form at /apply (apply.html): the comp's direction A, the long letter, on the night.
    Plain CSS, no Tailwind, and only apply's own small script (main.ts): it ships on its own, keeps the CSP's style-src 'self', and never pulls the
    landing's bundle. Type: the landing's body font (Outfit, as index.css sets it) for everything, Cormorant Garamond on
-   the letter and the step titles only (owner, 22 Oct). Nothing here animates, so tier 0 and reduced motion see this. */
+   the letter and the step titles only (owner, 22 Oct). Only the house wash's fade and owl post move; tier 0 and reduced
+   motion see the same form with both still (the end of this file). */
 @import '@fontsource-variable/outfit';
 @import '@fontsource-variable/cormorant-garamond/wght.css';
 @import '@fontsource-variable/cormorant-garamond/wght-italic.css';
 
-/* the comp's tokens: --bg, --bg2, --accent and --ink are what the house wash swaps once the choosing is built (night and
-   aquamarine until then); the rest are the charter's colours as index.css sets them */
+/* the comp's tokens: --bg, --bg2, --accent and --ink are what the house wash swaps (night and aquamarine until the 1st
+   choice); the rest are the charter's colours as index.css sets them. Registered so the wash can fade between houses. */
+@property --bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #141e27;
+}
+@property --bg2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1c2c3a;
+}
+@property --accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #69c4af;
+}
+@property --ink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #0a1c18;
+}
 :root {
   --bg: #141e27;
   --bg2: #1c2c3a;
@@ -21,6 +42,43 @@
   --paper-body: #3b4954;
   --sans: 'Outfit Variable', system-ui, sans-serif;
   --serif: 'Cormorant Garamond Variable', Georgia, serif;
+  /* each tile's house colour, on every wash (houses.test.ts holds them readable) */
+  --h-it: #ff6a5e;
+  --h-comm: #7fb0ff;
+  --h-fler: #f4bb35;
+  --h-hr: #46d392;
+  transition:
+    --bg 0.7s ease,
+    --bg2 0.7s ease,
+    --accent 0.7s ease,
+    --ink 0.7s ease;
+}
+
+/* the house wash: the 1st choice's accent replaces aquamarine and the night tints toward the house (form.ts sets
+   data-house). The comp's HOUSES table; houses.test.ts holds its contrast table. */
+:root[data-house='IT'] {
+  --bg: #2a0f14;
+  --bg2: #4a1822;
+  --accent: #ff6a5e;
+  --ink: #2a0a0d;
+}
+:root[data-house='COMM'] {
+  --bg: #0d1a38;
+  --bg2: #17306a;
+  --accent: #7fb0ff;
+  --ink: #08142d;
+}
+:root[data-house='FLER'] {
+  --bg: #261c08;
+  --bg2: #4c3a0e;
+  --accent: #f4bb35;
+  --ink: #241a05;
+}
+:root[data-house='HR'] {
+  --bg: #0a2218;
+  --bg2: #114330;
+  --accent: #46d392;
+  --ink: #06251a;
 }
 
 *,
@@ -745,12 +803,31 @@ ul {
   position: absolute;
   inset: 0 auto 0 0;
   width: 6px;
-  background: var(--line);
+  background: var(--h);
+}
+/* each department's house colour, on its tile and its 2nd-choice option */
+.is-it {
+  --h: var(--h-it);
+}
+.is-comm {
+  --h: var(--h-comm);
+}
+.is-fler {
+  --h: var(--h-fler);
+}
+.is-hr {
+  --h: var(--h-hr);
 }
 .ap-tile-code {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
   margin-bottom: 4px;
   font: 900 30px/1 var(--sans);
+}
+.ap-tile-house {
+  color: var(--h);
+  font: italic 600 24px/1 var(--serif);
 }
 .ap-tile-name {
   display: block;
@@ -765,11 +842,13 @@ ul {
   line-height: 1.5;
 }
 .ap-tile:has(input:checked) {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 40%, transparent);
+  border-color: var(--h);
+  background: color-mix(in oklab, var(--h) 16%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--h) 40%, transparent);
 }
-.ap-tile:has(input:checked)::before {
-  background: var(--accent);
+/* once one is picked the others step back, by colour so every line stays readable */
+.ap-tiles:has(input:checked) .ap-tile:not(:has(input:checked)) .ap-tile-about {
+  color: var(--muted);
 }
 .ap-tile-badge {
   display: none;
@@ -788,6 +867,41 @@ ul {
 #f14 {
   margin-top: 26px;
 }
+.ap-washnote {
+  margin-top: 14px;
+  color: #cfd8df;
+  font-size: 14px;
+}
+/* the 2nd choice: a dot in each house's colour and a small badge, never a new wash */
+.ap-opt.is-house .ap-mk {
+  border-color: var(--h);
+}
+.ap-opt.is-house:has(input:checked) {
+  border-color: var(--h);
+  background: color-mix(in oklab, var(--h) 16%, transparent);
+}
+.ap-opt.is-house:has(input:checked) .ap-mk {
+  border-color: var(--h);
+  background: var(--h);
+}
+.ap-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 7px 11px;
+  border: 1.5px solid var(--h);
+  border-radius: 99px;
+  background: color-mix(in oklab, var(--h) 18%, transparent);
+  font: 700 13px/1 var(--sans);
+}
+.ap-badge::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--h);
+}
 
 /* a question that needs a look: the light chip under it, and a stronger edge */
 .ap-q.is-err input[type='text'],
@@ -798,6 +912,32 @@ ul {
 .ap-q.is-err .ap-tile,
 .ap-q.is-err .ap-rate label {
   border-color: #ffb9a4;
+}
+
+/* a soft check: a light chip that warns and never blocks, readable on every wash (the Master still decides) */
+.ap-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #fff4d6;
+  color: #4d3800;
+  font: 700 14px/1.35 var(--sans);
+}
+.ap-warn::before {
+  content: 'i';
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: #4d3800;
+  color: #fff4d6;
+  font: 900 12px/1 var(--serif);
 }
 
 /* ---------- almost done: the review and the send ---------- */
@@ -895,8 +1035,115 @@ ul {
   font-size: 13.5px;
 }
 
-/* nothing animates yet; whatever comes later stops here too */
+/* ---------- owl post: the owl flies in while the letter is on its way ---------- */
+.ap-owl {
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  min-height: calc(100dvh - 160px);
+  padding: 40px 0;
+  overflow: hidden;
+  text-align: center;
+}
+.ap-owl h1 {
+  font-size: 40px;
+  line-height: 1.05;
+}
+.ap-owl-lead {
+  color: var(--muted);
+}
+.ap-owl-sky {
+  position: relative;
+  height: 150px;
+}
+.ap-owl-flyer {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  margin-left: -75px;
+  animation: ap-fly 3.2s cubic-bezier(0.35, 0.1, 0.3, 1) both;
+}
+.ap-owl-body {
+  fill: var(--accent);
+}
+.ap-owl-wing {
+  transform-origin: 66px 36px;
+  animation: ap-flap 0.42s ease-in-out 8 alternate both;
+}
+.ap-owl-wing.is-r {
+  animation-direction: alternate-reverse;
+}
+.ap-owl-paper {
+  fill: var(--paper);
+}
+.ap-owl-night {
+  fill: var(--paper-ink);
+}
+.ap-owl-beak {
+  fill: #f4bb35;
+}
+.ap-owl-string {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.ap-owl-fold {
+  fill: none;
+  stroke: #8795a1;
+  stroke-width: 2;
+}
+.ap-owl-wax {
+  fill: var(--accent);
+}
+.ap-owl-dots span {
+  display: inline-block;
+  animation: ap-blink 1.2s infinite both;
+}
+.ap-owl-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.ap-owl-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes ap-fly {
+  0% {
+    transform: translate(-120vw, 34px) rotate(-6deg);
+  }
+  55% {
+    transform: translate(0, -6px) rotate(0);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes ap-flap {
+  to {
+    transform: scaleY(0.35);
+  }
+}
+@keyframes ap-blink {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* tier 0 and reduced motion: the same form, nothing moving (the wash changes at once, the owl sits still) and no
+   full-screen grain to blend */
+:root[data-tier='0'],
+:root[data-tier='0'] *,
+:root[data-tier='0'] *::before,
+:root[data-tier='0'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+:root[data-tier='0'] .ap-grain {
+  display: none;
+}
 @media (prefers-reduced-motion: reduce) {
+  :root,
   *,
   *::before,
   *::after {

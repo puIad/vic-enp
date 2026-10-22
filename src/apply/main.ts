@@ -1,9 +1,15 @@
 // /apply's script: the ticket (Platform 9¾). Ask for a code with the local part, type the six digits, and on a checked
-// ticket the address locks and the 8 stops unlock (form.ts fills them). The words come from ticket.ts; this file only
-// moves the page.
+// ticket the address locks and the 8 stops unlock (form.ts fills them). A draft on this phone (draft.ts) opens the letter
+// straight away inside the ticket's hour, and after it asks only for the ticket. The words come from ticket.ts; this
+// file only moves the page.
 
-import { openLetter } from './form'
+import { detectTier } from '../world/tier'
+import { browserStore, loadDraft } from './draft'
+import { openLetter, washRoom } from './form'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
+
+// tier 0 (reduced motion, Save-Data, a small phone, ?tier=0) gets the same form with nothing animated (apply.css)
+document.documentElement.dataset.tier = String(detectTier())
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -92,8 +98,8 @@ function showAsk() {
   local.focus()
 }
 
-/** A checked ticket: the address locks for this visit and the 8 stops unlock. */
-function proven() {
+/** A checked ticket: the address locks for this visit and the 8 stops unlock. `at` is when it was checked. */
+function proven(at = Date.now()) {
   clearInterval(timer)
   const email = addressOf(sentTo)
   check.hidden = true
@@ -109,7 +115,7 @@ function proven() {
   $('ticket').classList.replace('is-live', 'is-done')
   $('tk-unlock').hidden = true
   for (const stop of document.querySelectorAll('.ap-stop.is-locked')) stop.classList.remove('is-locked')
-  openLetter(email, { backToTicket })
+  openLetter(email, at, { backToTicket })
 }
 
 /**
@@ -183,3 +189,16 @@ $('tk-change').addEventListener('click', () => {
   say('tk-ask-err', '')
   showAsk()
 })
+
+// a draft on this phone: inside the ticket's hour the letter opens as it was left; after it, the room keeps its house
+// and the ticket is asked again, the answers waiting behind it
+const saved = loadDraft(browserStore(), Date.now())
+const savedLocal = saved?.draft.email ? localPart(saved.draft.email) : null
+if (saved?.proven && savedLocal && 'local' in savedLocal) {
+  sentTo = savedLocal.local
+  proven(saved.draft.provenAt)
+} else if (saved) {
+  washRoom(saved.draft.house)
+  if (savedLocal && 'local' in savedLocal) local.value = savedLocal.local
+  lead.textContent = 'Welcome back. Your answers are saved on this phone: ask for a new ticket to pick up where you stopped.'
+}

@@ -156,11 +156,12 @@ describe('POST /api/verify', () => {
     expect(res.headers.get('set-cookie')).toBeNull()
   })
 
-  it('refuses even the right code after 5 tries', async () => {
+  it('answers the 5th wrong code with 429, and refuses even the right code after it', async () => {
     const s = setup()
     await ask(s.d, 'amina')
     const { code } = s.mails[0]
-    for (let left = 4; left >= 0; left--) expect(await (await verify(s.d, 'amina', wrong(code))).json()).toEqual({ triesLeft: left })
+    for (let left = 4; left >= 1; left--) expect(await (await verify(s.d, 'amina', wrong(code))).json()).toEqual({ triesLeft: left })
+    expect((await verify(s.d, 'amina', wrong(code))).status).toBe(429)
     expect((await verify(s.d, 'amina', code)).status).toBe(429)
   })
 
@@ -264,6 +265,9 @@ describe('POST /api/code', () => {
     const res = await sendTicket(post('code', { local: 'amina', website: 'https://spam.example' }), s.d)
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ status: 'sent', resendIn: 30 })
+    // whatever else the bot typed
+    const bad = await sendTicket(post('code', { local: 'bot@spam.example', website: 'x' }), s.d)
+    expect(bad.status).toBe(200)
     expect(s.mails).toHaveLength(0)
   })
 

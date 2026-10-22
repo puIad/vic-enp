@@ -4,6 +4,9 @@
 
 export const DOMAIN = 'g.enp.edu.dz'
 
+/** the address a ticket goes to, as the API builds it */
+export const addressOf = (local: string) => `${local.toLowerCase()}@${DOMAIN}`
+
 export function localPart(raw: string): { local: string } | { error: string } {
   let local = raw.trim()
   // a pasted full ENP address is fine: the domain is already on screen

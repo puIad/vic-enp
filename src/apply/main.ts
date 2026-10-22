@@ -1,7 +1,7 @@
 // /apply's script: the ticket (Platform 9¾). Ask for a code with the local part, type the six digits, and on a checked
 // ticket the address locks and the 8 stops unlock. The words come from ticket.ts; this file only moves the page.
 
-import { codeAnswer, DOMAIN, localPart, verifyAnswer } from './ticket'
+import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -76,7 +76,7 @@ async function requestTicket(l: string, where: 'tk-ask-err' | 'tk-check-err'): P
 function showCheck() {
   ask.hidden = true
   check.hidden = false
-  lead.replaceChildren('We sent a 6‑digit ticket to ', Object.assign(document.createElement('b'), { textContent: `${sentTo.toLowerCase()}@${DOMAIN}` }), '. It stays valid for 10 minutes.')
+  lead.replaceChildren('We sent a 6‑digit ticket to ', Object.assign(document.createElement('b'), { textContent: addressOf(sentTo) }), '. It stays valid for 10 minutes.')
   code.value = ''
   say('tk-check-err', '')
   code.focus()
@@ -93,7 +93,7 @@ function showAsk() {
 /** A checked ticket: the address locks for this visit and the 8 stops unlock. */
 function proven() {
   clearInterval(timer)
-  const email = `${sentTo.toLowerCase()}@${DOMAIN}`
+  const email = addressOf(sentTo)
   check.hidden = true
   ask.hidden = false
   local.value = sentTo.toLowerCase()

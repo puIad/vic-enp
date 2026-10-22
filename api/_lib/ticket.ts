@@ -47,15 +47,16 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     logLine(d.log, 'code', 'bad_request', started)
     return json({ status: 'bad_request' }, body.status)
   }
+  // the honeypot: a bot that filled the hidden field is told what a person would be, whatever else it typed, and
+  // nothing goes out
+  if (body.value.website !== undefined && body.value.website !== '') {
+    logLine(d.log, 'code', 'honeypot', started)
+    return json({ status: 'sent', resendIn: RESEND_S })
+  }
   const email = emailOf(body.value.local, d.domain)
   if (!email) {
     logLine(d.log, 'code', 'bad_request', started)
     return json({ status: 'bad_request' }, 400)
-  }
-  // the honeypot: a bot that filled the hidden field is told what a person would be, and nothing goes out
-  if (body.value.website !== undefined && body.value.website !== '') {
-    logLine(d.log, 'code', 'honeypot', started)
-    return json({ status: 'sent', resendIn: RESEND_S })
   }
 
   const h = sha256(email)
@@ -105,8 +106,10 @@ export async function checkTicket(req: Request, d: TicketDeps): Promise<Response
     // the try is spent before the code is compared, so parallel guesses can't share one
     const tries = Number(await d.redis.command(['HINCRBY', k, 'tries', 1]))
     await d.redis.command(['EXPIRE', k, CODE_S, 'NX'])
-    if (tries > MAX_TRIES) return { name: 'too_many', res: json({ status: 'too_many' }, 429) }
-    if (!sameHash(sha256(code), otp.code)) return { name: 'wrong', res: json({ triesLeft: MAX_TRIES - tries }, 400) }
+    const tooMany = { name: 'too_many', res: json({ status: 'too_many' }, 429) }
+    if (tries > MAX_TRIES) return tooMany
+    // the 5th wrong code is already "too many": no try is left to report
+    if (!sameHash(sha256(code), otp.code)) return tries < MAX_TRIES ? { name: 'wrong', res: json({ triesLeft: MAX_TRIES - tries }, 400) } : tooMany
     // each code proves the address once
     await d.redis.command(['DEL', k])
     const cookie = proofCookie(email, d.now(), d.sessionKey)

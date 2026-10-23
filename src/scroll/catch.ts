@@ -70,31 +70,38 @@ export function leave(l: Layout, r: Run, y: number, dir: number): number {
 // ---------- the edges' hold ----------
 
 // shortcut: first values (decision 114), to tune on the owner's touchpad and phone.
-/** arrived going down on a run's first or last stop, no gesture moves on down until the page has rested there this
- *  long, in ms */
+/** arrived going down on a run's first or last stop, a gesture down is held there if it starts before the page has
+ *  rested this long, in ms */
 export const DWELL = 500
-/** ...nor one that starts sooner than this after the last input, in ms: a visitor still flicking stays on the stop */
+/** ...or sooner than this after the last input, in ms: the visitor is still flicking */
 export const QUIET = 400
+/** ...but no more than this many: a visitor flicking on through the whole page still gets through */
+export const HELD = 2
 
 /**
  * The edges' hold (decision 114): a visitor flicking down, who doesn't know the page yet, would flick straight on past a
  * run's first stop (the first department, the group photo, the Gala), or off its last onto the next act (English
  * Bubble, the tenth photo, the four projects), seeing it for a moment. Arriving on either going down, a gesture down
- * that starts before the page has rested DWELL ms there, or within QUIET ms of the last input, does nothing: the stop
- * holds until the flicking stops. Up is never held. Any other move of ours ends the hold.
+ * that starts before the page has rested DWELL ms there, or within QUIET ms of the last input, does nothing, up to
+ * HELD of them: the stop takes up the accidental flicks, and the next one moves on as usual. A swipe after a pause
+ * moves on at once. Up is never held. Any other move of ours ends the hold.
  */
 function edgeHold() {
-  let hold: { stop: number; rest: number } | null = null
+  let hold: { stop: number; rest: number; held: number } | null = null
   return {
     /** a move of ours from `from` to `at`, starting at t and lasting ms: going down onto a run's first or last stop, it holds */
     move(l: Layout, from: number, at: number, t: number, ms: number) {
       const r = runAt(l, at)
       const edge = !!r && from < at - EPS && (Math.abs(at - r.stops[0]) <= EPS || Math.abs(at - r.stops[r.stops.length - 1]) <= EPS)
-      hold = edge ? { stop: at, rest: t + ms } : null
+      hold = edge ? { stop: at, rest: t + ms, held: 0 } : null
     },
     /** a gesture starting at t, `gap` ms after the last input, with the page at or heading for y: held if it goes down */
     holds(y: number, t: number, gap: number) {
-      return !!hold && Math.abs(y - hold.stop) <= EPS && (t < hold.rest + DWELL || gap < QUIET)
+      return !!hold && Math.abs(y - hold.stop) <= EPS && hold.held < HELD && (t < hold.rest + DWELL || gap < QUIET)
+    },
+    /** a gesture down was held: one fewer to come */
+    spend() {
+      if (hold) hold.held++
     },
     cancel() {
       hold = null
@@ -197,8 +204,9 @@ export function catcher(vh: () => number) {
       const rise = !!g && (g.fell || g.fading || g.coasted) && d >= 8 && d > Math.abs(prev) * 2
       const fresh = !g || gap > GAP || dir !== g.dir || rise
       if (!g || fresh) {
-        // a trackpad's momentum and a mouse's clicks count as input too: a visitor still flicking stays on a run's edge
+        // a trackpad's momentum and a mouse's clicks count as input too: a visitor still flicking is held on a run's edge
         const held = dir > 0 && edge.holds(glide ?? from, t, gap)
+        if (held) edge.spend()
         g = { dir, level: d, peak: d, mark: { t, level: d }, fell: false, fading: false, sizes: [], top: 0, recent: [], moved: 0, fired: held, coasted: false, free: false }
       } else {
         g.level += (d - g.level) * 0.3
@@ -346,6 +354,7 @@ export function toucher(vh: () => number) {
         const dir = Math.sign(moved)
         if (dir > 0 && g.held) {
           g.fired = true
+          edge.spend()
           return null
         }
         const next = nextStop(g.run, g.at, dir)

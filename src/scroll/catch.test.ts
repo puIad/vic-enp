@@ -274,16 +274,36 @@ describe('the wheel in the flow', () => {
 })
 
 describe("the wheel at a run's edges", () => {
-  it('holds a visitor still flicking on the first cut, then moves on once they pause', () => {
+  it('holds two spins of a visitor still flicking on the first cut, and lets the third go on', () => {
     const s = wheel()
     s.at(2450)
     expect(s.send(100)).toEqual({ at: 2800 })
     // spins during the glide and just after it, each soon after the last
     expect(s.send(100, 200)).toBe('hold')
     s.rest()
-    for (let i = 0; i < 6; i++) expect(s.send(100, QUIET - 100)).toBe('hold')
-    s.wait(QUIET)
+    expect(s.send(100, QUIET - 100)).toBe('hold')
+    expect(s.send(100, QUIET - 100)).toEqual({ at: 3200 })
+  })
+
+  it('moves on at once for a spin after a pause', () => {
+    const s = wheel()
+    s.at(2450)
+    s.send(100)
+    s.rest()
+    s.wait(400 + DWELL)
     expect(s.send(100)).toEqual({ at: 3200 })
+  })
+
+  it('lets a visitor spinning on through the departments finish them, two spins held at each edge', () => {
+    const s = wheel()
+    s.at(2450)
+    const moved: number[] = []
+    for (let i = 0; i < 12; i++) {
+      const v = s.send(100, 200)
+      if (typeof v === 'object') moved.push(v.at)
+      s.rest()
+    }
+    expect(moved).toEqual([2800, 3200, 3600, 4000, 4400, 4800, 5200, 6300])
   })
 
   it('holds a new spin until the page has rested on the first cut a beat, however long the pause', () => {
@@ -295,13 +315,13 @@ describe("the wheel at a run's edges", () => {
     expect(s.send(100, QUIET + 1)).toEqual({ at: 3200 })
   })
 
-  it("holds a trackpad's new flicks on the first cut while its momentum runs, then steps on", () => {
+  it("holds a trackpad's next two flicks on the first cut, and steps on at the third", () => {
     const s = wheel()
     s.at(2000)
     expect(s.run(flick(120))).toEqual([2800])
     s.rest()
     expect(s.run(flick(120))).toEqual([])
-    s.wait(QUIET + DWELL)
+    expect(s.run(flick(120))).toEqual([])
     expect(s.run(flick(120))).toEqual([3200])
   })
 
@@ -563,17 +583,29 @@ function hand(y: number) {
 }
 
 describe("touch at a run's edges", () => {
-  it('holds a visitor still flicking on the first cut, then moves on once they pause', () => {
+  it('holds two flicks of a visitor still flicking on the first cut, and lets the third go on', () => {
     const h = hand(2300)
     expect(h.swipe(-300, 1)).toEqual([{ glide: 2800 }])
     h.wait(150)
     expect(h.swipe(-100)).toEqual([])
     h.rest()
-    for (let i = 0; i < 6; i++) {
-      h.wait(QUIET - 100)
-      expect(h.swipe(-100)).toEqual([])
-    }
-    h.wait(QUIET)
+    h.wait(QUIET - 100)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(QUIET - 100)
+    expect(h.swipe(-100)).toEqual([{ glide: 3200 }])
+  })
+
+  it('never counts a nudge under 30 px among the two', () => {
+    const h = hand(2300)
+    h.swipe(-300, 1)
+    h.rest()
+    h.wait(100)
+    expect(h.swipe(-10)).toEqual([])
+    h.wait(100)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(100)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(100)
     expect(h.swipe(-100)).toEqual([{ glide: 3200 }])
   })
 

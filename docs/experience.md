@@ -363,7 +363,8 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
 - **The edges hold** ([decisions.md](decisions.md), 114): arriving going down on a run's first stop (the first
   department, the group photo, the Gala) or its last (English Bubble, the tenth photo, the four projects), a gesture
   down that starts before the page has rested there about 0.5 s, or within about 0.4 s of the visitor's last input,
-  does nothing. A visitor still flicking stays on the stop; one swipe after a pause moves on. Up is never held.
+  does nothing, two of them at most: the stop takes up the accidental flicks and the third moves on, so a visitor
+  flicking on through the page still gets through. A swipe after a pause moves on at once. Up is never held.
 - **In the flow, coasting never passes a still point:** the finger, a mouse wheel or a trackpad stroke drags past
   freely, but momentum that would cross act 2's top, the light act's top or the close stops on it (or on a run's door),
   whatever its speed. A fling, or a trackpad's momentum, that would die within about a fifth of a screen of a still

@@ -239,8 +239,8 @@ the hero goes on scroll.
 - **Device:** one pinned stage, five sideways hard cuts, photo-led: Gala 0.7, Ignite 0.55, Polymaze 0.55, AEC 0.5,
   four more projects 0.7. An event-coloured streak sweeps over each cut; each photo pans slowly inside its frame.
 - **Cut line is the event's own name.** No edition numbers, no dates. Hour of Code is not on the page.
-- **Colour:** Gala gold `#D4A843`, Ignite red `#E0313F`, only inside their cut. Polymaze, AEC and the projects use
-  aquamarine.
+- **Colour:** Gala gold `#D4A843`, Ignite red `#E0313F`, only inside their cut. AEC and the projects use aquamarine.
+  POLYMAZE's logo formation keeps its file's orange-red, as Training keeps its violet ([decisions.md](decisions.md), 125).
 - **World:** snaps per cut: tiered seat arcs (Gala), eleven rising columns (Ignite), a maze path with a lit runner
   (Polymaze), six city clusters (AEC), four small rings (projects), then the flat line of the horizon.
 - **Photos:** `DSCF7405` (Gala), `_T2A6297` (Ignite), `IMG_8026` (Polymaze), `IMG_3223` (AEC, 2026-10-20). The

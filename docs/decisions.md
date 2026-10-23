@@ -221,3 +221,19 @@ built ahead in the hero, and style recalcs forced in the middle of scroll frames
 |---|---|---|---|
 | 120 | The formations built ahead after the gather (95) are built in a Web Worker, one at a time, and copied back. A formation needed on screen before the worker has it is still built in the frame, by the same code. No module worker, or a failing one, builds them in the frame as before. A step on the ladder that changes the budget resamples only the peak's photo; the icon and the seven logos are read once. Amends 95. | Claude, in the #43 PR; the owner approves by merging | At 4×, the 26 builds took about 1.4 s of main thread right after the arrival, the event logos 100 to 180 ms each, and a budget change re-read every file mid-act. |
 | 121 | The peak's stack leans with a mouse or pen only, and only while the peak is on screen. A finger no longer leans it: on a phone a finger's moves are the scroll's own drags. | Claude, in the #43 PR; the owner approves by merging | The lean listened page-wide for the whole visit: every finger move anywhere restyled the peak's 130 elements and restarted each photo's transition, the largest cost in a scroll frame. Pointer reactions are a bonus ([experience.md](experience.md#motion-rules)). |
+
+## 2026-10-23: the launch reviews ([#44](https://github.com/puIad/vic-enp/issues/44))
+
+The finish review, Brand Guardian and Reality Checker ran over the whole page (quality.md, steps 5 to 7). Their
+findings the build fixed are in the #44 PR; these are the ones the owner decided.
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 122 | Open question 19: the corner logo may fade. It comes in with the chrome after the gather and steps away around the light act and the footer in 0.35 s, always ending at full opacity or hidden. | Owner, 2026-10-23 | Asked. Declined: no fade, the logo appearing and leaving at once (the question's default). |
+| 123 | Aquamarine and blue may colour small accents as text: the main departments' names, the figures' "+" and "since", the countdown chip, the footer's tile numbers 01 to 07 and /apply's eyebrows. Running text stays white, Bright Gray or `#A3AFBA`. Amends brand.md's "never text". | Owner, 2026-10-23 | Asked. Declined: recolouring them all white or gray. All measure 6 to 8:1 on night. experience.md already asked for the names in their accent. |
+| 124 | The photos stay in full colour: the peak's as they are, the events' with their 28% colour blend, the committee's in black and white (103). Replaces brand.md's "single-tone blue". | Owner, 2026-10-23 | Asked. Declined: a blue single-tone on the peak and event photos. |
+| 125 | POLYMAZE's logo formation keeps its file's orange-red, as Training's keeps its violet. AEC and the projects stay aquamarine. | Owner, 2026-10-23 | Asked. Declined: drawing it in aquamarine, as experience.md had it. |
+| 126 | The events' leads get a soft pool of the events' ground under them, so the world's trails never cross the copy (seen on the Gala's cut on desktop). | Owner, 2026-10-23 | Asked. Declined: shipping the crossing as it was. |
+| 127 | The readout gets the logo's night plate, mirrored, gone over the light act; tier 0's department and event grids stop 150 px short of the right edge on desktop, clear of the readout and the corner pill, as the light act's copy does. | Owner, 2026-10-23 | Asked. Declined: the plate alone; shipping as it was. |
+| 128 | Tier 0's department cards keep their icon tiles. | Owner, 2026-10-23 | Asked. Declined: dropping them, as the finish review proposed (a stock card template). Tier 0 and reduced motion are the fallback. |
+| 129 | The favicon stays the full-colour icon, on dark tab bars too. | Owner, 2026-10-23 | Asked. Declined: the white icon under a dark colour scheme, or the white icon always. Low exposure. |

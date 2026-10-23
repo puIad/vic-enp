@@ -1,43 +1,24 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { nextFlash, RAIL, ROWS, rowAt, type Flash } from '../lib/rail'
-import { REDUCE } from '../lib/motion'
 import { onRailLink } from './railLink'
 
 // The waypoint rail (docs/experience.md, The rail; #59): act dots, the current act's sub-dots as ticks, a name flashing
 // for about 2 s on entering an act or a sub-section, every name on hover or keyboard focus (desktop) or on a hold
-// (phones), and the one-time hold when the rail lands in the footer.
+// (phones). It fades as the footer's "Jump back" arrives (`landed`), and never opens on its own (decision 113).
 
 const FLASH_MS = 2000
 const HOLD_MS = 400
-const SHOWN = 'vic-rail-shown' // the one-time hold, once per visit
 
 const phone = () => matchMedia('(max-width: 767px)').matches
-const reduced = () => matchMedia(REDUCE).matches
-const seen = () => {
-  try {
-    return sessionStorage.getItem(SHOWN) === '1'
-  } catch {
-    return false
-  }
-}
-const markSeen = () => {
-  try {
-    sessionStorage.setItem(SHOWN, '1')
-  } catch {
-    // a private window or blocked storage: the hold may play again on a reload, which is harmless
-  }
-}
 
 type Ring = { x: number; y: number }
 
 export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit: boolean; landed: boolean }) {
   const nav = useRef<HTMLElement>(null)
   const [flash, setFlash] = useState<Flash | null>(null)
-  const [open, setOpen] = useState(false) // desktop: every name, as on hover
   const [sheet, setSheet] = useState(false) // phones: the hold's rows over the scrim
   const [litRow, setLitRow] = useState(-1)
   const [ring, setRing] = useState<Ring | null>(null)
-  const [demo, setDemo] = useState(false)
 
   // the flashes: nextFlash decides, a timer clears each one after about 2 s
   const spot = useRef({ act: now, sub })
@@ -150,53 +131,24 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
     setSheet(false)
     setLitRow(-1)
   }
-  // the rows close on a scroll (past a little drift, so Lenis settling doesn't close them), except while the one-time hold plays
+  // the rows close on a scroll (past a little drift, so Lenis settling doesn't close them)
   useEffect(() => {
-    if (!sheet || demo) return
+    if (!sheet) return
     const y0 = scrollY
     const onScroll = () => Math.abs(scrollY - y0) > 40 && close()
     addEventListener('scroll', onScroll, { passive: true })
     return () => removeEventListener('scroll', onScroll)
-  }, [sheet, demo])
+  }, [sheet])
 
-  // the one-time hold: the first time the footer's list arrives in a visit, the rail acts out its hold before it fades.
-  // Phones: the ring fills around the current dot, the rows open for about a second, they close. Desktop: the names open
-  // the same way, without the ring. Never under reduced motion.
-  // its timers outlive a scroll back up mid-play, so it always closes; only leaving the page clears them
-  const timers = useRef<number[]>([])
-  useEffect(() => () => timers.current.forEach(clearTimeout), [])
-  useEffect(() => {
-    if (!landed || seen()) return
-    markSeen()
-    if (reduced()) return
-    const dot = nav.current?.querySelector<HTMLElement>(':scope > a.now i')?.getBoundingClientRect()
-    const onPhone = phone()
-    const at = (ms: number, f: () => void) => timers.current.push(window.setTimeout(f, ms))
-    at(0, () => setDemo(true))
-    if (onPhone && dot) {
-      at(0, () => setRing({ x: dot.left + dot.width / 2, y: dot.top + dot.height / 2 }))
-      at(HOLD_MS, () => {
-        setRing(null)
-        setSheet(true)
-      })
-      at(HOLD_MS + 1100, close)
-    } else {
-      at(0, () => setOpen(true))
-      at(1100, () => setOpen(false))
-    }
-    at(onPhone ? HOLD_MS + 1300 : 1300, () => setDemo(false))
-  }, [landed])
-
-  const away = landed && !demo
   const cutName = flash && flash.sub < 0 && flash.namesCut !== undefined ? RAIL[flash.act].subs[flash.namesCut].name : null
 
   return (
     <>
       <nav
         ref={nav}
-        className={`rail ${lit ? 'lit' : ''} ${open ? 'open' : ''} ${away ? 'away' : ''}`}
+        className={`rail ${lit ? 'lit' : ''} ${landed ? 'away' : ''}`}
         aria-label="Waypoints"
-        inert={away}
+        inert={landed}
       >
         {RAIL.map((a, k) => {
           const flashing = flash?.act === k
@@ -243,7 +195,7 @@ export function Rail({ now, sub, lit, landed }: { now: number; sub: number; lit:
       {ring && <div className="rail-ring" aria-hidden="true" style={{ left: ring.x, top: ring.y } as CSSProperties} />}
       {sheet && (
         // the hold's rows: a touch view of the rail's own links, so it stays out of the reading order
-        <div className={`rail-sheet ${demo ? 'demo' : ''}`} aria-hidden="true" onContextMenu={(e) => e.preventDefault()}>
+        <div className="rail-sheet" aria-hidden="true" onContextMenu={(e) => e.preventDefault()}>
           <div className="rail-scrim" onClick={close} />
           <ol>
             {ROWS.map((r, i) => (

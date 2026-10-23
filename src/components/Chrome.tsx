@@ -47,7 +47,7 @@ export function Chrome({ cta }: { cta: Cta }) {
       else if (act.run && sec.matches('[data-pin]'))
         setSub(subAt(act, { progress: Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / Math.max(1, sec.offsetHeight - vh))) }))
       else setSub(subAt(act, { tops: act.subs.map((s) => document.getElementById(s.id)?.getBoundingClientRect().top ?? Infinity), vh }))
-      // the rail lands in the footer's "Jump back to": the fixed one fades as the list arrives
+      // the fixed rail fades as the footer's "Jump back" arrives (decision 113)
       const list = document.getElementById('jump-back')
       setLanded(list ? list.getBoundingClientRect().top < vh : false)
 

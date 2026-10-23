@@ -187,7 +187,7 @@ export function Footer({ staged = false }: { staged?: boolean }) {
   useScrub(end, staged, mottoAt, mottoState)
   return (
     <footer id="footer" data-sc-act="flow" className="foot relative z-[2] border-t border-(--line) bg-night pt-20 pr-(--edge) md:pt-28">
-      {/* the footer opens on the rail, landed: in the gutter beside the links on a wide screen, above them on a phone */}
+      {/* the footer opens on its way back, a tile per act (decision 113) */}
       <JumpBack />
       <div className="grid gap-12 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4 lg:col-span-3">

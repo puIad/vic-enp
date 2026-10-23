@@ -23,7 +23,7 @@ export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL): Cta {
   return { open: true, label: 'Apply', href: applyUrl || INSTAGRAM }
 }
 
-/** `?now=2026-10-25T08:00:00Z` overrides the clock, so both states can be checked on any build (UTC: a `+` in a query
+/** `?now=2026-10-26T17:00:00Z` overrides the clock, so both states can be checked on any build (UTC: a `+` in a query
  * string reads as a space, so `+01:00` would not parse). */
 export function clockOffset(search = location.search): number {
   const forced = new URLSearchParams(search).get('now')

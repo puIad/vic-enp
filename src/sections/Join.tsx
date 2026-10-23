@@ -204,7 +204,7 @@ export function Join({ staged }: { staged: boolean }) {
           <h2 id="h-join" data-rv={rv} className="t-act text-night">
             How to join.
           </h2>
-          <p data-rv={rv} className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 25 October 2026.</p>
+          <p data-rv={rv} className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00.</p>
           <Steps staged={staged} />
         </section>
 

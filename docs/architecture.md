@@ -159,7 +159,7 @@ Phone browsers resize the viewport as the toolbar shows and hides. The canvas is
 | Name | Where | Value |
 |---|---|---|
 | `VITE_APPLY_URL` | Vercel env var (build time) | The Google Form's responder link until the 24 Oct live check passes, then `/apply`; flipping it back is the fallback (an env change plus a Redeploy, 1 to 2 minutes). |
-| `OPENS_AT` | `src/config.ts` | `2026-10-25T00:00:00+01:00` (Algiers time) until the owner gives the exact time |
+| `OPENS_AT` | `src/config.ts` | `2026-10-26T18:00:00+01:00` (Algiers time, decision 130) |
 | Social links | `src/config.ts` | From the source brief §10 |
 
 Before `OPENS_AT`, the CTA shows the countdown and links to Instagram. After it, every CTA opens `VITE_APPLY_URL` in
@@ -180,8 +180,8 @@ link is an env var change plus a Redeploy.
   Production env vars point at the real Master, Preview ones at a copy of it. `form-action` in the CSP moves from `'none'`
   to `'self'`; the rest of the CSP is unchanged and `/apply` uses no inline scripts or styles.
 - **Deploy safety:** until the 24 Oct evening live check, a landing deploy must pass a `/apply` smoke check on its preview
-  (`/apply` returns 200, `/api/health` all `ok`). After the live check, production changes only for a rollback or the
-  `VITE_APPLY_URL` switch.
+  (`/apply` returns 200, `/api/health` all `ok`). From the launch deploy on 24 Oct (the #44 PR live), production changes only for a rollback or the
+  `VITE_APPLY_URL` switch (decision 133).
 - Handed over after the season with the dashboard: the project, its Redis, the service account key and the mailer script.
 - The build reads only committed files (no `assets/pics/`, no local env files), so a clean clone builds the same
   as the owner's machine. Check with a build from a fresh clone before the first production deploy.

@@ -49,7 +49,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   },
   {
     q: 'When does recruitment open, and how fast is the process?',
-    a: 'Applications open on 25 October 2026. If your application is accepted, two club members contact you within a day to set up your interview.',
+    a: 'Applications open on 26 October 2026 at 18:00. If your application is accepted, two club members contact you within a day to set up your interview.',
   },
   {
     q: 'What happens after I graduate?',

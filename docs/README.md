@@ -42,8 +42,8 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 - 2026-10-23: the edges' hold, the horizon and the footer's way back ([decisions.md](decisions.md), 113 to 115). A
   run's first and last stop take up two accidental flicks, the horizon after the projects cut scrolls at the
   visitor's pace, and the footer opens on a tile per act in place of the rail opening on its own.
-- Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
-  with the CTA opening on the 25th).
+- Recruitment opens **Monday 26 October 2026 at 18:00** (decision 130). The page goes live before then (plan: the
+  evening of 24 Oct, with the CTA opening on its own at 18:00 on the 26th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)
   by their dates (the new-copy list and the faces check by the 22 Oct copy freeze, the form link by 23 Oct).
 

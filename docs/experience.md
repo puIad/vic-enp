@@ -435,7 +435,7 @@ enter, and a hold opens it), the pill sits bottom right. Fewer points, the same 
 
 ## Before and after opening
 
-- Before `OPENS_AT`: every CTA reads "Applications open 25 Oct" with a live countdown chip ("5d 12h", then
+- Before `OPENS_AT`: every CTA reads "Applications open 26 Oct" with a live countdown chip ("5d 12h", then
   "9h 05m" in the last day) and links to `@vic.enp` on Instagram. The close has no sub line.
 - From `OPENS_AT`: every CTA reads "Apply" with a round gradient arrow and opens `APPLY_URL`; the close shows its
   sub line and the Apply wave.

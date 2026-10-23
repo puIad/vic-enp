@@ -14,7 +14,7 @@ ships and the rest becomes v1.1 during the recruitment window.
 | 22 Oct | Thu | Slice 4. Copy freeze in the evening |
 | 23 Oct | Fri | Slice 4 finish, slice 5 starts. **Cut line** in the evening |
 | 24 Oct | Sat | Slice 5: verification, reviews, real phones, production. **Live in the evening** with the countdown. The registration form's live check, planned for this evening, passed on 22 Oct ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md)); `VITE_APPLY_URL` is `/apply` since then |
-| 25 Oct | Sun | Recruitment opens. The CTA switches on by itself at `OPENS_AT` |
+| 26 Oct | Mon | Recruitment opens at 18:00 (decision 130). The CTA switches on by itself at `OPENS_AT` |
 
 ## Gate 0: docs signed off
 

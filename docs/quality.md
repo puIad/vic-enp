@@ -12,7 +12,7 @@ Measured with Lighthouse mobile (Moto G Power class, slow 4G throttling) on the 
 | Cumulative Layout Shift | < 0.1 | 0.000 | 0.000 |
 | Interaction to Next Paint | < 200 ms | not measured; TBT 126 ms | not measured; TBT 151 ms |
 | JS before the world loads (gzip) | ≤ 120 KB | 89 KB (main and tier) | 89 KB |
-| World chunk (gzip, three + R3F + drei parts + our code) | ≤ 350 KB | 245 KB | 245 KB, plus the 5 KB build worker after the gather |
+| World chunk (gzip, three + R3F + drei parts + our code) | ≤ 350 KB | 245 KB | 245 KB, plus the 5 KB build worker, loaded with the world |
 | First view transfer (HTML, CSS, JS, fonts, hero image) | ≤ 1 MB | 690 KB | 691 KB |
 | Whole page with every photo loaded | ≤ 6 MB | not measured (#43 changes no image) | 1.8 MB phone, 1.5 MB desktop |
 | Frame rate | 60 fps desktop, ≥ 30 fps sustained on a tier 1 phone, no scroll jank | Reno 2F: 42 to 60 between dips, lowest second 13 to 30 (decision 101) | the owner's rerun on the Reno |

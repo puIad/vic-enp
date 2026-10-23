@@ -77,8 +77,11 @@ export default function ClubLifePeak() {
     // own drags, page-wide (#43)
     const lean = (e: PointerEvent) => {
       if (e.pointerType === 'touch' || world.act !== 'club-life') return
-      root.style.setProperty('--px', `${(e.clientX / innerWidth - 0.5) * 26}px`)
-      root.style.setProperty('--py', `${(e.clientY / innerHeight - 0.5) * 16}px`)
+      // both reads before either write, so the second read doesn't restyle the stage
+      const x = (e.clientX / innerWidth - 0.5) * 26
+      const y = (e.clientY / innerHeight - 0.5) * 16
+      root.style.setProperty('--px', `${x}px`)
+      root.style.setProperty('--py', `${y}px`)
     }
     addEventListener('pointermove', lean, { passive: true })
 

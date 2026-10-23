@@ -67,6 +67,43 @@ export function leave(l: Layout, r: Run, y: number, dir: number): number {
   return land(l, y, dir > 0 ? r.down : r.up)
 }
 
+// ---------- the edges' hold ----------
+
+// shortcut: first values (decision 114), to tune on the owner's touchpad and phone.
+/** arrived going down on a run's first or last stop, no gesture moves on down until the page has rested there this
+ *  long, in ms */
+export const DWELL = 500
+/** ...nor one that starts sooner than this after the last input, in ms: a visitor still flicking stays on the stop */
+export const QUIET = 400
+
+/**
+ * The edges' hold (decision 114): a visitor flicking down, who doesn't know the page yet, would flick straight on past a
+ * run's first stop (the first department, the group photo, the Gala), or off its last onto the next act (English
+ * Bubble, the tenth photo, the four projects), seeing it for a moment. Arriving on either going down, a gesture down
+ * that starts before the page has rested DWELL ms there, or within QUIET ms of the last input, does nothing: the stop
+ * holds until the flicking stops. Up is never held. Any other move of ours ends the hold.
+ */
+function edgeHold() {
+  let hold: { stop: number; rest: number } | null = null
+  return {
+    /** a move of ours from `from` to `at`, starting at t and lasting ms: going down onto a run's first or last stop, it holds */
+    move(l: Layout, from: number, at: number, t: number, ms: number) {
+      const r = runAt(l, at)
+      const edge = !!r && from < at - EPS && (Math.abs(at - r.stops[0]) <= EPS || Math.abs(at - r.stops[r.stops.length - 1]) <= EPS)
+      hold = edge ? { stop: at, rest: t + ms } : null
+    },
+    /** a gesture starting at t, `gap` ms after the last input, with the page at or heading for y: held if it goes down */
+    holds(y: number, t: number, gap: number) {
+      return !!hold && Math.abs(y - hold.stop) <= EPS && (t < hold.rest + DWELL || gap < QUIET)
+    },
+    cancel() {
+      hold = null
+    },
+  }
+}
+/** a move's length in ms: a glide's, or a coast's with velocity v */
+const lasting = (from: number, at: number, v?: number) => (v === undefined ? GLIDE : (coastCurve(from, at, v)?.ms ?? GLIDE))
+
 // ---------- the wheel ----------
 
 /**
@@ -113,7 +150,7 @@ type Gesture = {
   recent: { t: number; dy: number }[]
   /** px moved one way, while a run's gesture hasn't fired */
   moved: number
-  /** it fired a stop, was caught, or its momentum became the page's coast; the rest of it is held */
+  /** it fired a stop, was caught, its momentum became the page's coast, or a run's edge held it (114); the rest of it is held */
   fired: boolean
   /** its momentum became the page's coast: a new flick inside the system's that follows shows as a jump in size */
   coasted: boolean
@@ -131,9 +168,12 @@ export function catcher(vh: () => number) {
   let g: Gesture | null = null
   let last = -Infinity
   let prev = 0
+  const edge = edgeHold()
 
-  const fire = (at: number, v?: number): Verdict => {
+  /** the gesture's move, from `from` at t: a glide to `at`, or with `v` a coast */
+  const fire = (from: number, at: number, t: number, v?: number): Verdict => {
     g!.fired = true
+    edge.move(layout, from, at, t, lasting(from, at, v))
     return v === undefined ? { at } : { at, v }
   }
   const onStop = (y: number) => !!runAt(layout, y)?.stops.some((s) => Math.abs(s - y) <= EPS)
@@ -145,6 +185,7 @@ export function catcher(vh: () => number) {
     /** a jump (the rail, a picker, an anchor): whatever the wheel was doing is over */
     cancel() {
       g = null
+      edge.cancel()
     },
     wheel({ t, dy, from, to, glide, stalled }: Wheel): Verdict {
       const d = Math.abs(dy)
@@ -156,7 +197,9 @@ export function catcher(vh: () => number) {
       const rise = !!g && (g.fell || g.fading || g.coasted) && d >= 8 && d > Math.abs(prev) * 2
       const fresh = !g || gap > GAP || dir !== g.dir || rise
       if (!g || fresh) {
-        g = { dir, level: d, peak: d, mark: { t, level: d }, fell: false, fading: false, sizes: [], top: 0, recent: [], moved: 0, fired: false, coasted: false, free: false }
+        // a trackpad's momentum and a mouse's clicks count as input too: a visitor still flicking stays on a run's edge
+        const held = dir > 0 && edge.holds(glide ?? from, t, gap)
+        g = { dir, level: d, peak: d, mark: { t, level: d }, fell: false, fading: false, sizes: [], top: 0, recent: [], moved: 0, fired: held, coasted: false, free: false }
       } else {
         g.level += (d - g.level) * 0.3
         g.peak = Math.max(g.peak, g.level)
@@ -185,10 +228,10 @@ export function catcher(vh: () => number) {
         // the glide retargets it one more stop from where the glide is going (90).
         if ((g.moved += d) < STEP_WHEEL) return 'hold'
         const next = nextStop(run, at, dir)
-        if (next !== null) return fire(next)
+        if (next !== null) return fire(at, next, t)
         // the run's end: the gesture leaves it, at least past its edge (94); the peak's opening is the flow's
         const out = leave(layout, run, at, dir)
-        if (Math.abs(out - at) > EPS) return fire(out)
+        if (Math.abs(out - at) > EPS) return fire(at, out, t)
         g.free = true
         return 'pass'
       }
@@ -202,14 +245,14 @@ export function catcher(vh: () => number) {
         const rest = Math.abs(v) >= FLUNG ? land(layout, from, from + v / DECAY, { near: NEAR * vh() }) : from
         if (Math.abs(rest - from) > EPS) {
           g.coasted = true
-          return fire(rest, v)
+          return fire(from, rest, t, v)
         }
         // too slow to coast: a slow, uneven stroke reads as easing, so it drags on
       }
       // a stroke or a mouse drags: it crosses still points freely, but whatever reaches a run's door lands on its
       // first stop (92, 95)
       const rest = caught(layout, from, to, { still: false })
-      return rest === null ? 'pass' : fire(rest)
+      return rest === null ? 'pass' : fire(from, rest, t)
     },
   }
 }
@@ -250,47 +293,65 @@ export function toucher(vh: () => number) {
     left: { run: Run; stop: number; dir: number } | null
   }
   let g:
-    | { kind: 'run'; run: Run; at: number; f0: number; fired: boolean }
+    /** `held`: the edge's hold lasted as it went down, so going down it does nothing (114) */
+    | { kind: 'run'; run: Run; at: number; f0: number; fired: boolean; held: boolean }
     | ({ kind: 'drag'; f0: number } & Drag)
     | { kind: 'spent' }
     | null = null
+  /** the last touch event's time: a finger down soon after it is a visitor still flicking */
+  let last = -Infinity
+  const edge = edgeHold()
 
   const clamp = (y: number) => Math.min(layout.limit, Math.max(0, y))
   const drag = (y: number, left: Drag['left'], f0: number) =>
     (g = { kind: 'drag', y0: y, f0, y, recent: [], left })
+  /** a glide or coast of ours from `from`, starting at t */
+  const go = (from: number, m: Move, t: number): Move => {
+    if ('glide' in m) edge.move(layout, from, m.glide, t, GLIDE)
+    else if ('coast' in m) edge.move(layout, from, m.coast, t, lasting(from, m.coast, m.v))
+    return m
+  }
 
   return {
     layout(l: Layout) {
       layout = l
     },
-    /** a pinch, a slide the rail took, a jump: nothing to do until the next finger */
+    /** a pinch, a slide the rail took, a jump, a tap: nothing to do until the next finger. A jump lands away from the
+     *  edge's stop, which ends its hold, and a tap keeps it. */
     cancel() {
       g = null
     },
     /**
-     * A finger went down at clientY f with the page at y and a glide of ours heading for `anim`, if one runs. A glide onto a run's
-     * stop runs on (a swipe retargets it, 90); anything else stops where it is, as a finger stops a fling: `halt`.
+     * A finger went down at clientY f at time t, with the page at y and a glide of ours heading for `anim`, if one runs. A
+     * glide onto a run's stop runs on (a swipe retargets it, 90); anything else stops where it is, as a finger stops a
+     * fling: `halt`.
      */
-    down(f: number, y: number, anim: number | null): 'halt' | null {
+    down(f: number, y: number, anim: number | null, t: number): 'halt' | null {
       const onStop = anim !== null && !!runAt(layout, anim)?.stops.some((s) => Math.abs(s - anim) <= EPS)
       const at = onStop ? anim : y
       const run = runAt(layout, at)
-      if (run) g = { kind: 'run', run, at, f0: f, fired: false }
+      if (run) g = { kind: 'run', run, at, f0: f, fired: false, held: edge.holds(at, t, t - last) }
       else drag(at, null, f)
+      last = t
       return anim !== null && !onStop ? 'halt' : null
     },
     /** The finger moved to clientY f at time t, with the page at y: what the page does, if anything. */
     move(t: number, f: number, y: number): Move | null {
+      last = t
       if (!g || g.kind === 'spent') return null
       if (g.kind === 'run') {
         if (g.fired) return null
         const moved = g.f0 - f
         if (Math.abs(moved) < STEP_TOUCH) return null
         const dir = Math.sign(moved)
+        if (dir > 0 && g.held) {
+          g.fired = true
+          return null
+        }
         const next = nextStop(g.run, g.at, dir)
         if (next !== null) {
           g.fired = true
-          return { glide: next }
+          return go(g.at, { glide: next }, t)
         }
         // the run's end: from here the finger drags the page out of it, from where the page is (94)
         drag(y, { run: g.run, stop: g.at, dir }, f)
@@ -302,8 +363,9 @@ export function toucher(vh: () => number) {
       const back = g.left && g.left.dir * (to - g.left.stop) < 0 ? g.left.stop : null
       const rest = back ?? caught(layout, g.y, to, { still: false })
       if (rest !== null) {
+        const from = g.y
         g = { kind: 'spent' }
-        return { glide: rest }
+        return go(from, { glide: rest }, t)
       }
       g.y = to
       g.recent = g.recent.filter((e) => e.t > t - READ)
@@ -314,6 +376,7 @@ export function toucher(vh: () => number) {
     up(t: number): Move | null {
       const d = g
       g = null
+      last = t
       if (!d || d.kind !== 'drag') return null
       const r = d.recent.filter((e) => e.t > t - READ)
       const a = r[0]
@@ -329,13 +392,13 @@ export function toucher(vh: () => number) {
         const dir = flung ? Math.sign(v) : Math.sign(y - left.stop) || left.dir
         const run = runAt(layout, y)
         // flung back inside the run: onto the next stop that way
-        if (dir !== left.dir && run) return { glide: nextStop(run, y, dir) ?? left.stop }
+        if (dir !== left.dir && run) return go(y, { glide: nextStop(run, y, dir) ?? left.stop }, t)
         // on out of it: at least past its edge, so nothing rests on the tunnel or the door (94)
         const out = leave(layout, left.run, left.stop, left.dir)
-        if (dir === left.dir && dir * (far - out) < 0) return flung ? { coast: out, v } : { glide: out }
+        if (dir === left.dir && dir * (far - out) < 0) return go(y, flung ? { coast: out, v } : { glide: out }, t)
       }
       if (Math.abs(far - y) <= EPS) return null
-      return flung ? { coast: far, v } : { glide: far }
+      return go(y, flung ? { coast: far, v } : { glide: far }, t)
     },
   }
 }

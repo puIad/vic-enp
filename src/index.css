@@ -1798,14 +1798,15 @@
 }
 
 /* touch targets reach 44 px on a finger without changing the look (quality.md, Accessibility; #44): the footer's
-   tiles and links, the rail's dots, the corner logo and the light act's links grow an invisible hit area */
+   sub-links and links, the rail's dots, the corner logo and the light act's links grow an invisible hit area. Each
+   tile's own link (.jump-act) already covers its whole tile, so it keeps its own overlay */
 @layer components {
   @media (pointer: coarse) {
-    :is(.jump-sub, .foot a, #lightact a) {
+    :is(.jump-sub, .foot a:not(.jump-act), #lightact a) {
       position: relative;
     }
     .jump-sub::after,
-    .foot a::after,
+    .foot a:not(.jump-act)::after,
     .rail a::after,
     .logo::after,
     #lightact a::after {

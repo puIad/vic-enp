@@ -65,7 +65,7 @@ function symbols(html: string, tag: string) {
 
 /** The class of every symbol in some markup. */
 const symbolClasses = (html: string) => [...html.matchAll(/<img\s([^>]*src="\/logos\/[^>]*)>/g)].map(([, a]) => attr(a, 'class'))
-  vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
+
 afterEach(() => {
   vi.unstubAllGlobals()
   world.act = ''

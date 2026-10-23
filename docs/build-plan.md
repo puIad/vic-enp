@@ -13,7 +13,7 @@ ships and the rest becomes v1.1 during the recruitment window.
 | 21 Oct | Wed | Slices 2 and 3 |
 | 22 Oct | Thu | Slice 4. Copy freeze in the evening |
 | 23 Oct | Fri | Slice 4 finish, slice 5 starts. **Cut line** in the evening |
-| 24 Oct | Sat | Slice 5: verification, reviews, real phones, production. **Live in the evening** with the countdown. The registration form's live check also runs this evening ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md)); `VITE_APPLY_URL` flips to `/apply` only after it passes |
+| 24 Oct | Sat | Slice 5: verification, reviews, real phones, production. **Live in the evening** with the countdown. The registration form's live check, planned for this evening, passed on 22 Oct ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md)); `VITE_APPLY_URL` is `/apply` since then |
 | 25 Oct | Sun | Recruitment opens. The CTA switches on by itself at `OPENS_AT` |
 
 ## Gate 0: docs signed off
@@ -140,32 +140,29 @@ The owner's logo files are in `assets/logos/` (Illustrator files saved with PDF 
 What the page uses was committed by [#29](https://github.com/puIad/vic-enp/issues/29) under `public/logos/`, so a clean
 clone has it.
 
-## Where it stands (20 Oct, night)
+## Where it stands (23 Oct)
 
-Slices 1 to 4 are merged, a day and a half ahead of the calendar. Slice 5's groups 1 and 2 are merged, and
-group 3 has two tickets left. `IMG_6141` left the page on PR #56 ([decisions.md](decisions.md), 67).
+Slices 1 to 4 are merged, and so are slice 5's groups 1 to 6: every ticket under
+[#25](https://github.com/puIad/vic-enp/issues/25) is closed except the last three, and the sound toggle
+([#41](https://github.com/puIad/vic-enp/issues/41)) was dropped (decision 84). The owner's phone check
+([#42](https://github.com/puIad/vic-enp/issues/42)) is done.
 
-### Tomorrow (21 Oct)
+The registration form at `/apply` passed its live check on the evening of 22 Oct, two days early
+([vic-recruitment-2026#134](https://github.com/puIad/vic-recruitment-2026/issues/134)). Production's `VITE_APPLY_URL`
+has been `/apply` since 20:43 UTC that evening, `/api/health` answers all `ok`, and the form's questions are frozen.
 
-In [slice 5's](#slice-5-polish-and-launch) order, on the open tickets under [#25](https://github.com/puIad/vic-enp/issues/25):
+Left, in order:
 
-1. Finish group 3: the word scrub ([#36](https://github.com/puIad/vic-enp/issues/36)), then the counters and the
-   600's pulse ([#37](https://github.com/puIad/vic-enp/issues/37)).
-2. Group 4, reading and wayfinding (new on 21 Oct, [decisions.md](decisions.md), 68 to 78): the rail
-   ([#59](https://github.com/puIad/vic-enp/issues/59)), the catch on desktop ([#60](https://github.com/puIad/vic-enp/issues/60)),
-   then the phone catch ([#61](https://github.com/puIad/vic-enp/issues/61)), since rebuilt as the strict catch on phones
-   and desktop ([decisions.md](decisions.md), 87 to 96).
-3. Group 5 (was 4): the tap ripple ([#38](https://github.com/puIad/vic-enp/issues/38)), the light act
-   ([#39](https://github.com/puIad/vic-enp/issues/39)), the moving grain ([#40](https://github.com/puIad/vic-enp/issues/40)).
-   The sound toggle ([#41](https://github.com/puIad/vic-enp/issues/41)) is dropped (decision 84).
-4. The owner's phone check with `?fps` and `?points=N` ([#42](https://github.com/puIad/vic-enp/issues/42)), which
-   unblocks the performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)).
-5. **The application form on this site** (owner's note, 20 Oct): the form is the link between the landing page and
-   the recruitment dashboard, so its answers have to reach the Master the dashboard reads. Its scope, its place in
-   the plan and how it relates to `VITE_APPLY_URL` and the registration app in `VIC-Recruitment-2026` are not
-   settled yet ([open-questions.md](open-questions.md), 29). Settle them with the owner first, then ticket it.
-6. Owner answers that were due on 20 Oct and are still open: the Vercel project (8) and PR reviews (22). Due
-   22 Oct: content check 9, the Gilroy licence (11), the logo fade (19), the new-copy list (27).
+1. The performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)): the budgets in
+   [quality.md](quality.md#performance-budgets) measured on the production build, and the owner's phone rerun at 30 fps
+   or more.
+2. The reviews ([#44](https://github.com/puIad/vic-enp/issues/44)): the finish review, Brand Guardian, Reality Checker,
+   and quality.md's verification steps 1 to 8.
+3. Launch ([#45](https://github.com/puIad/vic-enp/issues/45)): the domain, the share preview check, the owner's
+   real-phone check inside Instagram (the landing and `/apply`), and the owner's go.
+4. Owner answers still open in [open-questions.md](open-questions.md): 9, 11, 16, 17, 18, 19 and 27.
+5. Not yet tried by hand: decision 114's first values (`DWELL`, `QUIET`, `HELD`), and decision 98 on a Mac trackpad
+   and an accelerated mouse wheel.
 
 ## The cut line
 
@@ -188,8 +185,6 @@ anything wrong is fixed forward ([decisions.md](decisions.md), 96).
 
 ## After launch (v1.1)
 
-- The registration form is built on 23 and 24 Oct and opens on 25 Oct if it passes its live check, so `VITE_APPLY_URL`
-  stays the Google Form's link until then ([spec](https://github.com/puIad/vic-recruitment-2026/blob/main/docs/registration-form.md)); nothing here waits for v1.1.
 - Real testimonials, if collected.
 - Anything cut at the cut line.
 - More photos, `IMG_8095` once exported.
@@ -205,9 +200,7 @@ anything wrong is fixed forward ([decisions.md](decisions.md), 96).
 | Phones for the performance ramp (open question 25) | slice 3, then 24 Oct |
 | Try the strict catch (decisions 87 to 96) inside Instagram on an iPhone and an Android phone, and on a Mac trackpad, on the preview: tuning, not a gate | 23 Oct (cut line) |
 | Gilroy web licence answer | 22 Oct |
-| The Google Form's responder link for `VITE_APPLY_URL` | 23 Oct |
 | The exact opening time | 23 Oct |
 | The domain and DNS, or accept `vic-enp.vercel.app` | 23 Oct |
-| The Vercel project on the owner's account (or approve Claude creating it) | 20 Oct |
 | Real-phone check inside Instagram (Android and iPhone) | 24 Oct |
 | Final go | 24 Oct evening |

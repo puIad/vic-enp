@@ -83,7 +83,7 @@ for the 600 instead, at most 3 s if they haven't started ([decisions.md](decisio
 Once the 600 have gathered, every formation is built ahead (decision 95) in a Web Worker (`src/world/build.worker.ts`,
 one at a time), so the page and the finger's scroll never wait on one; a formation needed on screen before the worker has
 it is built in the frame, from the same `build()` (`src/world/build.ts`). A browser with no module worker, or a worker
-that fails, builds them in the frame as before ([decisions.md](decisions.md), 116). The icon and the logos are read once;
+that fails, builds them in the frame as before ([decisions.md](decisions.md), 120). The icon and the logos are read once;
 a budget change on the ladder resamples only the peak's photo.
 
 ## Scroll to world

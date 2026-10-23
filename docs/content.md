@@ -158,7 +158,8 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   @vic.enp, @spark.enp (SPARK), @english.bubble (English Bubble). Facebook: @vic.enpa, @spark.vic.6 (SPARK),
   English Bubble. More: TikTok @vic.enp, YouTube @vic_enp, LinkedIn vicenp. Contact: vic@g.enp.edu.dz,
   10 Rue des Frères OUDEK, El Harrach (§10; the street's current name for the same place, owner, 2026-10-20).
-- Footer's first block (**new**, 2026-10-21): "Jump back to", then every act and sub-section by its rail name.
+- Footer's first block (**new**, 2026-10-21; reworded 2026-10-23, [decisions.md](decisions.md), 113): "Missed
+  something?", then "Jump back", then a tile per act numbered 01 to 07, each with its sub-sections by their rail names.
 - Last line on the page: **Once a VICer, Always a VICer.**
 - Under it, the committee photo (**new**, 2026-10-22), alt text "Tiramisu", on purpose ([decisions.md](decisions.md),
   103 and 106).
@@ -194,8 +195,8 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 15. The chrome lines above.
 16. The 404 page (decision 64, `404.html`): "This page isn't here.", "The address may be mistyped. The rest of VIC
     is one click away.", "Back to the page".
-17. The rail's new sub-section names and the footer's "Jump back to" (2026-10-21, [decisions.md](decisions.md),
-    71, 74).
+17. The rail's new sub-section names (2026-10-21, [decisions.md](decisions.md), 71) and the footer's "Missed
+    something?" and "Jump back" (2026-10-23, 113).
 
 ### Approved on 2026-10-20
 

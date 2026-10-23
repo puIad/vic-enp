@@ -295,6 +295,20 @@
 .ev .cut-line {
   max-width: none;
 }
+/* a soft pool of night under the lead, as under the peak's words, so the world's trails never cross the copy (#44) */
+.ev .cut-lead {
+  position: relative;
+  isolation: isolate;
+}
+.ev .cut-lead::before {
+  content: '';
+  position: absolute;
+  inset: -6vh -6vw;
+  z-index: -1;
+  pointer-events: none;
+  /* the events' ground under the vignette, flat over the words, then fading out */
+  background: radial-gradient(closest-side, rgb(8 12 16 / 0.94) 62%, transparent);
+}
 /* the box above the name where the world draws the event's logo in dots (#32): it opens only while the world draws
    them (html.w-logos), so tier 0, reduced motion and ?cut=cuts keep the copy as it was. EventsStage measures it */
 .ev-logo {

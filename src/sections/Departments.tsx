@@ -24,7 +24,7 @@ function Card({ d }: { d: Department }) {
       <p className="mt-4 text-base leading-normal text-gray">{d.lead}</p>
       {d.flagged && <p className="flag-pill mt-5">{d.flagged}</p>}
       {d.suits && <p className="t-cap mt-4">{d.suits}</p>}
-      <h4 className="mt-6 text-[13px] font-bold text-(--c)">What you'd do in {d.name}</h4>
+      <h4 className="mt-6 text-[13px] font-bold text-white">What you'd do in {d.name}</h4>
       <ul className="mt-2 space-y-2">
         {d.does.map((x) => (
           <li key={x} className="relative pl-4 text-[15px] leading-snug text-gray before:absolute before:top-[.55em] before:left-0 before:size-1.5 before:rounded-full before:bg-(--c)">
@@ -47,7 +47,7 @@ export function Departments({ staged }: { staged: boolean }) {
 
 function Cards() {
   return (
-    <section id="departments" aria-labelledby="h-dept" className="wrap pt-28 pb-32 md:pt-40 md:pb-44">
+    <section id="departments" aria-labelledby="h-dept" className="wrap pt-28 pb-32 md:pt-40 md:pr-[150px] md:pb-44">
       <h2 id="h-dept" className="max-w-[18ch] text-[clamp(32px,4.4vw,64px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
         Seven departments. You join one main and one activity.
       </h2>

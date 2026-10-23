@@ -453,6 +453,22 @@
     color: var(--color-mute);
     transition: color 0.35s var(--ease-out-expo);
   }
+  /* the logo's night plate, mirrored, so copy scrolling under the readout never prints through it; gone on the light act (#44) */
+  .readout::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: -22px;
+    right: calc(-1 * var(--edge));
+    width: calc(var(--edge) + 230px);
+    height: 96px;
+    pointer-events: none;
+    background: radial-gradient(ellipse 100% 100% at 100% 0, var(--color-night) 0, var(--color-night) 58%, rgb(20 30 39 / 0) 100%);
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+  .readout.lit::before {
+    opacity: 0;
+  }
   .readout b {
     display: block;
     font-weight: 400;
@@ -891,7 +907,7 @@
   .jump-title {
     margin-top: 6px;
     font-size: clamp(28px, 3vw, 40px);
-    font-weight: 800;
+    font-weight: 900;
     line-height: 1.05;
     letter-spacing: -0.015em;
     color: #fff;
@@ -1779,4 +1795,29 @@
   syntax: '<number>';
   inherits: false;
   initial-value: 0;
+}
+
+/* touch targets reach 44 px on a finger without changing the look (quality.md, Accessibility; #44): the footer's
+   sub-links and links, the rail's dots, the corner logo and the light act's links grow an invisible hit area. Each
+   tile's own link (.jump-act) already covers its whole tile, so it keeps its own overlay */
+@layer components {
+  @media (pointer: coarse) {
+    :is(.foot a:not(.jump-act), #lightact a) {
+      position: relative;
+    }
+    .foot a:not(.jump-act)::after,
+    .rail a::after,
+    .logo::after,
+    #lightact a::after {
+      content: '';
+      position: absolute;
+      inset: -8px -6px;
+    }
+    a.logo::after {
+      inset: -10px -8px;
+    }
+    #lightact a::after {
+      inset: -11px -6px;
+    }
+  }
 }

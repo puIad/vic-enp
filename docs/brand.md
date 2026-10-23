@@ -23,14 +23,17 @@ accessibility). In practice: white on blue and on Dark Jungle Green, dark on aqu
 
 - **Night everywhere** (`#141E27`) except the light act, which turns Bright Gray through the horizon passage and
   falls back to night the same way.
-- **Blue and aquamarine are light, never paint and never text**: the field, the rail, your point, the Apply ring.
+- **Blue and aquamarine are light, never paint and never running text**: the field, the rail, your point, the Apply ring.
+  As small accents they may colour a department's name, a figure's glyph (the "+", "since"), the countdown chip,
+  the footer's tile numbers and /apply's eyebrows, each at 4.5:1 or more on night ([decisions.md](decisions.md), 123).
 - **Text on night:** white headlines, Bright Gray body, `#A3AFBA` captions (8.1:1). **On Bright Gray:** night
   headlines (14.7:1), body `#3b4954`, links in the nudged blue below.
 - **The gradient** (brand, 135°) lives in light and on the Apply pill's ring only, never in or behind text.
 - **Apply pill:** night fill, gradient ring, white Bold label (16.9:1), a round gradient arrow. Focus is a 3 px
   aquamarine ring. This replaced white text on the gradient, which measured 2.1:1 on the aquamarine end.
 - **Grain and vignette:** one static SVG noise layer at 7% in overlay blend plus a radial vignette, over the
-  canvas and the photos alike. Never animated. Photos sit single-tone blue over the night.
+  canvas and the photos alike. Never animated. Photos are in full colour (the events' with a light blend of their colour, the committee's in
+  black and white) ([decisions.md](decisions.md), 124).
 - **Accents only inside their own cut:** as the formation's light and one short rule.
 - **Browser surfaces:** selection aquamarine on night (night on gray in the light act), thin night scrollbar.
 
@@ -124,8 +127,8 @@ The charter's 3D rule covers post design, not websites: VIC's IT department, who
 icon in points:
 
 - The flat logo is a DOM or SVG element from the provided files, in front of the canvas. It can fade or move in as
-  a whole, as long as it ends at full opacity (a fade-in is a transition, not an opacity change; if the owner reads
-  the rule more strictly, the logo simply appears).
+  a whole, as long as it ends at full opacity: a fade is a transition, not an opacity change. The owner allowed the corner
+  logo's 0.35 s fade in and out ([decisions.md](decisions.md), 122).
 - The 600 may draw the VIC icon, bulb and iris together, and the iris may stand alone in points. Each is used once:
   the icon formation at the start of the hero, with your point lit in its iris, and the iris slot at the close
   ([experience.md](experience.md)). The extraction rule above still holds for flat graphics.

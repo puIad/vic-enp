@@ -33,7 +33,7 @@ In:
 - One page at `/`, English only, every section from [content.md](content.md).
 - The 3D world and the scroll experience from [experience.md](experience.md).
 - A no-WebGL and reduced-motion version of the same page (same content, static compositions).
-- The CTA, driven by one setting (`APPLY_URL`), plus the countdown and "opens 25 Oct" state before opening.
+- The CTA, driven by one setting (`APPLY_URL`), plus the countdown and "opens 26 Oct" state before opening.
 - Share metadata (title, description, Open Graph image) and a favicon.
 - The photo pipeline (originals to web sizes) and the brand files copied from the dashboard repo.
 
@@ -47,7 +47,7 @@ Out:
 
 ## Success
 
-- Live on its address before 25 Oct 2026, the CTA opening at the recruitment opening.
+- Live on its address before 26 Oct 2026, the CTA opening at the recruitment opening.
 - A first-time visitor on a mid-range Android phone over 4G sees real content in under 2.5 s (LCP) and reaches
   the CTA without the page stalling. Budgets in [quality.md](quality.md).
 - Nothing on the page is false or out of date, and no ⚠️ item from the source brief ships unresolved.

@@ -56,7 +56,7 @@ export function App() {
         </div>
         <WhyJoin />
         <Departments staged={staged} />
-        <ClubLife />
+        <ClubLife staged={staged} />
         <Events staged={staged} />
         <Join staged={staged} />
         <Close cta={cta} staged={staged} />

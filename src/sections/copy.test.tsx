@@ -66,9 +66,6 @@ function symbols(html: string, tag: string) {
 /** The class of every symbol in some markup. */
 const symbolClasses = (html: string) => [...html.matchAll(/<img\s([^>]*src="\/logos\/[^>]*)>/g)].map(([, a]) => attr(a, 'class'))
 
-/** The OS asks for reduced motion. */
-const reduceMotion = () =>
-  vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
 afterEach(() => {
   vi.unstubAllGlobals()
   world.act = ''
@@ -95,7 +92,7 @@ describe('act 2', () => {
 describe('club life', () => {
   it.each([
     ['the peak (tiers 1 and 2)', () => <ClubLifePeak />],
-    ['the still (tier 0, reduced motion)', () => (reduceMotion(), <ClubLife />)],
+    ['the still (tier 0, reduced motion)', () => <ClubLife staged={false} />],
   ])("drops VIC Charity's ledger row and keeps the other four on %s (55)", (_, render) => {
     const page = read(render())
     expect(page).not.toContain('VIC Charity')
@@ -104,7 +101,7 @@ describe('club life', () => {
 
   it.each([
     ['the peak (tiers 1 and 2)', () => <ClubLifePeak />],
-    ['the still (tier 0, reduced motion)', () => (reduceMotion(), <ClubLife />)],
+    ['the still (tier 0, reduced motion)', () => <ClubLife staged={false} />],
   ])("puts VIC Entertainment's symbol beside its ledger row, and only there, on %s (60)", (_, render) => {
     expect(symbols(renderToStaticMarkup(render()), 'h3')).toEqual({ 'VIC Entertainment': '/logos/vic-entertainment.png' })
   })

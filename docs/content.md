@@ -43,7 +43,7 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 
 - Headline: **Engineer more than your degree.** (§1 candidate, owner's pick)
 - Lead: **Vision & Innovation Club.** (owner, 2026-10-20: the rest of the lead and the small line went)
-- CTA before opening: "Applications open 25 Oct" with a countdown chip, links to `@vic.enp`. After: "Apply".
+- CTA before opening: "Applications open 26 Oct" with a countdown chip, links to `@vic.enp`. After: "Apply".
 - While loading only: "Gathering the 600 <n>".
 
 ## Act 2: what VIC is, the numbers, why join
@@ -142,7 +142,7 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   - "Can I join more than one department?": "On the form you pick your first and second choice among the four
     main departments, and you choose your activity department at your interview. Once you have experience, you
     can help with tasks across departments."
-  - "When does recruitment open, and how fast is the process?": "Applications open on 25 October 2026. If your
+  - "When does recruitment open, and how fast is the process?": "Applications open on 26 October 2026 at 18:00. If your
     application is accepted, two club members contact you within a day to set up your interview."
   - The IT row adds "No coding required." and links to the departments. FLER eligibility lives in "I'm in another
     club. Can I still join?".
@@ -153,7 +153,7 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
 
 - Headline (**new**): Your point is on its way.
 - Sub line, after opening only: Every ENP student can apply, any year, any specialty. (§8)
-- CTA: as the hero, "Applications open 25 Oct" then "Apply".
+- CTA: as the hero, "Applications open 26 Oct" then "Apply".
 - Footer: the white logo, with no description line (act 2 has it; [decisions.md](decisions.md), 58). Instagram:
   @vic.enp, @spark.enp (SPARK), @english.bubble (English Bubble). Facebook: @vic.enpa, @spark.vic.6 (SPARK),
   English Bubble. More: TikTok @vic.enp, YouTube @vic_enp, LinkedIn vicenp. Contact: vic@g.enp.edu.dz,
@@ -228,7 +228,7 @@ The places where the source brief and the recruitment system disagreed. Settled 
 4. **FLER eligibility.** Settled: FAQ only.
 5. **What happens after submitting.** Settled as step 2, which depends on `CONFIRM_REGISTRANTS` being on at
    launch.
-6. **The CTA label.** Settled: "Apply", and "Applications open 25 Oct" before opening ([#11](https://github.com/puIad/vic-enp/issues/11)).
+6. **The CTA label.** Settled: "Apply", and "Applications open 26 Oct" before opening ([#11](https://github.com/puIad/vic-enp/issues/11)).
 7. **New lines.** The list above, open question 27.
 8. **Testimonials.** Cut until real quotes arrive.
 9. **Photos of people.** Open: confirm the club is fine putting members' faces on the public page (open question 9).

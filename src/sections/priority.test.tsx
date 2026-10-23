@@ -20,10 +20,7 @@ describe('photo priority', () => {
     ['with the world (the peak, the events stage)', () => renderToStaticMarkup(<><ClubLifePeak /><EventsStage /></>)],
     [
       'on tier 0 and under reduced motion (the still grid, the cards)',
-      () => {
-        vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
-        return renderToStaticMarkup(<><ClubLife /><Events staged={false} /></>)
-      },
+      () => renderToStaticMarkup(<><ClubLife staged={false} /><Events staged={false} /></>),
     ],
   ])('only the first photo on the page is high priority, %s', (_, render) => {
     const all = photos(render())

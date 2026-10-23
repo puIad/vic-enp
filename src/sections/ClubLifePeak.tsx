@@ -72,8 +72,11 @@ export default function ClubLifePeak() {
     ro.observe(one)
     measure()
 
-    // the stack leans with the pointer, deeper photos more (bonus only; CSS smooths it)
+    // the stack leans with the pointer, deeper photos more (bonus only; CSS smooths it). A mouse or pen in the peak only:
+    // every write restyles the whole stage and restarts each slot's transition, and a finger's moves are the scroll's
+    // own drags, page-wide (#43)
     const lean = (e: PointerEvent) => {
+      if (e.pointerType === 'touch' || world.act !== 'club-life') return
       root.style.setProperty('--px', `${(e.clientX / innerWidth - 0.5) * 26}px`)
       root.style.setProperty('--py', `${(e.clientY / innerHeight - 0.5) * 16}px`)
     }

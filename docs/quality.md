@@ -6,17 +6,24 @@ What "good enough to launch" means, measured, and how it gets checked.
 
 Measured with Lighthouse mobile (Moto G Power class, slow 4G throttling) on the production build.
 
-| Measure | Budget |
-|---|---|
-| Largest Contentful Paint | ≤ 2.5 s, measured on "Gathering the 600": the hero's copy waits for the icon by design ([decisions.md](decisions.md), 111) |
-| Cumulative Layout Shift | < 0.1 |
-| Interaction to Next Paint | < 200 ms |
-| JS before the world loads (gzip) | ≤ 120 KB |
-| World chunk (gzip, three + R3F + drei parts + our code) | ≤ 350 KB |
-| First view transfer (HTML, CSS, JS, fonts, hero image) | ≤ 1 MB |
-| Whole page with every photo loaded | ≤ 6 MB |
-| Frame rate | 60 fps desktop, ≥ 30 fps sustained on a tier 1 phone, no scroll jank |
-| GPU memory on tier 1 | ≤ 128 MB textures and buffers |
+| Measure | Budget | Before #43 (main, 0a32bbe) | After #43 |
+|---|---|---|---|
+| Largest Contentful Paint | ≤ 2.5 s, measured on "Gathering the 600": the hero's copy waits for the icon by design ([decisions.md](decisions.md), 111) | 2,583 ms | 2,567 ms, **over by about 70 ms** |
+| Cumulative Layout Shift | < 0.1 | 0.000 | 0.000 |
+| Interaction to Next Paint | < 200 ms | not measured; TBT 126 ms | not measured; TBT 151 ms |
+| JS before the world loads (gzip) | ≤ 120 KB | 89 KB (main and tier) | 89 KB |
+| World chunk (gzip, three + R3F + drei parts + our code) | ≤ 350 KB | 245 KB | 245 KB, plus the 5 KB build worker after the gather |
+| First view transfer (HTML, CSS, JS, fonts, hero image) | ≤ 1 MB | 690 KB | 691 KB |
+| Whole page with every photo loaded | ≤ 6 MB | not measured (#43 changes no image) | 1.8 MB phone, 1.5 MB desktop |
+| Frame rate | 60 fps desktop, ≥ 30 fps sustained on a tier 1 phone, no scroll jank | Reno 2F: 42 to 60 between dips, lowest second 13 to 30 (decision 101) | the owner's rerun on the Reno |
+| GPU memory on tier 1 | ≤ 128 MB textures and buffers | not measured | about 5 MB, estimated: the field's buffers (12k points, about 1.1 MB) and the drawing buffer at DPR 1.5 (about 3.3 MB); the photos are DOM images, not textures |
+
+Measured 2026-10-23 on the production builds served locally with gzip: Lighthouse 13.5.0 mobile, five runs each with
+before and after interleaved, medians; sizes from `vite build`; transfer from a scroll to the bottom at the Reno's
+viewport (411x891) and at 1440x900. The LCP gap is the hero's wait for the icon (decision 111), unchanged by #43. On the
+Reno's viewport with the CPU slowed 4×, three interleaved scrolls top to bottom had 121, 62 and 103 frames over 50 ms
+before and 59, 51 and 70 after; style recalculation during a scroll fell from 20.4 s to 8.7 s
+([#43](https://github.com/puIad/vic-enp/issues/43)).
 
 Photos load lazily, one section ahead. Fonts: at most three Gilroy weights on the page (charter rule), preloaded,
 `font-display: swap`.

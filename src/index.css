@@ -484,7 +484,7 @@
     -webkit-user-select: none;
     user-select: none;
   }
-  /* the rail has landed in the footer's "Jump back to" */
+  /* the footer's "Jump back" has arrived (decision 113) */
   .rail.away {
     opacity: 0;
     pointer-events: none;
@@ -927,10 +927,6 @@
     border-color: rgb(105 196 175 / 0.5);
     background: rgb(105 196 175 / 0.06);
   }
-  .jump-tile:has(.jump-act:focus-visible) {
-    outline: 2px solid var(--color-aqua);
-    outline-offset: 2px;
-  }
   .jump-act {
     display: flex;
     align-items: baseline;
@@ -941,15 +937,20 @@
     color: #fff;
     text-decoration: none;
   }
-  .jump-act:focus-visible {
-    outline: none;
-  }
-  /* the whole tile is its act's link; the sub-sections sit above it */
+  /* the whole tile is its act's link; the sub-sections sit above it. Keyboard focus rings the tile, through the overlay
+     rather than :has(), so older Safari and Firefox show it too */
   .jump-act::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: inherit;
+    border-radius: 13px;
+  }
+  .jump-act:focus-visible {
+    outline: none;
+  }
+  .jump-act:focus-visible::after {
+    outline: 2px solid var(--color-aqua);
+    outline-offset: 2px;
   }
   .jump-n {
     flex: none;

@@ -54,7 +54,6 @@ export function Chrome({ cta }: { cta: Cta }) {
       const close = sections[sections.length - 1]
       const end = close ? close.getBoundingClientRect().top + scrollY : 1
       const p = Math.min(1, Math.max(0, scrollY / Math.max(1, end)))
-      if (dist.current) dist.current.textContent = readout(p)
 
       const footerIn = footer ? footer.getBoundingClientRect().top < vh * 0.9 : false
       const next = { rail: overLight(vh / 2), readout: overLight(40), logo: overLight(90) || footerIn }
@@ -65,6 +64,9 @@ export function Chrome({ cta }: { cta: Cta }) {
       // the hero waits for the icon and its copy rises in, the hero's CTA is as good as shown (world/arrival.ts)
       const onScreen = (el: Element | null) => !!el && el.getBoundingClientRect().bottom > 0 && el.getBoundingClientRect().top < vh
       setPillHidden(arrival.phase !== 'done' || ctas.some((c) => onScreen(c) && +getComputedStyle(c!).opacity > 0.5) || onScreen(document.querySelector('.foot-photo')))
+      // the one DOM write, after every read: written between them it made the reads after it lay the page out again (#43)
+      const text = readout(p)
+      if (dist.current && dist.current.textContent !== text) dist.current.textContent = text
     }
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update)

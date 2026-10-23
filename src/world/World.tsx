@@ -19,8 +19,9 @@ import {
 } from 'three'
 import { MEMBERS, heroPlacement, random } from './cloud'
 import { REDUCE } from '../lib/motion'
-import { CAM_Z, HH, SHAPES, arrive, close, cloud, eventLogo, halfWidth, icon, irisAt, logo, logoCount, photo, shape, shapeCount, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
-import { EVENT_LOGOS, LOGO_CUTS, sampleLogo, type EventKey, type LogoCut, type Pixels } from './logo'
+import { build, type BuildIn } from './build'
+import { CAM_Z, HH, SHAPES, halfWidth, irisAt, slotAt, type Formation, type IconSample, type Layout, type PhotoSample, type ShapeKey } from './formations'
+import { EVENT_LOGOS, LOGO_CUTS, type EventKey, type LogoCut, type Pixels } from './logo'
 import { loadLogo, sampleIcon, samplePhoto } from './sample'
 import { score, topRight, type Frame, type Key } from './score'
 import { meter, watchLoop } from './loop'
@@ -232,6 +233,31 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
   const you = useRef<ReturnType<typeof makeYou> | null>(null)
   const samples = useRef<Samples>({ icon: null, photo: null, logos: {} })
   const cache = useRef(new Map<string, Formation>())
+  // the warm-up's builds, off the main thread (build.worker.ts): one in flight at a time, kept only if nothing emptied
+  // the cache or replaced its key since it was sent (gen). No worker, or one that fails, builds them here instead.
+  const warm = useRef({ worker: null as Worker | null, gen: 0, sent: null as { key: Key; gen: number } | null })
+
+  useEffect(() => {
+    const w = warm.current
+    try {
+      w.worker = new Worker(new URL('./build.worker.ts', import.meta.url), { type: 'module' })
+    } catch {
+      return
+    }
+    w.worker.onmessage = (e: MessageEvent<{ fm: Formation }>) => {
+      const sent = w.sent
+      w.sent = null
+      if (sent && sent.gen === w.gen && !cache.current.has(sent.key)) cache.current.set(sent.key, e.data.fm)
+    }
+    w.worker.onerror = () => {
+      w.worker?.terminate()
+      w.worker = w.sent = null
+    }
+    return () => {
+      w.worker?.terminate()
+      w.worker = w.sent = null
+    }
+  }, [])
 
   useEffect(() => {
     const f = makeField(B.peak)
@@ -240,6 +266,7 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
     you.current = y
     scene.add(f.points, y.points)
     cache.current.clear()
+    warm.current.gen++
     return () => {
       scene.remove(f.points, y.points)
       f.dispose()
@@ -248,21 +275,14 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
     }
   }, [scene, B.peak])
 
-  // the two formations drawn from files; either one failing leaves its fallback (the cloud, the photo's DOM entrance)
+  // the formations drawn from files; either one failing leaves its fallback (the cloud, the photo's DOM entrance). The
+  // icon and the logos load once: a budget change (the ladder's step between 2 and 1) only resamples the photo, whose
+  // grid follows the peak's count, and keeps the last one meanwhile (#43)
   useEffect(() => {
     let gone = false
     sampleIcon(MEMBERS).then(
       (s) => !gone && (samples.current.icon = s),
       () => !gone && (samples.current.icon = false),
-    )
-    samplePhoto(Math.floor(B.peak * 0.9)).then(
-      (s) => {
-        if (gone) return
-        samples.current.photo = s
-        // the peak's photo 1 now waits for the points to form it (ClubLifePeak, index.css)
-        if (has('resolve')) document.documentElement.classList.add('w-resolve')
-      },
-      () => !gone && (samples.current.photo = false),
     )
     // the logo formations (#29): until a file lands, or if it fails, its cut keeps the comp's shape
     // the events' logos (#32) too: once all four have landed the box above each event's name opens, where they draw;
@@ -276,6 +296,7 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
           const all = Object.keys(EVENT_LOGOS).every((k) => k in samples.current.logos)
           if (key in EVENT_LOGOS && all && has('cuts')) document.documentElement.classList.add('w-logos')
           cache.current.delete(key)
+          warm.current.gen++
           const f = field.current
           if (f && f.keys.a === key) f.keys.a = ''
           // on screen already (a slow file, a deep link to the cut): it lands as a cut does, with the flash
@@ -289,6 +310,21 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
     return () => {
       gone = true
       document.documentElement.classList.remove('w-resolve', 'w-logos')
+    }
+  }, [])
+  useEffect(() => {
+    let gone = false
+    samplePhoto(Math.floor(B.peak * 0.9)).then(
+      (s) => {
+        if (gone) return
+        samples.current.photo = s
+        // the peak's photo 1 now waits for the points to form it (ClubLifePeak, index.css)
+        if (has('resolve')) document.documentElement.classList.add('w-resolve')
+      },
+      () => !gone && !samples.current.photo && (samples.current.photo = false),
+    )
+    return () => {
+      gone = true
     }
   }, [B.peak])
 
@@ -360,6 +396,7 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
     if (lkey !== K.layout) {
       K.layout = lkey
       cache.current.clear()
+      warm.current.gen++
       f.keys.a = f.keys.b = ''
     }
 
@@ -399,23 +436,24 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
     })
 
     // the formations: built on first use for this layout, uploaded only when a slot changes
+    const input = (key: Key): BuildIn => ({
+      key,
+      n: f.n,
+      c: countOf(key, B),
+      cuts: B.cuts,
+      l,
+      icon: key === 'icon' && s.icon ? s.icon : null,
+      photo: key === 'photo' && s.photo ? s.photo : null,
+      rect: world.photo,
+      slot: world.slot,
+      iris: has('cuts'),
+      px: s.logos[key as LogoCut | EventKey] ?? null,
+      logoBox: world.logoBox,
+    })
     const get = (key: Key): Formation => {
       let fm = cache.current.get(key)
       if (fm) return fm
-      const n = f.n
-      const c = countOf(key, B)
-      if (key === 'arrive') fm = arrive(n, c, l)
-      else if (key === 'cloud') fm = cloud(n, c, l)
-      else if (key === 'tight') fm = cloud(n, c, l, 0.62)
-      else if (key === 'icon') fm = s.icon ? icon(n, c, l, s.icon) : cloud(n, c, l)
-      else if (key === 'photo') fm = s.photo && world.photo ? photo(n, c, l, s.photo, world.photo) : shape('tunnel', n, B.cuts, l)
-      else if (key === 'closeRest') fm = close(n, c, l, null)
-      else if (key === 'closeIris') fm = close(n, c, l, world.slot, has('cuts'))
-      else if (key in EVENT_LOGOS) {
-        const px = s.logos[key as EventKey]
-        fm = px && world.logoBox ? eventLogo(key as EventKey, n, c, l, sampleLogo(px, logoCount(c, l.phone)), world.logoBox) : shape(key as ShapeKey, n, c, l)
-      } else if (key in s.logos) fm = logo(key as LogoCut, n, c, l, sampleLogo(s.logos[key as LogoCut]!, shapeCount(c)))
-      else fm = shape(key as ShapeKey, n, c, l)
+      fm = build(input(key))
       cache.current.set(key, fm)
       return fm
     }
@@ -441,12 +479,17 @@ function Field({ budget, still, onReady, onLit }: { budget: 1 | 2; still: boolea
     }
     const drawn = Math.max(countOf(fr.b, B), snapped ? 0 : countOf(fr.a, B))
     f.points.geometry.setDrawRange(0, Math.min(f.n, drawn))
-    // the rest, one a frame once the 600 have gathered: a cut entered for the first time never stalls the page (or the
-    // finger, which the page owns) building its own (decision 95). A layout change or a file landing empties the cache
-    // and this fills it again.
+    // the rest, one at a time in the worker once the 600 have gathered: a cut entered for the first time never stalls
+    // the page (or the finger, which the page owns) building its own (decision 95), and the warm-up no longer does either
+    // (#43). A layout change or a file landing empties the cache and this fills it again.
     if (gather >= 1) {
       const ahead = WARM.find((key) => !cache.current.has(key))
-      if (ahead) get(ahead)
+      const w = warm.current
+      if (ahead && !w.worker) get(ahead)
+      else if (ahead && w.worker && !w.sent) {
+        w.sent = { key: ahead, gen: w.gen }
+        w.worker.postMessage({ in: input(ahead) })
+      }
     }
 
     // B's cuts land at once with a white flash that decays in about 0.17 s; A's blends ease
@@ -594,9 +637,13 @@ function usePointer() {
   useEffect(() => {
     const p = world.pointer
     let held = false
+    // the viewport's size read on resize, not per move: reading it forces a style recalc mid-frame (#43)
+    let vw = innerWidth
+    let vh = innerHeight
+    const size = () => ((vw = innerWidth), (vh = innerHeight))
     const at = (e: PointerEvent) => {
-      p.x = (e.clientX / innerWidth) * 2 - 1
-      p.y = -((e.clientY / innerHeight) * 2 - 1)
+      p.x = (e.clientX / vw) * 2 - 1
+      p.y = -((e.clientY / vh) * 2 - 1)
       p.on = true
     }
     const move = (e: PointerEvent) => (e.pointerType !== 'touch' || held) && at(e)
@@ -615,12 +662,14 @@ function usePointer() {
       },
       () => matchMedia(REDUCE).matches,
     )
+    addEventListener('resize', size)
     addEventListener('pointermove', move, { passive: true })
     addEventListener('pointerdown', down, { passive: true })
     addEventListener('pointerup', up)
     addEventListener('pointercancel', up)
     document.documentElement.addEventListener('pointerleave', leave)
     return () => {
+      removeEventListener('resize', size)
       removeEventListener('pointermove', move)
       removeEventListener('pointerdown', down)
       removeEventListener('pointerup', up)

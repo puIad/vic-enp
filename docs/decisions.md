@@ -210,3 +210,14 @@ past the horizon after the projects cut, and the rail opening on its own at the 
 | 117 | Open question 8, the Vercel project: `vic-enp` exists and serves the production build at `vic-enp.vercel.app`, with the registration form's `api/` functions. | Recorded 2026-10-23 | Who created it is not recorded. The domain is still open question 17. |
 | 118 | Open question 22, PR reviews: the claude GitHub Action reviews PRs here, as in the recruitment repo (`.github/workflows/claude.yml`, added 2026-10-19). | Recorded 2026-10-23 | Who chose it is not recorded. |
 | 119 | Open question 26, the share image and favicon: `og.png` and the icons shipped with slice 1 ([#20](https://github.com/puIad/vic-enp/pull/20)) and are live; the share tags point at `https://vic-enp.vercel.app/og.png`. | Claude, shown to the owner in slice 1 | The share preview itself is checked at launch ([#45](https://github.com/puIad/vic-enp/issues/45)). |
+
+## 2026-10-23: the performance pass ([#43](https://github.com/puIad/vic-enp/issues/43))
+
+The owner's Reno read 42 to 60 fps between dips, but its lowest second was under 30 in six of seven acts (101). Profiled
+headless at the Reno's viewport with the CPU slowed 4×, the dips were main-thread work, not the GPU: the formations
+built ahead in the hero, and style recalcs forced in the middle of scroll frames.
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 120 | The formations built ahead after the gather (95) are built in a Web Worker, one at a time, and copied back. A formation needed on screen before the worker has it is still built in the frame, by the same code. No module worker, or a failing one, builds them in the frame as before. A step on the ladder that changes the budget resamples only the peak's photo; the icon and the seven logos are read once. Amends 95. | Claude, in the #43 PR; the owner approves by merging | At 4×, the 26 builds took about 1.4 s of main thread right after the arrival, the event logos 100 to 180 ms each, and a budget change re-read every file mid-act. |
+| 121 | The peak's stack leans with a mouse or pen only, and only while the peak is on screen. A finger no longer leans it: on a phone a finger's moves are the scroll's own drags. | Claude, in the #43 PR; the owner approves by merging | The lean listened page-wide for the whole visit: every finger move anywhere restyled the peak's 130 elements and restarted each photo's transition, the largest cost in a scroll frame. Pointer reactions are a bonus ([experience.md](experience.md#motion-rules)). |

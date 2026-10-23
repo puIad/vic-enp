@@ -1796,3 +1796,28 @@
   inherits: false;
   initial-value: 0;
 }
+
+/* touch targets reach 44 px on a finger without changing the look (quality.md, Accessibility; #44): the footer's
+   tiles and links, the rail's dots, the corner logo and the light act's links grow an invisible hit area */
+@layer components {
+  @media (pointer: coarse) {
+    :is(.jump-sub, .foot a, #lightact a) {
+      position: relative;
+    }
+    .jump-sub::after,
+    .foot a::after,
+    .rail a::after,
+    .logo::after,
+    #lightact a::after {
+      content: '';
+      position: absolute;
+      inset: -8px -6px;
+    }
+    a.logo::after {
+      inset: -10px -8px;
+    }
+    #lightact a::after {
+      inset: -11px -6px;
+    }
+  }
+}

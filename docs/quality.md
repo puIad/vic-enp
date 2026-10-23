@@ -25,6 +25,12 @@ Reno's viewport with the CPU slowed 4×, three interleaved scrolls top to bottom
 before and 59, 51 and 70 after; style recalculation during a scroll fell from 20.4 s to 8.7 s
 ([#43](https://github.com/puIad/vic-enp/issues/43)).
 
+On production (`vic-enp.vercel.app`, main f6559d9, 2026-10-23), Lighthouse 13.5.0 mobile, five runs: LCP 1,891, 3,397,
+2,103, 1,894 and 1,894 ms (median **1,894 ms, within budget**; the 3,397 ms run is an outlier, performance 82), CLS 0,
+TBT 74 to 182 ms, performance median 97, accessibility, best practices and SEO 100. The local runs above measure the
+build served without Vercel's edge, which is why their LCP sits over the line. INP is still not measured: it needs real
+visits. Reports linked from the [#44](https://github.com/puIad/vic-enp/issues/44) PR.
+
 Photos load lazily, one section ahead. Fonts: at most three Gilroy weights on the page (charter rule), preloaded,
 `font-display: swap`.
 

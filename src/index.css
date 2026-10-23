@@ -891,7 +891,7 @@
   .jump-title {
     margin-top: 6px;
     font-size: clamp(28px, 3vw, 40px);
-    font-weight: 800;
+    font-weight: 900;
     line-height: 1.05;
     letter-spacing: -0.015em;
     color: #fff;

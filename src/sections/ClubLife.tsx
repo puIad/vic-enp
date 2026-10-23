@@ -2,17 +2,15 @@ import { lazy, Suspense } from 'react'
 import { LogoSymbol } from '../components/LogoSymbol'
 import { Photo } from '../components/Photo'
 import { GRID, LEAD, LEDGER, TITLE } from '../content/clubLife'
-import { useReducedMotion } from '../lib/motion'
 
-// Act 4, the peak (#14). With motion: the pinned photo sequence (ClubLifePeak, its own chunk). Reduced motion,
-// and while that chunk loads: one still, art-directed grid of the same eleven photos. Same words in both.
+// Act 4, the peak (#14). Staged with the world: the pinned photo sequence (ClubLifePeak, its own chunk). Tier 0,
+// reduced motion, and while that chunk loads: one still, art-directed grid of the same eleven photos. Same words in both.
 const Peak = lazy(() => import('./ClubLifePeak'))
 
-export function ClubLife() {
-  const still = useReducedMotion()
+export function ClubLife({ staged }: { staged: boolean }) {
   return (
     <section id="club-life" aria-labelledby="h-life" className="relative">
-      {still ? (
+      {!staged ? (
         <ClubLifeStill />
       ) : (
         <Suspense fallback={<ClubLifeStill />}>

@@ -1802,10 +1802,9 @@
    tile's own link (.jump-act) already covers its whole tile, so it keeps its own overlay */
 @layer components {
   @media (pointer: coarse) {
-    :is(.jump-sub, .foot a:not(.jump-act), #lightact a) {
+    :is(.foot a:not(.jump-act), #lightact a) {
       position: relative;
     }
-    .jump-sub::after,
     .foot a:not(.jump-act)::after,
     .rail a::after,
     .logo::after,

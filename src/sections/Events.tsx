@@ -23,7 +23,7 @@ export function Events({ staged }: { staged: boolean }) {
 
 function Cards() {
   return (
-    <section id="events" aria-labelledby="h-events" className="wrap pt-28 pb-32 md:pt-40 md:pb-40">
+    <section id="events" aria-labelledby="h-events" className="wrap pt-28 pb-32 md:pt-40 md:pr-[150px] md:pb-40">
       <h2 id="h-events" className="max-w-[18ch] text-[clamp(32px,4.4vw,64px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
         Events and projects, organized by the whole club.
       </h2>

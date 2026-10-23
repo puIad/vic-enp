@@ -453,6 +453,22 @@
     color: var(--color-mute);
     transition: color 0.35s var(--ease-out-expo);
   }
+  /* the logo's night plate, mirrored, so copy scrolling under the readout never prints through it; gone on the light act (#44) */
+  .readout::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: -22px;
+    right: calc(-1 * var(--edge));
+    width: calc(var(--edge) + 230px);
+    height: 96px;
+    pointer-events: none;
+    background: radial-gradient(ellipse 100% 100% at 100% 0, var(--color-night) 0, var(--color-night) 58%, rgb(20 30 39 / 0) 100%);
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+  .readout.lit::before {
+    opacity: 0;
+  }
   .readout b {
     display: block;
     font-weight: 400;

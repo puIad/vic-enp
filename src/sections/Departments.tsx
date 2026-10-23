@@ -47,7 +47,7 @@ export function Departments({ staged }: { staged: boolean }) {
 
 function Cards() {
   return (
-    <section id="departments" aria-labelledby="h-dept" className="wrap pt-28 pb-32 md:pt-40 md:pb-44">
+    <section id="departments" aria-labelledby="h-dept" className="wrap pt-28 pb-32 md:pt-40 md:pr-[150px] md:pb-44">
       <h2 id="h-dept" className="max-w-[18ch] text-[clamp(32px,4.4vw,64px)] leading-none font-black tracking-[-0.015em] md:tracking-[-0.025em] text-white">
         Seven departments. You join one main and one activity.
       </h2>

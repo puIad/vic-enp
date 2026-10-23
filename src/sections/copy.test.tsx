@@ -176,7 +176,7 @@ describe('footer', () => {
 })
 
 describe("the rail's targets (#59)", () => {
-  // the rail, the hold's rows and the footer's "Jump back to" all jump to these ids, in tier 0's cards and the staged cuts
+  // the rail, the hold's rows and the footer's "Jump back" all jump to these ids, in tier 0's cards and the staged cuts
   const ids = (el: ReactElement) => renderToStaticMarkup(el)
   const subs = (act: string) => RAIL.find((a) => a.id === act)!.subs.map((s) => s.id)
 

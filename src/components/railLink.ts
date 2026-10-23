@@ -5,7 +5,7 @@ import { jump } from '../sections/stage'
 /**
  * A rail link's jump. A cut of a staged run lands at its middle, where the pickers land (stepMiddle); everything else
  * (an act, a block, a tier 0 card) is a plain anchor that Lenis or the browser takes to its top. Shared with the
- * footer's "Jump back to" (JumpBack).
+ * footer's "Jump back" (JumpBack).
  */
 export function onRailLink(e: MouseEvent, id: string) {
   const el = document.getElementById(id)

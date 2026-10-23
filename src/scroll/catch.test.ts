@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { DECAY, catcher, coastCurve, land, toucher, type Layout, type Verdict } from './catch'
+import { DECAY, DWELL, QUIET, catcher, coastCurve, land, toucher, type Layout, type Move, type Verdict } from './catch'
 
 // A page 800 px high. Act 2's top at 1000 (still); the departments' zone 2500..5500 with seven cuts 400 apart, leaving
 // to 1700 up and 6300 down; the peak from its group photo at 6600 to 7400 with two photos, its opening the flow's; the
-// events' zone 7400..9000 (pinned the moment the peak lets go), leaving to 6600 up and 9800 down; the light act's top
-// at 9700 and the close at 10500 (still).
+// events' zone from 7400 (pinned the moment the peak lets go) to a hair past its last cut at 8500, leaving to 6600 up,
+// its end the flow's; the light act's top at 9700 and the close at 10500 (still).
 const VH = 800
 const L: Layout = {
   still: [1000, 9700, 10500],
   runs: [
     { stops: [2800, 3200, 3600, 4000, 4400, 4800, 5200], lo: 2500, hi: 5500, up: 1700, down: 6300 },
     { stops: [6600, 6800, 7000], lo: 6600, hi: 7400, up: 6600, down: 8200 },
-    { stops: [7700, 8100, 8500], lo: 7400, hi: 9000, up: 6600, down: 9800 },
+    { stops: [7700, 8100, 8500], lo: 7400, hi: 8502, up: 6600, down: 8500 },
   ],
   limit: 11000,
 }
@@ -176,10 +176,20 @@ describe('the wheel leaving a run', () => {
     expect(s.send(-100)).toEqual({ at: 7000 })
   })
 
-  it('stops on a still point on the way out', () => {
+  it("scrolls on out of the events' last cut, which leads into the flow, and coasts no further than a still point", () => {
     const s = wheel()
     s.at(8500)
-    expect(s.send(100)).toEqual({ at: 9700 })
+    expect(s.run([100, 100, 100], 50)).toEqual([])
+    expect(s.target).toBe(8800)
+    const t = wheel()
+    t.at(8500)
+    expect(t.run(flick(120))).toEqual([9700])
+  })
+
+  it("lands on the events' last cut coming back up out of the flow", () => {
+    const s = wheel()
+    s.at(8800)
+    expect(s.run([-100, -100, -100], 50)).toEqual([8500])
   })
 
   it("scrolls on into the peak's opening, which is the flow's", () => {
@@ -263,6 +273,107 @@ describe('the wheel in the flow', () => {
   })
 })
 
+describe("the wheel at a run's edges", () => {
+  it('holds two spins of a visitor still flicking on the first cut, and lets the third go on', () => {
+    const s = wheel()
+    s.at(2450)
+    expect(s.send(100)).toEqual({ at: 2800 })
+    // spins during the glide and just after it, each soon after the last
+    expect(s.send(100, 200)).toBe('hold')
+    s.rest()
+    expect(s.send(100, QUIET - 100)).toBe('hold')
+    expect(s.send(100, QUIET - 100)).toEqual({ at: 3200 })
+  })
+
+  it('moves on at once for a spin after a pause', () => {
+    const s = wheel()
+    s.at(2450)
+    s.send(100)
+    s.rest()
+    s.wait(400 + DWELL)
+    expect(s.send(100)).toEqual({ at: 3200 })
+  })
+
+  it('lets a visitor spinning on through the departments finish them, two spins held at each edge', () => {
+    const s = wheel()
+    s.at(2450)
+    const moved: number[] = []
+    for (let i = 0; i < 12; i++) {
+      const v = s.send(100, 200)
+      if (typeof v === 'object') moved.push(v.at)
+      s.rest()
+    }
+    expect(moved).toEqual([2800, 3200, 3600, 4000, 4400, 4800, 5200, 6300])
+  })
+
+  it('holds a new spin until the page has rested on the first cut a beat, however long the pause', () => {
+    const s = wheel()
+    s.at(2450)
+    expect(s.send(100)).toEqual({ at: 2800 })
+    s.rest()
+    expect(s.send(100, 400 + DWELL - 100)).toBe('hold')
+    expect(s.send(100, QUIET + 1)).toEqual({ at: 3200 })
+  })
+
+  it("holds a trackpad's next two flicks on the first cut, and steps on at the third", () => {
+    const s = wheel()
+    s.at(2000)
+    expect(s.run(flick(120))).toEqual([2800])
+    s.rest()
+    expect(s.run(flick(120))).toEqual([])
+    expect(s.run(flick(120))).toEqual([])
+    expect(s.run(flick(120))).toEqual([3200])
+  })
+
+  it('never holds a gesture going back up', () => {
+    const s = wheel()
+    s.at(2450)
+    s.send(100)
+    s.rest()
+    expect(s.send(-100, 100)).toEqual({ at: 1700 })
+  })
+
+  it('holds only a first cut reached from above', () => {
+    const s = wheel()
+    s.at(3200)
+    expect(s.send(-100)).toEqual({ at: 2800 })
+    s.rest()
+    expect(s.send(100, 200)).toEqual({ at: 3200 })
+  })
+
+  it("holds on the Gala, reached from the peak's last photo", () => {
+    const s = wheel()
+    s.at(7000)
+    expect(s.send(100)).toEqual({ at: 7700 })
+    expect(s.send(100, 200)).toBe('hold')
+  })
+
+  it('holds a visitor still flicking on the last cut, then leaves once they pause', () => {
+    const s = wheel()
+    s.at(4800)
+    expect(s.send(100)).toEqual({ at: 5200 })
+    expect(s.send(100, 200)).toBe('hold')
+    s.rest()
+    expect(s.send(100, QUIET - 100)).toBe('hold')
+    s.wait(QUIET + DWELL)
+    expect(s.send(100)).toEqual({ at: 6300 })
+  })
+
+  it("holds the peak's last photo and the events' last cut the same way", () => {
+    const s = wheel()
+    s.at(6800)
+    expect(s.send(100)).toEqual({ at: 7000 })
+    expect(s.send(100, 200)).toBe('hold')
+    const t = wheel()
+    t.at(8100)
+    expect(t.send(100)).toEqual({ at: 8500 })
+    expect(t.send(100, 200)).toBe('hold')
+    t.rest()
+    t.wait(QUIET + DWELL)
+    expect(t.send(100)).toBe('pass')
+  })
+})
+
 /** a finger on the toucher: down at clientY 600, moves 16 ms apart */
 function finger(y: number, anim: number | null = null) {
   const c = toucher(() => VH)
@@ -270,7 +381,7 @@ function finger(y: number, anim: number | null = null) {
   let t = 0
   let f = 600
   let page = y
-  const halted = c.down(f, page, anim)
+  const halted = c.down(f, page, anim, 0)
   return {
     halted,
     /** the finger moves by df px (up is negative: the page scrolls down), over n moves */
@@ -431,6 +542,124 @@ describe('touch leaving a run', () => {
     expect(g.drag(200, 2)).toEqual([{ scroll: 6500 }, { scroll: 6400 }])
     g.wait(100)
     expect(g.up()).toBeNull()
+  })
+})
+
+/** one hand's swipes on one toucher: each goes down at clientY 600, moves n times 16 ms apart, and lifts */
+function hand(y: number) {
+  const c = toucher(() => VH)
+  c.layout(L)
+  let t = 0
+  let page = y
+  let glide: number | null = null
+  const play = (m: Move | null, out: Move[]) => {
+    if (!m) return
+    out.push(m)
+    if ('scroll' in m) page = m.scroll
+    else glide = 'glide' in m ? m.glide : m.coast
+  }
+  return {
+    swipe(df: number, n = 2) {
+      const out: Move[] = []
+      let f = 600
+      c.down(f, page, glide, t)
+      for (let i = 0; i < n; i++) {
+        t += 16
+        f += df / n
+        play(c.move(t, f, page), out)
+      }
+      t += 8
+      play(c.up(t), out)
+      return out
+    },
+    wait(ms: number) {
+      t += ms
+    },
+    rest() {
+      if (glide !== null) page = glide
+      glide = null
+    },
+  }
+}
+
+describe("touch at a run's edges", () => {
+  it('holds two flicks of a visitor still flicking on the first cut, and lets the third go on', () => {
+    const h = hand(2300)
+    expect(h.swipe(-300, 1)).toEqual([{ glide: 2800 }])
+    h.wait(150)
+    expect(h.swipe(-100)).toEqual([])
+    h.rest()
+    h.wait(QUIET - 100)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(QUIET - 100)
+    expect(h.swipe(-100)).toEqual([{ glide: 3200 }])
+  })
+
+  it('never counts a nudge under 30 px among the two', () => {
+    const h = hand(2300)
+    h.swipe(-300, 1)
+    h.rest()
+    h.wait(100)
+    expect(h.swipe(-10)).toEqual([])
+    h.wait(100)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(100)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(100)
+    expect(h.swipe(-100)).toEqual([{ glide: 3200 }])
+  })
+
+  it('holds a new swipe until the page has rested on the first cut a beat', () => {
+    const h = hand(2300)
+    h.swipe(-300, 1)
+    h.rest()
+    h.wait(400 + DWELL - 150)
+    expect(h.swipe(-100)).toEqual([])
+    h.wait(QUIET + 1)
+    expect(h.swipe(-100)).toEqual([{ glide: 3200 }])
+  })
+
+  it("holds a fling's landing on the first cut until its coast has rested", () => {
+    const h = hand(1800)
+    expect(h.swipe(-300, 5)).toMatchObject([{ scroll: 1860 }, {}, {}, {}, {}, { coast: 2800 }])
+    h.wait(QUIET + 1)
+    expect(h.swipe(-100)).toEqual([])
+  })
+
+  it('holds a visitor still flicking on the last cut, then leaves once they pause', () => {
+    const h = hand(4800)
+    expect(h.swipe(-100)).toEqual([{ glide: 5200 }])
+    h.wait(150)
+    expect(h.swipe(-100)).toEqual([])
+    h.rest()
+    h.wait(QUIET + DWELL)
+    expect(h.swipe(-100)[0]).toEqual({ scroll: 5200 })
+  })
+
+  it('never holds a swipe going back up', () => {
+    const h = hand(2300)
+    h.swipe(-300, 1)
+    h.rest()
+    h.wait(100)
+    expect(h.swipe(100)[0]).toEqual({ scroll: 2800 })
+  })
+})
+
+describe("touch out of the events' last cut", () => {
+  it('drags on into the flow and stays where it was lifted', () => {
+    const g = finger(8500)
+    expect(g.drag(-40)).toEqual([{ scroll: 8500 }])
+    g.drag(-200, 10, 50)
+    g.wait(100)
+    expect(g.up()).toBeNull()
+    expect(g.page).toBe(8700)
+  })
+
+  it("coasts a fling no further than the light act's top", () => {
+    const g = finger(8500)
+    g.drag(-40)
+    g.drag(-300, 5)
+    expect(g.up()).toMatchObject({ coast: 9700 })
   })
 })
 

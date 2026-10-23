@@ -26,7 +26,7 @@ Terms for the VIC-ENP landing page, settled on the wayfinder map (2026-10-19). T
 - **Hand-over**: how one act gives way to the next (a morph, a passage or a hard cut).
 - **The light act**: act 6 (how to join and the FAQ), the only act on Bright Gray.
 - **Waypoint rail**: the fixed column of dots at the left edge, one per act, the page's only navigation. At the
-  end it lands in the footer as "Jump back to".
+  end it fades as the footer's "Jump back" tiles arrive.
 - **Sub-dot**: a smaller rail dot for one cut or block inside an act (a department, an event, Steps, Growth, FAQ).
   The current act's show as ticks; all show with names on hover or a hold.
 - **Catch**: the scroll gliding to rest on a catch point: inside a run, every gesture steps one cut; outside, momentum

@@ -484,7 +484,7 @@
     -webkit-user-select: none;
     user-select: none;
   }
-  /* the rail has landed in the footer's "Jump back to" */
+  /* the footer's "Jump back" has arrived (decision 113) */
   .rail.away {
     opacity: 0;
     pointer-events: none;
@@ -634,48 +634,25 @@
       opacity: 1;
       transform: none;
     }
-    /* keyboard focus and the one-time hold open every name and every sub-dot, each a link (hover below) */
-    .rail.open span,
+    /* keyboard focus opens every name and every sub-dot, each a link (hover below) */
     .rail:has(a:focus-visible) span {
       opacity: 1;
       transform: none;
     }
-    .rail.open .rail-subs,
     .rail:has(a:focus-visible) .rail-subs {
       display: flex;
       gap: 0;
       margin: -14px 0 -12px;
     }
-    .rail.open .rail-subs a,
     .rail:has(a:focus-visible) .rail-subs a {
       height: 22px;
       padding-left: 2px;
       gap: 14px;
     }
-    .rail.open .rail-subs b,
     .rail:has(a:focus-visible) .rail-subs b {
       width: 5px;
       height: 5px;
     }
-  }
-  /* the one-time hold opens over the arriving footer list: the names get a night plate */
-  /* the margin and the centring take the padding back, so no dot moves */
-  .rail.open {
-    padding: 18px 22px 18px 14px;
-    margin-left: -14px;
-    border-radius: 16px;
-    background: rgb(20 30 39 / 0.92);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 0 0 1px var(--line);
-  }
-  .rail.open::before,
-  .rail.open::after {
-    left: 18px;
-    top: 24px;
-  }
-  .rail.open::before {
-    bottom: 24px;
   }
   @media (min-width: 768px) and (hover: hover) {
     .rail:hover span {
@@ -762,8 +739,7 @@
     }
   }
 
-  /* the hold's ring, filling under the finger (or around the dot, the one time the rail lands). It runs under reduced
-     motion too: it is the hold's only feedback, and the one-time hold never plays there */
+  /* the hold's ring, filling under the finger. It runs under reduced motion too: it is the hold's only feedback */
   .rail-ring {
     position: fixed;
     z-index: 31;
@@ -900,90 +876,138 @@
     }
   }
 
-  /* ---------- the rail landed: the footer's "Jump back to" (#59), on the rail's dots, line and x ---------- */
+  /* ---------- the footer's way back (decision 113): "Missed something? Jump back", a tile per act ---------- */
   .foot {
     padding-left: var(--gut);
   }
   .jump {
-    margin: 0 0 72px calc(var(--rail) - var(--gut));
+    margin-bottom: 72px;
   }
-  .jump-title {
-    margin-left: 21px;
+  .jump-kicker {
     font-size: 13px;
     font-weight: 700;
     color: var(--color-mute);
   }
-  .jump ol {
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .jump > ol {
-    margin-top: 14px;
-  }
-  .jump > ol::before {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 16px;
-    bottom: 16px;
-    width: 1px;
-    background: var(--grad);
-    opacity: 0.55;
-  }
-  .jump a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .jump-act {
-    min-height: 44px;
-    gap: 12px;
-    font-size: 17px;
-    font-weight: 700;
+  .jump-title {
+    margin-top: 6px;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
     color: #fff;
   }
-  .jump-act i {
+  /* phones: two columns, the acts with many sub-sections and Club life across both, How to join beside Your place */
+  .jump > ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .jump-tile[data-act='departments'],
+  .jump-tile[data-act='club-life'],
+  .jump-tile[data-act='events'] {
+    grid-column: span 2;
+  }
+  .jump-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgb(239 239 239 / 0.03);
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .jump-tile:hover {
+    border-color: rgb(105 196 175 / 0.5);
+    background: rgb(105 196 175 / 0.06);
+  }
+  .jump-act {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    text-decoration: none;
+  }
+  /* the whole tile is its act's link; the sub-sections sit above it. Keyboard focus rings the tile, through the overlay
+     rather than :has(), so older Safari and Firefox show it too */
+  .jump-act::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 13px;
+  }
+  .jump-act:focus-visible {
+    outline: none;
+  }
+  .jump-act:focus-visible::after {
+    outline: 2px solid var(--color-aqua);
+    outline-offset: 2px;
+  }
+  .jump-n {
     flex: none;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--color-aqua);
-    box-shadow: 0 0 10px rgb(105 196 175 / 0.6);
-  }
-  .jump-sub {
-    min-height: 30px;
-    gap: 14px;
-    padding-left: 2px;
-    font-size: 14px;
-    color: var(--color-gray);
-  }
-  .jump-sub b {
-    flex: none;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--color-aqua);
-    opacity: 0.6;
-  }
-  .jump a:hover,
-  .jump a:focus-visible {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
     color: var(--color-aqua);
   }
-  .jump ol ol {
-    margin: -6px 0 6px;
+  .jump-act svg {
+    flex: none;
+    align-self: center;
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    color: var(--color-mute);
+    transition:
+      translate 0.3s var(--ease-out-expo),
+      color 0.2s;
   }
-  @media (max-width: 767px) {
-    /* the phone rail's links pad their dots 6 px in */
-    .jump {
-      margin-left: calc(var(--rail) - var(--gut) + 6px);
-    }
+  .jump-tile:hover .jump-act svg {
+    translate: 0 -2px;
+    color: var(--color-aqua);
+  }
+  .jump-tile ul {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    pointer-events: none;
+  }
+  .jump-sub {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 11px;
+    border-radius: 999px;
+    background: rgb(239 239 239 / 0.07);
+    font-size: 13px;
+    color: var(--color-gray);
+    text-decoration: none;
+    pointer-events: auto;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .jump-sub:hover,
+  .jump-sub:focus-visible {
+    background: rgb(105 196 175 / 0.2);
+    color: #fff;
   }
   @media (min-width: 768px) {
-    /* the list sits in the gutter, beside the links; the motto follows both */
+    /* the footer's content keeps to the links' column; the motto and the photo run the full width */
     .foot {
       display: grid;
       grid-template-columns: calc(var(--gut) - var(--rail)) minmax(0, 1fr);
@@ -993,18 +1017,18 @@
     .foot > * {
       grid-column: 2;
     }
-    .foot > .jump {
-      grid-column: 1;
-      grid-row: 1;
-      margin: -4px 0 0;
+    /* four columns: the runs across two, Your place across the last row */
+    .jump > ol {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .jump-tile[data-act='club-life'] {
+      grid-column: auto;
+    }
+    .jump-tile[data-act='apply'] {
+      grid-column: 1 / -1;
     }
     .jump-act {
-      min-height: 36px;
       font-size: 15px;
-    }
-    .jump-sub {
-      min-height: 26px;
-      font-size: 13px;
     }
   }
 

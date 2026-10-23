@@ -47,10 +47,10 @@ function measure(): Range[] {
 /**
  * The catch's 26 points (docs/experience.md, The catch; decisions.md, 88, 92 and 97). Three runs: the 7 departments and
  * the 5 events at their cuts' middles (where the pickers land), the peak from its resolved group photo through its ten
- * photos at their rests. Each run's zone is its pinned stage; leaving the departments or the events goes at least a
- * screen past it, so nothing rests on the door or the tunnel; the peak's opening is the flow's. Three still points: act
- * 2's top and the light act's (where the rail lands) and the close at rest with your point in its slot. None on tier 0
- * or after a lost context, where the runs are cards and nothing is pinned.
+ * photos at their rests. Each run's zone is its pinned stage; leaving the departments goes at least a screen past it,
+ * so nothing rests on the door or the tunnel; the peak's opening and the events' end (the horizon) are the flow's. Three
+ * still points: act 2's top and the light act's (where the rail lands) and the close at rest with your point in its
+ * slot. None on tier 0 or after a lost context, where the runs are cards and nothing is pinned.
  */
 function catchLayout(ranges: Range[]): Layout {
   const vh = innerHeight
@@ -62,10 +62,12 @@ function catchLayout(ranges: Range[]): Layout {
   const runs: Run[] = []
   const cuts = (id: string, steps: number[], from: number, to: number) => {
     const r = range(id)
-    if (!r || !document.querySelector(`#${id}[data-pin]`)) return
+    if (!r || !document.querySelector(`#${id}[data-pin]`)) return null
     const stops = []
     for (let i = from; i <= to; i++) stops.push(along(r, stepMiddle(steps, i)))
-    runs.push({ stops, lo: r.start, hi: r.end, up: r.start - vh, down: r.end + vh })
+    const run = { stops, lo: r.start, hi: r.end, up: r.start - vh, down: r.end + vh }
+    runs.push(run)
+    return run
   }
   cuts('departments', DEPT_STEPS, 1, 7)
   const peak = range('club-life')
@@ -75,7 +77,15 @@ function catchLayout(ranges: Range[]): Layout {
     for (let i = 0; i < photos; i++) stops.push(along(peak, peakRest(i)))
     runs.push({ stops, lo: stops[0], hi: peak.end, up: stops[0], down: peak.end + vh })
   }
-  cuts('events', EVENT_STEPS, 0, 4)
+  const events = cuts('events', EVENT_STEPS, 0, 4)
+  // the events' end is the flow's, as the peak's opening is (decision 115): past the projects cut the field lies down
+  // into the horizon at your own pace, and coasting stops on the light act's top. The zone ends a hair past the last cut,
+  // so that cut is still in it and a gesture there scrolls on from it
+  if (events) {
+    const last = events.stops[events.stops.length - 1]
+    events.hi = last + 2
+    events.down = last
+  }
   const still: number[] = []
   const top = (id: string) => {
     const el = document.getElementById(id)
@@ -86,8 +96,7 @@ function catchLayout(ranges: Range[]): Layout {
   // the close at rest: a beat after your point lands in its slot
   const apply = document.getElementById('apply')
   if (apply?.matches('[data-pin]')) still.push(abs(apply) + (CLOSE_LANDS + 0.05) * (apply.offsetHeight - vh))
-  // a run's exit carries on to a still point within half a screen past it: the events' onto the light act's top, past
-  // the horizon between them
+  // a run's exit carries on to a still point within half a screen past it
   for (const r of runs) {
     r.down = still.find((p) => p >= r.down && p - r.down <= vh / 2) ?? r.down
     r.up = [...still].reverse().find((p) => p <= r.up && r.up - p <= vh / 2) ?? r.up

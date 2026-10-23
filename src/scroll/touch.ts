@@ -39,7 +39,7 @@ export function touchCatch(page: Page) {
     ours = null
     x0 = t.clientX
     y0 = t.clientY
-    if (caught.down(t.clientY, page.y(), page.anim()) === 'halt') page.halt()
+    if (caught.down(t.clientY, page.y(), page.anim(), e.timeStamp) === 'halt') page.halt()
   }
   const move = (e: TouchEvent) => {
     if (ours === false) return

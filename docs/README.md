@@ -39,6 +39,9 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   the committee in black and white under the motto, and the hero's copy and chrome wait until the 600 have built
   the icon, with the first load's scroll waiting too. Slice 5's new group 6, the first cut at the cut line
   ([#81](https://github.com/puIad/vic-enp/issues/81), [#82](https://github.com/puIad/vic-enp/issues/82)).
+- 2026-10-23: the edges' hold, the horizon and the footer's way back ([decisions.md](decisions.md), 113 to 115). A
+  run's first and last stop take up two accidental flicks, the horizon after the projects cut scrolls at the
+  visitor's pace, and the footer opens on a tile per act in place of the rail opening on its own.
 - Recruitment opens **Sunday 25 October 2026**. The page should be live before then (plan: the evening of 24 Oct,
   with the CTA opening on the 25th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)

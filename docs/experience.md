@@ -286,8 +286,8 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
-- **Footer:** opaque night, no canvas under it. Opens on the rail, landed as "Jump back to"
-  ([below](#the-rail-lands-in-the-footer)). No description line, and the address reads "10 Rue des Frères OUDEK,
+- **Footer:** opaque night, no canvas under it. Opens on "Missed something? Jump back", a tile per act
+  ([below](#the-footers-way-back)). No description line, and the address reads "10 Rue des Frères OUDEK,
   El Harrach" ([decisions.md](decisions.md), 58). Ends on the motto, centred, and the committee photo under it
   ([decisions.md](decisions.md), 103 to 106): a cutout of 13 members in high-contrast black and white, one layer
   above the motto, its bottom edge on the end of the page, the motto's last line ending where the tallest heads
@@ -357,6 +357,14 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
   free to drag. A gesture at the last cut going down (the first going up) leaves with its own momentum, always at least
   past the tunnel (the door), so nothing rests on an empty stage, and further if flung. The peak and the events meet
   with no flow between (the Gala pins the moment the peak lets go), so leaving one lands on the other's nearest stop.
+  The events' end is the flow's, as the peak's opening is: from the four projects the field lies down into the
+  horizon at the visitor's pace, a fling coasting no further than the light act's top, and scrolling back up past
+  the projects cut lands on it ([decisions.md](decisions.md), 115).
+- **The edges hold** ([decisions.md](decisions.md), 114): arriving going down on a run's first stop (the first
+  department, the group photo, the Gala) or its last (English Bubble, the tenth photo, the four projects), a gesture
+  down that starts before the page has rested there about 0.5 s, or within about 0.4 s of the visitor's last input,
+  does nothing, two of them at most: the stop takes up the accidental flicks and the third moves on, so a visitor
+  flicking on through the page still gets through. A swipe after a pause moves on at once. Up is never held.
 - **In the flow, coasting never passes a still point:** the finger, a mouse wheel or a trackpad stroke drags past
   freely, but momentum that would cross act 2's top, the light act's top or the close stops on it (or on a run's door),
   whatever its speed. A fling, or a trackpad's momentum, that would die within about a fifth of a screen of a still
@@ -390,18 +398,23 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
   press menu.
 - **Targets:** on phones the act dots sit 44 px apart and each tap area fills its pitch
   ([quality.md](quality.md#accessibility)).
-- **Keyboard and screen readers:** sub-dots stay out of the tab order. The pickers and the footer list reach every
+- **Keyboard and screen readers:** sub-dots stay out of the tab order. The pickers and the footer's tiles reach every
   sub-section.
 - **Jumps land** where the pickers do: a cut at its middle, an act or a block at its top.
 - The department and event pickers stay.
 
-### The rail lands in the footer
+### The footer's way back
 
-- The footer opens on "Jump back to": every act and sub-section, labelled, on the rail's dots and line and on the
-  rail's x. The fixed rail fades as it arrives. The motto and the committee photo stay the page's end.
-- The first time the list arrives in a visit, the fixed rail acts out its hold once before it fades: the ring fills
-  around its dot, the rail opens with every name for about a second, then closes. Desktop opens it the same way,
-  without the ring. No text hint.
+Replaced the rail's landing on 2026-10-23 ([decisions.md](decisions.md), 113): testers read the rail opening on its
+own over the footer's list as a bug.
+
+- The footer opens on "Missed something?" and "Jump back", then a tile per act in page order, numbered 01 to 07. The
+  whole tile links to its act; the departments', events' and light act's sub-sections are small links inside their
+  tile, landing where the pickers do.
+- Phones: two columns, Departments, Club life and Events across both, How to join beside Your place. From 768 px:
+  four columns, the departments and the events across two, Your place across the last row.
+- The fixed rail fades as the tiles arrive and never opens on its own. The motto and the committee photo stay the
+  page's end.
 
 ## Tiers and reduced motion
 

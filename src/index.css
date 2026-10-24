@@ -1131,22 +1131,6 @@
     }
   }
 
-  /* IT's "design and media, not coding" pill, the act's one pill (owner, 2026-10-20) */
-  .flag-pill {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    min-height: 34px;
-    padding: 4px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--c);
-    box-shadow: inset 0 0 0 1px var(--c);
-    background: color-mix(in srgb, var(--c) 10%, transparent);
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 1.25;
-    color: #fff;
-  }
   /* the department's name on its tier 0 card, in place of the eyebrow */
   .dept-name {
     display: flex;

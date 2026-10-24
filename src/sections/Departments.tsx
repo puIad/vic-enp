@@ -22,8 +22,6 @@ function Card({ d }: { d: Department }) {
         {d.line}
       </h3>
       <p className="mt-4 text-base leading-normal text-gray">{d.lead}</p>
-      {d.flagged && <p className="flag-pill mt-5">{d.flagged}</p>}
-      {d.suits && <p className="t-cap mt-4">{d.suits}</p>}
       <h4 className="mt-6 text-[13px] font-bold text-white">What you'd do in {d.name}</h4>
       <ul className="mt-2 space-y-2">
         {d.does.map((x) => (

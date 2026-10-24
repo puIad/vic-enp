@@ -5,21 +5,21 @@ export const STEPS = [
   { title: 'Check your inbox.', text: 'You get a confirmation email with your registration code.' },
   {
     title: 'Set up your interview.',
-    text: 'If your application is accepted, two club members contact you within a day to set up your interview. You choose your activity department there: SPARK, Training or English Bubble.',
+    text: 'If your application is accepted, two club members contact you within a day to set up your interview.',
   },
-  { title: 'Join your teams.', text: 'Get your result and start with your departments.' },
+  { title: 'Join your department!', text: 'Get your result and start with your new family.' },
 ]
 
 export const RUNGS = [
+  { title: 'Specialized teams', text: 'P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew.' },
   { title: 'Organizing teams', text: 'Join the organizing team of an event.' },
   { title: 'Across departments', text: 'Help in other departments once you have experience.' },
   { title: 'Project manager', text: 'Apply to be a Project Manager or take on a responsibility role.' },
-  { title: 'Specialized teams', text: 'P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew.' },
-  { title: 'Commit to the club', text: 'Run for Head of Department or President.' },
   { title: 'Research & Development Squad', text: "Review and improve the club's charters. Open to members with experience." },
+  { title: 'Commit to the club', text: 'Run for Head of Department or President.' },
 ]
 
-/** Brief §9, verbatim except the two rewrites and the IT row's addition (content.md, act 6). */
+/** Brief §9, verbatim except the three rewrites and the IT row's addition (content.md, act 6). */
 export const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] = [
   {
     q: 'Do I need experience?',
@@ -28,7 +28,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   { q: "I'm in first year. Can I join?", a: 'Yes. Any ENP student can join.' },
   {
     q: 'Is the club only in English?',
-    a: "English is the club's official language. English Bubble exists precisely to help you get comfortable speaking it.",
+    a: "Not really, English is the club's official language, but we speak all languages internally (even Kabyle). English Bubble exists precisely to help you get comfortable speaking it, and FLER members use French with companies.",
   },
   {
     q: 'Can I join more than one department?',
@@ -36,11 +36,11 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   },
   {
     q: "I'm in another club. Can I still join?",
-    a: "Yes, with one exception: if you're in another club's external-relations team, you can't join FLER (and vice versa). Committee members of other clubs also can't be on VIC's committee.",
+    a: "Yes, with one exception: if you're in another club's external-relations team, you can't join FLER (and vice versa).",
   },
   {
     q: 'Is the IT department about coding?',
-    a: 'No. IT at VIC means design, visual identity, photography and video. No coding required.',
+    a: 'No. IT at VIC means design, visual identity, photography and video. No coding required. We do have a Web Development Team though.',
     link: { href: '#departments', label: 'See the departments' },
   },
   {

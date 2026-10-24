@@ -148,6 +148,10 @@
   .lightact :is(.t-act, .font-black) {
     text-shadow: none;
   }
+  /* act 2, the pin and the benefits after it, carries the same shadow on all its text, body and captions too (decision 144) */
+  :is(#the-600, #benefits) {
+    text-shadow: var(--title-shadow);
+  }
   .t-lead {
     font-size: var(--t-lead);
     line-height: 1.45;

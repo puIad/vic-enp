@@ -9,9 +9,10 @@ import { useScrub } from '../lib/useScrub'
 // the world (#36): two screens pinned, where the title and three sentences light word by word (the word scrub), then
 // fade at about 56% as the numbers rise one after another. The timing runs on --sk, the act's progress (index.css).
 
-// `from`: where a staged counter starts (#37); the year counts up from 2000, as in the comp
-const NUMBERS: { figure: string; from: number; caption?: string; plus?: true; since?: true }[] = [
-  { figure: '600', from: 0, caption: 'members' },
+// `from`: where a staged counter starts (#37); the year counts up from 2000, as in the comp. `grad`: the figure takes the
+// VIC gradient once it is reached, the count running in white (decision 143)
+const NUMBERS: { figure: string; from: number; caption?: string; plus?: true; since?: true; grad?: true }[] = [
+  { figure: '600', from: 0, caption: 'members', grad: true },
   { figure: '40', from: 0, plus: true, caption: 'trainings a year' },
   { figure: '10', from: 0, plus: true, caption: 'major events' },
   { figure: '2014', from: 2000, since: true },
@@ -59,9 +60,11 @@ function Numbers({ staged }: { staged: boolean }) {
             {staged ? (
               // the figure holds its width while a copy hidden from screen readers counts up over it (index.css)
               <span className="relative">
-                <span className="a2-final">{n.figure}</span>
+                <span className={`a2-final ${n.grad ? 'vic-grad' : ''}`}>{n.figure}</span>
                 <span aria-hidden="true" className="a2-count absolute top-0 left-0">{n.from}</span>
               </span>
+            ) : n.grad ? (
+              <span className="vic-grad">{n.figure}</span>
             ) : (
               n.figure
             )}

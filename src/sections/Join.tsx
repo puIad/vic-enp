@@ -110,7 +110,7 @@ function Steps({ staged }: { staged: boolean }) {
 
 function Grow({ staged }: { staged: boolean }) {
   return (
-    <ol className="mt-12 grid gap-8 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-20 md:grid-cols-3 md:gap-x-6 md:gap-y-12 xl:grid-cols-5 xl:items-end xl:gap-x-5">
+    <ol className="mt-12 grid gap-8 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-20 md:grid-cols-3 md:gap-x-6 md:gap-y-12 xl:grid-cols-6 xl:items-end xl:gap-x-5">
       {RUNGS.map((r, i) => (
         <li
           key={r.title}

@@ -132,11 +132,12 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   3. **Set up your interview.** If your application is accepted, two club members contact you within a day to
      set up your interview. (The activity-department sentence was cut, decision 136.)
   4. **Join your department!** Get your result and start with your new family.
-- **Then grow.** Lead: "Joining is the start. Here is where members go next." Five rungs: Organizing teams
-  ("Join the organizing team of an event."), Across departments ("Help in other departments once you have
-  experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Commit to the club ("Run
-  for Head of Department or President."), Research & Development Squad ("Review and improve the club's charters.
-  Open to members with experience.").
+- **Then grow.** Lead: "Joining is the start. Here is where members go next." Six rungs, in the owner's order of 2026-10-24 (decision 137): Specialized teams
+  ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Organizing teams ("Join the
+  organizing team of an event."), Across departments ("Help in other departments once you have experience."),
+  Project manager ("Apply to be a Project Manager or take on a responsibility role."), Research & Development Squad
+  ("Review and improve the club's charters. Open to members with experience."), Commit to the club ("Run for Head
+  of Department or President.").
 - **Questions.** Lead: "Still unsure? Message us on Instagram, @vic.enp." The nine §9 questions, verbatim except:
   - "Can I join more than one department?": "On the form you pick your first and second choice among the four
     main departments, and you choose your activity department at your interview. Once you have experience, you
@@ -187,8 +188,9 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Here is where members go
     next." (approved 2026-10-20), "Still unsure? Message us on Instagram, @vic.enp."
 11. Fill in the form. / Check your inbox. / Set up your interview. / Join your department!
-12. The five rung titles (Specialized teams cut, decision 137): Organizing teams, Across departments, Project manager, Commit to the
-    club, Research & Development Squad (the last two are the owner's, 2026-10-20).
+12. The six rung titles, reordered by the owner (decision 137): Specialized teams, Organizing teams, Across
+    departments, Project manager, Research & Development Squad, Commit to the club (the names of the last two
+    are the owner's, 2026-10-20).
 13. The two rewritten FAQ answers in act 6.
 14. Your point is on its way.
 15. The chrome lines above.

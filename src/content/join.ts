@@ -11,11 +11,12 @@ export const STEPS = [
 ]
 
 export const RUNGS = [
+  { title: 'Specialized teams', text: 'P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew.' },
   { title: 'Organizing teams', text: 'Join the organizing team of an event.' },
   { title: 'Across departments', text: 'Help in other departments once you have experience.' },
   { title: 'Project manager', text: 'Apply to be a Project Manager or take on a responsibility role.' },
-  { title: 'Commit to the club', text: 'Run for Head of Department or President.' },
   { title: 'Research & Development Squad', text: "Review and improve the club's charters. Open to members with experience." },
+  { title: 'Commit to the club', text: 'Run for Head of Department or President.' },
 ]
 
 /** Brief §9, verbatim except the two rewrites and the IT row's addition (content.md, act 6). */

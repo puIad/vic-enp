@@ -19,7 +19,7 @@ export const RUNGS = [
   { title: 'Commit to the club', text: 'Run for Head of Department or President.' },
 ]
 
-/** Brief §9, verbatim except the two rewrites and the IT row's addition (content.md, act 6). */
+/** Brief §9, verbatim except the three rewrites and the IT row's addition (content.md, act 6). */
 export const FAQ: { q: string; a: string; link?: { href: string; label: string } }[] = [
   {
     q: 'Do I need experience?',
@@ -28,7 +28,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   { q: "I'm in first year. Can I join?", a: 'Yes. Any ENP student can join.' },
   {
     q: 'Is the club only in English?',
-    a: "English is the club's official language. English Bubble exists precisely to help you get comfortable speaking it.",
+    a: "Not really, English is the club's official language, but we speak all languages internally (even Kabyle). English Bubble exists precisely to help you get comfortable speaking it, and FLER members use French with companies.",
   },
   {
     q: 'Can I join more than one department?',

@@ -144,6 +144,9 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
     can help with tasks across departments."
   - "When does recruitment open, and how fast is the process?": "Applications open on 26 October 2026 at 18:00. If your
     application is accepted, two club members contact you within a day to set up your interview."
+  - "Is the club only in English?": the owner's answer, verbatim ([decisions.md](decisions.md), 138): "Not really,
+    English is the club's official language, but we speak all languages internally (even Kabyle). English Bubble
+    exists precisely to help you get comfortable speaking it, and FLER members use French with companies."
   - The IT row adds "No coding required." and links to the departments. FLER eligibility lives in "I'm in another
     club. Can I still join?".
 - Left out on purpose: "What VIC asks of you", the Parrainage session, any closing date, any promise of an
@@ -191,7 +194,7 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 12. The six rung titles, reordered by the owner (decision 137): Specialized teams, Organizing teams, Across
     departments, Project manager, Research & Development Squad, Commit to the club (the names of the last two
     are the owner's, 2026-10-20).
-13. The two rewritten FAQ answers in act 6.
+13. The rewritten FAQ answers in act 6 (the English one is the owner's, 138).
 14. Your point is on its way.
 15. The chrome lines above.
 16. The 404 page (decision 64, `404.html`): "This page isn't here.", "The address may be mistyped. The rest of VIC

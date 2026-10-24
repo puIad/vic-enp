@@ -38,6 +38,10 @@ describe('sendAnswer', () => {
     expect(sendAnswer(422, { fields: ['9', '24'] })).toMatchObject({ kind: 'fields', fields: [9, 24] })
   })
 
+  it('says applications are closed on 403 "closed"', () => {
+    expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 5 November/) })
+  })
+
   it('says an address is already registered on 409', () => {
     expect(sendAnswer(409, { status: 'registered' })).toMatchObject({ kind: 'registered' })
   })

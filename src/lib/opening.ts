@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { APPLY_URL, INSTAGRAM, OPENS_AT } from '../config'
+import { clockOffset as offsetOf } from '../calendar'
+import { APPLY_URL, CLOSES_AT, INSTAGRAM, OPENS_AT } from '../config'
 
 export type Cta =
-  | { open: false; label: string; chip: string; href: string }
+  /** before opening `chip` holds the countdown; after the close there is none */
+  | { open: false; label: string; chip?: string; href: string }
   | { open: true; label: string; href: string }
 
 /** "5d 12h" while a day or more is left, then "9h 05m". */
@@ -14,7 +16,9 @@ export function countdown(ms: number): string {
   return d ? `${d}d ${String(h).padStart(2, '0')}h` : `${h}h ${String(m).padStart(2, '0')}m`
 }
 
-export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL): Cta {
+export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL, closesAt = CLOSES_AT): Cta {
+  // the close sends every CTA back to @vic.enp, where the next season is announced
+  if (now >= closesAt) return { open: false, label: 'Applications closed', href: INSTAGRAM }
   if (now < opensAt) {
     const day = opensAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Africa/Algiers' })
     return { open: false, label: `Applications open ${day.replace(' ', '\u00a0')}`, chip: countdown(+opensAt - +now), href: INSTAGRAM }
@@ -25,15 +29,11 @@ export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL): Cta {
 
 /** `?now=2026-10-26T17:00:00Z` overrides the clock, so both states can be checked on any build (UTC: a `+` in a query
  * string reads as a space, so `+01:00` would not parse). */
-export function clockOffset(search = location.search): number {
-  const forced = new URLSearchParams(search).get('now')
-  const t = forced ? Date.parse(forced) : NaN
-  return Number.isNaN(t) ? 0 : t - Date.now()
-}
+export const clockOffset = (search = location.search): number => offsetOf(search)
 
 const offset = typeof location === 'undefined' ? 0 : clockOffset()
 
-/** The CTA state, repainted every 15 s so the chip ticks and the pill flips at OPENS_AT without a reload. */
+/** The CTA state, repainted every 15 s so the chip ticks and the pill flips at OPENS_AT and CLOSES_AT without a reload. */
 export function useCta(): Cta {
   const [now, setNow] = useState(() => new Date(Date.now() + offset))
   useEffect(() => {

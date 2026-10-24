@@ -11,6 +11,7 @@ export function GET(request: Request) {
     mailer: () => pingMailer(e.mailerUrl, e.mailerSecret),
     headerRow: () => readHeaderRow({ keyB64: e.saKeyB64, sheetId: e.masterId, tab: e.regTab }),
     keyPrefix: e.keyPrefix,
+    now: Date.now,
     log: console.log,
   })
 }

@@ -38,6 +38,10 @@ describe('codeAnswer: what /api/code said, in words', () => {
     expect(codeAnswer(429, { retryIn: 40 })).toEqual({ sent: false, text: expect.stringContaining('1 minute.') })
   })
 
+  it('says applications are closed when the API says so', () => {
+    expect(codeAnswer(403, { status: 'closed' })).toEqual({ sent: false, text: expect.stringMatching(/closed on 5 November/) })
+  })
+
   it('says the ticket did not go out on any other answer, without a link anywhere', () => {
     for (const [status, body] of [[502, { status: 'not_sent' }], [503, {}], [0, null]] as const) {
       const r = codeAnswer(status, body)

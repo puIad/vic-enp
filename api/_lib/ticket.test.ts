@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { sha256 } from './hash.js'
 import { fakeRedis } from './fake-redis.js'
 import { provenEmail } from './session.js'
-import { checkTicket, sendTicket, type TicketDeps } from './ticket.js'
+import { PER_IP, checkTicket, sendTicket, type TicketDeps } from './ticket.js'
 
 function setup(over: Partial<TicketDeps> = {}) {
   const clock = { now: Date.UTC(2026, 9, 25, 9) }
@@ -231,18 +231,19 @@ describe('POST /api/code', () => {
     expect((await ask(s.d, 'amina')).status).toBe(200)
   })
 
-  it('sends 60 tickets from one IP in an hour (a lecture hall on one Wi-Fi), then refuses that IP but not another', async () => {
+  it('sends 300 tickets from one IP in an hour (a residence on one Wi-Fi), then refuses that IP but not another', async () => {
     const s = setup()
-    for (let i = 0; i < 60; i++) expect((await ask(s.d, `c${i}`)).status).toBe(200)
-    const res = await ask(s.d, 'c60')
+    expect(PER_IP).toBe(300)
+    for (let i = 0; i < PER_IP; i++) expect((await ask(s.d, `c${i}`)).status).toBe(200)
+    const res = await ask(s.d, `c${PER_IP}`)
     expect(res.status).toBe(429)
     expect((await res.json()).retryIn).toBe(3600)
-    expect((await ask(s.d, 'c60', '198.51.100.1')).status).toBe(200)
+    expect((await ask(s.d, `c${PER_IP}`, '198.51.100.1')).status).toBe(200)
   })
 
   it('spends neither hourly count, the address\'s or the IP\'s, when the mailer fails, and says it was not sent', async () => {
     const s = setup({ sendCode: async () => false })
-    for (let i = 0; i < 62; i++) {
+    for (let i = 0; i < PER_IP + 2; i++) {
       const res = await ask(s.d, 'amina')
       expect(res.status).toBe(502)
       expect(await res.json()).toEqual({ status: 'not_sent' })
@@ -270,6 +271,36 @@ describe('POST /api/code', () => {
       expect(seen.join(' ')).not.toMatch(/amina/i)
       expect(seen.join(' ')).not.toContain('203.0.113.7')
     }
+  })
+
+  it('sends no ticket from the close on, and says applications are closed', async () => {
+    const s = setup()
+    s.d.closesAt = s.clock.now + 1000
+    expect((await ask(s.d, 'amina')).status).toBe(200)
+    s.later(1)
+    const res = await ask(s.d, 'karim')
+    expect(res.status).toBe(403)
+    expect(await res.json()).toEqual({ status: 'closed' })
+    expect(s.mails.map((m) => m.to)).toEqual(['amina@g.enp.edu.dz'])
+  })
+
+  it('still checks a ticket sent before the close', async () => {
+    const s = setup()
+    s.d.closesAt = s.clock.now + 1000
+    await ask(s.d, 'amina')
+    s.later(60)
+    expect((await verify(s.d, 'amina', s.mails[0].code)).status).toBe(200)
+  })
+
+  it('counts every outcome in the hour, by route, under KEY_PREFIX', async () => {
+    const s = setup({ keyPrefix: 'prev:' })
+    await ask(s.d, 'amina')
+    await ask(s.d, 'amina')
+    await verify(s.d, 'amina', '000000')
+    // 9:00 UTC is 10:00 in Algiers
+    const stats = s.r.data.get('prev:stats:2026-10-25T10') as Map<string, string>
+    expect(Object.fromEntries(stats)).toEqual({ 'code.sent': '1', 'code.gap': '1', 'verify.wrong': '1' })
+    expect(s.r.exp.has('prev:stats:2026-10-25T10')).toBe(true)
   })
 
   it('refuses a body over 50 KB without reading it as a request', async () => {

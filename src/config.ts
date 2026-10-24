@@ -1,11 +1,12 @@
 // Everything that varies at launch lives here (docs/architecture.md, Configuration).
 
 /**
- * Applications open at this instant, Algiers time: 26 Oct, 18:00 (decision 130).
- * The CTA label follows it; these copies are typed by hand and need the same edit: index.html (meta, noscript),
- * src/sections/Join.tsx (the act lead), src/content/join.ts (the FAQ answer), public/og.png (re-render it).
+ * When applications open and close, Algiers time: 26 Oct, 18:00 (decision 130) to 5 Nov, 18:00 (decision 147), in
+ * calendar.ts so the API reads the same instants. The CTA label follows them; these copies are typed by hand and need
+ * the same edit: index.html (meta, noscript), src/sections/Join.tsx (the act lead), src/content/join.ts (the FAQ
+ * answer), public/og.png (re-render it).
  */
-export const OPENS_AT = new Date('2026-10-26T18:00:00+01:00')
+export { CLOSES_AT, OPENS_AT } from './calendar'
 
 /**
  * The Google Form's responder link, set as a Vercel env var (open question 15).

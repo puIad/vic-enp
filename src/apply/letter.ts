@@ -53,11 +53,16 @@ export type SendAnswer =
   | { kind: 'registered'; text: string }
   | { kind: 'fields'; fields: number[]; text: string }
   | { kind: 'retry'; text: string }
+  | { kind: 'closed'; text: string }
+
+/** The line /apply shows from CLOSES_AT on, and with a "closed" answer from the API. */
+export const CLOSED = 'Applications for 2026 closed on 5 November at 18:00. Follow @vic.enp on Instagram for the club’s news.'
 
 /** What POST /api/submit's answer means to the candidate. */
 export function sendAnswer(status: number, body: Json): SendAnswer {
   if (status === 200 && body?.status === 'received') return { kind: 'received' }
   if (status === 401) return { kind: 'ticket', text: 'Your ticket ran out. Ask for a new one to send your letter; your answers are kept.' }
+  if (status === 403 && body?.status === 'closed') return { kind: 'closed', text: CLOSED }
   if (status === 409)
     return { kind: 'registered', text: 'This address already has a registration. We have it, so there is nothing more to do.' }
   if (status === 422 && Array.isArray(body?.fields)) {

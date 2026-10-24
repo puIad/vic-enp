@@ -347,6 +347,12 @@ ul {
   color: #dbe3e9;
   margin-bottom: 20px;
 }
+/* the closed screen's link to @vic.enp */
+.ap-lead a {
+  color: var(--accent);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
 .ap-field {
   margin: 0 0 18px;
 }
@@ -546,8 +552,9 @@ ul {
   text-decoration: none;
   cursor: default;
 }
-.ap-link.is-quiet {
-  color: var(--muted);
+/* "6-digit" on one line: Gilroy has no non-breaking hyphen (U+2011) to do it */
+.ap-nb {
+  white-space: nowrap;
 }
 
 /* checked: the tick on the accent */

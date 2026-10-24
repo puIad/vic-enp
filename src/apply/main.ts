@@ -1,11 +1,16 @@
 // /apply's script: the ticket (Platform 9¾). Ask for a code with the local part, type the six digits, and on a checked
 // ticket the address locks and the 8 stops unlock (form.ts fills them). A draft on this phone (draft.ts) opens the letter
-// straight away inside the ticket's hour, and after it asks only for the ticket. The words come from ticket.ts; this
-// file only moves the page.
+// straight away inside the ticket's hour, and after it asks only for the ticket; a ticket on its way (sent.ts) opens the
+// code box again after a reload. From CLOSES_AT the page shows only that applications are closed. The words come from
+// ticket.ts and letter.ts; this file only moves the page.
 
+import { CLOSES_AT, clockOffset } from '../calendar'
+import { INSTAGRAM } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
+import { CLOSED } from './letter'
+import { clearSent, loadSent, saveSent } from './sent'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
 
 // tier 0 (reduced motion, Save-Data, 2 GB of memory or less, ?tier=0) gets the same form with nothing animated (apply.css)
@@ -22,6 +27,8 @@ const code = $<HTMLInputElement>('tk-code')
 const board = $<HTMLButtonElement>('tk-board')
 const resend = $<HTMLButtonElement>('tk-resend')
 const lead = $('tk-lead')
+
+const store = browserStore()
 
 /** the local part the last ticket went to: the code is checked against it */
 let sentTo = ''
@@ -78,13 +85,17 @@ async function requestTicket(l: string, where: 'tk-ask-err' | 'tk-check-err'): P
   }
   sentTo = l
   startCountdown(a.resendIn)
+  saveSent(store, { local: l, at: Date.now(), resendAt })
   return true
 }
+
+/** "6-digit" kept on one line: Gilroy has no non-breaking hyphen (U+2011), so the hyphen is plain and the span holds it */
+const sixDigit = () => Object.assign(document.createElement('span'), { className: 'ap-nb', textContent: '6-digit' })
 
 function showCheck() {
   ask.hidden = true
   check.hidden = false
-  lead.replaceChildren('We sent a 6‑digit ticket to ', Object.assign(document.createElement('b'), { textContent: addressOf(sentTo) }), '. It stays valid for 10 minutes.')
+  lead.replaceChildren('We sent a ', sixDigit(), ' ticket to ', Object.assign(document.createElement('b'), { textContent: addressOf(sentTo) }), '. It stays valid for 10 minutes.')
   code.value = ''
   say('tk-check-err', '')
   code.focus()
@@ -94,13 +105,14 @@ function showAsk() {
   check.hidden = true
   ask.hidden = false
   clearInterval(timer)
-  lead.textContent = 'Enter your ENP address and we will mail you a 6‑digit ticket. Typing it in proves the address is yours.'
+  lead.replaceChildren('Enter your ENP address and we will mail you a ', sixDigit(), ' ticket. Typing it in proves the address is yours.')
   local.focus()
 }
 
 /** A checked ticket: the address locks for this visit and the 8 stops unlock. `at` is when it was checked. */
 function proven(at = Date.now()) {
   clearInterval(timer)
+  clearSent(store)
   const email = addressOf(sentTo)
   check.hidden = true
   ask.hidden = false
@@ -185,20 +197,46 @@ resend.addEventListener('click', async () => {
   } else tick()
 })
 
+// "Use a different email": a mistyped address gets fixed in the box it was typed in, and the ticket on its way is forgotten
 $('tk-change').addEventListener('click', () => {
+  clearSent(store)
+  local.value = sentTo
   say('tk-ask-err', '')
   showAsk()
 })
 
+/** From CLOSES_AT: no ticket form and no letter, only the line that applications are closed. */
+function showClosed() {
+  ask.hidden = true
+  check.hidden = true
+  $('tk-unlock').hidden = true
+  // CLOSED's words, with @vic.enp as the link
+  const [before, after] = CLOSED.split('@vic.enp on Instagram')
+  lead.replaceChildren(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: '@vic.enp on Instagram' }), after)
+}
+
 // a draft on this phone: inside the ticket's hour the letter opens as it was left; after it, the room keeps its house
 // and the ticket is asked again, the answers waiting behind it
-const saved = loadDraft(browserStore(), Date.now())
+const saved = loadDraft(store, Date.now())
 const savedLocal = saved?.draft.email ? localPart(saved.draft.email) : null
+// a ticket checked before the close keeps its hour to send the letter (the API takes it until then)
 if (saved?.proven && savedLocal && 'local' in savedLocal) {
   sentTo = savedLocal.local
   proven(saved.draft.provenAt)
-} else if (saved) {
-  washRoom(saved.draft.house)
-  if (savedLocal && 'local' in savedLocal) local.value = savedLocal.local
-  lead.textContent = 'Welcome back. Your answers are saved on this phone: ask for a new ticket to pick up where you stopped.'
+} else if (Date.now() + clockOffset(location.search) >= +CLOSES_AT) {
+  showClosed()
+} else {
+  if (saved) {
+    washRoom(saved.draft.house)
+    if (savedLocal && 'local' in savedLocal) local.value = savedLocal.local
+    lead.textContent = 'Welcome back. Your answers are saved on this phone: ask for a new ticket to pick up where you stopped.'
+  }
+  // a reload while the ticket is on its way: back to the code box, the resend wait carried on
+  const sent = loadSent(store, Date.now())
+  if (sent?.live) {
+    sentTo = sent.local
+    local.value = sent.local
+    showCheck()
+    startCountdown(Math.max(0, Math.ceil((sent.resendAt - Date.now()) / 1000)))
+  } else if (sent && !local.value) local.value = sent.local
 }

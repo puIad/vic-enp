@@ -196,6 +196,27 @@ describe('POST /api/submit', () => {
     expect(Number(await s.r.redis.command(['EXISTS', REG]))).toBe(0)
   })
 
+  it('takes letters for the ticket hour after the close, then answers 403 "closed" and writes nothing', async () => {
+    const s = setup()
+    s.d.closesAt = s.clock.now - 1000
+    expect((await send(s.d, s.cookie, { answers: IT_LETTER })).status).toBe(200)
+    const late = setup()
+    late.d.closesAt = late.clock.now - 60 * 60_000
+    const res = await send(late.d, late.cookie, { answers: IT_LETTER })
+    expect(res.status).toBe(403)
+    expect(await res.json()).toEqual({ status: 'closed' })
+    expect(late.tab.rows).toHaveLength(0)
+    expect(await late.r.redis.command(['EXISTS', REG])).toBe(0)
+  })
+
+  it('counts each outcome in the hour', async () => {
+    const s = setup()
+    await send(s.d, s.cookie, { answers: IT_LETTER })
+    await send(s.d, s.cookie, { answers: IT_LETTER })
+    // 8:30 UTC is 9:30 in Algiers
+    expect(Object.fromEntries(s.r.data.get('stats:2026-10-25T09') as Map<string, string>)).toEqual({ 'submit.received': '1', 'submit.registered': '1' })
+  })
+
   it('answers 400 to a body that is not JSON', async () => {
     const s = setup()
     const res = await submitLetter(new Request('https://vic-enp.vercel.app/api/submit', { method: 'POST', headers: { cookie: s.cookie }, body: 'answers=1' }), s.d)

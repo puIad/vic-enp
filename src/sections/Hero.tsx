@@ -12,7 +12,7 @@ export function Hero({ cta }: { cta: Cta }) {
         Engineer more than your degree.
       </h1>
       <p className="t-lead mt-6 text-gray md:mt-[26px]">
-        <b className="font-bold text-white">Vision &amp; Innovation Club.</b>
+        <b className="vic-grad font-bold">Vision &amp; Innovation Club</b>
       </p>
       <div id="hero-cta" className="mt-7 flex md:mt-[34px]">
         <ApplyPill cta={cta} className="pill-lg" />

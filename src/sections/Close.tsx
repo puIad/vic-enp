@@ -6,7 +6,7 @@ import { Plain, Words } from '../components/Scrub'
 import { ClosePoster, usePhone } from '../components/Poster'
 import { ADDRESS, EMAIL, SOCIAL } from '../config'
 import type { Cta } from '../lib/opening'
-import { mottoProgress, startsByBlock, type Part } from '../lib/scrub'
+import { mottoProgress, startsByBlock, textOf, type Part } from '../lib/scrub'
 import { useScrub } from '../lib/useScrub'
 import { world } from '../world/store'
 
@@ -174,7 +174,7 @@ function Links({ title, links }: { title: string; links: readonly { label: strin
 // The closing motto (#36, decisions.md, 62): the same word scrub as act 2's title, so the page opens and closes on one device.
 // Each word lights over a quarter of the motto's progress. The progress runs on the motto and the committee photo under
 // it together, so it ends with the page, and the photo brightens with the motto's second line (decision 105).
-const MOTTO: Part[][] = [['Once a VICer,'], ['Always a VICer.']]
+const MOTTO: Part[][] = [['Once a ', { b: 'VICer,' }], ['Always a ', { b: 'VICer.' }]]
 const MOTTO_AT = startsByBlock(MOTTO, 0, 0.75)
 const MOTTO_SL = 0.25
 const END_STYLE = { '--sl': MOTTO_SL, '--pa': MOTTO_AT[1][0], '--pb': MOTTO_AT[1].at(-1)! + MOTTO_SL } as CSSProperties
@@ -217,11 +217,11 @@ export function Footer({ staged = false }: { staged?: boolean }) {
         <p className="motto t-display">
           {staged ? (
             <>
-              <span className="sr-only">{MOTTO.flat().join(' ')}</span>
+              <span className="sr-only">{MOTTO.map((l) => l.map(textOf).join('')).join(' ')}</span>
               <span aria-hidden="true">
                 {MOTTO.map((line, i) => (
                   <span key={i} className="block">
-                    <Words parts={line} starts={MOTTO_AT[i]} read={false} />
+                    <Words parts={line} starts={MOTTO_AT[i]} bold="vic-grad" read={false} />
                   </span>
                 ))}
               </span>
@@ -229,9 +229,9 @@ export function Footer({ staged = false }: { staged?: boolean }) {
           ) : (
             <>
               <span className="block">
-                <Plain parts={MOTTO[0]} />
+                <Plain parts={MOTTO[0]} bold="vic-grad" />
               </span>{' '}
-              <Plain parts={MOTTO[1]} />
+              <Plain parts={MOTTO[1]} bold="vic-grad" />
             </>
           )}
         </p>

@@ -260,3 +260,9 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 | # | Decision | By | Notes |
 |---|---|---|---|
 | 137 | The peak's end is the flow's, as the events' is (115): from the tenth photo a mouse, a slow swipe or a trackpad stroke scrolls on at the visitor's pace while the ENP photo returns full frame, and whatever reaches the Gala's door (a drag or a fling) lands on the Gala, as at any run's door (95). Going up from the Gala still lands on the tenth photo. The edges' hold (114) is unchanged on both. Amends 97's exit and the experience spec's "the peak and the events meet with no flow between". | Claude, from the owner's report (2026-10-24); the owner approves by merging | The report: the same quick skip as 115's, between the last photo and the Gala. Any gesture down at the tenth photo glided to the Gala's middle, past the ENP photo's return and into the Gala's cut, in 0.4 s. |
+
+## 2026-10-24: the VIC gradient on words
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 138 | The footer motto's two "VICer"s and the hero's "Vision & Innovation Club" carry the brand gradient as clipped text (`.vic-grad` in index.css), blue, aqua, blue, drifting on a 4 s loop; reduced motion keeps it still. The hero's club name loses its full stop. Amends 18 ("never in or behind text") for these two runs only, and 62, which had declined a gradient sweep on the motto (the word scrub stays). In forced colours the words fall back to plain system text. At lead size the brand blue measures 3.8:1 on night, under decision 123's 4.5:1, so the club name's blue end is `#2e8cc3` (12% toward white, 4.5:1); the motto keeps `#127dbb` at display size (3:1 bar). | Owner, 2026-10-24 | Asked: "color both VICer ... with the VIC's gradient and make the gradient animate; do the same with the hero's small vision & innovation club". The lighter blue stop came from the #91 review. |

@@ -1610,6 +1610,42 @@
       padding-top: 14px;
     }
   }
+  /* ---------- the VIC gradient on words (owner, 2026-10-24): the motto's two "VICer"s and the hero's club name ---------- */
+  /* the brand pair runs blue, aqua, blue across twice the word's width and drifts, so it loops without a seam; reduced
+     motion keeps it still. The title shadow would paint over a clipped fill, so the lift is a drop shadow instead. */
+  .vic-grad {
+    --vg-blue: var(--color-blue);
+    background: linear-gradient(90deg, var(--vg-blue), var(--color-aqua), var(--vg-blue)) 0 0 / 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 2px 4px rgb(5 10 15 / 0.45));
+  }
+  /* at lead size the brand blue is 3.8:1 on night, under the accents' 4.5:1 (decision 123): the club name's blue end is
+     lifted 12% toward white, 4.5:1 (decision 138). The motto, at display size, keeps the brand blue. */
+  .t-lead .vic-grad {
+    --vg-blue: #2e8cc3;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .vic-grad {
+      animation: vic-grad 4s linear infinite;
+    }
+  }
+  /* forced colours keep no background image under the clipped text, so the words go back to plain system text */
+  @media (forced-colors: active) {
+    .vic-grad {
+      background: none;
+      color: CanvasText;
+      -webkit-text-fill-color: CanvasText;
+    }
+  }
+  @keyframes vic-grad {
+    to {
+      background-position: -200% 0;
+    }
+  }
   /* ---------- the word scrub (#36): a word lights over --sl of its block's progress (--sk) from its start (--a) ---------- */
   .sw {
     --wo: clamp(0, calc((var(--sk, 0) - var(--a)) / var(--sl, 0.05)), 1);

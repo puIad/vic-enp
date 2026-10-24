@@ -132,9 +132,9 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   3. **Set up your interview.** If your application is accepted, two club members contact you within a day to
      set up your interview. (The activity-department sentence was cut, decision 136.)
   4. **Join your department!** Get your result and start with your new family.
-- **Then grow.** Lead: "Joining is the start. Here is where members go next." Six rungs: Organizing teams
+- **Then grow.** Lead: "Joining is the start. Here is where members go next." Five rungs: Organizing teams
   ("Join the organizing team of an event."), Across departments ("Help in other departments once you have
-  experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Specialized
+  experience."), Specialized
   teams ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Commit to the club ("Run
   for Head of Department or President."), Research & Development Squad ("Review and improve the club's charters.
   Open to members with experience.").
@@ -188,7 +188,7 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Here is where members go
     next." (approved 2026-10-20), "Still unsure? Message us on Instagram, @vic.enp."
 11. Fill in the form. / Check your inbox. / Set up your interview. / Join your department!
-12. The six rung titles: Organizing teams, Across departments, Project manager, Specialized teams, Commit to the
+12. The five rung titles (Project manager cut, decision 137): Organizing teams, Across departments, Specialized teams, Commit to the
     club, Research & Development Squad (the last two are the owner's, 2026-10-20).
 13. The two rewritten FAQ answers in act 6.
 14. Your point is on its way.

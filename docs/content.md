@@ -15,7 +15,7 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
   write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46). The footer's street name, Rue des
   Frères OUDEK, is written as the owner gave it ([decisions.md](decisions.md), 58).
 - US spelling: organized, organizing, specialized.
-- No eyebrows over headings and no pills, except IT's "Design and media, not coding" ([decisions.md](decisions.md), 43, 44).
+- No eyebrows over headings and no pills ([decisions.md](decisions.md), 43, 136; IT's pill, kept by 44, is gone).
 - Proper names as the club writes them: VIC, VICer, ENP, HR, FLER, IT, COMM, SPARK, English Bubble, Training,
   The Local, FARI9 TI9NI, P&V, Engineers' GALA, Ignite® Algiers, POLYMAZE, AEC, CPSP, VIC Charity, MasterClass, VICra,
   École Nationale Polytechnique d'Alger.
@@ -78,10 +78,10 @@ was. The chips are cut (owner, 2026-10-20) except IT's flagged one; the column s
 
 | Cut | Line | Lead | Chips (cut) | Suits | What you'd do |
 |---|---|---|---|---|---|
-| HR · main 1 of 4 | Run the community. | HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration. | People management, Organization, Reporting, Event operations | Suits organized people who care about the community. | Recruit and welcome new members; Follow up on members' engagement and motivation; Run VIC Entertainment, the fun side of the club; Organize logistics on event day |
-| FLER · main 2 of 4 | Win the sponsors. | FLER is the club's link to companies, associations and guests, plus its logistics and budget. | Negotiation, Sponsorship, Budgeting, Logistics | Suits confident communicators who want hands-on experience with the professional world. | Contact companies and secure sponsorships for events; Build relationships with partners, institutions and alumni; Manage venues, sound, screens, catering and printables; Look for TV, radio and press appearances |
-| IT · main 3 of 4 | Design the club. | IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo. | Design and media, not coding (flagged chip, **kept**); Branding; Photography; Videography | Suits creatives, designers, photographers and anyone who wants to learn. | Design posts, stories, posters and flyers; Build a full visual identity for each event; Join the Photography and Videography team; Join FARI9 TI9NI, the tech crew on event day |
-| COMM · main 4 of 4 | Tell the story. | COMM runs the club's public image and gets every event in front of its audience. | Copywriting, Content strategy, Social media, Storytelling | Suits writers, storytellers and natural communicators. | Plan the communication for each event; Write captions, slogans, scripts and emails; Run VIC's social media; Build media partnerships and join the TikTok Content Team |
+| HR · main 1 of 4 | Run the community. | HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration. | People management, Organization, Reporting, Event operations | — (cut, 136) | Recruit and welcome new members; Follow up on members' engagement and motivation; Run VIC Entertainment, the fun side of the club; Organize logistics on event day |
+| FLER · main 2 of 4 | Win the sponsors. | FLER is the club's link to companies, associations and guests, plus its logistics and budget. | Negotiation, Sponsorship, Budgeting, Logistics | — (cut, 136) | Contact companies and secure sponsorships for events; Build relationships with partners, institutions and alumni; Manage venues, sound, screens, catering and printables; Look for TV, radio and press appearances |
+| IT · main 3 of 4 | Design the club. | IT make every poster, post, banner, video and photo, basically everything people look at | Branding; Photography; Videography | — (cut, 136) | Design posts, stories, posters and flyers; Build a full visual identity for each event; Join the Photography and Videography team; Join FARI9 TI9NI, the tech crew on event day |
+| COMM · main 4 of 4 | Tell the story. | COMM runs the club's public image and gets every event in front of its audience. | Copywriting, Content strategy, Social media, Storytelling | — (cut, 136) | Plan the communication for each event; Write captions, slogans, scripts and emails; Run VIC's social media; Build media partnerships and join the TikTok Content Team |
 | SPARK · activity 1 of 3 | Build robots. | SPARK is science, tech and robotics: hands-on workshops, competitions and a free learning platform. | Workshops, Competitions, Free learning platform | | Join workshops chosen from members' needs; Compete under SPARK's name, with technical support; Work on internal projects and research; Learn from free courses that fill curriculum gaps |
 | Training · activity 2 of 3 | Choose your skills. | At the start of the year you pick the skills you want to learn. The yearly plan is built around your answers. | Soft skills, Technical skills, Peer-to-peer sessions | | Attend sessions led by internal and external trainers; Teach what you are good at, peer to peer; Join learning groups with practical tasks and progress tracking |
 | English Bubble · activity 3 of 3 | Speak with confidence. | English Bubble is a relaxed place to practice English: debates, games, book discussions and social nights. | Debates, Games, Book discussions, Social nights | | Talk and share ideas in a relaxed setting; Build confidence, public speaking and leadership; Try new things in a safe space |
@@ -130,8 +130,8 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   2. **Check your inbox.** You get a confirmation email with your registration code. (Only if
      `CONFIRM_REGISTRANTS` is on at launch; if not, this step drops and the rest renumber.)
   3. **Set up your interview.** If your application is accepted, two club members contact you within a day to
-     set up your interview. You choose your activity department there: SPARK, Training or English Bubble.
-  4. **Join your teams.** Get your result and start with your departments.
+     set up your interview. (The activity-department sentence was cut, decision 136.)
+  4. **Join your department!** Get your result and start with your new family.
 - **Then grow.** Lead: "Joining is the start. Here is where members go next." Six rungs: Organizing teams
   ("Join the organizing team of an event."), Across departments ("Help in other departments once you have
   experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Specialized
@@ -187,7 +187,7 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 9. Events and projects, organized by the whole club.
 10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Here is where members go
     next." (approved 2026-10-20), "Still unsure? Message us on Instagram, @vic.enp."
-11. Fill in the form. / Check your inbox. / Set up your interview. / Join your teams.
+11. Fill in the form. / Check your inbox. / Set up your interview. / Join your department!
 12. The six rung titles: Organizing teams, Across departments, Project manager, Specialized teams, Commit to the
     club, Research & Development Squad (the last two are the owner's, 2026-10-20).
 13. The two rewritten FAQ answers in act 6.
@@ -208,7 +208,7 @@ The humanizer pass, each line shown to the owner before and after and approved (
 | COMM lead | COMM is the bridge between the club and its audience: its public image, its events and its reach. | COMM runs the club's public image and gets every event in front of its audience. |
 | Departments note | You pick one main and one activity department when you apply. | You join one main and one activity department. |
 | Departments title | Seven departments. You pick one main and one activity. | Seven departments. You join one main and one activity. |
-| Events note | Every event is organized by the whole club. Every department plays a part. | The whole club organizes every event, and every department plays a part. |
+| Events note | Every event is organized by the whole club. Every department plays a part. | — (cut, 136) |
 | Club life lead | Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them. | Without exception. |
 | Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. (The row left the page later that day, [decisions.md](decisions.md), 55.) |
 | Then grow lead | Joining is the start. Members move on in many directions. | Joining is the start. Here is where members go next. |

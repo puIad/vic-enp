@@ -133,7 +133,6 @@ export default function EventsStage() {
         </article>
         {/* the pan: an event-coloured streak sweeps over each cut as it lands */}
         {cut >= 0 && <div key={cut} className="ev-streak" aria-hidden="true" style={{ '--c': cut < 4 ? EVENTS[cut].accent : '#69C4AF' } as CSSProperties} />}
-        <p className={`cuts-note ${cut === 0 ? 'on' : ''}`}>The whole club organizes every event, and every department plays a part.</p>
         <nav className={`cut-pick ev-pick ${cut >= 0 ? 'on' : ''}`} aria-label="Jump to an event">
           <div className="cut-pick-row">
             {NAMES.map((n, i) => (

@@ -5,9 +5,9 @@ export const STEPS = [
   { title: 'Check your inbox.', text: 'You get a confirmation email with your registration code.' },
   {
     title: 'Set up your interview.',
-    text: 'If your application is accepted, two club members contact you within a day to set up your interview. You choose your activity department there: SPARK, Training or English Bubble.',
+    text: 'If your application is accepted, two club members contact you within a day to set up your interview.',
   },
-  { title: 'Join your teams.', text: 'Get your result and start with your departments.' },
+  { title: 'Join your department!', text: 'Get your result and start with your new family.' },
 ]
 
 export const RUNGS = [

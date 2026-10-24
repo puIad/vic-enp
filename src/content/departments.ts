@@ -1,4 +1,4 @@
-// docs/content.md, act 3. Lines and leads are new (owner's list); Suits and "What you'd do" are brief §4, §5.
+// docs/content.md, act 3. Lines and leads are new (owner's list); "What you'd do" is brief §5.
 
 export type DeptIcon = 'hr' | 'fler' | 'it' | 'comm' | 'spark' | 'training' | 'bubble'
 
@@ -7,9 +7,6 @@ export type Department = {
   name: string
   line: string
   lead: string
-  /** IT's "not coding" pill, the one pill left in the act (owner, 2026-10-20). */
-  flagged?: string
-  suits?: string
   does: string[]
   /** Accent as light: a CSS colour for the rule, icon and outline (docs/brand.md, #13). */
   accent: string
@@ -23,7 +20,6 @@ export const MAIN: Department[] = [
     name: 'HR',
     line: 'Run the community.',
     lead: "HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration.",
-    suits: 'Suits organized people who care about the community.',
     does: [
       'Recruit and welcome new members',
       "Follow up on members' engagement and motivation",
@@ -37,7 +33,6 @@ export const MAIN: Department[] = [
     name: 'FLER',
     line: 'Win the sponsors.',
     lead: "FLER is the club's link to companies, associations and guests, plus its logistics and budget.",
-    suits: 'Suits confident communicators who want hands-on experience with the professional world.',
     does: [
       'Contact companies and secure sponsorships for events',
       'Build relationships with partners, institutions and alumni',
@@ -50,9 +45,7 @@ export const MAIN: Department[] = [
     id: 'it',
     name: 'IT',
     line: 'Design the club.',
-    lead: 'IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo.',
-    flagged: 'Design and media, not coding',
-    suits: 'Suits creatives, designers, photographers and anyone who wants to learn.',
+    lead: 'IT make every poster, post, banner, video and photo, basically everything people look at',
     does: [
       'Design posts, stories, posters and flyers',
       'Build a full visual identity for each event',
@@ -66,7 +59,6 @@ export const MAIN: Department[] = [
     name: 'COMM',
     line: 'Tell the story.',
     lead: "COMM runs the club's public image and gets every event in front of its audience.",
-    suits: 'Suits writers, storytellers and natural communicators.',
     does: [
       'Plan the communication for each event',
       'Write captions, slogans, scripts and emails',

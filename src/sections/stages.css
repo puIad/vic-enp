@@ -107,15 +107,6 @@
   line-height: 1.45;
   color: var(--color-gray);
 }
-.cut-flag {
-  margin-top: 20px;
-}
-.cut-suits {
-  margin-top: 14px;
-  max-width: 46ch;
-  font-size: var(--t-cap);
-  color: var(--color-mute);
-}
 .cut-more {
   display: inline-flex;
   align-items: center;
@@ -203,9 +194,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--c);
-}
-.cut-panel .suits-m {
-  display: none;
 }
 .cut.open .cut-body {
   display: none;
@@ -519,17 +507,6 @@
   .cut-name::before {
     width: 28px;
     height: 3px;
-  }
-  .cut-flag {
-    margin-top: 14px;
-  }
-  /* on phones the Suits line moves into the opened panel, to keep the headline clear of the formation */
-  .cut-suits {
-    display: none;
-  }
-  .cut-panel .suits-m {
-    display: list-item;
-    color: var(--color-mute);
   }
   .cuts-note {
     display: none;

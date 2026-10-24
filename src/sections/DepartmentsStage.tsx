@@ -29,8 +29,6 @@ function Cut({ d, n, on, open, onToggle }: { d: Department; n: number; on: boole
       </h3>
       <div className="cut-body">
         <p className="cut-lead">{d.lead}</p>
-        {d.flagged && <p className="flag-pill cut-flag">{d.flagged}</p>}
-        {d.suits && <p className="cut-suits">{d.suits}</p>}
       </div>
       <button type="button" className="cut-more" aria-expanded={open} aria-controls={panel} tabIndex={off} onClick={onToggle}>
         What you'd do <i aria-hidden="true" />
@@ -41,7 +39,6 @@ function Cut({ d, n, on, open, onToggle }: { d: Department; n: number; on: boole
           {d.does.map((x) => (
             <li key={x}>{x}</li>
           ))}
-          {d.suits && <li className="suits-m">{d.suits}</li>}
         </ul>
       </div>
     </article>

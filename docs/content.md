@@ -72,9 +72,9 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 
 ## Act 3: departments
 
-Caption under the first cut: "You join one main and one activity department." Lines and leads are **new**; Suits
-and "What you'd do" come from §4 and §5. Each cut and card shows the department's name, large, where the eyebrow
-was. The chips are cut (owner, 2026-10-20) except IT's flagged one; the column stays below as the record.
+Caption under the first cut: "You join one main and one activity department." Lines and leads are **new**; "What you'd
+do" comes from §5 (the Suits lines were cut, [decisions.md](decisions.md), 136). Each cut and card shows the department's name, large, where the eyebrow
+was. The chips are cut (owner, 2026-10-20; IT's flagged one on 2026-10-24, 136); the column stays below as the record.
 
 | Cut | Line | Lead | Chips (cut) | Suits | What you'd do |
 |---|---|---|---|---|---|
@@ -115,8 +115,8 @@ their own descriptions and approved on 2026-10-20 ([decisions.md](decisions.md),
 | 5 | Four more projects. | CPSP: The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes. / VIC Charity: A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan. / MasterClass: A summer project: expert trainers teach practical skills on Discord while you build your own creative project. / VICra: VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts. | Logos in slice 5 |
 
 Each event links to its own site, last in its text, after the lead and AEC's cities ([decisions.md](decisions.md),
-47, 57). STEPS and Anglosphere left the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
-organizes every event, and every department plays a part." (§7). Tier 0 title (**new**): "Events and projects,
+47, 57). STEPS and Anglosphere left the projects on 2026-10-20: they are events. No note on cut 1 (cut,
+136). Tier 0 title (**new**): "Events and projects,
 organized by the whole club."
 
 ## Act 6: how to join, grow after joining, FAQ
@@ -134,8 +134,7 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   4. **Join your department!** Get your result and start with your new family.
 - **Then grow.** Lead: "Joining is the start. Here is where members go next." Five rungs: Organizing teams
   ("Join the organizing team of an event."), Across departments ("Help in other departments once you have
-  experience."), Specialized
-  teams ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Commit to the club ("Run
+  experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Commit to the club ("Run
   for Head of Department or President."), Research & Development Squad ("Review and improve the club's charters.
   Open to members with experience.").
 - **Questions.** Lead: "Still unsure? Message us on Instagram, @vic.enp." The nine §9 questions, verbatim except:
@@ -188,7 +187,7 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Here is where members go
     next." (approved 2026-10-20), "Still unsure? Message us on Instagram, @vic.enp."
 11. Fill in the form. / Check your inbox. / Set up your interview. / Join your department!
-12. The five rung titles (Project manager cut, decision 137): Organizing teams, Across departments, Specialized teams, Commit to the
+12. The five rung titles (Specialized teams cut, decision 137): Organizing teams, Across departments, Project manager, Commit to the
     club, Research & Development Squad (the last two are the owner's, 2026-10-20).
 13. The two rewritten FAQ answers in act 6.
 14. Your point is on its way.
@@ -224,7 +223,7 @@ The places where the source brief and the recruitment system disagreed. Settled 
    activity department at the interview ([#16](https://github.com/puIad/vic-enp/issues/16)).
 2. **The 48 hours.** Settled: "If your application is accepted, two club members contact you within a day to set
    up your interview." ([#16](https://github.com/puIad/vic-enp/issues/16))
-3. **IT is not coding.** Settled: said in the IT lead and flagged chip, and in the FAQ ([#13](https://github.com/puIad/vic-enp/issues/13)).
+3. **IT is not coding.** Settled: said in the FAQ only, since the IT lead and flagged chip changed in 136 ([#13](https://github.com/puIad/vic-enp/issues/13)).
 4. **FLER eligibility.** Settled: FAQ only.
 5. **What happens after submitting.** Settled as step 2, which depends on `CONFIRM_REGISTRANTS` being on at
    launch.

@@ -280,3 +280,10 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 | # | Decision | By | Notes |
 |---|---|---|---|
 | 142 | Amends 127: the readout's plate no longer leaves over the light act. It turns Bright Gray there (a cross-fade, `.readout::after`), because the act's dark copy ran into the readout on mobile. The night plate is also larger (300 × 130 px, 220 × 110 on mobile) so the label and the number sit in its solid core rather than its fade. The logo's plate is unchanged. | Owner, 2026-10-24 | Asked: "the top right distance to the 600 text sometimes gets blocked by words in the content especially on mobile, could you add something below it just like in the logo". |
+
+## 2026-10-24: act 2, the 600 in the gradient and the shadow on all its text
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 143 | In act 2, the "600" of "600 members" takes the drifting VIC gradient (`.vic-grad`, 138) only once its count reaches 600; it counts up in white. Tier 0 and reduced motion show the figure whole, so in the gradient from the start (still under reduced motion). The other three numbers stay white. | Owner, 2026-10-24 | Asked: "make the 600 count in the 600 act start the vic gradient only once it reaches 600". At figure size the brand blue's 3.8:1 clears the 3:1 bar for large text. |
+| 144 | All of act 2's text carries the titles' shadow (`--title-shadow`, 135), not only its Heavy titles: the pinned title, sentences, numbers and captions, and the benefits after them. The gradient "600" keeps its own drop shadow (138). | Owner, 2026-10-24 | Asked: "add that same drop shadow to all text in the 600 act". |

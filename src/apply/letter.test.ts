@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { DEPARTMENTS, RECEIVED, STOPS, sendAnswer } from './letter'
+import { CLOSED, DEPARTMENTS, FOLLOW, RECEIVED, STOPS, sendAnswer } from './letter'
 import { ASKED } from './questions'
 
 const DOC = readFileSync(resolve(import.meta.dirname, '../../docs/source/registration-questions.md'), 'utf8').replaceAll('\r\n', '\n')
@@ -40,6 +40,8 @@ describe('sendAnswer', () => {
 
   it('says applications are closed on 403 "closed"', () => {
     expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 5 November/) })
+    // the closed screen splits CLOSED on FOLLOW to make the link
+    expect(CLOSED.split(FOLLOW)).toHaveLength(2)
   })
 
   it('says an address is already registered on 409', () => {

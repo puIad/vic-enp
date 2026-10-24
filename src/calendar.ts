@@ -1,5 +1,6 @@
 // The recruitment's two instants, Algiers time, and the `?now=` override that checks them. The page (config.ts), /apply
-// and the API (api/_lib) all read this file, so it imports nothing and touches no browser or Vite global.
+// and the API (api/_lib) all read this file, so it imports nothing and touches no browser or Vite global. Moving a date
+// also means the hand-typed copies listed in config.ts.
 
 /** Applications open: 26 Oct, 18:00 (decision 130). */
 export const OPENS_AT = new Date('2026-10-26T18:00:00+01:00')

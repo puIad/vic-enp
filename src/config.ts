@@ -3,8 +3,8 @@
 /**
  * When applications open and close, Algiers time: 26 Oct, 18:00 (decision 130) to 5 Nov, 18:00 (decision 147), in
  * calendar.ts so the API reads the same instants. The CTA label follows them; these copies are typed by hand and need
- * the same edit: index.html (meta, noscript), src/sections/Join.tsx (the act lead), src/content/join.ts (the FAQ
- * answer), public/og.png (re-render it).
+ * the same edit: src/sections/Join.tsx (the act lead), src/content/join.ts (the FAQ answer) and src/apply/letter.ts
+ * (CLOSED) for the close; index.html (meta, noscript) and public/og.png (re-render it) for the opening.
  */
 export { CLOSES_AT, OPENS_AT } from './calendar'
 

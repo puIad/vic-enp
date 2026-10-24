@@ -9,7 +9,7 @@ import { INSTAGRAM } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
-import { CLOSED } from './letter'
+import { CLOSED, FOLLOW } from './letter'
 import { clearSent, loadSent, saveSent } from './sent'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
 
@@ -211,8 +211,8 @@ function showClosed() {
   check.hidden = true
   $('tk-unlock').hidden = true
   // CLOSED's words, with @vic.enp as the link
-  const [before, after] = CLOSED.split('@vic.enp on Instagram')
-  lead.replaceChildren(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: '@vic.enp on Instagram' }), after)
+  const [before, after] = CLOSED.split(FOLLOW)
+  lead.replaceChildren(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: FOLLOW }), after)
 }
 
 // a draft on this phone: inside the ticket's hour the letter opens as it was left; after it, the room keeps its house

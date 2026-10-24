@@ -4,8 +4,8 @@ import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 
 /**
- * The page font's requests start from the HTML (docs/quality.md): a preload for Gilroy Regular and Heavy, the body and
- * the headlines every page shows first, with the hashed names the build gave them. Bold stays on demand.
+ * The page font's requests start from the HTML (docs/quality.md): a preload for each of Gilroy's three weights, with the
+ * hashed names the build gave them. Every page uses all three, and the hero's first screen is Heavy and Bold.
  */
 function preloadFont(): Plugin {
   return {
@@ -15,7 +15,7 @@ function preloadFont(): Plugin {
       order: 'post',
       handler(_, ctx) {
         const files = Object.keys(ctx.bundle ?? {})
-        return ['Regular', 'Heavy'].map((w) => {
+        return ['Regular', 'Bold', 'Heavy'].map((w) => {
           const font = files.find((f) => new RegExp(`Gilroy-${w}-[\\w-]+\\.woff2$`).test(f))
           if (!font) throw new Error(`vic:preload-font: the Gilroy ${w} file is missing from the build`)
           return { tag: 'link', attrs: { rel: 'preload', href: `/${font}`, as: 'font', type: 'font/woff2', crossorigin: '' }, injectTo: 'head' as const }

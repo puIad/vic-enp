@@ -48,10 +48,10 @@ npm run build     # type-check and build to dist/
 
 Useful while developing:
 
-- Add `?now=<ISO date>` to any URL to see the page at another moment, for example
-  `http://localhost:5173/?now=2026-10-27T10:00:00+01:00` shows the Apply button after opening.
+- Add `?now=<ISO date>` to any URL to see the page at another moment, in UTC (a `+` in a URL reads as a space), for
+  example `http://localhost:5173/?now=2026-10-27T09:00:00Z` shows the Apply button after opening.
 - The registration link comes from the `VITE_APPLY_URL` environment variable at build time. Without it the page
-  still runs; the button just has nowhere to go after opening.
+  still runs, and the button falls back to the club's Instagram after opening.
 - The `/apply` form's API needs its own environment variables (Redis, a Google service account, the mailer), listed
   in `api/_lib/env.ts`. They are set in the Vercel project and are not part of this repository.
 

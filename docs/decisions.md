@@ -241,3 +241,10 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 | 131 | Open questions 9 and 27: members' faces in the group photos may go on the public page, and the new copy list in content.md is approved as it ships. | Owner, 2026-10-23 | Asked. Declined: approving the copy only, or reviewing first. |
 | 132 | `/apply` may take registrations before `OPENS_AT`: no server time gate. The owner reviews non-admin rows at the final reset. | Owner, 2026-10-23 | Asked, from the Reality Checker. Declined: `api/submit` refusing before `OPENS_AT` (the form is frozen). |
 | 133 | Production freezes from the launch deploy (the #44 PR live on 24 Oct): after that only a rollback or the `VITE_APPLY_URL` switch. Corrects architecture.md, which put the freeze at the 22 Oct live check while main kept deploying. | Owner, 2026-10-23 | Asked. Declined: the freeze starting at opening. |
+
+## 2026-10-24: Gilroy and the titles' shadow
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 134 | Open question 11: the page uses **Gilroy** now, in its three charter weights (Regular, Bold, Heavy), self-hosted from the club's own files ([src/fonts.css](../src/fonts.css)). Outfit leaves the build. The registration form at `/apply` and the 404 follow, as decision 86 set. Regular and Heavy are preloaded; Bold loads on demand. | Owner, 2026-10-24 | The owner's call ("use gilroy as the font in the website now"); the licence question is the owner's. The files are the ones `VIC-Recruitment-2026/frontend/src/assets/fonts/` already ships, unchanged. Gilroy has no U+00A0 glyph; browsers shape it as a space. |
+| 135 | Every Heavy title on the night carries a slight drop shadow (`--title-shadow` in index.css: `0 2px 4px` and `0 6px 22px`, night-tinted) so it stands out over the world. The light act's dark titles on Bright Gray carry none. The cut line's chromatic split keeps the shadow under it. | Owner, 2026-10-24 | Asked: "make them a little more visible over the background by adding slight drop shadow". |

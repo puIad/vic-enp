@@ -1,9 +1,9 @@
 /* The registration form at /apply (apply.html): the comp's direction A, the long letter, on the night.
    Plain CSS, no Tailwind, and only apply's own small script (main.ts): it ships on its own, keeps the CSP's style-src 'self', and never pulls the
-   landing's bundle. Type: the landing's body font (Outfit, as index.css sets it) for everything, Cormorant Garamond on
+   landing's bundle. Type: the landing's font (Gilroy, as fonts.css sets it) for everything, Cormorant Garamond on
    the letter and the step titles only (owner, 22 Oct). Only the house wash's fade and owl post move; tier 0 and reduced
    motion see the same form with both still (the end of this file). */
-@import '@fontsource-variable/outfit';
+@import '../fonts.css';
 @import '@fontsource-variable/cormorant-garamond/wght.css';
 @import '@fontsource-variable/cormorant-garamond/wght-italic.css';
 
@@ -40,7 +40,7 @@
   --paper: #efefef;
   --paper-ink: #141e27;
   --paper-body: #3b4954;
-  --sans: 'Outfit Variable', system-ui, sans-serif;
+  --sans: 'Gilroy', system-ui, sans-serif;
   --serif: 'Cormorant Garamond Variable', Georgia, serif;
   /* each tile's house colour, on every wash (houses.test.ts holds them readable) */
   --h-it: #ff6a5e;

@@ -60,7 +60,7 @@ Copied from `VIC-Recruitment-2026` at scaffold time, unchanged:
 | From | To | Notes |
 |---|---|---|
 | `frontend/public/brand/*.svg`, `vic-logo-white.png` | `public/brand/` | Logo files. Never edited. |
-| `frontend/src/assets/fonts/Gilroy-*.woff2` | `src/assets/fonts/` | Only once the web licence is settled ([brand.md](brand.md#type-charter-p17-to-20)). |
+| `frontend/src/assets/fonts/Gilroy-{Regular,Bold,Heavy}.woff2` | `src/assets/fonts/` | Unchanged. The three charter weights only ([decisions.md](decisions.md), 134). |
 | `frontend/src/components/brand/*.tsx` | `src/components/brand/` | Charter motifs, if the design uses them. |
 
 The department, event and project logos ([#29](https://github.com/puIad/vic-enp/issues/29), decisions 59 and 60) come
@@ -119,5 +119,5 @@ Every file in `public/` that isn't code, one row each, filled during the build.
 | `public/brand/*` | VIC charter files via `VIC-Recruitment-2026` | VIC | Header, footer, share image |
 | `public/og.png` | Rendered in slice 1 from the page's own tier 0 hero (seeded cloud, white logo, tagline in the page font), 1200×630 | VIC | Share tags (open question 26) |
 | `public/apple-touch-icon.png` | `vic-icon-white.svg` on night, 180×180 | VIC | Home-screen icon |
-| Outfit (npm `@fontsource-variable/outfit`, bundled) | Google Fonts via Fontsource | SIL OFL 1.1 | Every word, until the Gilroy web licence is settled (open question 11) |
+| `src/assets/fonts/Gilroy-*.woff2` | `VIC-Recruitment-2026` (the club's files) | VIC (owner's call, decision 134) | Every word, on the landing, `/apply` and the 404 |
 | `public/photos/*` | `assets/pics/` (club photos, the committee cutout) | VIC | Peak, events, footer |

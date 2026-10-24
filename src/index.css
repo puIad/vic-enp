@@ -1,10 +1,9 @@
 @import 'tailwindcss';
-/* shortcut: Outfit stands in for Gilroy until the web licence is settled (open question 11); swap --font-sans when it is. */
-@import '@fontsource-variable/outfit';
+@import './fonts.css';
 
 /* The charter on the night (docs/brand.md, system sheet #10). */
 @theme {
-  --font-sans: 'Outfit Variable', system-ui, sans-serif;
+  --font-sans: 'Gilroy', system-ui, sans-serif;
 
   --color-night: #141e27;
   --color-night-up: #1a2733;
@@ -25,6 +24,8 @@
   --line-dark: rgb(20 30 39 / 0.16);
   --grad: linear-gradient(135deg, #127dbb, #69c4af);
   --radius: 20px;
+  /* the Heavy titles' lift off the world behind them (owner, 2026-10-24): slight, soft, night-tinted */
+  --title-shadow: 0 2px 4px rgb(5 10 15 / 0.45), 0 6px 22px rgb(5 10 15 / 0.4);
 
   /* type scale, signed in #10 */
   --t-display: clamp(52px, 9vw, 128px);
@@ -134,6 +135,18 @@
     line-height: 0.98;
     letter-spacing: -0.02em;
     color: #fff;
+  }
+  /* every Heavy title on the night carries the slight shadow; the light act's dark titles on Bright Gray don't */
+  .t-display,
+  .t-act,
+  .font-black,
+  .cut-line,
+  .jump-title,
+  .ev-rows h4 {
+    text-shadow: var(--title-shadow);
+  }
+  .lightact :is(.t-act, .font-black) {
+    text-shadow: none;
   }
   .t-lead {
     font-size: var(--t-lead);

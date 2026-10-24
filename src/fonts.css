@@ -1,0 +1,24 @@
+/* Gilroy, the charter's typeface (open question 11, settled 2026-10-24): the club's own files, copied unchanged from
+   VIC-Recruitment-2026/frontend/src/assets/fonts. Three weights only (charter rule): Regular for body, Bold for
+   controls and labels, Heavy for every headline. Imported by index.css, apply.css and not-found.css. */
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 100 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('./assets/fonts/Gilroy-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('./assets/fonts/Gilroy-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('./assets/fonts/Gilroy-Heavy.woff2') format('woff2');
+}

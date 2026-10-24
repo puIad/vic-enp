@@ -15,7 +15,7 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
   write them: Engineers' GALA and POLYMAZE ([decisions.md](decisions.md), 46). The footer's street name, Rue des
   Frères OUDEK, is written as the owner gave it ([decisions.md](decisions.md), 58).
 - US spelling: organized, organizing, specialized.
-- No eyebrows over headings and no pills, except IT's "Design and media, not coding" ([decisions.md](decisions.md), 43, 44).
+- No eyebrows over headings and no pills ([decisions.md](decisions.md), 43, 139; IT's pill, kept by 44, is gone).
 - Proper names as the club writes them: VIC, VICer, ENP, HR, FLER, IT, COMM, SPARK, English Bubble, Training,
   The Local, FARI9 TI9NI, P&V, Engineers' GALA, Ignite® Algiers, POLYMAZE, AEC, CPSP, VIC Charity, MasterClass, VICra,
   École Nationale Polytechnique d'Alger.
@@ -72,16 +72,16 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 
 ## Act 3: departments
 
-Caption under the first cut: "You join one main and one activity department." Lines and leads are **new**; Suits
-and "What you'd do" come from §4 and §5. Each cut and card shows the department's name, large, where the eyebrow
-was. The chips are cut (owner, 2026-10-20) except IT's flagged one; the column stays below as the record.
+Caption under the first cut: "You join one main and one activity department." Lines and leads are **new**; "What you'd
+do" comes from §5 (the Suits lines were cut, [decisions.md](decisions.md), 139). Each cut and card shows the department's name, large, where the eyebrow
+was. The chips are cut (owner, 2026-10-20; IT's flagged one on 2026-10-24, 139); the column stays below as the record.
 
 | Cut | Line | Lead | Chips (cut) | Suits | What you'd do |
 |---|---|---|---|---|---|
-| HR · main 1 of 4 | Run the community. | HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration. | People management, Organization, Reporting, Event operations | Suits organized people who care about the community. | Recruit and welcome new members; Follow up on members' engagement and motivation; Run VIC Entertainment, the fun side of the club; Organize logistics on event day |
-| FLER · main 2 of 4 | Win the sponsors. | FLER is the club's link to companies, associations and guests, plus its logistics and budget. | Negotiation, Sponsorship, Budgeting, Logistics | Suits confident communicators who want hands-on experience with the professional world. | Contact companies and secure sponsorships for events; Build relationships with partners, institutions and alumni; Manage venues, sound, screens, catering and printables; Look for TV, radio and press appearances |
-| IT · main 3 of 4 | Design the club. | IT at VIC means design and media, not programming. You make every poster, post, banner, video and photo. | Design and media, not coding (flagged chip, **kept**); Branding; Photography; Videography | Suits creatives, designers, photographers and anyone who wants to learn. | Design posts, stories, posters and flyers; Build a full visual identity for each event; Join the Photography and Videography team; Join FARI9 TI9NI, the tech crew on event day |
-| COMM · main 4 of 4 | Tell the story. | COMM runs the club's public image and gets every event in front of its audience. | Copywriting, Content strategy, Social media, Storytelling | Suits writers, storytellers and natural communicators. | Plan the communication for each event; Write captions, slogans, scripts and emails; Run VIC's social media; Build media partnerships and join the TikTok Content Team |
+| HR · main 1 of 4 | Run the community. | HR runs the club's internal life. You keep members connected and motivated, and you speak for the club to the school administration. | People management, Organization, Reporting, Event operations | — (cut, 139) | Recruit and welcome new members; Follow up on members' engagement and motivation; Run VIC Entertainment, the fun side of the club; Organize logistics on event day |
+| FLER · main 2 of 4 | Win the sponsors. | FLER is the club's link to companies, associations and guests, plus its logistics and budget. | Negotiation, Sponsorship, Budgeting, Logistics | — (cut, 139) | Contact companies and secure sponsorships for events; Build relationships with partners, institutions and alumni; Manage venues, sound, screens, catering and printables; Look for TV, radio and press appearances |
+| IT · main 3 of 4 | Design the club. | IT make every poster, post, banner, video and photo, basically everything people look at | Branding; Photography; Videography | — (cut, 139) | Design posts, stories, posters and flyers; Build a full visual identity for each event; Join the Photography and Videography team; Join FARI9 TI9NI, the tech crew on event day |
+| COMM · main 4 of 4 | Tell the story. | COMM runs the club's public image and gets every event in front of its audience. | Copywriting, Content strategy, Social media, Storytelling | — (cut, 139) | Plan the communication for each event; Write captions, slogans, scripts and emails; Run VIC's social media; Build media partnerships and join the TikTok Content Team |
 | SPARK · activity 1 of 3 | Build robots. | SPARK is science, tech and robotics: hands-on workshops, competitions and a free learning platform. | Workshops, Competitions, Free learning platform | | Join workshops chosen from members' needs; Compete under SPARK's name, with technical support; Work on internal projects and research; Learn from free courses that fill curriculum gaps |
 | Training · activity 2 of 3 | Choose your skills. | At the start of the year you pick the skills you want to learn. The yearly plan is built around your answers. | Soft skills, Technical skills, Peer-to-peer sessions | | Attend sessions led by internal and external trainers; Teach what you are good at, peer to peer; Join learning groups with practical tasks and progress tracking |
 | English Bubble · activity 3 of 3 | Speak with confidence. | English Bubble is a relaxed place to practice English: debates, games, book discussions and social nights. | Debates, Games, Book discussions, Social nights | | Talk and share ideas in a relaxed setting; Build confidence, public speaking and leadership; Try new things in a safe space |
@@ -115,8 +115,8 @@ their own descriptions and approved on 2026-10-20 ([decisions.md](decisions.md),
 | 5 | Four more projects. | CPSP: The Classe Préparatoire Starter Pack: advice and firsthand tips for first-year students entering the preparatory classes. / VIC Charity: A yearly project for children and families in need: Keswet El Aid, school supplies, hospital visits and Quffat Ramadan. / MasterClass: A summer project: expert trainers teach practical skills on Discord while you build your own creative project. / VICra: VIC's Ramadan series: stories on Islamic themes to reflect on, each followed by a quiz on the video, with gifts. | Logos in slice 5 |
 
 Each event links to its own site, last in its text, after the lead and AEC's cities ([decisions.md](decisions.md),
-47, 57). STEPS and Anglosphere left the projects on 2026-10-20: they are events. Note on cut 1 only: "The whole club
-organizes every event, and every department plays a part." (§7). Tier 0 title (**new**): "Events and projects,
+47, 57). STEPS and Anglosphere left the projects on 2026-10-20: they are events. No note on cut 1 (cut,
+139). Tier 0 title (**new**): "Events and projects,
 organized by the whole club."
 
 ## Act 6: how to join, grow after joining, FAQ
@@ -130,21 +130,26 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   2. **Check your inbox.** You get a confirmation email with your registration code. (Only if
      `CONFIRM_REGISTRANTS` is on at launch; if not, this step drops and the rest renumber.)
   3. **Set up your interview.** If your application is accepted, two club members contact you within a day to
-     set up your interview. You choose your activity department there: SPARK, Training or English Bubble.
-  4. **Join your teams.** Get your result and start with your departments.
-- **Then grow.** Lead: "Joining is the start. Here is where members go next." Six rungs: Organizing teams
-  ("Join the organizing team of an event."), Across departments ("Help in other departments once you have
-  experience."), Project manager ("Apply to be a Project Manager or take on a responsibility role."), Specialized
-  teams ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Commit to the club ("Run
-  for Head of Department or President."), Research & Development Squad ("Review and improve the club's charters.
-  Open to members with experience.").
+     set up your interview. (The activity-department sentence was cut, decision 139.)
+  4. **Join your department!** Get your result and start with your new family.
+- **Then grow.** Lead: "Joining is the start. Here is where members go next." Six rungs, in the owner's order of 2026-10-24 (decision 140): Specialized teams
+  ("P&V, TikTok Content Team, VIC Entertainment and FARI9 TI9NI, the D-Day crew."), Organizing teams ("Join the
+  organizing team of an event."), Across departments ("Help in other departments once you have experience."),
+  Project manager ("Apply to be a Project Manager or take on a responsibility role."), Research & Development Squad
+  ("Review and improve the club's charters. Open to members with experience."), Commit to the club ("Run for Head
+  of Department or President.").
 - **Questions.** Lead: "Still unsure? Message us on Instagram, @vic.enp." The nine §9 questions, verbatim except:
   - "Can I join more than one department?": "On the form you pick your first and second choice among the four
     main departments, and you choose your activity department at your interview. Once you have experience, you
     can help with tasks across departments."
   - "When does recruitment open, and how fast is the process?": "Applications open on 26 October 2026 at 18:00. If your
     application is accepted, two club members contact you within a day to set up your interview."
-  - The IT row adds "No coding required." and links to the departments. FLER eligibility lives in "I'm in another
+  - "Is the club only in English?": the owner's answer, verbatim ([decisions.md](decisions.md), 141): "Not really,
+    English is the club's official language, but we speak all languages internally (even Kabyle). English Bubble
+    exists precisely to help you get comfortable speaking it, and FLER members use French with companies."
+  - "I'm in another club. Can I still join?" drops its last sentence, "Committee members of other clubs also can't be
+    on VIC's committee." ([decisions.md](decisions.md), 141).
+  - The IT row adds "No coding required." and, the owner's words (141), "We do have a Web Development Team though." and links to the departments. FLER eligibility lives in "I'm in another
     club. Can I still join?".
 - Left out on purpose: "What VIC asks of you", the Parrainage session, any closing date, any promise of an
   interview.
@@ -187,10 +192,11 @@ Every line written for the page, not quoted from §1 to §13 (open question 27, 
 9. Events and projects, organized by the whole club.
 10. The act 6 titles and leads: "Every ENP student can apply...", "Joining is the start. Here is where members go
     next." (approved 2026-10-20), "Still unsure? Message us on Instagram, @vic.enp."
-11. Fill in the form. / Check your inbox. / Set up your interview. / Join your teams.
-12. The six rung titles: Organizing teams, Across departments, Project manager, Specialized teams, Commit to the
-    club, Research & Development Squad (the last two are the owner's, 2026-10-20).
-13. The two rewritten FAQ answers in act 6.
+11. Fill in the form. / Check your inbox. / Set up your interview. / Join your department!
+12. The six rung titles, reordered by the owner (decision 140): Specialized teams, Organizing teams, Across
+    departments, Project manager, Research & Development Squad, Commit to the club (the names of the last two
+    are the owner's, 2026-10-20).
+13. The rewritten FAQ answers in act 6 (the English one is the owner's, 141).
 14. Your point is on its way.
 15. The chrome lines above.
 16. The 404 page (decision 64, `404.html`): "This page isn't here.", "The address may be mistyped. The rest of VIC
@@ -208,7 +214,7 @@ The humanizer pass, each line shown to the owner before and after and approved (
 | COMM lead | COMM is the bridge between the club and its audience: its public image, its events and its reach. | COMM runs the club's public image and gets every event in front of its audience. |
 | Departments note | You pick one main and one activity department when you apply. | You join one main and one activity department. |
 | Departments title | Seven departments. You pick one main and one activity. | Seven departments. You join one main and one activity. |
-| Events note | Every event is organized by the whole club. Every department plays a part. | The whole club organizes every event, and every department plays a part. |
+| Events note | Every event is organized by the whole club. Every department plays a part. | — (cut, 139) |
 | Club life lead | Without exception. The Local, VIC's headquarters inside ENP, is a gathering place for all of them. | Without exception. |
 | Club life ledger | Charity: A school-supplies drive for students in need. | VIC Charity: A yearly project for children and families in need, from school supplies to Quffat Ramadan. (The row left the page later that day, [decisions.md](decisions.md), 55.) |
 | Then grow lead | Joining is the start. Members move on in many directions. | Joining is the start. Here is where members go next. |
@@ -224,7 +230,7 @@ The places where the source brief and the recruitment system disagreed. Settled 
    activity department at the interview ([#16](https://github.com/puIad/vic-enp/issues/16)).
 2. **The 48 hours.** Settled: "If your application is accepted, two club members contact you within a day to set
    up your interview." ([#16](https://github.com/puIad/vic-enp/issues/16))
-3. **IT is not coding.** Settled: said in the IT lead and flagged chip, and in the FAQ ([#13](https://github.com/puIad/vic-enp/issues/13)).
+3. **IT is not coding.** Settled: said in the FAQ only, since the IT lead and flagged chip changed in 139 ([#13](https://github.com/puIad/vic-enp/issues/13)).
 4. **FLER eligibility.** Settled: FAQ only.
 5. **What happens after submitting.** Settled as step 2, which depends on `CONFIRM_REGISTRANTS` being on at
    launch.

@@ -183,8 +183,8 @@ the hero goes on scroll.
 - **Device:** one pinned stage, a hard cut per department: HR, FLER, IT, COMM, then SPARK, Training, English
   Bubble. Entered through the door, left through the tunnel.
 - **Each cut:** the department's name in its accent with a short rule, one Heavy line peeling in with a three-step
-  chromatic split, a lead, IT's "Design and media, not coding" pill (the only pill), a "Suits" line (main four
-  only) and a "What you'd do" button. Eyebrows and skill pills were cut on 2026-10-20 ([decisions.md](decisions.md), 43, 44).
+  chromatic split, a lead and a "What you'd do" button. Eyebrows and skill pills were cut on 2026-10-20, IT's pill and
+  the "Suits" lines on 2026-10-24 ([decisions.md](decisions.md), 43, 139).
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 9 to 11):** the activity
   departments get logo formations (each logo's symbol), IT's grid becomes a painting palette, and English Bubble's
   points morph into the tunnel within the existing scroll instead of a hard cut. SPARK carries no photo

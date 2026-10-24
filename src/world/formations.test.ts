@@ -137,6 +137,16 @@ describe("a department's logo formation", () => {
     }
   })
 
+  it("draws each of the projects' rings in its logo's colour, and their dust in aquamarine (136)", () => {
+    const f = shape('more', 40, 40, desk)
+    const at = (i: number) => [...f.col.slice(i * 4, i * 4 + 3)].map((v) => +v.toFixed(3))
+    const hex = (h: string) => rgb(h).map((v) => +v.toFixed(3))
+    // points 4 to 7 are the rings' main colour, in the rows' order: CPSP, VIC Charity, MasterClass, VICra
+    expect([4, 5, 6, 7].map(at)).toEqual(['#FDB400', '#ED282A', '#38E0BA', '#F0B060'].map(hex))
+    // 8 and 9 in every 10 are dust
+    expect(at(8)).toEqual(hex('#69C4AF'))
+  })
+
   it("keeps Training's comp shape, before its file lands, in the cut's blue", () => {
     const f = shape('training', 10, 10, desk)
     expect([...f.col.slice(0, 3)].map((v) => +v.toFixed(3))).toEqual(rgb('#6A9CF0').map((v) => +v.toFixed(3)))

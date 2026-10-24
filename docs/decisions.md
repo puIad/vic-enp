@@ -248,3 +248,9 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 |---|---|---|---|
 | 134 | Open question 11: the page uses **Gilroy** now, in its three charter weights (Regular, Bold, Heavy), self-hosted from the club's own files ([src/fonts.css](../src/fonts.css)). Outfit leaves the build. The registration form at `/apply` and the 404 follow, as decision 86 set. All three are preloaded. | Owner, 2026-10-24 | The owner's call ("use gilroy as the font in the website now"); the licence question is the owner's. The files are the ones `VIC-Recruitment-2026/frontend/src/assets/fonts/` already ships, unchanged. Gilroy has no U+00A0 glyph; browsers shape it as a space. |
 | 135 | Every Heavy title on the night carries a slight drop shadow (`--title-shadow` in index.css: `0 2px 4px` and `0 6px 22px`, night-tinted) so it stands out over the world. The light act's dark titles on Bright Gray carry none. The cut line's chromatic split keeps the shadow under it. | Owner, 2026-10-24 | Asked: "make them a little more visible over the background by adding slight drop shadow". |
+
+## 2026-10-24: the events' colours follow their logos
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 136 | POLYMAZE's cut takes its logo's orange (`#F25805`) and AEC's takes white, in the world's shape and in the page's accents (the frame's glow, the site pill, the cities, the picker, the pan). AEC's photo drops the 28% colour blend (124), which in white would only grey it, and shows in its own colours. The projects' four rings each take their logo's colour in the rows' order (CPSP gold with its green, VIC Charity red, MasterClass teal, VICra gold with its blue; the green and blue lifted to read on the night), and turn back to aquamarine as they lie down into the horizon before the light act. Amends 125. | Owner, 2026-10-24 | Asked in the project thread. The projects' title, streak and picker stay aquamarine. |

@@ -40,7 +40,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   },
   {
     q: 'Is the IT department about coding?',
-    a: 'No. IT at VIC means design, visual identity, photography and video. No coding required.',
+    a: 'No. IT at VIC means design, visual identity, photography and video. No coding required. We do have a Web Development Team though.',
     link: { href: '#departments', label: 'See the departments' },
   },
   {

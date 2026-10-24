@@ -149,7 +149,7 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
     exists precisely to help you get comfortable speaking it, and FLER members use French with companies."
   - "I'm in another club. Can I still join?" drops its last sentence, "Committee members of other clubs also can't be
     on VIC's committee." ([decisions.md](decisions.md), 141).
-  - The IT row adds "No coding required." and links to the departments. FLER eligibility lives in "I'm in another
+  - The IT row adds "No coding required." and, the owner's words (141), "We do have a Web Development Team though." and links to the departments. FLER eligibility lives in "I'm in another
     club. Can I still join?".
 - Left out on purpose: "What VIC asks of you", the Parrainage session, any closing date, any promise of an
   interview.

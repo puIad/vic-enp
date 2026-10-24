@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { DECAY, DWELL, QUIET, catcher, coastCurve, land, toucher, type Layout, type Move, type Verdict } from './catch'
 
 // A page 800 px high. Act 2's top at 1000 (still); the departments' zone 2500..5500 with seven cuts 400 apart, leaving
-// to 1700 up and 6300 down; the peak from its group photo at 6600 to 7400 with two photos, its opening the flow's; the
-// events' zone from 7400 (pinned the moment the peak lets go) to a hair past its last cut at 8500, leaving to 6600 up,
-// its end the flow's; the light act's top at 9700 and the close at 10500 (still).
+// to 1700 up and 6300 down; the peak from its group photo at 6600 to a hair past its second photo at 7000, its opening
+// and its end the flow's; the events' zone from 7400 (pinned the moment the peak lets go) to a hair past its last cut
+// at 8500, leaving to 6600 up, its end the flow's; the light act's top at 9700 and the close at 10500 (still).
 const VH = 800
 const L: Layout = {
   still: [1000, 9700, 10500],
   runs: [
     { stops: [2800, 3200, 3600, 4000, 4400, 4800, 5200], lo: 2500, hi: 5500, up: 1700, down: 6300 },
-    { stops: [6600, 6800, 7000], lo: 6600, hi: 7400, up: 6600, down: 8200 },
+    { stops: [6600, 6800, 7000], lo: 6600, hi: 7002, up: 6600, down: 7000 },
     { stops: [7700, 8100, 8500], lo: 7400, hi: 8502, up: 6600, down: 8500 },
   ],
   limit: 11000,
@@ -168,10 +168,19 @@ describe('the wheel leaving a run', () => {
     expect(s.send(-100)).toEqual({ at: 1700 })
   })
 
-  it('lands on the next run where two meet: the peak and the Gala', () => {
+  it("scrolls on out of the peak's last photo, which leads into the flow, and lands on the Gala at its door", () => {
     const s = wheel()
     s.at(7000)
-    expect(s.send(100)).toEqual({ at: 7700 })
+    expect(s.run([100, 100, 100], 50)).toEqual([])
+    expect(s.target).toBe(7300)
+    expect(s.run([100, 100], 50)).toEqual([7700])
+    const t = wheel()
+    t.at(7000)
+    expect(t.run(flick(120))).toEqual([7700])
+  })
+
+  it("leaves the Gala going up onto the peak's last photo", () => {
+    const s = wheel()
     s.at(7700)
     expect(s.send(-100)).toEqual({ at: 7000 })
   })
@@ -344,7 +353,7 @@ describe("the wheel at a run's edges", () => {
   it("holds on the Gala, reached from the peak's last photo", () => {
     const s = wheel()
     s.at(7000)
-    expect(s.send(100)).toEqual({ at: 7700 })
+    expect(s.run([100, 100, 100, 100, 100], 50)).toEqual([7700])
     expect(s.send(100, 200)).toBe('hold')
   })
 
@@ -364,6 +373,9 @@ describe("the wheel at a run's edges", () => {
     s.at(6800)
     expect(s.send(100)).toEqual({ at: 7000 })
     expect(s.send(100, 200)).toBe('hold')
+    s.rest()
+    s.wait(QUIET + DWELL)
+    expect(s.send(100)).toBe('pass')
     const t = wheel()
     t.at(8100)
     expect(t.send(100)).toEqual({ at: 8500 })
@@ -642,6 +654,27 @@ describe("touch at a run's edges", () => {
     h.rest()
     h.wait(100)
     expect(h.swipe(100)[0]).toEqual({ scroll: 2800 })
+  })
+})
+
+describe("touch out of the peak's last photo", () => {
+  it('drags on into the flow and stays where it was lifted', () => {
+    const g = finger(7000)
+    expect(g.drag(-40)).toEqual([{ scroll: 7000 }])
+    g.drag(-200, 10, 50)
+    g.wait(100)
+    expect(g.up()).toBeNull()
+    expect(g.page).toBe(7200)
+  })
+
+  it("lands a drag or a fling that reaches the Gala's door on the Gala", () => {
+    const g = finger(7000)
+    g.drag(-40)
+    expect(g.drag(-450, 10, 50).pop()).toEqual({ glide: 7700 })
+    const h = finger(7000)
+    h.drag(-40)
+    h.drag(-200, 5)
+    expect(h.up()).toMatchObject({ coast: 7700 })
   })
 })
 

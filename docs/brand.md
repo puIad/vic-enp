@@ -28,7 +28,8 @@ accessibility). In practice: white on blue and on Dark Jungle Green, dark on aqu
   the footer's tile numbers and /apply's eyebrows, each at 4.5:1 or more on night ([decisions.md](decisions.md), 123).
 - **Text on night:** white headlines, Bright Gray body, `#A3AFBA` captions (8.1:1). **On Bright Gray:** night
   headlines (14.7:1), body `#3b4954`, links in the nudged blue below.
-- **The gradient** (brand, 135°) lives in light and on the Apply pill's ring only, never in or behind text.
+- **The gradient** (brand, 135°) lives in light and on the Apply pill's ring, and, drifting, in two runs of text only:
+  the motto's two "VICer"s and the hero's club name, the latter with its blue end lifted to 4.5:1 ([decisions.md](decisions.md), 138).
 - **Apply pill:** night fill, gradient ring, white Bold label (16.9:1), a round gradient arrow. Focus is a 3 px
   aquamarine ring. This replaced white text on the gradient, which measured 2.1:1 on the aquamarine end.
 - **Grain and vignette:** one static SVG noise layer at 7% in overlay blend plus a radial vignette, over the
@@ -44,7 +45,8 @@ Blue as **text** on a light background uses the dashboard's nudged blue, `oklch(
 
 The logo gradient runs blue to green (`#127DBB` to `#69C4AF`). The dashboard's charter gradients are reusable as
 they are: ring (`#5AB3B1` to `#127DBB`, 90°), cover (`#3997B4` to `#1F84B7`, 180°), strip (`#6FC2AE` to `#1A7FB8`,
-0°), brand (`#127DBB` to `#69C4AF`, 135°). Gradients never sit behind running text.
+0°), brand (`#127DBB` to `#69C4AF`, 135°). Gradients never sit behind running text; the only text they fill is the motto's "VICer"s and the hero's club
+name ([decisions.md](decisions.md), 138).
 
 ### Activity departments (charter p.16, brief §12)
 

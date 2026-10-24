@@ -184,7 +184,7 @@ the hero goes on scroll.
   Bubble. Entered through the door, left through the tunnel.
 - **Each cut:** the department's name in its accent with a short rule, one Heavy line peeling in with a three-step
   chromatic split, a lead and a "What you'd do" button. Eyebrows and skill pills were cut on 2026-10-20, IT's pill and
-  the "Suits" lines on 2026-10-24 ([decisions.md](decisions.md), 43, 136).
+  the "Suits" lines on 2026-10-24 ([decisions.md](decisions.md), 43, 139).
 - **Slice 5 ([owner's notes](build-plan.md#the-owners-notes-2026-10-20), items 9 to 11):** the activity
   departments get logo formations (each logo's symbol), IT's grid becomes a painting palette, and English Bubble's
   points morph into the tunnel within the existing scroll instead of a hard cut. SPARK carries no photo
@@ -355,9 +355,10 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
 - **Entering and leaving a run:** a fling, or a drag, that reaches a run's door stops on its first cut: runs are only
   ever stepped. The peak's door is its group photo: its opening (the title, the 600 resolving into the photo) stays
   free to drag. A gesture at the last cut going down (the first going up) leaves with its own momentum, always at least
-  past the tunnel (the door), so nothing rests on an empty stage, and further if flung. The peak and the events meet
-  with no flow between (the Gala pins the moment the peak lets go), so leaving one lands on the other's nearest stop.
-  The events' end is the flow's, as the peak's opening is: from the four projects the field lies down into the
+  past the tunnel (the door), so nothing rests on an empty stage, and further if flung. The peak's end is the flow's
+  too: from the tenth photo the ENP photo returns full frame at the visitor's pace, and a drag or a fling that reaches
+  the Gala's door lands on the Gala; going up from the Gala lands on the tenth photo ([decisions.md](decisions.md),
+  137). The events' end is the flow's, as the peak's opening is: from the four projects the field lies down into the
   horizon at the visitor's pace, a fling coasting no further than the light act's top, and scrolling back up past
   the projects cut lands on it ([decisions.md](decisions.md), 115).
 - **The edges hold** ([decisions.md](decisions.md), 114): arriving going down on a run's first stop (the first

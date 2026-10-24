@@ -36,7 +36,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   },
   {
     q: "I'm in another club. Can I still join?",
-    a: "Yes, with one exception: if you're in another club's external-relations team, you can't join FLER (and vice versa). Committee members of other clubs also can't be on VIC's committee.",
+    a: "Yes, with one exception: if you're in another club's external-relations team, you can't join FLER (and vice versa).",
   },
   {
     q: 'Is the IT department about coding?',

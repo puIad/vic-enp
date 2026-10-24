@@ -79,10 +79,9 @@ Code blue `#2F80ED` (kept for the charter; Hour of Code is not on the page). Eac
   alternative.
 - English Bubble designs may use Bahnschrift. On this page, only if the English Bubble act wants its own voice.
 - The woff2 files exist in `VIC-Recruitment-2026/frontend/src/assets/fonts/` (Light, Regular, Medium, Bold, Heavy).
-- **Licence.** Gilroy is a commercial font. The dashboard self-hosts it for a signed-in internal tool; a public
-  site needs a web licence. Open question for the owner. If there's no licence, the closest free geometric
-  families to test are Outfit, Urbanist and Plus Jakarta Sans (all on Google Fonts, OFL); the page would then
-  carry one of them, chosen by setting the headline and body side by side with Gilroy.
+- **On the page.** Gilroy, self-hosted from those files ([decisions.md](decisions.md), 134: the owner settled open
+  question 11 on 2026-10-24). Outfit stood in until then. Heavy titles on the night carry a slight drop shadow
+  (decision 135).
 
 Scale (signed in [#10](https://github.com/puIad/vic-enp/issues/10)):
 

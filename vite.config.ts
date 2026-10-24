@@ -4,8 +4,8 @@ import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 
 /**
- * The page font's request starts from the HTML (docs/quality.md): a preload for Outfit's latin file, the one every
- * page's words use, with the hashed name the build gave it. The latin-ext file stays on demand.
+ * The page font's requests start from the HTML (docs/quality.md): a preload for each of Gilroy's three weights, with the
+ * hashed names the build gave them. Every page uses all three, and the hero's first screen is Heavy and Bold.
  */
 function preloadFont(): Plugin {
   return {
@@ -14,9 +14,12 @@ function preloadFont(): Plugin {
     transformIndexHtml: {
       order: 'post',
       handler(_, ctx) {
-        const font = Object.keys(ctx.bundle ?? {}).find((f) => /outfit-latin-wght-normal-[\w-]+\.woff2$/.test(f))
-        if (!font) throw new Error('vic:preload-font: the Outfit latin file is missing from the build')
-        return [{ tag: 'link', attrs: { rel: 'preload', href: `/${font}`, as: 'font', type: 'font/woff2', crossorigin: '' }, injectTo: 'head' }]
+        const files = Object.keys(ctx.bundle ?? {})
+        return ['Regular', 'Bold', 'Heavy'].map((w) => {
+          const font = files.find((f) => new RegExp(`Gilroy-${w}-[\\w-]+\\.woff2$`).test(f))
+          if (!font) throw new Error(`vic:preload-font: the Gilroy ${w} file is missing from the build`)
+          return { tag: 'link', attrs: { rel: 'preload', href: `/${font}`, as: 'font', type: 'font/woff2', crossorigin: '' }, injectTo: 'head' as const }
+        })
       },
     },
   }

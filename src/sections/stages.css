@@ -91,13 +91,13 @@
 }
 @keyframes cut-split {
   0% {
-    text-shadow: -8px 0 #127dbb, 8px 0 #69c4af;
+    text-shadow: -8px 0 #127dbb, 8px 0 #69c4af, var(--title-shadow);
   }
   60% {
-    text-shadow: -3px 0 #127dbb, 3px 0 #69c4af;
+    text-shadow: -3px 0 #127dbb, 3px 0 #69c4af, var(--title-shadow);
   }
   100% {
-    text-shadow: none;
+    text-shadow: var(--title-shadow);
   }
 }
 .cut-lead {

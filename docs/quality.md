@@ -31,7 +31,7 @@ TBT 74 to 182 ms, performance median 97, accessibility, best practices and SEO 1
 build served without Vercel's edge, which is why their LCP sits over the line. INP is still not measured: it needs real
 visits. Reports linked from the [#44](https://github.com/puIad/vic-enp/issues/44) PR.
 
-Photos load lazily, one section ahead. Fonts: at most three Gilroy weights on the page (charter rule), preloaded,
+Photos load lazily, one section ahead. Fonts: at most three Gilroy weights on the page (charter rule), all three preloaded,
 `font-display: swap`.
 
 Headless Chrome renders WebGL in software, so frame rates measured there mean nothing. Frame rate and feel are

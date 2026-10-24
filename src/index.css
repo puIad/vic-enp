@@ -1626,6 +1626,10 @@
     -webkit-text-fill-color: transparent;
     text-shadow: none;
     filter: drop-shadow(0 2px 4px rgb(5 10 15 / 0.45));
+    /* the fill only paints inside the box, and the Heavy figures' tight tracking ends the box short of the last
+       glyph's ink: a little padding gives the fill room, and the matching margin keeps the layout as it was */
+    padding: 0.08em 0.1em;
+    margin: 0 -0.1em;
   }
   /* at lead size the brand blue is 3.8:1 on night, under the accents' 4.5:1 (decision 123): the club name's blue end is
      lifted 12% toward white, 4.5:1 (decision 138). The motto, at display size, keeps the brand blue. */

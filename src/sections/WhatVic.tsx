@@ -105,9 +105,10 @@ function useFits(copy: RefObject<HTMLDivElement | null>) {
 }
 
 /**
- * The counters (decisions.md, 63): each number counts up once over 1.5 s from when it starts to rise, then shows its
- * figure (and its plus) for good; when the 600 lands, the member points pulse once from the centre (World). The starts
- * outlive the stage, so a resize that drops it and brings it back never recounts or pulses again.
+ * The counters (decisions.md, 63): each number counts up once over 1.5 s from when it starts to rise, then, from the
+ * frame its count reaches it, shows its figure (and its plus) for good; when the 600 lands, the member points pulse
+ * once from the centre (World). The starts outlive the stage, so a resize that drops it and brings it back never
+ * recounts or pulses again.
  */
 function useCounters(pin: RefObject<HTMLDivElement | null>, staged: boolean) {
   const started = useRef(NUMBERS.map(() => -1))
@@ -124,9 +125,13 @@ function useCounters(pin: RefObject<HTMLDivElement | null>, staged: boolean) {
         const at = started.current[i]
         if (at < 0 || 'counted' in li.dataset) return
         const ms = now - at
-        li.querySelector('.a2-count')!.textContent = String(countAt(NUMBERS[i].from, +NUMBERS[i].figure, ms))
-        if (ms < COUNT_MS) raf ||= requestAnimationFrame(tick)
-        else {
+        const v = countAt(NUMBERS[i].from, +NUMBERS[i].figure, ms)
+        // the count lands as it shows the figure, a few frames before the 1.5 s are up (the ease rounds onto it): the
+        // figure takes over in that same frame, so the 600 never shows in white before its gradient
+        if (ms < COUNT_MS && v < +NUMBERS[i].figure) {
+          li.querySelector('.a2-count')!.textContent = String(v)
+          raf ||= requestAnimationFrame(tick)
+        } else {
           li.dataset.counted = ''
           // the pulse belongs to act 2: a 600 that lands with another act on screen (a restored scroll, a flick
           // past) passes it up for good

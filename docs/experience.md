@@ -358,7 +358,7 @@ only sometimes and, on phones, let a fling go as the phone kept coasting.
   past the tunnel (the door), so nothing rests on an empty stage, and further if flung. The peak's end is the flow's
   too: from the tenth photo the ENP photo returns full frame at the visitor's pace, and a drag or a fling that reaches
   the Gala's door lands on the Gala; going up from the Gala lands on the tenth photo ([decisions.md](decisions.md),
-  136). The events' end is the flow's, as the peak's opening is: from the four projects the field lies down into the
+  137). The events' end is the flow's, as the peak's opening is: from the four projects the field lies down into the
   horizon at the visitor's pace, a fling coasting no further than the light act's top, and scrolling back up past
   the projects cut lands on it ([decisions.md](decisions.md), 115).
 - **The edges hold** ([decisions.md](decisions.md), 114): arriving going down on a run's first stop (the first

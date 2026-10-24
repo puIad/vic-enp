@@ -176,6 +176,15 @@ export const PALETTE = {
 } as const satisfies { board: [number, number]; hole: [number, number, number]; notch: [number, number, number]; blobs: [number, number, number][] }
 
 const CITY = [[-1, 6], [-12, 3], [-17, 0], [8, 5], [16, 7], [4, -12]] // Algiers, Oran, Tlemcen, Constantine, Annaba, Ouargla
+/** The projects' rings, in PROJECTS' order (CPSP, VIC Charity, MasterClass, VICra): each logo's main colour and the
+ * second one a third of its points take, from public/logos. CPSP's dark green and VICra's blue are lifted to read on
+ * the night, as Training's violet is (136) */
+const PROJECT_INKS = [
+  ['#FDB400', '#2E9E6E'],
+  ['#ED282A', '#ED282A'],
+  ['#38E0BA', '#38E0BA'],
+  ['#F0B060', '#4A8BC0'],
+] as const
 
 type Shape = {
   /** the shape's points, in comp units */
@@ -186,6 +195,8 @@ type Shape = {
   shade?: string
   /** a logo formation's own light and shade, where the file keeps a colour that isn't the cut's */
   logo?: [string, string]
+  /** a colour of their own for each of the shape's points (the projects' rings) */
+  inks?: (i: number) => string
   /** some of the shape's points in a second light of their own (IT's paint) */
   tint?: { color: string; on: (i: number) => boolean }
   /** a tilt, as in the comp's snap() */
@@ -383,13 +394,15 @@ export const SHAPES = {
     },
   },
   poly: {
-    color: '#69C4AF',
+    // in its logo's orange, as the logo formation draws it (125, 136)
+    color: '#F25805',
     py: 1.1,
     lit: (i) => i % 25 === 0,
     at: ({ rnd, ell, along }) => (i) => (i % 25 === 0 ? ell(15, 11, 0.9, 0.9, 0.1) : along(MAZE, rnd(), 0.2)),
   },
   aec: {
-    color: '#69C4AF',
+    // white, as its logo (136)
+    color: '#FFFFFF',
     py: 1.1,
     at: ({ g, R, rnd }) => (i) => {
       if (i % 5 === 0) {
@@ -404,6 +417,9 @@ export const SHAPES = {
   },
   more: {
     color: '#69C4AF',
+    // each ring in its project's logo colour, in the rows' order (136); the dust stays aquamarine, and the rings fade back
+    // to it as they lie down into the horizon, which is aquamarine
+    inks: (i) => PROJECT_INKS[i % 4][i % 12 < 4 ? 1 : 0],
     // on a phone beside the title, at the top right of its one column; on desktop above the title, clear of the project
     // rows on the right. No text sits over the rings
     beside: [0.9, 122],
@@ -462,7 +478,7 @@ export function shape(key: ShapeKey, n: number, count: number, l: Layout): Forma
     const on = inShape(i, share)
     const p = on ? gen(i) : c.dust()
     const lit = on && !!sh.lit?.(i)
-    const base = on && sh.tint?.on(i) ? paint : col
+    const base = on && sh.inks ? rgb(sh.inks(i)) : on && sh.tint?.on(i) ? paint : col
     return {
       p: place(p, pl),
       c: lit ? mixRgb(base, [1, 1, 1], 0.55) : base,

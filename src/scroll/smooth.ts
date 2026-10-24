@@ -69,26 +69,29 @@ function catchLayout(ranges: Range[]): Layout {
     runs.push(run)
     return run
   }
+  // a run whose end is the flow's: its zone ends a hair past its last stop, so that stop is still in it and a gesture
+  // there scrolls on from it
+  const flowOut = (r: Run) => {
+    const last = r.stops[r.stops.length - 1]
+    r.hi = last + 2
+    r.down = last
+  }
   cuts('departments', DEPT_STEPS, 1, 7)
   const peak = range('club-life')
   if (peak && document.querySelector('#club-life [data-pin]')) {
     const photos = document.querySelectorAll('#club-life .peak-card').length
     const stops = [along(peak, (PEAK_HOLD[0] + PEAK_HOLD[1]) / 2)]
     for (let i = 0; i < photos; i++) stops.push(along(peak, peakRest(i)))
-    // the peak's end is the flow's too (decision 136): past the tenth photo the ENP photo returns full frame at your own
-    // pace, and the Gala's door catches whatever reaches it. The zone ends a hair past the tenth photo, as the events' does
-    const last = stops[stops.length - 1]
-    runs.push({ stops, lo: stops[0], hi: last + 2, up: stops[0], down: last })
+    // the peak's end is the flow's too (decision 137): past the tenth photo the ENP photo returns full frame at your own
+    // pace, and the Gala's door catches whatever reaches it
+    const run = { stops, lo: stops[0], hi: peak.end, up: stops[0], down: peak.end }
+    flowOut(run)
+    runs.push(run)
   }
   const events = cuts('events', EVENT_STEPS, 0, 4)
   // the events' end is the flow's, as the peak's opening is (decision 115): past the projects cut the field lies down
-  // into the horizon at your own pace, and coasting stops on the light act's top. The zone ends a hair past the last cut,
-  // so that cut is still in it and a gesture there scrolls on from it
-  if (events) {
-    const last = events.stops[events.stops.length - 1]
-    events.hi = last + 2
-    events.down = last
-  }
+  // into the horizon at your own pace, and coasting stops on the light act's top
+  if (events) flowOut(events)
   const still: number[] = []
   const top = (id: string) => {
     const el = document.getElementById(id)

@@ -110,23 +110,24 @@ function Steps({ staged }: { staged: boolean }) {
 
 function Grow({ staged }: { staged: boolean }) {
   return (
-    <ol className="mt-12 grid gap-8 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-20 md:grid-cols-3 md:gap-x-6 md:gap-y-12 xl:grid-cols-6 xl:items-end xl:gap-x-5">
+    <ol className="mt-12 grid gap-8 max-md:border-l max-md:border-night/30 max-md:pl-7 md:mt-20 md:grid-cols-3 md:gap-x-6 md:gap-y-12 xl:grid-cols-6 xl:items-start xl:gap-x-0">
       {RUNGS.map((r, i) => (
         <li
           key={r.title}
           data-rv={staged || undefined}
-          // a staircase rising to the right, 34 px a rung (desktop only)
-          className="relative xl:mb-(--lift)"
-          style={{ '--lift': `${i * 34}px` } as CSSProperties}
+          // a staircase rising to the right (desktop only): each tread one step above the last, joined by a riser
+          className="relative xl:mt-(--drop)"
+          style={{ '--drop': `${(RUNGS.length - 1 - i) * 52}px` } as CSSProperties}
         >
           <span aria-hidden="true" className="absolute top-1.5 -left-[33px] size-[11px] rounded-full bg-night md:hidden" />
           <span aria-hidden="true" className="relative hidden h-0.5 bg-night md:block">
+            {i < RUNGS.length - 1 && <span className="absolute right-0 bottom-0 hidden h-[54px] w-0.5 bg-night xl:block" />}
             <span
               className={`absolute -top-[4.5px] -left-0.5 size-[11px] rounded-full ${i === RUNGS.length - 1 ? 'bg-aqua ring-2 ring-night' : 'bg-night'}`}
             />
           </span>
-          <h3 className="text-[19px] leading-tight font-black md:mt-4">{r.title}</h3>
-          <p className="mt-2 max-w-[24ch] text-[15px] leading-normal text-ink">{r.text}</p>
+          <h3 className="text-[19px] leading-tight font-black md:mt-4 xl:pr-4 xl:pl-4">{r.title}</h3>
+          <p className="mt-2 max-w-[24ch] text-[15px] leading-normal text-ink xl:pr-4 xl:pl-4">{r.text}</p>
         </li>
       ))}
     </ol>

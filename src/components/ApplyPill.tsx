@@ -8,7 +8,7 @@ export function Arrow() {
   )
 }
 
-/** "Applications open 26 Oct" with the countdown chip, then "Apply" with the round gradient arrow (#10, #11). */
+/** "Applications open 26 Oct" with the countdown chip, then "Apply" with the round gradient arrow (#10, #11), then "Applications closed". */
 export function ApplyPill({ cta, className = '', inert }: { cta: Cta; className?: string; inert?: boolean }) {
   return (
     <a className={`pill ${cta.open ? 'is-open' : ''} ${className}`} href={cta.href} inert={inert}>
@@ -22,10 +22,12 @@ export function ApplyPill({ cta, className = '', inert }: { cta: Cta; className?
       ) : (
         <>
           {cta.label}
-          <span className="chip">
-            <span className="sr-only">in </span>
-            {cta.chip}
-          </span>
+          {cta.chip && (
+            <span className="chip">
+              <span className="sr-only">in </span>
+              {cta.chip}
+            </span>
+          )}
         </>
       )}
     </a>

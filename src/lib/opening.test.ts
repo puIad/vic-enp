@@ -32,6 +32,11 @@ describe('cta', () => {
   it('falls back to Instagram when no apply URL is configured', () => {
     expect(cta(OPENS, OPENS, '').href).toBe('https://www.instagram.com/vic.enp/')
   })
+  it('closes at the closing instant: back to Instagram, no chip', () => {
+    const closes = new Date('2026-11-04T18:00:00+01:00')
+    expect(cta(new Date(+closes - 1), OPENS, '/apply', closes)).toEqual({ open: true, label: 'Apply', href: '/apply' })
+    expect(cta(closes, OPENS, '/apply', closes)).toEqual({ open: false, label: 'Applications closed', href: 'https://www.instagram.com/vic.enp/' })
+  })
 })
 
 describe('clockOffset', () => {

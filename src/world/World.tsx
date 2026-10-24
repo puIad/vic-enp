@@ -27,11 +27,15 @@ import { score, topRight, type Frame, type Key } from './score'
 import { meter, watchLoop } from './loop'
 import { ring, watchTaps } from './ripple'
 import { has } from './steps'
+import { quietClock } from './quiet'
 import { world } from './store'
 import { BUDGET, LADDER, flatBudget, forcedPoints, nextRung, startRung, type Budget, type Tier } from './tier'
 
 // The world layer (docs/architecture.md, Two layers): one canvas fixed behind the whole page, one WebGL context, one
 // field of points that holds a formation per act (formations.ts), driven by the score (score.ts), plus your point.
+
+// before the first canvas: R3F's Clock would print three's deprecation on every visit
+quietClock()
 
 export type WorldProps = {
   tier: Exclude<Tier, 0>

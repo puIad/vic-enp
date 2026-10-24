@@ -2,6 +2,8 @@
 // /api/verify answered, as the line the candidate reads. No DOM here; main.ts puts these on the page. No line ever
 // points at the Google Form.
 
+import { CLOSED } from './letter'
+
 export const DOMAIN = 'g.enp.edu.dz'
 
 /** the address a ticket goes to, as the API builds it */
@@ -32,6 +34,7 @@ export function codeAnswer(status: number, body: Json): { sent: true; resendIn: 
     // the limit may be this address's or the connection's (a campus or carrier IP is shared), so no "you asked"
     return { sent: false, text: `Too many tickets were asked for this hour. Try again in ${m} ${m === 1 ? 'minute' : 'minutes'}.` }
   }
+  if (status === 403 && body?.status === 'closed') return { sent: false, text: CLOSED }
   if (status === 400) return { sent: false, text: `Type only the part of your ENP address before @${DOMAIN}.` }
   return { sent: false, text: 'We could not send your ticket just now. Try again in a moment.' }
 }

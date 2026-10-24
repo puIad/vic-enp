@@ -14,7 +14,8 @@ Live at **https://vic-enp.vercel.app**.
   section's scene as the visitor scrolls. Every word on the page is real HTML: the canvas is decoration only, and
   the page reads in full without WebGL, without JavaScript's 3D chunk, or with reduced motion.
 - **A timed call to action.** Before applications open, the Apply button shows a countdown and points to the
-  club's Instagram. At the opening time it switches on its own to the registration link.
+  club's Instagram. At the opening time it switches on its own to the registration link, and at the closing time
+  (`src/calendar.ts`) back to Instagram, reading "Applications closed".
 - **The registration form (`/apply` and `api/`).** A short form for ENP students. A candidate proves their ENP
   address with a one-time code sent by email, then submits; the answers are written to the club's recruitment
   sheet. The landing page itself collects nothing.

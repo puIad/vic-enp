@@ -51,7 +51,7 @@
             <span class="ap-pin" aria-hidden="true">0</span>
             <p class="ap-eyebrow">Step one</p>
             <h2 class="ap-serif ap-ticket-title" id="tk-h">Platform 9¾</h2>
-            <p class="ap-lead" id="tk-lead">Enter your ENP address and we will mail you a 6&#8209;digit ticket. Typing it in proves the address is yours.</p>
+            <p class="ap-lead" id="tk-lead">Enter your ENP address and we will mail you a <span class="ap-nb">6-digit</span> ticket. Typing it in proves the address is yours.</p>
 
             <!-- 1: the address. Only the part before the domain is typed; the domain is already there -->
             <form class="ap-tk" id="tk-ask" novalidate>
@@ -75,13 +75,13 @@
             <!-- 2: the six digits, on a ticket stub -->
             <form class="ap-tk" id="tk-check" novalidate hidden>
               <div class="ap-stub">
-                <label for="tk-code">Your 6&#8209;digit ticket</label>
+                <label for="tk-code">Your <span class="ap-nb">6-digit</span> ticket</label>
                 <input id="tk-code" class="ap-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="······" />
               </div>
               <p class="ap-err" id="tk-check-err" role="alert" hidden></p>
               <div class="ap-tk-links">
                 <button type="button" class="ap-link" id="tk-resend" disabled>Send another in 30s</button>
-                <button type="button" class="ap-link is-quiet" id="tk-change">Wrong address?</button>
+                <button type="button" class="ap-link" id="tk-change">Use a different email</button>
               </div>
               <button type="submit" class="ap-btn" id="tk-board">Board</button>
             </form>

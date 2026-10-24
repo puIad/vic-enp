@@ -1,5 +1,5 @@
 // POST /api/submit (spec: registration-form.md, API contract): the sent letter becomes one row in the Master's
-// Registration Responses tab. Order: the cookie's address (401 without one), the structural checks (422), the
+// Registration Responses tab. Order: closed an hour after CLOSES_AT (403), the cookie's address (401 without one), the structural checks (422), the
 // registration mark `reg:<sha256(email)>` as the lock (409 when taken), the append, one at a time behind `lock:append`,
 // under row 1's headers (kept 60 s in Redis).
 // An append that fails after its retries, or that cannot get its turn in time, gives the mark back and answers 503, so
@@ -9,11 +9,12 @@ import { randomUUID } from 'node:crypto'
 import { checkAnswers } from '../../src/apply/answers.js'
 import { readBody } from './body.js'
 import { sha256 } from './hash.js'
-import { logLine, type Log } from './log.js'
+import { type Log } from './log.js'
 import { key, type Redis } from './redis.js'
 import { buildRow } from './row.js'
-import { provenEmail } from './session.js'
+import { PROOF_S, provenEmail } from './session.js'
 import type { Registrations } from './sheets.js'
+import { record } from './tally.js'
 
 export type SubmitDeps = {
   redis: Redis
@@ -21,6 +22,8 @@ export type SubmitDeps = {
   sheet: () => Registrations
   /** SESSION_KEY: 32 bytes, base64 */
   sessionKey: string
+  /** CLOSES_AT (src/calendar.ts) in ms: letters are taken until the ticket hour after it. Unset: never closes. */
+  closesAt?: number
   keyPrefix: string
   /** the Master's time zone (MASTER_TZ, Africa/Algiers) */
   tz: string
@@ -77,13 +80,15 @@ export async function submitLetter(req: Request, d: SubmitDeps): Promise<Respons
   const started = performance.now()
   // the last moment this send may still start waiting for its turn at the append
   const turnBy = d.now() + TURN_BY_MS
-  const done = (outcome: string, res: Response) => {
-    logLine(d.log, 'submit', outcome, started)
+  const done = async (outcome: string, res: Response) => {
+    await record(d, 'submit', outcome, started)
     return res
   }
 
   const body = await readBody(req)
   if (!body.ok) return done('bad_request', json({ status: 'bad_request' }, body.status))
+  // a ticket checked just before the close still has its hour to send the letter; after that hour nothing is taken
+  if (d.closesAt !== undefined && d.now() >= d.closesAt + PROOF_S * 1000) return done('closed', json({ status: 'closed' }, 403))
   // the only address this route ever writes: the one the ticket proved
   const email = provenEmail(req, d.sessionKey, d.now())
   if (!email) return done('no_proof', json({ status: 'no_proof' }, 401))

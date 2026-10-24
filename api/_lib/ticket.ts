@@ -5,9 +5,10 @@ import { randomInt, timingSafeEqual } from 'node:crypto'
 import { readBody } from './body.js'
 import { sha256 } from './hash.js'
 import { clientIp } from './ip.js'
-import { logLine, type Log } from './log.js'
+import { type Log } from './log.js'
 import { key, type Redis } from './redis.js'
 import { proofCookie } from './session.js'
+import { record } from './tally.js'
 
 export type TicketDeps = {
   redis: Redis
@@ -18,6 +19,8 @@ export type TicketDeps = {
   keyPrefix: string
   /** SESSION_KEY: 32 bytes, base64 */
   sessionKey: string
+  /** CLOSES_AT (src/calendar.ts) in ms: from then no new ticket goes out. Unset: never closes. */
+  closesAt?: number
   now: () => number
   log: Log
 }
@@ -26,8 +29,9 @@ const RESEND_S = 30
 const CODE_S = 10 * 60
 const HOUR_S = 3600
 const PER_EMAIL = 3
-// high enough for a lecture hall on one Wi-Fi or one carrier's NAT; the per-address limit and 5 tries stop guessing
-const PER_IP = 60
+// high enough for a residence or campus Wi-Fi or a carrier's NAT at the opening burst (60 could shut one out for the hour,
+// owner 2026-10-24); the per-address limit and 5 tries stop guessing, so this only caps mail spam from one connection
+export const PER_IP = 300
 const MAX_TRIES = 5
 const json = (body: unknown, status = 200, headers: Record<string, string> = {}) =>
   Response.json(body, { status, headers: { 'cache-control': 'no-store', ...headers } })
@@ -46,18 +50,22 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
   const started = performance.now()
   const body = await readBody(req)
   if (!body.ok) {
-    logLine(d.log, 'code', 'bad_request', started)
+    await record(d, 'code', 'bad_request', started)
     return json({ status: 'bad_request' }, body.status)
+  }
+  if (d.closesAt !== undefined && d.now() >= d.closesAt) {
+    await record(d, 'code', 'closed', started)
+    return json({ status: 'closed' }, 403)
   }
   // the honeypot: a bot that filled the hidden field is told what a person would be, whatever else it typed, and
   // nothing goes out
   if (body.value.website !== undefined && body.value.website !== '') {
-    logLine(d.log, 'code', 'honeypot', started)
+    await record(d, 'code', 'honeypot', started)
     return json({ status: 'sent', resendIn: RESEND_S })
   }
   const email = emailOf(body.value.local, d.domain)
   if (!email) {
-    logLine(d.log, 'code', 'bad_request', started)
+    await record(d, 'code', 'bad_request', started)
     return json({ status: 'bad_request' }, 400)
   }
 
@@ -89,7 +97,7 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     }
     return { name: 'sent', res: json({ status: 'sent', resendIn: RESEND_S }) }
   })().catch(() => ({ name: 'unavailable', res: json({ status: 'unavailable' }, 503) }))
-  logLine(d.log, 'code', outcome.name, started)
+  await record(d, 'code', outcome.name, started)
   return outcome.res
 }
 
@@ -99,7 +107,7 @@ export async function checkTicket(req: Request, d: TicketDeps): Promise<Response
   const email = body.ok ? emailOf(body.value.local, d.domain) : null
   const code = body.ok ? body.value.code : null
   if (!email || typeof code !== 'string' || !/^\d{6}$/.test(code)) {
-    logLine(d.log, 'verify', 'bad_request', started)
+    await record(d, 'verify', 'bad_request', started)
     return json({ status: 'bad_request' }, body.ok ? 400 : body.status)
   }
 
@@ -119,7 +127,7 @@ export async function checkTicket(req: Request, d: TicketDeps): Promise<Response
     const cookie = proofCookie(email, d.now(), d.sessionKey)
     return { name: 'ok', res: json({ expiresAt: cookie.exp }, 200, { 'set-cookie': cookie.header }) }
   })().catch(() => ({ name: 'unavailable', res: json({ status: 'unavailable' }, 503) }))
-  logLine(d.log, 'verify', outcome.name, started)
+  await record(d, 'verify', outcome.name, started)
   return outcome.res
 }
 

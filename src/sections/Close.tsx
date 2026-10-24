@@ -128,10 +128,12 @@ export function Close({ cta, staged }: { cta: Cta; staged: boolean }) {
               <Arrow />
             </span>
           ) : (
-            <span className="chip ml-1">
-              <span className="sr-only">in </span>
-              {cta.chip}
-            </span>
+            cta.chip && (
+              <span className="chip ml-1">
+                <span className="sr-only">in </span>
+                {cta.chip}
+              </span>
+            )
           )}
         </a>
       </div>

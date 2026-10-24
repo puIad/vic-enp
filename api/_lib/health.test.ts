@@ -5,7 +5,7 @@ import { pingMailer } from './mailer.js'
 import type { Redis } from './redis.js'
 
 /** An in-memory Redis that speaks the commands the site uses, and remembers every key it was given. */
-function fakeRedis(opts: { down?: boolean } = {}) {
+function fakeRedis(opts: { down?: boolean; stats?: Record<string, string[]> } = {}) {
   const counts = new Map<string, number>()
   /** each key's expiry in seconds; a key missing here never expires */
   const ttls = new Map<string, number>()
@@ -15,6 +15,7 @@ function fakeRedis(opts: { down?: boolean } = {}) {
       if (opts.down) throw new Error('unreachable')
       if (key !== undefined) keys.push(String(key))
       if (cmd === 'PING') return 'PONG'
+      if (cmd === 'HGETALL') return opts.stats?.[String(key)] ?? []
       if (cmd === 'INCR') {
         const n = (counts.get(String(key)) ?? 0) + 1
         counts.set(String(key), n)
@@ -33,12 +34,12 @@ function fakeRedis(opts: { down?: boolean } = {}) {
 }
 
 /** A mailer web app that answers a ping, and records what it was sent. */
-function fakeMailer(answer: 'ok' | 'unreachable' | 'refuses' = 'ok') {
+function fakeMailer(answer: 'ok' | 'quota' | 'unreachable' | 'refuses' = 'ok') {
   const bodies: unknown[] = []
   const fetchFn = (async (_url: string, init: RequestInit) => {
     bodies.push(JSON.parse(String(init.body)))
     if (answer === 'unreachable') throw new TypeError('fetch failed')
-    return Response.json(answer === 'ok' ? { ok: true } : { ok: false, reason: 'secret' })
+    return Response.json(answer === 'ok' ? { ok: true } : answer === 'quota' ? { ok: true, quota: 1294 } : { ok: false, reason: 'secret' })
   }) as typeof fetch
   return { ping: () => pingMailer('https://mailer.example/exec', 's3cret', fetchFn), bodies }
 }
@@ -50,6 +51,8 @@ function deps(over: Partial<HealthDeps> = {}): HealthDeps & { lines: string[] } 
     mailer: fakeMailer().ping,
     headerRow: async () => [...SITE_HEADERS],
     keyPrefix: '',
+    // 26 Oct, 18:30 in Algiers
+    now: () => Date.UTC(2026, 9, 26, 17, 30),
     log: (l) => lines.push(l),
     lines,
     ...over,
@@ -131,7 +134,7 @@ describe('GET /api/health', () => {
       await health(req(), deps({ redis: r.redis, keyPrefix: prefix }))
       expect(r.keys.length).toBeGreaterThan(0)
       for (const k of r.keys) {
-        expect(k.startsWith(`${prefix}rl:`)).toBe(true)
+        expect(k.startsWith(`${prefix}rl:`) || k.startsWith(`${prefix}stats:`)).toBe(true)
         expect(k).not.toContain('203.0.113.7')
       }
     }
@@ -145,6 +148,27 @@ describe('GET /api/health', () => {
     expect(Object.keys(line)).toEqual(['route', 'outcome', 'ms'])
     expect(line).toMatchObject({ route: 'health', outcome: 'fail' })
     expect(typeof line.ms).toBe('number')
+  })
+
+  it("shows the mailer's quota for the day once the mailer reports it", async () => {
+    const res = await health(req(), deps({ mailer: fakeMailer('quota').ping }))
+    expect(await res.json()).toEqual({ redis: 'ok', mailer: 'ok', sheets: 'ok', headers: 'ok', mailQuota: 1294 })
+  })
+
+  it("shows this hour's and the last hour's troubling outcomes, and only those", async () => {
+    const stats = {
+      'stats:2026-10-26T17': ['code.sent', '80', 'code.limited', '4'],
+      'stats:2026-10-26T18': ['code.sent', '120', 'submit.received', '40', 'submit.not_saved', '2', 'verify.wrong', '9'],
+      'stats:2026-10-26T16': ['code.not_sent', '1'],
+    }
+    const res = await health(req(), deps({ redis: fakeRedis({ stats }).redis }))
+    expect(await res.json()).toEqual({
+      redis: 'ok',
+      mailer: 'ok',
+      sheets: 'ok',
+      headers: 'ok',
+      trouble: { '2026-10-26T17': { 'code.limited': 4 }, '2026-10-26T18': { 'submit.not_saved': 2 } },
+    })
   })
 
   it('is never cached', async () => {

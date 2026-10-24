@@ -19,7 +19,7 @@ export const GLIDE = 400
 /** a px of slack: a frame can land a hair off a point */
 const EPS = 1
 
-/** The run whose zone holds y. Zones meet without a gap where one act pins as the other lets go (the peak, the Gala). */
+/** The run whose zone holds y. */
 export function runAt(l: Layout, y: number): Run | null {
   return l.runs.find((r) => y >= r.lo - EPS && y < r.hi) ?? null
 }

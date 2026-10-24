@@ -10,7 +10,8 @@ export type Event = {
   cities?: string[]
   /** the event's own site, linked under its lead */
   site?: { href: string; label: string }
-  /** Gala gold and Ignite red are the owner's values; the rest use aquamarine (#15). */
+  /** each event's logo colour: Gala gold and Ignite red are the owner's values, POLYMAZE its logo's orange and AEC
+   * white, as its logo is drawn (136) */
   accent: string
   /** an id from content/photos.ts */
   photo?: string
@@ -40,7 +41,7 @@ export const EVENTS: Event[] = [
     name: 'POLYMAZE',
     lead: 'A two-day robotics competition. Teams design autonomous robots that solve a maze in record time, using mechanics, electronics and automation.',
     site: { href: 'https://polymaze.vic-enp.com/', label: 'polymaze.vic-enp.com' },
-    accent: '#69C4AF',
+    accent: '#F25805',
     photo: 'img-8026',
     photo2: 'img-0257',
   },
@@ -50,7 +51,7 @@ export const EVENTS: Event[] = [
     lead: 'The Algerian Engineering Competition: a nationwide hackathon where students, startups and researchers take on real industry problems with expert companies. Regional rounds run across the wilayas, then the winners pitch to a professional jury at the national final in Algiers.',
     cities: ['Algiers', 'Oran', 'Tlemcen', 'Constantine', 'Annaba', 'Ouargla'],
     site: { href: 'https://aec.vic-enp.com/', label: 'aec.vic-enp.com' },
-    accent: '#69C4AF',
+    accent: '#FFFFFF',
     photo: 'img-3223',
   },
 ]

@@ -1624,7 +1624,7 @@
     filter: drop-shadow(0 2px 4px rgb(5 10 15 / 0.45));
   }
   /* at lead size the brand blue is 3.8:1 on night, under the accents' 4.5:1 (decision 123): the club name's blue end is
-     lifted 12% toward white, 4.5:1 (decision 136). The motto, at display size, keeps the brand blue. */
+     lifted 12% toward white, 4.5:1 (decision 138). The motto, at display size, keeps the brand blue. */
   .t-lead .vic-grad {
     --vg-blue: #2e8cc3;
   }

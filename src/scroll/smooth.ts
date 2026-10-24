@@ -48,7 +48,7 @@ function measure(): Range[] {
  * The catch's 26 points (docs/experience.md, The catch; decisions.md, 88, 92 and 97). Three runs: the 7 departments and
  * the 5 events at their cuts' middles (where the pickers land), the peak from its resolved group photo through its ten
  * photos at their rests. Each run's zone is its pinned stage; leaving the departments goes at least a screen past it,
- * so nothing rests on the door or the tunnel; the peak's opening and the events' end (the horizon) are the flow's. Three
+ * so nothing rests on the door or the tunnel; the peak's opening and end (the ENP photo's return) and the events' end (the horizon) are the flow's. Three
  * still points: act 2's top and the light act's (where the rail lands) and the close at rest with your point in its
  * slot. None on tier 0 or after a lost context, where the runs are cards and nothing is pinned.
  */
@@ -69,23 +69,29 @@ function catchLayout(ranges: Range[]): Layout {
     runs.push(run)
     return run
   }
+  // a run whose end is the flow's: its zone ends a hair past its last stop, so that stop is still in it and a gesture
+  // there scrolls on from it
+  const flowOut = (r: Run) => {
+    const last = r.stops[r.stops.length - 1]
+    r.hi = last + 2
+    r.down = last
+  }
   cuts('departments', DEPT_STEPS, 1, 7)
   const peak = range('club-life')
   if (peak && document.querySelector('#club-life [data-pin]')) {
     const photos = document.querySelectorAll('#club-life .peak-card').length
     const stops = [along(peak, (PEAK_HOLD[0] + PEAK_HOLD[1]) / 2)]
     for (let i = 0; i < photos; i++) stops.push(along(peak, peakRest(i)))
-    runs.push({ stops, lo: stops[0], hi: peak.end, up: stops[0], down: peak.end + vh })
+    // the peak's end is the flow's too (decision 137): past the tenth photo the ENP photo returns full frame at your own
+    // pace, and the Gala's door catches whatever reaches it
+    const run = { stops, lo: stops[0], hi: peak.end, up: stops[0], down: peak.end }
+    flowOut(run)
+    runs.push(run)
   }
   const events = cuts('events', EVENT_STEPS, 0, 4)
   // the events' end is the flow's, as the peak's opening is (decision 115): past the projects cut the field lies down
-  // into the horizon at your own pace, and coasting stops on the light act's top. The zone ends a hair past the last cut,
-  // so that cut is still in it and a gesture there scrolls on from it
-  if (events) {
-    const last = events.stops[events.stops.length - 1]
-    events.hi = last + 2
-    events.down = last
-  }
+  // into the horizon at your own pace, and coasting stops on the light act's top
+  if (events) flowOut(events)
   const still: number[] = []
   const top = (id: string) => {
     const el = document.getElementById(id)

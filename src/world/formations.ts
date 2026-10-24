@@ -473,14 +473,12 @@ export function shape(key: ShapeKey, n: number, count: number, l: Layout): Forma
   const pl = cutPlacement(key, l)
   const col = rgb(sh.color)
   const paint = rgb(sh.tint?.color ?? sh.color)
-  const inks = new Map<string, Rgb>()
-  const ink = (h: string) => inks.get(h) ?? inks.set(h, rgb(h)).get(h)!
   const dim = key === 'tunnel' ? 0.4 : 1
   return build(n, count, (i) => {
     const on = inShape(i, share)
     const p = on ? gen(i) : c.dust()
     const lit = on && !!sh.lit?.(i)
-    const base = on && sh.inks ? ink(sh.inks(i)) : on && sh.tint?.on(i) ? paint : col
+    const base = on && sh.inks ? rgb(sh.inks(i)) : on && sh.tint?.on(i) ? paint : col
     return {
       p: place(p, pl),
       c: lit ? mixRgb(base, [1, 1, 1], 0.55) : base,

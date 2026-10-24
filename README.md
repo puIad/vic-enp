@@ -78,8 +78,8 @@ The design and build decisions are written up in [`docs/`](docs/README.md), star
 
 ## Fonts and brand assets
 
-- **Gilroy**, the club's typeface, is a commercial font. VIC uses it under its own licence, and the files in
-  `src/assets/fonts/` are not licensed for reuse or redistribution. If you fork this project, replace them with a
+- **Gilroy**, the club's typeface, is a commercial font. The files in `src/assets/fonts/` are the club's own copies
+  and are not licensed for reuse or redistribution. If you fork this project, replace them with a
   font you have the rights to and update `src/fonts.css` (the build's font preload in `vite.config.ts` looks for
   the Gilroy file names).
 - The VIC name, logo, icon, photos and event logos belong to the Vision & Innovation Club and are not open for

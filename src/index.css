@@ -1615,7 +1615,6 @@
      motion keeps it still. The title shadow would paint over a clipped fill, so the lift is a drop shadow instead. */
   .vic-grad {
     --vg-blue: var(--color-blue);
-    font-weight: inherit;
     background: linear-gradient(90deg, var(--vg-blue), var(--color-aqua), var(--vg-blue)) 0 0 / 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -1632,6 +1631,14 @@
   @media (prefers-reduced-motion: no-preference) {
     .vic-grad {
       animation: vic-grad 4s linear infinite;
+    }
+  }
+  /* forced colours keep no background image under the clipped text, so the words go back to plain system text */
+  @media (forced-colors: active) {
+    .vic-grad {
+      background: none;
+      color: CanvasText;
+      -webkit-text-fill-color: CanvasText;
     }
   }
   @keyframes vic-grad {

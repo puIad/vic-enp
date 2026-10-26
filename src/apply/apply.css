@@ -1153,7 +1153,7 @@ ul {
   color: #cfd8df;
   font-size: 14px;
 }
-/* the 2nd choice: a dot in each house's colour and a small badge, never a new wash */
+/* the 2nd choice: a dot in each house's colour and a small badge, never a new wash; the 1st choice's option is blocked */
 .ap-opt.is-house .ap-mk {
   border-color: var(--h);
 }
@@ -1164,6 +1164,10 @@ ul {
 .ap-opt.is-house:has(input:checked) .ap-mk {
   border-color: var(--h);
   background: var(--h);
+}
+.ap-opt:has(input:disabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 .ap-badge {
   display: inline-flex;

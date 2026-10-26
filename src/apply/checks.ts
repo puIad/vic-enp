@@ -2,13 +2,11 @@
 // checkRegistration still decides; these only catch a slip while the candidate can fix it. No DOM here.
 
 export type CheckContext = {
-  /** the 1st choice's department code, if picked */
-  first?: string
   today: Date
 }
 
-/** the questions softCheck looks at: form.ts builds a chip under each */
-export const SOFT = new Set([4, 5, 6, 14])
+/** the questions softCheck looks at: form.ts builds a chip under each. The 2nd choice needs none: its 1st is blocked */
+export const SOFT = new Set([4, 5, 6])
 
 const PHONE = /^0(?:[5-7]\d{8}|[2-4]\d{7})$/
 // a profile path after the domain; a bare facebook.com is not a profile
@@ -39,8 +37,6 @@ export function softCheck(n: number, value: string, ctx: CheckContext): string {
     }
     case 6:
       return FACEBOOK.test(v) ? '' : 'Paste the link to your Facebook profile. It starts with facebook.com/.'
-    case 14:
-      return ctx.first && v === ctx.first ? 'Your 2nd choice is the same as your 1st. Pick another one if you can.' : ''
     default:
       return ''
   }

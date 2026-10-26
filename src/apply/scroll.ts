@@ -127,8 +127,11 @@ function envelope(changed: () => void) {
 
   let d = deskOf(1, 1)
   let last = -1
+  // from the first pixel of scroll to the end of the run, the stage held still for the run; measured here, not per frame
+  let span = 1
   const measure = () => {
     d = deskOf(letter.offsetWidth, letter.offsetHeight)
+    span = open.offsetTop + run.offsetHeight
     desk.style.setProperty('--lh', `${d.h}px`)
     desk.style.setProperty('--env-h', `${d.envH}px`)
     desk.style.setProperty('--env-top', `${d.envTop}px`)
@@ -138,10 +141,9 @@ function envelope(changed: () => void) {
   }
   measure()
   new ResizeObserver(measure).observe(letter)
+  addEventListener('resize', measure)
 
   return (scrollY: number) => {
-    // from the first pixel of scroll to the end of the run, the stage held still for the run
-    const span = open.offsetTop + run.offsetHeight
     const p = Math.min(1, Math.max(0, scrollY / span))
     if (Math.abs(p - last) < 0.0005) return
     last = p
@@ -181,11 +183,13 @@ function road() {
   const el = $('#letter')
   const pins = [...el.querySelectorAll<HTMLElement>('.ap-pin')]
   return () => {
+    // every read before any write, so the frame costs one style pass
     const r = el.getBoundingClientRect()
+    const tops = pins.map((pin) => (pin.offsetParent === null ? Infinity : pin.getBoundingClientRect().top))
     const v = inked(r.top, r.height, innerHeight)
-    el.style.setProperty('--ink', v.toFixed(4))
     const tip = r.top + v * r.height
-    for (const pin of pins) pin.classList.toggle('is-inked', pin.offsetParent !== null && pin.getBoundingClientRect().top + 15 <= tip)
+    el.style.setProperty('--ink', v.toFixed(4))
+    pins.forEach((pin, i) => pin.classList.toggle('is-inked', tops[i] + 15 <= tip))
   }
 }
 
@@ -239,9 +243,10 @@ export function startScroll({ envelope: withEnvelope }: { envelope: boolean }): 
   function frame() {
     queued = false
     const y = scrollY
+    // the road reads layout, so it goes before the writes; the envelope only writes
+    ink()
     for (const s of stars) s.el.style.transform = `translate3d(0,${drift(y, s.rate, s.tile).toFixed(1)}px,0)`
     env?.(y)
-    ink()
   }
   addEventListener('scroll', queue, { passive: true })
   addEventListener('resize', queue)

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { SOFT, softCheck } from './checks'
 
 const TODAY = new Date(2026, 9, 25)
-const check = (n: number, v: string, first?: string) => softCheck(n, v, { first, today: TODAY })
+const check = (n: number, v: string) => softCheck(n, v, { today: TODAY })
 
 describe('the phone check', () => {
   it('takes a mobile (05, 06, 07 and 8 digits) or a landline (02, 03, 04 and 7 digits), spaces and dots allowed', () => {
@@ -41,17 +41,16 @@ describe('the age check', () => {
   })
 })
 
-describe('the 2nd choice check', () => {
-  it('warns when the 2nd choice is the 1st', () => {
-    expect(check(14, 'IT', 'IT')).toMatch(/same as your 1st/)
-    expect(check(14, 'HR', 'IT')).toBe('')
-    expect(check(14, 'HR')).toBe('')
+describe('the 2nd choice', () => {
+  it('has no soft check: the form blocks the 1st choice as a 2nd', () => {
+    expect(SOFT.has(14)).toBe(false)
+    expect(check(14, 'IT')).toBe('')
   })
 })
 
 it('lists exactly the questions it checks, so each one gets its chip', () => {
-  // an answer every check would flag: a date a century back, otherwise a word that is no phone, link or other choice
-  const warns = (n: number) => check(n, n === 4 ? '1900-01-01' : 'x', 'x') !== ''
+  // an answer every check would flag: a date a century back, otherwise a word that is no phone or link
+  const warns = (n: number) => check(n, n === 4 ? '1900-01-01' : 'x') !== ''
   expect([...Array(33).keys()].filter(warns)).toEqual([...SOFT].sort((a, b) => a - b))
 })
 

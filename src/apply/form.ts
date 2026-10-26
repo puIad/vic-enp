@@ -228,7 +228,10 @@ export function washRoom(code: string | undefined) {
   else delete document.documentElement.dataset.house
 }
 
-/** the choosing's lines: the wash note, which 2nd option is the 1st, and the 2nd choice's badge */
+/**
+ * the choosing's lines: the wash note, the 2nd choice's options with the 1st blocked (a 2nd choice it held is cleared),
+ * and the 2nd choice's badge
+ */
 function showChoosing() {
   const first = DEPARTMENTS.find((d) => d.code === firstChoice())
   washRoom(first?.code)
@@ -236,6 +239,8 @@ function showChoosing() {
   for (const opt of document.querySelectorAll<HTMLInputElement>('input[name="q14"]')) {
     const d = DEPARTMENTS.find((x) => x.code === opt.value)!
     opt.closest('label')!.querySelector('small')!.textContent = d === first ? `${d.house} · your 1st` : d.house
+    opt.disabled = d === first
+    if (opt.disabled) opt.checked = false
   }
   const second = DEPARTMENTS.find((d) => d.code === document.querySelector<HTMLInputElement>('input[name="q14"]:checked')?.value)
   const badge = $('second-badge')
@@ -248,8 +253,7 @@ function showChoosing() {
 function softMark(n: number) {
   const chip = document.getElementById(`q${n}-warn`)
   if (!chip) return
-  const value = n === 14 ? (document.querySelector<HTMLInputElement>('input[name="q14"]:checked')?.value ?? '') : $<HTMLInputElement>(`q${n}`).value
-  const text = softCheck(n, value, { first: firstChoice(), today: new Date() })
+  const text = softCheck(n, $<HTMLInputElement>(`q${n}`).value, { today: new Date() })
   chip.textContent = text
   chip.hidden = !text
 }
@@ -371,7 +375,6 @@ export function openLetter(provenEmail: string, at: number, hooks: LetterHooks) 
       // a typed answer is checked once the candidate leaves it (no chip mid-typing); a chip already up clears as soon as
       // the answer looks right
       if (SOFT.has(n) && (e.type === 'change' || !$(`q${n}-warn`).hidden)) softMark(n)
-      if (n === 13) softMark(14)
     }
     if (!$('letter-summary').hidden) summarize()
     sayAtSend('')

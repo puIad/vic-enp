@@ -95,6 +95,20 @@ describe('POST /api/submit', () => {
     expect(s.tab.rows).toHaveLength(1)
   })
 
+  it('takes the letter of an address whose registration the owner deleted from the Master, and marks it again', async () => {
+    const s = setup()
+    const rows = s.tab.rows
+    s.d.listed = async (email) => rows.some((r) => r.includes(email))
+    await s.r.redis.command(['SET', REG, '1'])
+    expect((await send(s.d, s.cookie, { answers: IT_LETTER })).status).toBe(200)
+    expect(rows).toHaveLength(1)
+    expect(await s.r.redis.command(['GET', REG])).toBe(String(s.clock.now))
+    // listed now, and marked: a second letter is refused even once the mark is old
+    s.clock.now += 5 * 60_000
+    expect((await send(s.d, s.cookie, { answers: IT_LETTER })).status).toBe(409)
+    expect(rows).toHaveLength(1)
+  })
+
   it('appends one letter at a time behind lock:append, so a burst never crowds the Sheets API, and frees the lock after', async () => {
     const tab = fakeTab()
     const s = setup(tab)

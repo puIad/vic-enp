@@ -1,6 +1,6 @@
 import { generateKeyPairSync, verify } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { readHeaderRow, registrations } from './sheets.js'
+import { addressListed, readHeaderRow, registrations } from './sheets.js'
 
 // A throwaway key made for the test: the real one never leaves the owner's machine except into Vercel.
 const { privateKey, publicKey } = generateKeyPairSync('rsa', { modulusLength: 2048 })
@@ -154,5 +154,50 @@ describe('registrations', () => {
     const denied = flakyGoogle([403])
     await expect(registrations(ENV, denied.fetchFn, async () => {}).append(['x'])).rejects.toThrow()
     expect(denied.sheetCalls()).toHaveLength(1)
+  })
+})
+
+/** a Master whose tabs are rows (row 1 the headers), answering batchGet as Google does */
+function fakeMaster(tabs: Record<string, string[][]>, failing = false) {
+  const calls: string[] = []
+  const fetchFn = (async (url: string) => {
+    if (url === 'https://oauth2.googleapis.com/token') return Response.json({ access_token: 'tok' })
+    calls.push(url)
+    if (failing) return new Response('{}', { status: 500 })
+    const ranges = new URL(url).searchParams.getAll('ranges')
+    const valueRanges = ranges.map((r) => {
+      const [, tab, a1] = r.match(/^'(.+)'!(.+)$/)!
+      const rows = tabs[tab]
+      if (a1 === '1:1') return { range: r, values: [rows[0]] }
+      const col = a1.match(/^([A-Z]+)2:/)![1].split('').reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1
+      return { range: r, values: rows.slice(1).map((row) => [row[col] ?? '']) }
+    })
+    return Response.json({ valueRanges })
+  }) as typeof fetch
+  return { fetchFn, calls }
+}
+
+const MASTER = { keyB64: KEY_B64, sheetId: 'SHEET', tab: 'Registration Responses' }
+const TABS = ['Registration Responses', 'Interviewees']
+const wide = (n: number, at: number, v: string) => Array.from({ length: n }, (_, i) => (i === at ? v : 'x'))
+
+describe('addressListed', () => {
+  const master = () =>
+    fakeMaster({
+      'Registration Responses': [['Timestamp', 'Email address ', 'E-mail Address'], ['1', 'amina@g.enp.edu.dz', 'amina@g.enp.edu.dz'], ['2', '', ' Yacine@G.enp.edu.dz ']],
+      Interviewees: [wide(30, 28, 'Email'), wide(30, 28, 'sara@g.enp.edu.dz')],
+    })
+
+  it('finds an address under any address column of either tab, trimmed and in any case, reading only those columns', async () => {
+    const m = master()
+    for (const email of ['amina@g.enp.edu.dz', 'yacine@g.enp.edu.dz', 'sara@g.enp.edu.dz']) expect(await addressListed(MASTER, TABS, email, m.fetchFn)).toBe(true)
+    expect(await addressListed(MASTER, TABS, 'gone@g.enp.edu.dz', m.fetchFn)).toBe(false)
+    expect(new URL(m.calls[1]).searchParams.getAll('ranges')).toEqual(["'Registration Responses'!B2:B", "'Registration Responses'!C2:C", "'Interviewees'!AC2:AC"])
+  })
+
+  it('throws when a tab cannot be read or has no address column, so nobody is freed by a broken read', async () => {
+    await expect(addressListed(MASTER, TABS, 'gone@g.enp.edu.dz', fakeMaster({}, true).fetchFn)).rejects.toThrow()
+    const renamed = fakeMaster({ 'Registration Responses': [['Timestamp', 'Mail']], Interviewees: [['Email']] })
+    await expect(addressListed(MASTER, TABS, 'gone@g.enp.edu.dz', renamed.fetchFn)).rejects.toThrow(/no address column/)
   })
 })

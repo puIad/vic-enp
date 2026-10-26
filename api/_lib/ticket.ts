@@ -6,6 +6,7 @@ import { readBody } from './body.js'
 import { sha256 } from './hash.js'
 import { clientIp } from './ip.js'
 import { type Log } from './log.js'
+import { markFree } from './mark.js'
 import { key, type Redis } from './redis.js'
 import { proofCookie } from './session.js'
 import { record } from './tally.js'
@@ -23,6 +24,8 @@ export type TicketDeps = {
   closesAt?: number
   now: () => number
   log: Log
+  /** is the address still in the Master? Asked only of an old registration mark (mark.ts) */
+  listed?: (email: string) => Promise<boolean>
 }
 
 const RESEND_S = 30
@@ -78,7 +81,8 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     const ipKey = k(`rl:ip:${sha256(clientIp(req))}`)
     const ip = await count(d.redis, ipKey)
     if (ip.n > PER_IP) return { name: 'limited', res: json({ retryIn: ip.ttl }, 429) }
-    if (Number(await d.redis.command(['EXISTS', k(`reg:${h}`)]))) return { name: 'registered', res: json({ status: 'registered' }) }
+    const listed = d.listed
+    if (!(await markFree(d.redis, k(`reg:${h}`), d.now(), listed && (() => listed(email))))) return { name: 'registered', res: json({ status: 'registered' }) }
     const mine = await count(d.redis, k(`rl:e:${h}`))
     if (mine.n > PER_EMAIL) return { name: 'limited', res: json({ retryIn: mine.ttl }, 429) }
 

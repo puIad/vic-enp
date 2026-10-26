@@ -47,6 +47,40 @@ export async function readHeaderRow(env: SheetEnv, fetchFn: typeof fetch = fetch
   return getHeaderRow(env, await accessToken(env.keyB64, fetchFn), fetchFn)
 }
 
+/** the address columns: the form's collected and typed ones, and the Interviewees tab's */
+const ADDRESS_HEADERS = ['Email address', 'E-mail Address', 'Email']
+
+/** column `i` (0-based) as A1 letters */
+const colLetters = (i: number): string => (i >= 26 ? colLetters(Math.floor(i / 26) - 1) : '') + String.fromCharCode(65 + (i % 26))
+
+async function batchGet(env: SheetEnv, token: string, ranges: string[], fetchFn: typeof fetch): Promise<string[][][]> {
+  const q = ranges.map((r) => `ranges=${encodeURIComponent(r)}`).join('&')
+  const res = await fetchFn(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(env.sheetId)}/values:batchGet?${q}`, {
+    headers: { authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(5000),
+  })
+  if (!res.ok) throw new SheetError(`sheets: read ${res.status}`, res.status)
+  const out = (await res.json()) as { valueRanges?: { values?: string[][] }[] }
+  return ranges.map((_, i) => out.valueRanges?.[i]?.values ?? [])
+}
+
+/**
+ * Is `email` (lowercase) still in any of `tabs`, under an address header? Two reads: row 1 of each tab, then only its
+ * address columns. Throws when a tab can't be read or has no address column: a renamed header must not free anyone.
+ */
+export async function addressListed(env: SheetEnv, tabs: string[], email: string, fetchFn: typeof fetch = fetch): Promise<boolean> {
+  if (!env.sheetId || !tabs.length || !tabs.every(Boolean)) throw new Error('sheets: not configured')
+  const token = await accessToken(env.keyB64, fetchFn)
+  const heads = await batchGet(env, token, tabs.map((t) => `${tabRange(t)}!1:1`), fetchFn)
+  const ranges = tabs.flatMap((t, i) => {
+    const cols = (heads[i][0] ?? []).flatMap((h, c) => (ADDRESS_HEADERS.includes(String(h).trim()) ? [colLetters(c)] : []))
+    if (!cols.length) throw new Error(`sheets: no address column in ${t}`)
+    return cols.map((c) => `${tabRange(t)}!${c}2:${c}`)
+  })
+  const cols = await batchGet(env, token, ranges, fetchFn)
+  return cols.some((rows) => rows.some((r) => String(r[0] ?? '').trim().toLowerCase() === email))
+}
+
 /** an HTTP answer from the Sheets API that was not 2xx */
 class SheetError extends Error {
   readonly status: number

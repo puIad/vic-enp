@@ -27,6 +27,7 @@ export function fakeRedis(clock: { now: number }) {
       switch (cmd) {
         case 'SET': {
           if (rest.includes('NX') && cur !== undefined) return null
+          if (rest.includes('XX') && cur === undefined) return null
           data.set(k, rest[0])
           exp.delete(k)
           const ex = rest.indexOf('EX')

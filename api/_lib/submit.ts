@@ -10,6 +10,7 @@ import { checkAnswers } from '../../src/apply/answers.js'
 import { readBody } from './body.js'
 import { sha256 } from './hash.js'
 import { type Log } from './log.js'
+import { markFree } from './mark.js'
 import { key, type Redis } from './redis.js'
 import { buildRow } from './row.js'
 import { PROOF_S, provenEmail } from './session.js'
@@ -29,6 +30,8 @@ export type SubmitDeps = {
   tz: string
   now: () => number
   log: Log
+  /** is the address still in the Master? Asked only of an old registration mark (mark.ts) */
+  listed?: (email: string) => Promise<boolean>
 }
 
 /** `lock:append` lives 2 s: long enough for one quiet append, short enough that a stopped function never blocks the rest */
@@ -97,8 +100,14 @@ export async function submitLetter(req: Request, d: SubmitDeps): Promise<Respons
 
   const reg = key(d.keyPrefix, `reg:${sha256(email)}`)
   try {
-    // the mark has no expiry before the final reset; taking it is the lock against a double send
-    if ((await d.redis.command(['SET', reg, '1', 'NX'])) === null) return done('registered', json({ status: 'registered' }, 409))
+    // the mark holds its time and no expiry; taking it is the lock against a double send. A mark whose registration the
+    // owner deleted from the Master is dropped (mark.ts), and the mark taken again
+    const take = async () => (await d.redis.command(['SET', reg, d.now(), 'NX'])) !== null
+    if (!(await take())) {
+      const listed = d.listed
+      const freed = await markFree(d.redis, reg, d.now(), listed && (() => listed(email)))
+      if (!freed || !(await take())) return done('registered', json({ status: 'registered' }, 409))
+    }
   } catch {
     return done('unavailable', json({ status: 'not_saved' }, 503))
   }

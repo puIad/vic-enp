@@ -259,6 +259,16 @@ describe('POST /api/code', () => {
     expect(s.mails).toHaveLength(0)
   })
 
+  it('sends a ticket again once the owner deleted the registration from the Master, and keeps refusing while it is listed', async () => {
+    const listed = new Set(['sara@g.enp.edu.dz'])
+    const s = setup({ listed: async (email) => listed.has(email) })
+    await s.r.redis.command(['SET', `reg:${sha256('amina@g.enp.edu.dz')}`, '1'])
+    await s.r.redis.command(['SET', `reg:${sha256('sara@g.enp.edu.dz')}`, '1'])
+    expect(await (await ask(s.d, 'amina')).json()).toEqual({ status: 'sent', resendIn: 30 })
+    expect(s.mails.map((m) => m.to)).toEqual(['amina@g.enp.edu.dz'])
+    expect(await (await ask(s.d, 'sara')).json()).toEqual({ status: 'registered' })
+  })
+
   it('keeps its Redis keys under KEY_PREFIX and stores no plain email, code or IP', async () => {
     for (const prefix of ['', 'prev:']) {
       const s = setup({ keyPrefix: prefix })

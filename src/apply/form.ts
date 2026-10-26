@@ -7,9 +7,11 @@ import { askedFor, LONG_MAX, missing, SHORT_MAX, type Answers } from './answers'
 import { SOFT, softCheck } from './checks'
 import { browserStore, clearDraft, loadDraft, saveDraft, type Draft } from './draft'
 import { DEPARTMENTS, RECEIVED, STOPS, sendAnswer } from './letter'
+import { postLetter, returnLetter } from './owl'
 import { ASKED, type Question } from './questions'
 
 const OTHER = '__other'
+const SVG = 'http://www.w3.org/2000/svg'
 const byN = new Map(ASKED.map((q) => [q.n, q]))
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -385,17 +387,12 @@ export function openLetter(provenEmail: string, at: number, hooks: LetterHooks) 
   persist()
 }
 
-/** how long the owl flies before the answer shows (apply.css .ap-owl-flyer); no flight on tier 0 or reduced motion */
-const OWL_MS = 3200
-const STILL_MS = 600
-
-/** Owl post: the letter gives way to the owl while the send runs, for at least one flight. */
+/** Owl post: the letter gives way to the owl, which folds, seals and carries it off (owl.ts) while the send runs. */
 function flyOwl(): Promise<void> {
   $('letter-app').hidden = true
   $('owl').hidden = false
   window.scrollTo(0, 0)
-  const still = document.documentElement.dataset.tier === '0' || matchMedia('(prefers-reduced-motion: reduce)').matches
-  return new Promise((done) => setTimeout(done, still ? STILL_MS : OWL_MS))
+  return postLetter()
 }
 
 /** the send did not land: back to the letter, at the send */
@@ -432,8 +429,9 @@ async function send(hooks: LetterHooks) {
     // a network failure reads as status 0: "could not save, try again"
   }
   const a = sendAnswer(status, body)
-  // the owl finishes its flight before Received; a send that did not land comes back at once
-  if (a.kind === 'received') await flight
+  // the owl finishes its flight before Received; a send that did not land, it brings back and sets down first
+  await flight
+  if (a.kind !== 'received') await returnLetter()
   sending = false
   btn.disabled = false
   btn.textContent = 'Send by owl'
@@ -453,13 +451,25 @@ function received() {
   clearDraft(store)
   $('owl').hidden = true
   const done = $('received')
+  // the reply: a parchment letter that lands, its seal pressed in the 1st choice's house wax (apply.css .ap-reply)
+  const seal = document.createElementNS(SVG, 'svg')
+  seal.setAttribute('class', 'ap-reply-seal')
+  seal.setAttribute('viewBox', '0 0 120 120')
+  seal.setAttribute('aria-hidden', 'true')
+  const wax = document.createElementNS(SVG, 'use')
+  wax.setAttribute('href', '#ap-wax')
+  seal.append(wax)
   done.replaceChildren(
-    h('div', { class: 'ap-seal', 'aria-hidden': 'true' }, '✦'),
-    h('p', { class: 'ap-eyebrow' }, RECEIVED.eyebrow),
-    h('h1', { class: 'ap-serif', tabindex: '-1', id: 'received-h' }, RECEIVED.title),
-    h('p', { class: 'ap-done-lead' }, RECEIVED.lead),
-    h('ol', { class: 'ap-receipt' }, ...RECEIVED.points.map((p) => h('li', {}, p))),
-    h('p', { class: 'ap-done-note' }, RECEIVED.note),
+    h(
+      'article',
+      { class: 'ap-reply' },
+      seal,
+      h('p', { class: 'ap-eyebrow' }, RECEIVED.eyebrow),
+      h('h1', { class: 'ap-magic-two', tabindex: '-1', id: 'received-h' }, RECEIVED.title),
+      h('p', { class: 'ap-done-lead' }, RECEIVED.lead),
+      h('ol', { class: 'ap-receipt' }, ...RECEIVED.points.map((p) => h('li', {}, p))),
+      h('p', { class: 'ap-done-note' }, RECEIVED.note),
+    ),
   )
   done.hidden = false
   window.scrollTo(0, 0)

@@ -20,6 +20,14 @@ export function fakeRedis(clock: { now: number }) {
   const ttl = (k: string) => (live(k) === undefined ? -2 : exp.has(k) ? Math.ceil((exp.get(k)! - clock.now) / 1000) : -1)
   const redis: Redis = {
     async command(args) {
+      // the one script the site runs (mark.ts DEL_IF): delete a key only while it holds the value given
+      if (args[0] === 'EVAL') {
+        const [, , , k, v] = args.map(String)
+        if (live(k) !== v) return 0
+        data.delete(k)
+        exp.delete(k)
+        return 1
+      }
       const [cmd, k, ...rest] = args.map(String)
       keys.add(k)
       values.push(...rest)

@@ -45,6 +45,19 @@ describe('markFree', () => {
     expect(s.reads).toHaveLength(0)
   })
 
+  it('drops only the mark it judged: a mark another send took while the sheet was read stays', async () => {
+    const s = setup('1')
+    const fresh = String(s.clock.now)
+    const slow = async () => {
+      // a second request dropped the stale mark and a send took a new one meanwhile
+      await s.r.redis.command(['DEL', REG])
+      await s.r.redis.command(['SET', REG, fresh, 'NX'])
+      return false
+    }
+    expect(await markFree(s.r.redis, REG, s.clock.now, slow)).toBe(false)
+    expect(await s.r.redis.command(['GET', REG])).toBe(fresh)
+  })
+
   it('keeps the mark when the sheet cannot be read, or when no sheet is wired', async () => {
     const s = setup('1')
     expect(await markFree(s.r.redis, REG, s.clock.now, s.listed(new Error('sheets: read 500')))).toBe(false)

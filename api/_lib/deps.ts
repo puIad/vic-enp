@@ -8,9 +8,17 @@ import { addressListed, registrations } from './sheets.js'
 import type { SubmitDeps } from './submit.js'
 import type { TicketDeps } from './ticket.js'
 
-/** the Master's tabs that still hold a registration: an address in neither has none left (mark.ts) */
+/**
+ * The Master's tabs that still hold a registration: an address in neither has none left (mark.ts). A failed read keeps the
+ * mark, and is logged so a missing tab or a renamed header shows in the function logs: our own `sheets:` messages, which
+ * carry no address, else only the error's name (a JSON error could quote the key).
+ */
 const listedIn = (e: ReturnType<typeof env>) => (email: string) =>
-  addressListed({ keyB64: e.saKeyB64, sheetId: e.masterId, tab: e.regTab }, [e.regTab, e.ivTab], email)
+  addressListed({ keyB64: e.saKeyB64, sheetId: e.masterId, tab: e.regTab }, [e.regTab, e.ivTab], email).catch((err: unknown) => {
+    const msg = err instanceof Error ? (err.message.startsWith('sheets:') ? err.message : err.name) : 'unknown'
+    console.log(JSON.stringify({ route: 'mark', outcome: 'sheet_error', error: msg }))
+    throw err
+  })
 
 export function ticketDeps(): TicketDeps {
   const e = env()

@@ -5,6 +5,9 @@
 
 import type { Redis } from './redis.js'
 
+/** DEL KEYS[1] only while it still holds ARGV[1]: 1 when deleted */
+export const DEL_IF = "if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) end return 0"
+
 /** a mark this young belongs to a send still appending its row (a submit ends within 60 s), or was just found listed: not judged again */
 export const FRESH_MS = 2 * 60_000
 
@@ -31,6 +34,6 @@ export async function markFree(redis: Redis, reg: string, now: number, listed?: 
     await redis.command(['SET', reg, now, 'XX'])
     return false
   }
-  await redis.command(['DEL', reg])
-  return true
+  // only the mark that was judged: another send may have taken a new one while the sheet was read, and its mark stays
+  return Number(await redis.command(['EVAL', DEL_IF, 1, reg, String(v)])) === 1
 }

@@ -421,7 +421,8 @@ async function send(hooks: LetterHooks) {
   sending = true
   btn.disabled = true
   btn.textContent = 'Sending…'
-  const flight = flyOwl()
+  // the owl is decoration: if its animation fails, the answer still shows
+  const flight = flyOwl().catch(() => undefined)
   let status = 0
   let body: Record<string, unknown> | null = null
   try {
@@ -434,7 +435,7 @@ async function send(hooks: LetterHooks) {
   const a = sendAnswer(status, body)
   // the owl finishes its flight before Received; a send that did not land, it brings back and sets down first
   await flight
-  if (a.kind !== 'received') await returnLetter()
+  if (a.kind !== 'received') await returnLetter().catch(() => undefined)
   sending = false
   btn.disabled = false
   btn.textContent = 'Send by owl'

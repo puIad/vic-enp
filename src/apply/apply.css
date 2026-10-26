@@ -1,11 +1,26 @@
 /* The registration form at /apply (apply.html): the comp's direction A, the long letter, on the night.
    Plain CSS, no Tailwind, and only apply's own small script (main.ts): it ships on its own, keeps the CSP's style-src 'self', and never pulls the
    landing's bundle. Type: the landing's font (Gilroy, as fonts.css sets it) for everything, Cormorant Garamond on
-   the letter and the step titles only (owner, 22 Oct). Only the house wash's fade and owl post move; tier 0 and reduced
-   motion see the same form with both still (the end of this file). */
+   the letter's body (owner, 22 Oct), and Magic School on the titles, the greeting and the envelope (owner, 26 Oct).
+   The letters are parchment and the seals wax. What moves: the envelope under the scroll, the stars, the inked road and
+   the stops lifting in (scroll.ts), owl post (owl.ts), Received landing, and the house wash's fade. Tier 0 and reduced
+   motion see the same form with the letter open and nothing moving (the end of this file). */
 @import '../fonts.css';
 @import '@fontsource-variable/cormorant-garamond/wght.css';
 @import '@fontsource-variable/cormorant-garamond/wght-italic.css';
+
+/* Magic School One and Two (Michael Hagemann, FontMesa, 2004), subset to Latin. DaFont lists them as 100% free; the
+   files say "All Rights Reserved", and FontMesa publishes no licence for them (decisions.md, 151) */
+@font-face {
+  font-family: 'Magic School One';
+  font-display: swap;
+  src: url('./fonts/magic-school-one.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Magic School Two';
+  font-display: swap;
+  src: url('./fonts/magic-school-two.woff2') format('woff2');
+}
 
 /* the comp's tokens: --bg, --bg2, --accent and --ink are what the house wash swaps (night and aquamarine until the 1st
    choice); the rest are the charter's colours as index.css sets them. Registered so the wash can fade between houses. */
@@ -42,6 +57,13 @@
   --paper-body: #3b4954;
   --sans: 'Gilroy', system-ui, sans-serif;
   --serif: 'Cormorant Garamond Variable', Georgia, serif;
+  --magic: 'Magic School One', 'Cormorant Garamond Variable', Georgia, serif;
+  /* parchment: the letters, the envelopes and the reply. Ink is a warm brown; the envelope's address is in green ink */
+  --parch: #eadbbd;
+  --ink-brown: #2c1e11;
+  --ink-body: #47341f;
+  --ink-soft: #654d31;
+  --ink-green: #1d4a35;
   /* each tile's house colour, on every wash (houses.test.ts holds them readable) */
   --h-it: #ff6a5e;
   --h-comm: #7fb0ff;
@@ -116,26 +138,50 @@ ul {
   margin: 0;
 }
 
-/* ---------- the night: a few stars, the charter's static grain at 7% and a vignette, never animated ---------- */
-.ap-sky,
+/* ---------- the night: three star layers at different depths (scroll.ts drifts each, wrapped to its --tile so it never
+   runs out), the charter's static grain at 7% and a vignette ---------- */
+.ap-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.ap-stars,
 .ap-grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
 }
-.ap-sky {
+.ap-stars {
+  bottom: auto;
+  height: calc(100% + var(--tile));
+  background-repeat: repeat;
+}
+.ap-stars.is-far {
+  --tile: 211px;
+  opacity: 0.4;
+  background-size: 173px 211px;
+  background-image:
+    radial-gradient(0.8px 0.8px at 18% 27%, #fff 60%, transparent),
+    radial-gradient(0.7px 0.7px at 71% 79%, #fff 60%, transparent),
+    radial-gradient(0.6px 0.6px at 46% 58%, #fff 60%, transparent);
+}
+.ap-stars.is-mid {
+  --tile: 397px;
   opacity: 0.55;
-  background:
-    radial-gradient(1.2px 1.2px at 12% 14%, #fff, transparent),
-    radial-gradient(1px 1px at 78% 9%, #fff, transparent),
-    radial-gradient(1.4px 1.4px at 44% 22%, #fff, transparent),
-    radial-gradient(1px 1px at 90% 31%, #fff, transparent),
-    radial-gradient(1px 1px at 6% 47%, #fff, transparent),
-    radial-gradient(1.2px 1.2px at 63% 55%, #fff, transparent),
-    radial-gradient(1px 1px at 30% 71%, #fff, transparent),
-    radial-gradient(1.3px 1.3px at 88% 78%, #fff, transparent),
-    radial-gradient(1px 1px at 52% 90%, #fff, transparent),
-    radial-gradient(1px 1px at 18% 93%, #fff, transparent);
+  background-size: 311px 397px;
+  background-image:
+    radial-gradient(1px 1px at 12% 14%, #fff 60%, transparent),
+    radial-gradient(1.1px 1.1px at 63% 41%, #fff 60%, transparent),
+    radial-gradient(0.9px 0.9px at 88% 86%, #fff 60%, transparent);
+}
+.ap-stars.is-near {
+  --tile: 611px;
+  opacity: 0.75;
+  background-size: 523px 611px;
+  background-image:
+    radial-gradient(1.5px 1.5px at 30% 22%, #fff 55%, transparent),
+    radial-gradient(1.3px 1.3px at 82% 64%, #fff 55%, transparent);
 }
 .ap-grain {
   opacity: 0.07;
@@ -184,75 +230,279 @@ ul {
   font-weight: 600;
   letter-spacing: 0.005em;
 }
+/* Magic School One: a display face only, never below 22px and never in all caps; its y sweeps back under the space
+   before it, so the words sit a little apart */
+.ap-magic {
+  font-family: var(--magic);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  word-spacing: 0.1em;
+}
 .ap-eyebrow {
   font: 700 13px/1 var(--sans);
   color: var(--accent);
   letter-spacing: 0.02em;
 }
 
-/* ---------- the letter ---------- */
-.ap-hero {
-  padding: 10px 0 4px;
+/* ---------- the opening: the envelope on the desk, and the letter ---------- */
+.ap-open-stage {
+  padding: 6px 0 26px;
   text-align: center;
 }
-.ap-hero h1 {
-  font-size: 44px;
-  line-height: 1.05;
-  margin: 8px 0 4px;
+.ap-open-title {
+  margin: 10px 0 24px;
+  font-size: 52px;
+  line-height: 1;
   text-wrap: balance;
+}
+.ap-desk {
+  position: relative;
+  text-align: left;
+  perspective: 1100px;
+  perspective-origin: 50% 30%;
+}
+.ap-open-run,
+.ap-env-piece,
+.ap-fold {
+  display: none;
+}
+
+/* the parchment: one aged sheet, its edges a little darker */
+.ap-letter,
+.ap-env-piece,
+.ap-fold-back,
+.ap-post-third,
+.ap-reply {
+  background:
+    radial-gradient(130% 115% at 50% 42%, transparent 58%, rgb(120 82 30 / 0.26)),
+    var(--parch) url('./img/parchment.webp') center / cover;
 }
 .ap-letter {
   position: relative;
-  margin: 22px 0;
-  padding: 30px 24px 26px;
-  border-radius: 20px;
-  background: var(--paper);
-  color: var(--paper-ink);
-  box-shadow:
-    0 26px 60px -20px rgb(0 0 0 / 0.65),
-    inset 0 0 0 1px rgb(20 30 39 / 0.08);
+  padding: 34px 26px 32px;
+  border-radius: 3px 5px 4px 3px;
+  color: var(--ink-brown);
+  box-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.7);
 }
 .ap-letter p {
-  color: var(--paper-body);
+  color: var(--ink-body);
   font: 500 19px/1.5 var(--serif);
   margin-bottom: 12px;
   text-wrap: pretty;
 }
 .ap-letter b {
-  color: var(--paper-ink);
+  color: var(--ink-brown);
   font-weight: 700;
 }
 .ap-letter .ap-greet {
-  font: italic 600 30px/1.1 var(--serif);
-  color: var(--paper-ink);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  color: var(--ink-brown);
+  font: 400 34px/1.05 var(--magic);
 }
 .ap-letter .ap-sign {
-  margin: 16px 0 0;
-  font: 700 15px/1.3 var(--sans);
-  color: var(--paper-ink);
+  margin: 18px 0 0;
+  color: var(--ink-brown);
+  font: 400 26px/1 var(--magic);
 }
-.ap-seal {
+/* the letter's own seal, where no envelope opens (tier 0, reduced motion, a returning candidate) */
+.ap-letter-seal {
   position: absolute;
-  right: 20px;
-  bottom: -22px;
-  display: grid;
-  place-items: center;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--ink);
-  font: 900 22px/1 var(--sans);
-  box-shadow:
-    0 8px 18px -6px rgb(0 0 0 / 0.6),
-    inset 0 0 0 4px rgb(0 0 0 / 0.08);
+  right: 18px;
+  bottom: -34px;
+  width: 88px;
+  overflow: visible;
+  filter: drop-shadow(0 7px 8px rgb(0 0 0 / 0.45));
 }
+
+/* the wax: the page's accent, lit from the top left, the VIC icon pressed in */
+.ap-wax-blob {
+  fill: color-mix(in oklab, var(--accent) 84%, #000);
+}
+.ap-wax-rim {
+  fill: none;
+  stroke: color-mix(in oklab, var(--accent) 70%, #fff);
+  stroke-width: 3;
+  stroke-opacity: 0.5;
+}
+.ap-wax-well {
+  fill: color-mix(in oklab, var(--accent) 76%, #000);
+}
+.ap-wax-hi {
+  fill: color-mix(in oklab, var(--accent) 45%, #fff);
+}
+.ap-wax-lo {
+  fill: color-mix(in oklab, var(--accent) 30%, #000);
+}
+.ap-wax-mark {
+  fill: color-mix(in oklab, var(--accent) 80%, #000);
+}
+
+/* ---------- the envelope. scroll.ts writes every piece's transform; each piece is the envelope's whole box cut to its
+   shape, so they all turn about the same centre. The run under the stage is the scroll it takes. ---------- */
+[data-scroll='envelope'] .ap-open-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+}
+[data-scroll='envelope'] .ap-open-run {
+  display: block;
+  height: 85svh;
+}
+[data-scroll='envelope'] .ap-desk .ap-env-piece {
+  display: block;
+  position: absolute;
+  left: -10px;
+  right: -10px;
+  top: var(--env-top);
+  height: var(--env-h);
+  will-change: transform, opacity;
+}
+.ap-env-piece {
+  border-radius: 4px;
+}
+.ap-env-face {
+  z-index: 8;
+  place-items: center;
+  box-shadow: 0 26px 50px -20px rgb(0 0 0 / 0.7);
+}
+[data-scroll='envelope'] .ap-desk .ap-env-face {
+  display: grid;
+}
+/* the Hogwarts touch: the address in green ink */
+.ap-env-to {
+  color: var(--ink-green);
+  font: 400 32px/1 var(--magic);
+  transform: rotate(-2deg);
+}
+.ap-env-back {
+  z-index: 1;
+  background-image: linear-gradient(rgb(60 38 12 / 0.42), rgb(60 38 12 / 0.2)), url('./img/parchment.webp');
+}
+/* the pocket: the side flaps, and the bottom flap over them with a thin crease */
+.ap-env-pocket {
+  z-index: 4;
+  clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+  background-image: linear-gradient(rgb(90 60 20 / 0.16), rgb(90 60 20 / 0.16)), url('./img/parchment.webp');
+}
+.ap-env-pocket::before,
+.ap-env-pocket::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.ap-env-pocket::after {
+  clip-path: polygon(0 100%, 50% 47%, 100% 100%);
+  background: rgb(70 45 15 / 0.32);
+}
+.ap-env-pocket::before {
+  z-index: 1;
+  clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+  background: var(--parch) url('./img/parchment.webp') center / cover;
+}
+/* the flap: a triangle hinged on the top edge; its crease is the darker base showing round a lighter face */
+.ap-env-flap {
+  z-index: 5;
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  background-image: linear-gradient(rgb(70 45 15 / 0.38), rgb(70 45 15 / 0.38)), url('./img/parchment.webp');
+}
+.ap-env-flap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 100% 0, 50% 57%);
+  background: var(--parch) url('./img/parchment.webp') center / cover;
+}
+.is-flap-open .ap-env-flap {
+  z-index: 2;
+}
+.is-flap-open .ap-env-flap::before {
+  filter: brightness(0.86);
+}
+.ap-desk .ap-env-seal {
+  z-index: 6;
+  background: none;
+  pointer-events: none;
+}
+.ap-env-seal svg {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 92px;
+  overflow: visible;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 4px 5px rgb(0 0 0 / 0.42));
+}
+.ap-wax-half {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* the letter folded in thirds: three hinged windows on copies of the real letter */
+[data-scroll='envelope'] .ap-fold {
+  display: block;
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: calc(var(--lh) / 3);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.ap-fold-p {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--lh) / 3);
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+}
+.ap-fold-p .ap-fold-p {
+  top: 100%;
+}
+.ap-fold-face,
+.ap-fold-back {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+.ap-fold-face {
+  box-shadow: 0 18px 30px -16px rgb(0 0 0 / 0.55);
+}
+.ap-fold-back {
+  transform: rotateX(180deg);
+  background-image: linear-gradient(rgb(70 45 15 / 0.2), rgb(70 45 15 / 0.2)), url('./img/parchment.webp');
+}
+.ap-letter.is-copy {
+  position: absolute;
+  inset: 0 0 auto;
+  margin: 0;
+  box-shadow: none;
+}
+.ap-desk:not(.is-turned) :is(.ap-env-back, .ap-env-flap, .ap-env-pocket, .ap-env-seal),
+.ap-desk:not(.is-opening) .ap-fold,
+.ap-desk.is-turned .ap-env-face,
+.ap-desk:not(.is-unfold2) .ap-fold-p .ap-fold-p,
+.ap-desk:not(.is-unfold3) .ap-fold-p .ap-fold-p .ap-fold-p,
+.ap-desk.is-open .ap-fold {
+  visibility: hidden;
+}
+.ap-desk.is-out .ap-fold {
+  z-index: 7;
+}
+[data-scroll='envelope'] .ap-desk:not(.is-open) > .ap-letter {
+  opacity: 0;
+}
+[data-scroll='envelope'] .ap-letter-seal {
+  display: none;
+}
+
 .ap-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 2px 0 4px;
+  margin: 18px 0 4px;
   padding: 0;
   list-style: none;
 }
@@ -295,6 +545,39 @@ ul {
   position: relative;
   padding-bottom: 18px;
 }
+/* the ink: drawn down the road as the candidate scrolls (scroll.ts --ink), each pin lighting as the ink reaches it */
+:root[data-scroll] .ap-road::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+  transform-origin: 50% 0;
+  transform: scaleY(var(--ink, 0));
+}
+.ap-pin {
+  z-index: 1;
+  transition:
+    border-color 0.4s ease,
+    color 0.4s ease;
+}
+.ap-pin.is-inked {
+  border-color: var(--accent);
+  color: var(--text);
+}
+/* each stop lifts in from a slight tilt the first time it arrives, then stays put: nothing moves under typing */
+:root[data-scroll] .ap-stop {
+  transform-origin: 50% 0;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ap-stop.is-away {
+  opacity: 0;
+  transform: perspective(1000px) translate3d(0, 40px, 0) rotateX(9deg);
+}
 .ap-pin {
   position: absolute;
   left: -46px;
@@ -315,8 +598,8 @@ ul {
   box-shadow: 0 0 0 5px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 .ap-stop h2 {
-  font-size: 34px;
-  line-height: 1.08;
+  font-size: 38px;
+  line-height: 1.05;
   margin: 4px 0 6px;
   text-wrap: balance;
 }
@@ -339,7 +622,7 @@ ul {
 
 /* ---------- the ticket: Platform 9¾ ---------- */
 .ap-stop .ap-ticket-title {
-  font-size: 38px;
+  font-size: 44px;
   line-height: 1.05;
   margin: 6px 0 10px;
 }
@@ -819,12 +1102,14 @@ ul {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font: 900 30px/1 var(--sans);
 }
+/* the house's name in Magic School One, in its house colour (owner, 26 Oct) */
 .ap-tile-house {
   color: var(--h);
-  font: italic 700 20px/1 var(--sans);
+  font: 400 27px/1 var(--magic);
+  letter-spacing: 0.01em;
 }
 .ap-tile-name {
   display: block;
@@ -981,34 +1266,49 @@ ul {
   font: inherit;
 }
 
-/* ---------- Received ---------- */
+/* ---------- Received: the reply lands on parchment, its seal pressed in the 1st choice's house wax ---------- */
 .ap-done {
-  padding: 32px 0 0;
+  padding: 56px 0 0;
+}
+.ap-reply {
+  position: relative;
+  padding: 58px 24px 28px;
+  border-radius: 3px 5px 4px 3px;
+  color: var(--ink-brown);
   text-align: center;
+  box-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.7);
+  transform-origin: 50% 0;
+  animation: ap-land 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.ap-done .ap-seal {
-  position: static;
-  margin: 0 auto 10px;
-  width: 72px;
-  height: 72px;
-  font-size: 30px;
+.ap-reply-seal {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 100px;
+  overflow: visible;
+  translate: -50% -46%;
+  filter: drop-shadow(0 7px 8px rgb(0 0 0 / 0.45));
+  animation: ap-press 0.6s 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.ap-done h1 {
-  margin: 10px 0;
-  font-size: 48px;
-  line-height: 1.02;
+/* on parchment the eyebrow takes the house's colour darkened to ink, so it stays readable on every wash */
+.ap-reply .ap-eyebrow {
+  color: color-mix(in oklab, var(--accent) 38%, var(--ink-brown));
+}
+.ap-reply .ap-magic-two {
+  margin: 12px 0 14px;
+  color: var(--ink-brown);
+  font: 400 66px/0.95 'Magic School Two', var(--magic);
   outline: none;
 }
 .ap-done-lead {
-  color: #e4eaef;
-  font-size: 18px;
+  color: var(--ink-body);
+  font: 500 20px/1.45 var(--serif);
+  text-wrap: pretty;
 }
 .ap-receipt {
-  margin: 22px 0;
-  padding: 18px 18px 8px;
-  border: 1.5px solid var(--line);
-  border-radius: 20px;
-  background: rgb(255 255 255 / 0.05);
+  margin: 22px 0 18px;
+  padding: 18px 0 4px;
+  border-top: 1px solid rgb(71 52 31 / 0.22);
   list-style: none;
   text-align: left;
   counter-reset: step;
@@ -1016,7 +1316,9 @@ ul {
 .ap-receipt li {
   display: flex;
   gap: 12px;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  color: var(--ink-body);
+  font: 500 18px/1.4 var(--serif);
   counter-increment: step;
 }
 .ap-receipt li::before {
@@ -1024,6 +1326,7 @@ ul {
   flex: none;
   width: 24px;
   height: 24px;
+  margin-top: 1px;
   border-radius: 50%;
   background: var(--accent);
   color: var(--ink);
@@ -1031,22 +1334,41 @@ ul {
   text-align: center;
 }
 .ap-done-note {
-  color: var(--muted);
-  font-size: 13.5px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+@keyframes ap-land {
+  from {
+    opacity: 0;
+    transform: perspective(900px) translate3d(0, -70px, 0) rotateX(26deg) rotateZ(-3deg) scale(0.94);
+  }
+}
+@keyframes ap-press {
+  from {
+    opacity: 0;
+    scale: 1.7;
+  }
+  60% {
+    opacity: 1;
+    scale: 0.93;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
-/* ---------- owl post: the owl flies in while the letter is on its way ---------- */
+/* ---------- owl post (owl.ts): the letter folds into an envelope, the owl grabs it and flies ---------- */
 .ap-owl {
   display: grid;
   place-content: center;
   gap: 10px;
   min-height: calc(100dvh - 160px);
-  padding: 40px 0;
-  overflow: hidden;
+  padding: 20px 0 40px;
   text-align: center;
 }
 .ap-owl h1 {
-  font-size: 40px;
+  font-size: 46px;
   line-height: 1.05;
 }
 .ap-owl-lead {
@@ -1054,45 +1376,128 @@ ul {
 }
 .ap-owl-sky {
   position: relative;
-  height: 150px;
+  width: min(100%, 420px);
+  height: 380px;
+  margin: 0 auto;
 }
-.ap-owl-flyer {
+/* the letter and its envelope, low in the sky; --post-drop takes the folded sheet's middle third into the pocket */
+.ap-post {
   position: absolute;
-  top: 30px;
   left: 50%;
-  margin-left: -75px;
-  animation: ap-fly 3.2s cubic-bezier(0.35, 0.1, 0.3, 1) both;
+  top: 250px;
+  width: 180px;
+  height: 112px;
+  margin-left: -90px;
 }
-.ap-owl-body {
-  fill: var(--accent);
+.ap-post .ap-env-piece,
+.ap-owl-carry .ap-env-piece {
+  display: block;
+  position: absolute;
+  inset: 0;
 }
-.ap-owl-wing {
-  transform-origin: 66px 36px;
-  animation: ap-flap 0.42s ease-in-out 8 alternate both;
+.ap-post .ap-env-flap {
+  transform-origin: 50% 0;
+  transform: rotateX(180deg);
+}
+.ap-owl-sky.is-shut .ap-post .ap-env-flap {
+  z-index: 5;
+}
+.ap-owl-sky:not(.is-shut) .ap-post .ap-env-flap {
+  z-index: 2;
+}
+.ap-post-sheet {
+  --post-drop: 182px;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: -232px;
+  height: 216px;
+  z-index: 3;
+  opacity: 0;
+  transform-style: preserve-3d;
+  perspective: 700px;
+}
+.ap-post-third {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 72px;
+}
+/* a few lines of the candidate's hand, as faint ink */
+.ap-post-third::after {
+  content: '';
+  position: absolute;
+  inset: 14px 18px;
+  background: repeating-linear-gradient(transparent 0 11px, rgb(71 52 31 / 0.24) 11px 12.5px);
+}
+.ap-post-third.is-top {
+  top: 0;
+  z-index: 2;
+  transform-origin: 50% 100%;
+}
+.ap-post-third.is-mid {
+  top: 72px;
+}
+.ap-post-third.is-bot {
+  top: 144px;
+  transform-origin: 50% 0;
+}
+.ap-post-seal {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  z-index: 6;
+  width: 52px;
+  overflow: visible;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.4));
+}
+/* the owl: three painted pieces on one box; the wings turn about the shoulders. Its talons sit on the envelope's top
+   edge at rest (the body's 53% across, 96% down) */
+.ap-owl-rig {
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  width: 320px;
+  aspect-ratio: 640 / 575;
+  margin-left: -170px;
+  opacity: 0;
+}
+.ap-owl-rig img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ap-owl-wing.is-l {
+  transform-origin: 42.5% 52.8%;
 }
 .ap-owl-wing.is-r {
-  animation-direction: alternate-reverse;
+  transform-origin: 60.2% 52.2%;
 }
-.ap-owl-paper {
-  fill: var(--paper);
+.ap-owl-carry {
+  position: absolute;
+  left: calc(53.14% - 90px);
+  top: calc(96.17% - 8px);
+  width: 180px;
+  height: 112px;
+  opacity: 0;
 }
-.ap-owl-night {
-  fill: var(--paper-ink);
+.ap-owl-carry .ap-env-flap {
+  z-index: 5;
 }
-.ap-owl-beak {
-  fill: #f4bb35;
+.ap-owl-carry .ap-post-seal {
+  opacity: 1;
 }
-.ap-owl-string {
-  stroke: var(--accent);
-  stroke-width: 3;
+.ap-owl-sky.is-grabbed .ap-owl-carry,
+.ap-owl-sky.is-held .ap-owl-carry,
+.ap-owl-sky.is-held .ap-owl-rig {
+  opacity: 1;
 }
-.ap-owl-fold {
-  fill: none;
-  stroke: #8795a1;
-  stroke-width: 2;
-}
-.ap-owl-wax {
-  fill: var(--accent);
+.ap-owl-sky.is-grabbed .ap-post,
+.ap-owl-sky.is-held .ap-post {
+  opacity: 0;
 }
 .ap-owl-dots span {
   display: inline-block;
@@ -1103,22 +1508,6 @@ ul {
 }
 .ap-owl-dots span:nth-child(3) {
   animation-delay: 0.4s;
-}
-@keyframes ap-fly {
-  0% {
-    transform: translate(-120vw, 34px) rotate(-6deg);
-  }
-  55% {
-    transform: translate(0, -6px) rotate(0);
-  }
-  100% {
-    transform: none;
-  }
-}
-@keyframes ap-flap {
-  to {
-    transform: scaleY(0.35);
-  }
 }
 @keyframes ap-blink {
   0%,

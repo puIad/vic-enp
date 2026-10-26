@@ -10,11 +10,15 @@ import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
 import { CLOSED, FOLLOW } from './letter'
+import { startScroll } from './scroll'
 import { clearSent, loadSent, saveSent } from './sent'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
 
 // tier 0 (reduced motion, Save-Data, 2 GB of memory or less, ?tier=0) gets the same form with nothing animated (apply.css)
 document.documentElement.dataset.tier = String(detectTier())
+
+/** the scroll (scroll.ts), started at the end of this file on tiers 1 and 2 */
+let scroll: ReturnType<typeof startScroll> | null = null
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -128,6 +132,7 @@ function proven(at = Date.now()) {
   $('tk-unlock').hidden = true
   for (const stop of document.querySelectorAll('.ap-stop.is-locked')) stop.classList.remove('is-locked')
   openLetter(email, at, { backToTicket })
+  scroll?.unlocked()
 }
 
 /**
@@ -218,12 +223,15 @@ function showClosed() {
 // a draft on this phone: inside the ticket's hour the letter opens as it was left; after it, the room keeps its house
 // and the ticket is asked again, the answers waiting behind it
 const saved = loadDraft(store, Date.now())
+/** a candidate coming back (a draft, a ticket on its way, or the close) finds the letter already open */
+let returning = !!saved
 const savedLocal = saved?.draft.email ? localPart(saved.draft.email) : null
 // a ticket checked before the close keeps its hour to send the letter (the API takes it until then)
 if (saved?.proven && savedLocal && 'local' in savedLocal) {
   sentTo = savedLocal.local
   proven(saved.draft.provenAt)
 } else if (Date.now() + clockOffset(location.search) >= +CLOSES_AT) {
+  returning = true
   showClosed()
 } else {
   if (saved) {
@@ -234,9 +242,13 @@ if (saved?.proven && savedLocal && 'local' in savedLocal) {
   // a reload while the ticket is on its way: back to the code box, the resend wait carried on
   const sent = loadSent(store, Date.now())
   if (sent?.live) {
+    returning = true
     sentTo = sent.local
     local.value = sent.local
     showCheck()
     startCountdown(Math.max(0, Math.ceil((sent.resendAt - Date.now()) / 1000)))
   } else if (sent && !local.value) local.value = sent.local
 }
+
+// the envelope opens under the scroll on a first visit only; tier 0 and reduced motion keep the whole page still
+if (document.documentElement.dataset.tier !== '0') scroll = startScroll({ envelope: !returning })

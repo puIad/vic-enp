@@ -119,7 +119,7 @@ The charter's rules (p.9 to 12):
 - Full-colour logo only on white or black backgrounds, or a white or black area of a photo. On Dark Jungle Green,
   use the white or on-dark file.
 - Never crop, add shadows or effects, change the typeface, outline, rotate any part, change the opacity, recolour
-  or distort.
+  or distort. Exception: `/apply`'s wax seals press the icon into wax of the page's accent ([decisions.md](decisions.md), 150).
 - The bulb and the iris can't be extracted and used as graphic elements.
 
 ### Logo in a 3D world

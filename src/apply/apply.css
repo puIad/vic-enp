@@ -1102,12 +1102,14 @@ ul {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font: 900 30px/1 var(--sans);
 }
+/* the house's name in Magic School One, in its house colour (owner, 26 Oct) */
 .ap-tile-house {
   color: var(--h);
-  font: italic 700 20px/1 var(--sans);
+  font: 400 27px/1 var(--magic);
+  letter-spacing: 0.01em;
 }
 .ap-tile-name {
   display: block;

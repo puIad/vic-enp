@@ -6,6 +6,11 @@ describe('localPart: what the candidate typed before @g.enp.edu.dz', () => {
     expect(localPart('  amina.benali ')).toEqual({ local: 'amina.benali' })
   })
 
+  it("takes an apostrophe, a phone's curly one as the straight one", () => {
+    expect(localPart("M'hamed.Ouali")).toEqual({ local: "M'hamed.Ouali" })
+    expect(localPart('m’hamed.ouali@g.enp.edu.dz')).toEqual({ local: "m'hamed.ouali" })
+  })
+
   it('forgives a pasted full ENP address', () => {
     expect(localPart('Amina.Benali@G.ENP.edu.dz')).toEqual({ local: 'Amina.Benali' })
   })

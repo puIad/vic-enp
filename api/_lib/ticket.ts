@@ -41,11 +41,11 @@ const json = (body: unknown, status = 200, headers: Record<string, string> = {})
 
 /**
  * The proven address is always lowercase(local) + "@" + EMAIL_DOMAIN, and the local part takes only what an ENP one
- * uses (letters, digits, dot, hyphen, underscore). Anything else is refused (null): an @ would pick the domain, a +tag
+ * uses (letters, digits, dot, hyphen, underscore, and the apostrophe of a name like m'hamed). Anything else is refused (null): an @ would pick the domain, a +tag
  * reaches the same inbox under another hash, and a comma makes the mailer send to a second recipient.
  */
 function emailOf(local: unknown, domain: string): string | null {
-  if (typeof local !== 'string' || !/^[a-z0-9._-]{1,64}$/i.test(local)) return null
+  if (typeof local !== 'string' || !/^[a-z0-9._'-]{1,64}$/i.test(local)) return null
   return `${local.toLowerCase()}@${domain}`
 }
 

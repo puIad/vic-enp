@@ -216,6 +216,8 @@ function showClosed() {
   ask.hidden = true
   check.hidden = true
   $('tk-unlock').hidden = true
+  // the desktop map too: no stop will open
+  $('map').hidden = true
   // CLOSED's words, with @vic.enp as the link
   const [before, after] = CLOSED.split(FOLLOW)
   lead.replaceChildren(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: FOLLOW }), after)

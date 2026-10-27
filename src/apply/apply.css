@@ -1558,6 +1558,12 @@ ul {
   .ap-app:has(> #letter-app[hidden]) .ap-map {
     display: none;
   }
+  /* after the close the map is gone (main.ts) and the letter takes the middle */
+  .ap-app:has(> #map[hidden]) #letter-app {
+    grid-column: 1 / -1;
+    width: min(100%, 660px);
+    margin: 0 auto;
+  }
 
   .ap-map {
     display: block;

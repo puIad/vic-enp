@@ -10,14 +10,15 @@ export const DOMAIN = 'g.enp.edu.dz'
 export const addressOf = (local: string) => `${local.toLowerCase()}@${DOMAIN}`
 
 export function localPart(raw: string): { local: string } | { error: string } {
-  let local = raw.trim()
+  // a phone keyboard's curly apostrophe (m’hamed) is the straight one the address has
+  let local = raw.trim().replace(/[’‘ʼ`´]/g, "'")
   // a pasted full ENP address is fine: the domain is already on screen
   if (local.toLowerCase().endsWith(`@${DOMAIN}`)) local = local.slice(0, -DOMAIN.length - 1)
   if (!local) return { error: `Type the part of your ENP address before @${DOMAIN}.` }
   if (local.includes('@')) return { error: `Only ENP addresses can register here. Type the part before @${DOMAIN}, not a Gmail address.` }
   if (/\s/.test(local)) return { error: 'An address has no spaces. Check what you typed.' }
-  // what the API takes: a +tag or a comma would prove an address that isn't the inbox's own
-  if (!/^[a-z0-9._-]{1,64}$/i.test(local)) return { error: 'An ENP address has only letters, digits, dots, hyphens and underscores before the @.' }
+  // what the API takes: a +tag or a comma would prove an address that isn't the inbox's own; an apostrophe is a name's (m'hamed)
+  if (!/^[a-z0-9._'-]{1,64}$/i.test(local)) return { error: 'An ENP address has only letters, digits, dots, hyphens, underscores and apostrophes before the @.' }
   return { local }
 }
 

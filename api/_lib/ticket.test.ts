@@ -170,9 +170,10 @@ describe('POST /api/code', () => {
     expect(s.mails[0].code).toMatch(/^\d{6}$/)
   })
 
-  it('takes the characters an ENP local part uses: letters, digits, dot, hyphen, underscore', async () => {
+  it('takes the characters an ENP local part uses: letters, digits, dot, hyphen, underscore, apostrophe', async () => {
     const s = setup()
-    for (const local of ['amina.benali', 'a_benali', 'ben-ali2']) expect((await ask(s.d, local)).status, local).toBe(200)
+    for (const local of ['amina.benali', 'a_benali', 'ben-ali2', "m'hamed.ouali"]) expect((await ask(s.d, local)).status, local).toBe(200)
+    expect(s.mails.at(-1)?.to).toBe("m'hamed.ouali@g.enp.edu.dz")
   })
 
   it('refuses any other local part: a full address, whitespace, or a +tag or comma that reaches another inbox', async () => {

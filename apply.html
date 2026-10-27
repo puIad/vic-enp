@@ -59,6 +59,25 @@
         <a href="/" class="ap-logo"><img src="/brand/vic-logo-on-dark.svg" alt="Vision &amp; Innovation Club, home" width="75" height="30" /></a>
       </header>
 
+      <!-- the map, on a desktop only (apply.css): the stops down the left, the one on screen and the ones done (map.ts).
+           A stop still locked behind the ticket shows dim and takes no click -->
+      <nav class="ap-map" id="map" aria-label="Your letter">
+        <p class="ap-eyebrow">Your letter</p>
+        <ol>
+          <li><a href="#ticket"><i aria-hidden="true"></i>Platform 9¾</a></li>
+          <li><a href="#stop-1"><i aria-hidden="true"></i>Who you are</a></li>
+          <li><a href="#stop-2"><i aria-hidden="true"></i>Where we can reach you</a></li>
+          <li><a href="#stop-3"><i aria-hidden="true"></i>Your studies</a></li>
+          <li><a href="#stop-4"><i aria-hidden="true"></i>Your story</a></li>
+          <li><a href="#stop-5"><i aria-hidden="true"></i>The choosing</a></li>
+          <li><a href="#stop-6"><i aria-hidden="true"></i>Your department</a></li>
+          <li><a href="#stop-7"><i aria-hidden="true"></i>Interview details</a></li>
+          <li><a href="#stop-8"><i aria-hidden="true"></i>Almost done</a></li>
+        </ol>
+        <p class="ap-map-count" aria-live="polite"></p>
+        <p class="ap-map-lock">The stops open once your ticket is checked.</p>
+      </nav>
+
       <main id="letter-app">
         <!-- the opening: an envelope arrives address up; the scroll turns it over, breaks the seal, lifts the flap, draws
              the letter out folded in thirds and unfolds it flat. The envelope and the folded copy are decoration; the

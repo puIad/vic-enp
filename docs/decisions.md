@@ -311,3 +311,9 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 | # | Decision | By | Notes |
 |---|---|---|---|
 | 153 | On `/apply`, the 2nd choice's option for the department picked as 1st is **blocked** (disabled, dimmed, still labelled "your 1st"), and changing the 1st choice clears a 2nd choice that now matches it. This replaces the soft check on question 14, which only warned. | Owner, 2026-10-26 | Asked. The API does not check it; the Master's checkRegistration still decides. Numbered after #98's 150 to 152. |
+
+## 2026-10-27: `/apply` on a desktop
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 154 | From 1000px wide, `/apply` gets a **desktop layout**: a sticky map down the left lists Platform 9¾ and the 8 stops (the one on screen, a tick on each stop whose required questions have answers, a count, and the stops behind the ticket dimmed and unclickable), and the letter sits beside it in a column up to 660px. Short answers (names, birth date, phone, Facebook, Discord) pair two to a row, the house tiles and the review sit two by two, and the type grows a step. The opening keeps its motion, a size up: the letter is up to 580px wide and held to 64% of the screen's height so the envelope fits a 720px laptop. Owl post and Received take the screen's middle with the map gone. Below 1000px nothing changes. | Owner, 2026-10-27 | Asked. Declined: one wider centred column with the night on both sides; leaving the opening phone-sized. |

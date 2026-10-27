@@ -1519,6 +1519,239 @@ ul {
   }
 }
 
+/* ---------- the desktop (owner, 27 Oct): the map down the left, the letter in a wider column beside it. The same page
+   and the same motion; short answers pair up, the houses sit two by two, and the type grows a step. ---------- */
+.ap-map {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .ap-app {
+    display: grid;
+    grid-template-columns: 232px minmax(0, 660px);
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(48px, 6vw, 104px);
+    justify-content: center;
+    max-width: none;
+    padding: 0 40px 120px;
+    border-inline: 0;
+  }
+  .ap-top {
+    grid-column: 1;
+    min-height: 88px;
+    padding-top: 28px;
+  }
+  .ap-logo img {
+    height: 36px;
+  }
+  #letter-app {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  /* owl post and Received have the screen to themselves: the map goes, and they sit in the middle */
+  .ap-owl,
+  .ap-done {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 2;
+    width: min(100%, 660px);
+    margin: 0 auto;
+  }
+  .ap-app:has(> #letter-app[hidden]) .ap-map {
+    display: none;
+  }
+
+  .ap-map {
+    display: block;
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    position: sticky;
+    top: 0;
+    padding: 30px 0;
+  }
+  .ap-map ol {
+    position: relative;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* the road again, small: one line through the dots */
+  .ap-map ol::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    background: #33424f;
+  }
+  .ap-map a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 40px;
+    padding: 6px 10px 6px 0;
+    border-radius: 10px;
+    color: var(--muted);
+    font: 700 14.5px/1.25 var(--sans);
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+  .ap-map a:hover {
+    color: var(--text);
+  }
+  .ap-map i {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #5b6a77;
+    border-radius: 50%;
+    background: var(--bg);
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .ap-map a[aria-current] {
+    color: var(--text);
+  }
+  .ap-map a[aria-current] i {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+  .ap-map a.is-done i {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .ap-map a.is-done i::after {
+    content: '';
+    width: 7px;
+    height: 4px;
+    border: 2px solid var(--ink);
+    border-top: 0;
+    border-right: 0;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+  .ap-map-count {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .ap-map-lock {
+    display: none;
+  }
+  /* before the ticket: the stops behind it show dim, take no click, and say why */
+  .ap-app:has(#stop-1.is-locked) .ap-map a:not([href='#ticket']) {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .ap-app:has(#stop-1.is-locked) .ap-map-count {
+    display: none;
+  }
+  .ap-app:has(#stop-1.is-locked) .ap-map-lock {
+    display: block;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .ap-stop {
+    scroll-margin-top: 32px;
+  }
+
+  /* the opening, a size up: the same envelope, measured off the wider letter (scroll.ts) */
+  .ap-open-title {
+    margin-bottom: 48px;
+    font-size: 72px;
+  }
+  /* the letter a size up but still a letter, held to the screen's height so the open flap clears the title and the
+     envelope's foot stays on a 720px laptop */
+  .ap-desk {
+    width: min(100%, 580px, 64svh);
+    margin: 0 auto;
+  }
+  .ap-letter {
+    padding: 46px 48px 44px;
+  }
+  .ap-letter p {
+    font-size: 21px;
+  }
+  .ap-letter .ap-greet {
+    font-size: 40px;
+  }
+  .ap-letter .ap-sign {
+    font-size: 30px;
+  }
+  .ap-env-to {
+    font-size: 42px;
+  }
+  .ap-env-seal svg {
+    width: 112px;
+  }
+
+  .ap-road {
+    margin-top: 48px;
+  }
+  .ap-stop {
+    padding-bottom: 40px;
+  }
+  .ap-stop h2 {
+    font-size: 46px;
+  }
+  .ap-stop .ap-ticket-title {
+    font-size: 54px;
+  }
+  .ap-tk {
+    max-width: 480px;
+  }
+  .ap-sub {
+    font-size: 17px;
+  }
+
+  /* short answers two to a row; anything with choices or room to write takes the whole line */
+  .ap-qs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    align-items: start;
+  }
+  .ap-qs > * {
+    grid-column: 1 / -1;
+  }
+  .ap-qs > .ap-q:has(> input:is([type='text'], [type='tel'], [type='date'])) {
+    grid-column: auto;
+  }
+  .ap-tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ap-tile {
+    padding: 22px 22px 20px 26px;
+  }
+  .ap-review {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* the send sits in the letter's column, not across the road as on a phone */
+  .ap-send {
+    margin-left: 0;
+  }
+  .ap-send .ap-btn {
+    max-width: 360px;
+  }
+  .ap-reply {
+    padding: 72px 56px 40px;
+  }
+}
+@media (min-width: 1000px) and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* tier 0 and reduced motion: the same form, nothing moving (the wash changes at once, the owl sits still) and no
    full-screen grain to blend */
 :root[data-tier='0'],

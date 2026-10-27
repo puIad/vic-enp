@@ -10,6 +10,7 @@ import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
 import { CLOSED, FOLLOW } from './letter'
+import { startMap } from './map'
 import { startScroll } from './scroll'
 import { clearSent, loadSent, saveSent } from './sent'
 import { addressOf, codeAnswer, localPart, verifyAnswer } from './ticket'
@@ -252,3 +253,4 @@ if (saved?.proven && savedLocal && 'local' in savedLocal) {
 
 // the envelope opens under the scroll on a first visit only; tier 0 and reduced motion keep the whole page still
 if (document.documentElement.dataset.tier !== '0') scroll = startScroll({ envelope: !returning })
+startMap()

@@ -1640,27 +1640,20 @@ ul {
     border-right: 0;
     transform: rotate(-45deg) translate(1px, -1px);
   }
-  .ap-map-count,
-  .ap-map-lock {
+  .ap-map-count {
     margin-top: 18px;
     padding-top: 16px;
     border-top: 1px solid var(--line);
     color: var(--muted);
     font-size: 13.5px;
   }
-  .ap-map-lock {
-    display: none;
-  }
-  /* before the ticket: the stops behind it show dim, take no click, and say why */
+  /* before the ticket: the stops behind it show dim and take no click, and there is no count yet */
   .ap-app:has(#stop-1.is-locked) .ap-map a:not([href='#ticket']) {
     opacity: 0.4;
     pointer-events: none;
   }
   .ap-app:has(#stop-1.is-locked) .ap-map-count {
     display: none;
-  }
-  .ap-app:has(#stop-1.is-locked) .ap-map-lock {
-    display: block;
   }
   .ap-stop {
     scroll-margin-top: 32px;

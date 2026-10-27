@@ -1551,7 +1551,7 @@ ul {
   .ap-owl,
   .ap-done {
     grid-column: 1 / -1;
-    grid-row: 1 / span 2;
+    grid-row: 2;
     width: min(100%, 660px);
     margin: 0 auto;
   }
@@ -1634,7 +1634,8 @@ ul {
     border-right: 0;
     transform: rotate(-45deg) translate(1px, -1px);
   }
-  .ap-map-count {
+  .ap-map-count,
+  .ap-map-lock {
     margin-top: 18px;
     padding-top: 16px;
     border-top: 1px solid var(--line);
@@ -1654,11 +1655,6 @@ ul {
   }
   .ap-app:has(#stop-1.is-locked) .ap-map-lock {
     display: block;
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 13.5px;
   }
   .ap-stop {
     scroll-margin-top: 32px;
@@ -1723,7 +1719,8 @@ ul {
   .ap-qs > * {
     grid-column: 1 / -1;
   }
-  .ap-qs > .ap-q:has(> input:is([type='text'], [type='tel'], [type='date'])) {
+  /* an "Other" box is a choice question's, not a short answer */
+  .ap-qs > .ap-q:has(> input:is([type='text'], [type='tel'], [type='date']):not(.ap-other)) {
     grid-column: auto;
   }
   .ap-tiles {

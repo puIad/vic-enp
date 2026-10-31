@@ -16,4 +16,6 @@ export const env = () => ({
   masterTz: v('MASTER_TZ') || 'Africa/Algiers',
   emailDomain: v('EMAIL_DOMAIN') || 'g.enp.edu.dz',
   sessionKey: v('SESSION_KEY'),
+  /** the result mails' group link (join.ts): signs the /join tokens and guards the script's routes; the same value as the Apps Script's JOIN_SECRET */
+  joinSecret: v('JOIN_SECRET'),
 })

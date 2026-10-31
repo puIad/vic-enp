@@ -4,7 +4,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": { "api/submit.ts": { "maxDuration": 60 } },
-  "rewrites": [{ "source": "/apply", "destination": "/apply.html" }],
+  "rewrites": [
+    { "source": "/apply", "destination": "/apply.html" },
+    { "source": "/join/:token", "destination": "/api/join?token=:token" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

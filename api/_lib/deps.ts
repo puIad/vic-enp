@@ -5,6 +5,7 @@ import { env } from './env.js'
 import { sendCode } from './mailer.js'
 import { upstash } from './redis.js'
 import { addressListed, registrations } from './sheets.js'
+import type { JoinDeps } from './join.js'
 import type { SubmitDeps } from './submit.js'
 import type { TicketDeps } from './ticket.js'
 
@@ -33,6 +34,11 @@ export function ticketDeps(): TicketDeps {
     log: console.log,
     listed: listedIn(e),
   }
+}
+
+export function joinDeps(): JoinDeps {
+  const e = env()
+  return { redis: upstash(e.kvUrl, e.kvToken), secret: e.joinSecret, keyPrefix: e.keyPrefix, now: Date.now, log: console.log }
 }
 
 export function submitDeps(): SubmitDeps {

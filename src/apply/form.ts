@@ -251,6 +251,15 @@ function showChoosing() {
   badge.textContent = second ? `2nd choice · ${second.house}` : ''
 }
 
+/** PREPA is the two-year preparatory cycle: no 3RD year for it (a 3RD already picked is cleared) */
+function showYears() {
+  const prepa = document.querySelector<HTMLInputElement>('input[name="q8"]:checked')?.value === 'PREPA'
+  const third = document.querySelector<HTMLInputElement>('input[name="q9"][value="3RD"]')
+  if (!third) return
+  third.closest('label')!.hidden = prepa
+  if (prepa) third.checked = false
+}
+
 /** a soft check's chip under question n: shown while the answer looks off, never blocking the send */
 function softMark(n: number) {
   const chip = document.getElementById(`q${n}-warn`)
@@ -300,6 +309,7 @@ function restore(fields: Draft['fields']) {
     other.hidden = !document.querySelector(`input[name="${other.id.replace(/-other$/, '')}"][value="${OTHER}"]:checked`)
   showDepartment()
   showChoosing()
+  showYears()
   for (const n of SOFT) softMark(n)
 }
 
@@ -374,6 +384,7 @@ export function openLetter(provenEmail: string, at: number, hooks: LetterHooks) 
       if ($(`f${n}`).classList.contains('is-err')) markField(n, '')
       if (n === 13) showDepartment()
       if (n === 13 || n === 14) showChoosing()
+      if (n === 8) showYears()
       // a typed answer is checked once the candidate leaves it (no chip mid-typing); a chip already up clears as soon as
       // the answer looks right
       if (SOFT.has(n) && (e.type === 'change' || !$(`q${n}-warn`).hidden)) softMark(n)

@@ -50,8 +50,10 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 - Recruitment opens **Monday 26 October 2026 at 18:00** (decision 130) and closes **Wednesday 4 November at 23:59**
   (decision 147, moved from 5 Nov 18:00 by decision 155). The page goes live before then (plan: the
   evening of 24 Oct, with the CTA opening on its own at 18:00 on the 26th).
-- Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)
-  by their dates (the new-copy list and the faces check by the 22 Oct copy freeze, the form link by 23 Oct).
+- 2026-11-01: applications close **4 Nov at 23:59** (decision 155) with a countdown to it (156). Every verification
+  and test step is checked off (the owner: everything works as intended). The page is live at www.vic-enp.com
+  (157). What's left is in [build-plan.md](build-plan.md#where-it-stands-23-oct): open question 18, the share tags'
+  domain, #195's deploy after the close, and the off-season state ([#104](https://github.com/puIad/vic-enp/issues/104)).
 
 ## Reading order
 

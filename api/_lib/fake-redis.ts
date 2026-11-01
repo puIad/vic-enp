@@ -59,14 +59,25 @@ export function fakeRedis(clock: { now: number }) {
           exp.set(k, clock.now + Number(rest[0]) * 1000)
           return 1
         case 'DEL':
-          data.delete(k)
-          exp.delete(k)
+          for (const name of [k, ...rest]) {
+            data.delete(name)
+            exp.delete(name)
+          }
           return cur === undefined ? 0 : 1
         case 'HSET': {
           const h = cur instanceof Map ? cur : new Map<string, string>()
           for (let i = 0; i < rest.length; i += 2) h.set(rest[i], rest[i + 1])
           data.set(k, h)
           return rest.length / 2
+        }
+        case 'HGET':
+          return cur instanceof Map ? (cur.get(rest[0]) ?? null) : null
+        case 'HSETNX': {
+          const h = cur instanceof Map ? cur : new Map<string, string>()
+          if (h.has(rest[0])) return 0
+          h.set(rest[0], rest[1])
+          data.set(k, h)
+          return 1
         }
         case 'HGETALL':
           return cur instanceof Map ? [...cur].flat() : []

@@ -44,7 +44,7 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 - Headline: **Engineer more than your degree.** (§1 candidate, owner's pick)
 - Lead: **Vision & Innovation Club.** (owner, 2026-10-20: the rest of the lead and the small line went)
 - CTA before opening: "Applications open 26 Oct" with a countdown chip, links to `@vic.enp`. After: "Apply". From the
-  close (5 Nov, 18:00, decision 147): "Applications closed", links to `@vic.enp`.
+  close (4 Nov, 23:59, decisions 147 and 155): "Applications closed", links to `@vic.enp`.
 - While loading only: "Gathering the 600 <n>".
 
 ## Act 2: what VIC is, the numbers, why join
@@ -125,7 +125,7 @@ organized by the whole club."
 Act titles, the three leads, the four step titles and the rung titles are **new**.
 
 - **How to join.** Lead: "Every ENP student can apply, in any year and any specialty. Applications open 26
-  October 2026 at 18:00 and close 5 November at 18:00." The closing date is the owner's (decision 147).
+  October 2026 at 18:00 and close 4 November at 23:59." The closing date is the owner's (decisions 147, 155).
   1. **Fill in the form.** Pick your first and second choice among the four main departments: HR, FLER, IT and
      COMM.
   2. **Check your inbox.** You get a confirmation email with your registration code. (Only if
@@ -143,8 +143,8 @@ Act titles, the three leads, the four step titles and the rung titles are **new*
   - "Can I join more than one department?": "On the form you pick your first and second choice among the four
     main departments, and you choose your activity department at your interview. Once you have experience, you
     can help with tasks across departments."
-  - "When does recruitment open, and how fast is the process?": "Applications open on 26 October 2026 at 18:00 and close on 5
-    November at 18:00. If your application is accepted, two club members contact you within a day to set up your interview."
+  - "When does recruitment open, and how fast is the process?": "Applications open on 26 October 2026 at 18:00 and close on 4
+    November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview."
   - "Is the club only in English?": the owner's answer, verbatim ([decisions.md](decisions.md), 141): "Not really,
     English is the club's official language, but we speak all languages internally (even Kabyle). English Bubble
     exists precisely to help you get comfortable speaking it, and FLER members use French with companies."

@@ -1,7 +1,7 @@
 // Everything that varies at launch lives here (docs/architecture.md, Configuration).
 
 /**
- * When applications open and close, Algiers time: 26 Oct, 18:00 (decision 130) to 5 Nov, 18:00 (decision 147), in
+ * When applications open and close, Algiers time: 26 Oct, 18:00 (decision 130) to 4 Nov, 23:59 (decisions 147, 155), in
  * calendar.ts so the API reads the same instants. The CTA label follows them; these copies are typed by hand and need
  * the same edit: src/sections/Join.tsx (the act lead), src/content/join.ts (the FAQ answer) and src/apply/letter.ts
  * (CLOSED) for the close; index.html (meta, noscript) and public/og.png (re-render it) for the opening.

@@ -59,7 +59,7 @@ export type SendAnswer =
 export const FOLLOW = '@vic.enp on Instagram'
 
 /** The line /apply shows from CLOSES_AT on, and with a "closed" answer from the API. */
-export const CLOSED = `Applications for 2026 closed on 5 November at 18:00. Follow ${FOLLOW} for the club’s news.`
+export const CLOSED = `Applications for 2026 closed on 4 November at 23:59. Follow ${FOLLOW} for the club’s news.`
 
 /** What POST /api/submit's answer means to the candidate. */
 export function sendAnswer(status: number, body: Json): SendAnswer {

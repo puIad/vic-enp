@@ -53,7 +53,7 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 - 2026-11-01: applications close **4 Nov at 23:59** (decision 155) with a countdown to it (156). Every verification
   and test step is checked off (the owner: everything works as intended). The page is live at www.vic-enp.com
   (157). What's left is in [build-plan.md](build-plan.md#where-it-stands-23-oct): open question 18, the share tags'
-  domain, #195's deploy after the close, and the off-season state ([#104](https://github.com/puIad/vic-enp/issues/104)).
+  domain, #195's setup after the close (its endpoints are already live), and the off-season state ([#104](https://github.com/puIad/vic-enp/issues/104)).
 
 ## Reading order
 

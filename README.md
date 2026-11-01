@@ -5,7 +5,11 @@ The public landing page for the 2026 recruitment of the **Vision & Innovation Cl
 departments, events and projects, and what a season in it looks like) to ENP students, first-years above all, and
 ends on one call to action: **Apply**.
 
-Live at **https://vic-enp.vercel.app**.
+Live at **https://www.vic-enp.com**.
+
+<p align="center">
+  <img src="docs/readme/hero-formation.webp" alt="The hero on load: 600 points gather into the VIC icon, then the headline 'Engineer more than your degree.' and the Apply button appear" width="100%">
+</p>
 
 ## What it does
 
@@ -20,8 +24,52 @@ Live at **https://vic-enp.vercel.app**.
   address with a one-time code sent by email, then submits; the answers are written to the club's recruitment
   sheet. The landing page itself collects nothing.
 
+## The page, act by act
+
+<p align="center">
+  <img src="docs/readme/journey.webp" alt="Eight moments of the page in order: the numbers, HR, Training, the club photo, the Engineers' GALA, How to join, your point, and the footer photo" width="100%">
+</p>
+
+Each department draws its own formation as it scrolls in, out of the same 600 points:
+
+<p align="center">
+  <img src="docs/readme/departments-scroll.webp" alt="Scrolling through the departments: HR's ring of clusters, FLER's rising bars, IT's painting palette" width="100%">
+</p>
+
+| | |
+|---|---|
+| <img src="docs/readme/numbers.webp" alt="The numbers: 600 members, 40+ trainings a year, 10+ major events, since 2014"> | <img src="docs/readme/it.webp" alt="IT, Design the club: the points form a painter's palette"> |
+| <img src="docs/readme/photo.webp" alt="The photo sequence opens on the whole club in front of ENP"> | <img src="docs/readme/gala.webp" alt="Engineers' GALA: its logo drawn in points beside the event photo"> |
+| <img src="docs/readme/aec.webp" alt="AEC: the competition's monument and gear drawn in points"> | <img src="docs/readme/join.webp" alt="How to join: the countdown to the close and the four steps"> |
+| <img src="docs/readme/point.webp" alt="The close: your point is on its way, with the Apply button"> | <img src="docs/readme/footer.webp" alt="The footer: Once a VICer, Always a VICer, over the committee in black and white"> |
+
+### On a phone
+
+The page is built for a phone opened from an Instagram or WhatsApp link, with its own compositions and momentum.
+
+<p align="center">
+  <img src="docs/readme/phone-hero.webp" alt="The hero on a phone" width="19%">
+  <img src="docs/readme/phone-fler.webp" alt="FLER on a phone" width="19%">
+  <img src="docs/readme/phone-gala.webp" alt="The Engineers' GALA on a phone" width="19%">
+  <img src="docs/readme/phone-join.webp" alt="How to join on a phone" width="19%">
+  <img src="docs/readme/phone-apply.webp" alt="/apply on a phone: Your letter has arrived" width="19%">
+</p>
+
+### `/apply`
+
+A letter for the future VICer. On a first visit the envelope turns under the scroll, its wax seal breaks, and the
+letter unfolds onto the first stop, Platform 9¾.
+
+<p align="center">
+  <img src="docs/readme/apply-envelope.webp" alt="The /apply opening: the envelope turns over, the seal breaks, the flap lifts and the letter unfolds" width="100%">
+</p>
+
+| | |
+|---|---|
+| <img src="docs/readme/apply-open.webp" alt="Your letter has arrived: the sealed envelope addressed To the future VICer"> | <img src="docs/readme/apply-platform.webp" alt="Platform 9¾, the first stop: the ENP email field and Send my ticket, under the letter"> |
+
 The recruitment team's side of things (routing candidates to interviewers, alerts, the dashboard) lives in
-[vic-recruitment-2026](https://github.com/puIad/vic-recruitment-2026).
+[vic-recruitment](https://github.com/puIad/vic-recruitment).
 
 ## Stack
 

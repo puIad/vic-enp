@@ -44,7 +44,7 @@ describe('codeAnswer: what /api/code said, in words', () => {
   })
 
   it('says applications are closed when the API says so', () => {
-    expect(codeAnswer(403, { status: 'closed' })).toEqual({ sent: false, text: expect.stringMatching(/closed on 5 November/) })
+    expect(codeAnswer(403, { status: 'closed' })).toEqual({ sent: false, text: expect.stringMatching(/closed on 4 November/) })
   })
 
   it('says the ticket did not go out on any other answer, without a link anywhere', () => {

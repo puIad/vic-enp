@@ -39,7 +39,7 @@ describe('sendAnswer', () => {
   })
 
   it('says applications are closed on 403 "closed"', () => {
-    expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 5 November/) })
+    expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 4 November/) })
     // the closed screen splits CLOSED on FOLLOW to make the link
     expect(CLOSED.split(FOLLOW)).toHaveLength(2)
   })

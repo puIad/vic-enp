@@ -6,11 +6,11 @@
 export const OPENS_AT = new Date('2026-10-26T18:00:00+01:00')
 
 /**
- * Applications close ten days later: 5 Nov, 18:00 (decision 147). The CTA turns to "Applications closed", /apply shows
+ * Applications close on 4 Nov at 23:59 (decision 147, moved by decision 155). The CTA turns to "Applications closed", /apply shows
  * the closed screen, /api/code refuses new tickets, and /api/submit takes letters for one more hour (a ticket checked
  * just before the close can still be used).
  */
-export const CLOSES_AT = new Date('2026-11-05T18:00:00+01:00')
+export const CLOSES_AT = new Date('2026-11-04T23:59:00+01:00')
 
 /** The ms that `?now=<ISO date>` in `search` moves the clock by, 0 without it: both pages check any instant with it. */
 export function clockOffset(search: string): number {

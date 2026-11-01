@@ -47,8 +47,8 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 - 2026-10-24: the pre-launch fixes ([decisions.md](decisions.md), 145 to 149): the API's outcomes counted per hour
   and the troubling ones on `/api/health`, 300 tickets an hour per connection, applications closing on 5 Nov at
   18:00, `/apply` remembering a ticket on its way, and two console and glyph fixes.
-- Recruitment opens **Monday 26 October 2026 at 18:00** (decision 130) and closes **Thursday 5 November at 18:00**
-  (decision 147). The page goes live before then (plan: the
+- Recruitment opens **Monday 26 October 2026 at 18:00** (decision 130) and closes **Wednesday 4 November at 23:59**
+  (decision 147, moved from 5 Nov 18:00 by decision 155). The page goes live before then (plan: the
   evening of 24 Oct, with the CTA opening on its own at 18:00 on the 26th).
 - Waiting on the owner: the build-time rows in [open-questions.md](open-questions.md)
   by their dates (the new-copy list and the faces check by the 22 Oct copy freeze, the form link by 23 Oct).

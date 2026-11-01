@@ -4,7 +4,7 @@
 // code box again after a reload. From CLOSES_AT the page shows only that applications are closed. The words come from
 // ticket.ts and letter.ts; this file only moves the page.
 
-import { CLOSES_AT, clockOffset } from '../calendar'
+import { CLOSES_AT, clockOffset, countdown } from '../calendar'
 import { INSTAGRAM } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
@@ -251,6 +251,21 @@ if (saved?.proven && savedLocal && 'local' in savedLocal) {
     showCheck()
     startCountdown(Math.max(0, Math.ceil((sent.resendAt - Date.now()) / 1000)))
   } else if (sent && !local.value) local.value = sent.local
+}
+
+// the countdown to the close among the chips, while applications are open; it says so if the close comes while the page
+// is open (the API then turns down a new ticket with CLOSED)
+const closesIn = $('closes-in')
+if (Date.now() + clockOffset(location.search) < +CLOSES_AT) {
+  const text = closesIn.querySelector('span')!
+  const paint = () => {
+    const left = +CLOSES_AT - (Date.now() + clockOffset(location.search))
+    text.textContent = left > 0 ? `Closes in ${countdown(left)}` : 'Applications closed'
+    if (left <= 0) clearInterval(every)
+  }
+  const every = window.setInterval(paint, 15_000)
+  paint()
+  closesIn.hidden = false
 }
 
 // the envelope opens under the scroll on a first visit only; tier 0 and reduced motion keep the whole page still

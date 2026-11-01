@@ -18,3 +18,15 @@ export function clockOffset(search: string): number {
   const t = forced ? Date.parse(forced) : NaN
   return Number.isNaN(t) ? 0 : t - Date.now()
 }
+
+/** A span of ms in whole days, hours, minutes and seconds, never negative: the countdowns read it. */
+export function partsOf(ms: number): { d: number; h: number; m: number; s: number } {
+  const t = Math.max(0, ms)
+  return { d: Math.floor(t / 864e5), h: Math.floor(t / 36e5) % 24, m: Math.floor(t / 6e4) % 60, s: Math.floor(t / 1e3) % 60 }
+}
+
+/** "5d 12h" while a day or more is left, then "9h 05m": the pill's chip before opening and /apply's chip before the close. */
+export function countdown(ms: number): string {
+  const { d, h, m } = partsOf(ms)
+  return d ? `${d}d ${String(h).padStart(2, '0')}h` : `${h}h ${String(m).padStart(2, '0')}m`
+}

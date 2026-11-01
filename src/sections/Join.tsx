@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
 import { INSTAGRAM } from '../config'
 import { FAQ, RUNGS, STEPS } from '../content/join'
+import { closing, useNow } from '../lib/opening'
 import { reached, walkAt } from '../lib/walk'
 import { world } from '../world/store'
 
@@ -70,6 +71,48 @@ function useReveal(ref: RefObject<HTMLDivElement | null>, on: boolean) {
     root.querySelectorAll('[data-rv]').forEach((el) => io.observe(el))
     return () => io.disconnect()
   }, [ref, on])
+}
+
+const UNITS = [
+  ['d', 'day', 'days'],
+  ['h', 'hour', 'hours'],
+  ['m', 'minute', 'minutes'],
+  ['s', 'second', 'seconds'],
+] as const
+
+/** The countdown to CLOSES_AT under the act's lead, ticking each second; from the close, the line that applications are
+ *  closed; before opening, nothing. Screen readers get one sentence to the minute, not a number changing each second. */
+function Closing() {
+  const c = closing(useNow(1000))
+  if (c.state === 'soon') return null
+  if (c.state === 'closed')
+    return (
+      <p className="t-lead font-bold text-night">
+        Applications are closed. Follow <a href={INSTAGRAM}>@vic.enp</a> for the club’s news.
+      </p>
+    )
+  const said = (['d', 'h', 'm'] as const).filter((k) => c[k] || k === 'm').map((k) => {
+    const [, one, many] = UNITS.find((u) => u[0] === k)!
+    return `${c[k]} ${c[k] === 1 ? one : many}`
+  })
+  return (
+    <div className="closing">
+      <p className="flex items-center gap-2.5 text-[13px] font-bold text-ink">
+        <span aria-hidden="true" className="closing-dot" />
+        Applications close in<span className="sr-only"> {said.join(', ')}</span>
+      </p>
+      <p aria-hidden="true" className="mt-3 flex gap-[clamp(18px,3vw,40px)]">
+        {UNITS.map(([k, one, many]) => (
+          <span key={k} className="flex flex-col">
+            <span className="tab text-[clamp(44px,5vw,72px)] leading-[.9] font-black tracking-[-0.03em]">
+              {k === 'd' ? c[k] : String(c[k]).padStart(2, '0')}
+            </span>
+            <span className="mt-2 text-[13px] font-bold text-ink">{c[k] === 1 ? one : many}</span>
+          </span>
+        ))}
+      </p>
+    </div>
+  )
 }
 
 function Steps({ staged }: { staged: boolean }) {
@@ -206,6 +249,10 @@ export function Join({ staged }: { staged: boolean }) {
             How to join.
           </h2>
           <p data-rv={rv} className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.</p>
+          {/* a wrapper always on the page, so the reveal finds it whatever the countdown shows */}
+          <div data-rv={rv} className="mt-8 md:mt-10">
+            <Closing />
+          </div>
           <Steps staged={staged} />
         </section>
 

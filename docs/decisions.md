@@ -323,3 +323,9 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 | # | Decision | By | Notes |
 |---|---|---|---|
 | 155 | Applications **close on 4 November 2026 at 23:59**, Algiers time (`2026-11-04T22:59:00Z`), in place of 5 November at 18:00. Everything 147 says about the close holds at the new instant: the CTA, `/apply`'s closed screen, `/api/code`'s 403 and `/api/submit`'s one more hour (letters until 00:59 on 5 Nov). The act lead, the FAQ and `CLOSED` say "4 November at 23:59". | Owner, 2026-11-01 | Asked: "change the registrations close date from nov 5 to nov 4 at 23:59 algiers time". Moved while applications were live. |
+
+## 2026-11-01: a countdown to the close
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 156 | A **countdown to `CLOSES_AT`** in two places. In How to join, under the act lead: "Applications close in", then days, hours, minutes and seconds in the act's black numerals, ticking each second (screen readers get one sentence to the minute); from the close it becomes "Applications are closed. Follow @vic.enp for the club’s news.", and before opening it is not there. On `/apply`, a fourth chip under the letter, "Closes in 3d 01h" (the pre-opening chip's format, every 15 s), shown only while applications are open; it reads "Applications closed" if the close comes while the page is open. Both read `CLOSES_AT` and follow `?now=`. | Owner, 2026-11-01 | Asked: "add a countdown to when the registrations close in the vic-enp website". Placement and copy were Claude's call. |

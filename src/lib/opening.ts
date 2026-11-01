@@ -1,20 +1,13 @@
 import { useEffect, useState } from 'react'
-import { clockOffset as offsetOf } from '../calendar'
+import { countdown, clockOffset as offsetOf, partsOf } from '../calendar'
 import { APPLY_URL, CLOSES_AT, INSTAGRAM, OPENS_AT } from '../config'
+
+export { countdown }
 
 export type Cta =
   /** before opening `chip` holds the countdown; after the close there is none */
   | { open: false; label: string; chip?: string; href: string }
   | { open: true; label: string; href: string }
-
-/** "5d 12h" while a day or more is left, then "9h 05m". */
-export function countdown(ms: number): string {
-  const t = Math.max(0, ms)
-  const d = Math.floor(t / 864e5)
-  const h = Math.floor(t / 36e5) % 24
-  const m = Math.floor(t / 6e4) % 60
-  return d ? `${d}d ${String(h).padStart(2, '0')}h` : `${h}h ${String(m).padStart(2, '0')}m`
-}
 
 export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL, closesAt = CLOSES_AT): Cta {
   // the close sends every CTA back to @vic.enp, where the next season is announced
@@ -33,12 +26,30 @@ export const clockOffset = (search = location.search): number => offsetOf(search
 
 const offset = typeof location === 'undefined' ? 0 : clockOffset()
 
-/** The CTA state, repainted every 15 s so the chip ticks and the pill flips at OPENS_AT and CLOSES_AT without a reload. */
-export function useCta(): Cta {
+/** The clock, `?now=` included, read again every `every` ms. */
+export function useNow(every: number): Date {
   const [now, setNow] = useState(() => new Date(Date.now() + offset))
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date(Date.now() + offset)), 15_000)
+    const id = setInterval(() => setNow(new Date(Date.now() + offset)), every)
     return () => clearInterval(id)
-  }, [])
-  return cta(now)
+  }, [every])
+  return now
+}
+
+/** The CTA state, repainted every 15 s so the chip ticks and the pill flips at OPENS_AT and CLOSES_AT without a reload. */
+export function useCta(): Cta {
+  return cta(useNow(15_000))
+}
+
+export type Closing =
+  /** before opening there is nothing to count down to yet */
+  | { state: 'soon' }
+  | { state: 'open'; d: number; h: number; m: number; s: number }
+  | { state: 'closed' }
+
+/** The countdown to the close in the light act: what is left while applications are open, and the close after it. */
+export function closing(now: Date, opensAt = OPENS_AT, closesAt = CLOSES_AT): Closing {
+  if (now >= closesAt) return { state: 'closed' }
+  if (now < opensAt) return { state: 'soon' }
+  return { state: 'open', ...partsOf(+closesAt - +now) }
 }

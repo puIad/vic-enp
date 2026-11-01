@@ -1246,6 +1246,28 @@
     text-underline-offset: 3px;
   }
 
+  /* the countdown to the close (Join): an aqua point that breathes beside its label, still under reduced motion */
+  .closing-dot {
+    flex: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-aqua);
+    box-shadow: 0 0 0 1.5px var(--color-night);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .closing-dot {
+      animation: closing-breathe 2s ease-in-out infinite;
+    }
+  }
+  @keyframes closing-breathe {
+    50% {
+      box-shadow:
+        0 0 0 1.5px var(--color-night),
+        0 0 0 6px rgb(105 196 175 / 0.3);
+    }
+  }
+
   /* ---------- the light act with the world (#39): blocks reveal once, your point walks the steps (Join) ---------- */
   .lightact [data-rv] {
     transition:

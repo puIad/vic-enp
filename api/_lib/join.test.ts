@@ -73,6 +73,44 @@ describe('the group link', () => {
   })
 })
 
+describe('when Redis fails', () => {
+  const failing = (s: ReturnType<typeof setup>, cmd: string) => {
+    const real = s.r.redis.command
+    s.d.redis = { command: (args) => (args[0] === cmd ? Promise.reject(new Error('down')) : real(args)) }
+  }
+
+  it('still redirects when only the click record fails', async () => {
+    const s = setup()
+    await s.push({ links: { IT: 'https://m.me/j/it' }, told: { 'IT.2': 'IT' } })
+    failing(s, 'HSETNX')
+    const res = await s.click(token('IT.2'))
+    expect([res.status, res.headers.get('location')]).toEqual([302, 'https://m.me/j/it'])
+    expect(s.lines.at(-1)).toContain('redirect_unrecorded')
+  })
+
+  it('shows a try-again page, not an inactive link, when the lookups fail', async () => {
+    const s = setup()
+    await s.push({ links: { IT: 'https://m.me/j/it' }, told: { 'IT.2': 'IT' } })
+    failing(s, 'HGET')
+    const res = await s.click(token('IT.2'))
+    expect(res.status).toBe(503)
+    expect(await res.text()).toContain('try again')
+    expect(s.lines.at(-1)).toContain('unavailable')
+  })
+
+  it('answers the script with a logged 503', async () => {
+    const s = setup()
+    failing(s, 'HSET')
+    expect((await s.push({ told: { 'IT.2': 'IT' } })).status).toBe(503)
+    expect(s.lines.at(-1)).toContain('unavailable')
+    failing(s, 'DEL')
+    expect((await s.push({ reset: true })).status).toBe(503)
+    failing(s, 'HGETALL')
+    expect((await s.clicks()).status).toBe(503)
+    expect(s.lines.at(-1)).toContain('unavailable')
+  })
+})
+
 describe('the script routes', () => {
   it('refuse a wrong or missing secret, and everything when none is set', async () => {
     const s = setup()

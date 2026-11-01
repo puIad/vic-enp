@@ -25,6 +25,8 @@ const LINK = 'join:link'
 const CLICK = 'join:click'
 /** the mail's test token is signed for this code: it opens the inactive page and records nothing */
 const TEST_CODE = 'TEST'
+/** a candidate's code: a token and a sync must accept exactly the same ones */
+const CODE = /^[A-Z]+\.\d{1,6}$/
 
 const sign = (secret: string, code: string) => createHmac('sha256', secret).update(`join:${code}`).digest('base64url').slice(0, 22)
 
@@ -40,7 +42,7 @@ export function verifyToken(secret: string, token: string): string | null {
   const at = token.lastIndexOf('~')
   if (at < 1) return null
   const code = token.slice(0, at)
-  if (!(code === TEST_CODE || /^[A-Z]+\.\d{1,6}$/.test(code))) return null
+  if (!(code === TEST_CODE || CODE.test(code))) return null
   return same(token.slice(at + 1), sign(secret, code)) ? code : null
 }
 
@@ -50,6 +52,7 @@ const html = (body: string, status: number) =>
     { status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } },
   )
 const inactive = () => html('This link is no longer active.', 404)
+const unavailable = () => html('This link is not working right now. Please try again in a few minutes.', 503)
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } })
 
 /** GET /join/<token> (rewritten to /api/join?token=): record the first click, redirect to the department's group. */
@@ -65,20 +68,18 @@ export async function join(req: Request, d: JoinDeps): Promise<Response> {
     logLine(d.log, 'join', 'test', started)
     return inactive()
   }
-  const result = await d.redis.command(['HGET', key(d.keyPrefix, TOLD), code])
-  if (typeof result !== 'string' || !(DEPTS as readonly string[]).includes(result)) {
-    logLine(d.log, 'join', 'inactive', started)
-    return inactive()
-  }
-  const link = await d.redis.command(['HGET', key(d.keyPrefix, LINK), result])
-  if (typeof link !== 'string' || !link.startsWith('https://')) {
-    logLine(d.log, 'join', 'no_link', started)
-    return inactive()
-  }
-  // only the first click is kept
-  await d.redis.command(['HSETNX', key(d.keyPrefix, CLICK), code, d.now()])
-  logLine(d.log, 'join', 'redirect', started)
-  return new Response(null, { status: 302, headers: { location: link, 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } })
+  const outcome = await (async () => {
+    const result = await d.redis.command(['HGET', key(d.keyPrefix, TOLD), code])
+    if (typeof result !== 'string' || !(DEPTS as readonly string[]).includes(result)) return { name: 'inactive', res: inactive() }
+    const link = await d.redis.command(['HGET', key(d.keyPrefix, LINK), result])
+    if (typeof link !== 'string' || !link.startsWith('https://')) return { name: 'no_link', res: inactive() }
+    // only the first click is kept; a lost record must not cost the candidate the group
+    const recorded = await d.redis.command(['HSETNX', key(d.keyPrefix, CLICK), code, d.now()]).then(() => true, () => false)
+    const res = new Response(null, { status: 302, headers: { location: link, 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } })
+    return { name: recorded ? 'redirect' : 'redirect_unrecorded', res }
+  })().catch(() => ({ name: 'unavailable', res: unavailable() }))
+  logLine(d.log, 'join', outcome.name, started)
+  return outcome.res
 }
 
 function authorized(req: Request, d: JoinDeps): boolean {
@@ -98,7 +99,12 @@ export async function joinSync(req: Request, d: JoinDeps): Promise<Response> {
   if (!body.ok) return json({ ok: false }, body.status)
   const { links, told, reset } = body.value
   if (reset === true) {
-    await d.redis.command(['DEL', key(d.keyPrefix, TOLD), key(d.keyPrefix, LINK), key(d.keyPrefix, CLICK)])
+    try {
+      await d.redis.command(['DEL', key(d.keyPrefix, TOLD), key(d.keyPrefix, LINK), key(d.keyPrefix, CLICK)])
+    } catch {
+      logLine(d.log, 'join-sync', 'unavailable', started)
+      return json({ ok: false }, 503)
+    }
     logLine(d.log, 'join-sync', 'reset', started)
     return json({ ok: true })
   }
@@ -114,12 +120,17 @@ export async function joinSync(req: Request, d: JoinDeps): Promise<Response> {
   if (told !== undefined) {
     if (told === null || typeof told !== 'object' || Array.isArray(told)) return json({ ok: false }, 400)
     for (const [code, result] of Object.entries(told)) {
-      if (!/^[A-Z]+\.\d{1,6}$/.test(code) || typeof result !== 'string' || !RESULTS.includes(result)) return json({ ok: false }, 400)
+      if (!CODE.test(code) || typeof result !== 'string' || !RESULTS.includes(result)) return json({ ok: false }, 400)
       toldArgs.push(code, result)
     }
   }
-  if (linkArgs.length) await d.redis.command(['HSET', key(d.keyPrefix, LINK), ...linkArgs])
-  if (toldArgs.length) await d.redis.command(['HSET', key(d.keyPrefix, TOLD), ...toldArgs])
+  try {
+    if (linkArgs.length) await d.redis.command(['HSET', key(d.keyPrefix, LINK), ...linkArgs])
+    if (toldArgs.length) await d.redis.command(['HSET', key(d.keyPrefix, TOLD), ...toldArgs])
+  } catch {
+    logLine(d.log, 'join-sync', 'unavailable', started)
+    return json({ ok: false }, 503)
+  }
   logLine(d.log, 'join-sync', 'ok', started)
   return json({ ok: true })
 }
@@ -131,7 +142,11 @@ export async function joinClicks(req: Request, d: JoinDeps): Promise<Response> {
     logLine(d.log, 'join-clicks', 'refused', started)
     return json({ ok: false }, 401)
   }
-  const flat = await d.redis.command(['HGETALL', key(d.keyPrefix, CLICK)])
+  const flat = await d.redis.command(['HGETALL', key(d.keyPrefix, CLICK)]).catch(() => null)
+  if (flat === null) {
+    logLine(d.log, 'join-clicks', 'unavailable', started)
+    return json({ ok: false }, 503)
+  }
   const clicks: Record<string, number> = {}
   if (Array.isArray(flat)) for (let i = 0; i + 1 < flat.length; i += 2) clicks[String(flat[i])] = Number(flat[i + 1])
   logLine(d.log, 'join-clicks', 'ok', started)

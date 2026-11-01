@@ -151,7 +151,25 @@ The registration form at `/apply` passed its live check on the evening of 22 Oct
 ([vic-recruitment-2026#134](https://github.com/puIad/vic-recruitment-2026/issues/134)). Production's `VITE_APPLY_URL`
 has been `/apply` since 20:43 UTC that evening, `/api/health` answers all `ok`, and the form's questions are frozen.
 
-Left, in order:
+Checked off on 2026-11-01 (the owner: everything works as intended): items 1 to 3 and 5 below, and every
+verification step in them. [#43](https://github.com/puIad/vic-enp/issues/43) to [#45](https://github.com/puIad/vic-enp/issues/45)
+are closed, and the domain is live (decision 157).
+
+Left on 2026-11-01:
+
+- Open question 18 (Vercel Web Analytics).
+- The share tags and canonical in `index.html` still name `vic-enp.vercel.app`, which now redirects to
+  `www.vic-enp.com`.
+- [#195](https://github.com/puIad/vic-recruitment/issues/195)'s part here (`api/join-sync.ts`, `api/join-clicks.ts`,
+  the join link in How to join) is already in production: Vercel deploys `main`, and on 2026-11-01 production
+  answers `/api/join-sync` (405 to a GET) and `/api/join-clicks` (401), where an unknown route is a 404. It waits on
+  the recruitment repo: the script pushes nothing until `JOIN_URL` and `JOIN_SECRET` are set, after the close
+  (4 Nov 23:59).
+- [#104](https://github.com/puIad/vic-enp/issues/104): the off-season state, to grill and plan before the next
+  recruitment.
+- v1.1 below: real testimonials, more photos, `IMG_8095` once exported.
+
+The list as it stood on 23 Oct:
 
 1. The performance pass ([#43](https://github.com/puIad/vic-enp/issues/43)): the budgets in
    [quality.md](quality.md#performance-budgets) measured on the production build, and the owner's phone rerun at 30 fps
@@ -188,7 +206,7 @@ anything wrong is fixed forward ([decisions.md](decisions.md), 96).
 - Real testimonials, if collected.
 - Anything cut at the cut line.
 - More photos, `IMG_8095` once exported.
-- A closing date line once the recruitment end is set.
+- ~~A closing date line once the recruitment end is set.~~ Done: decisions 147, 155 and 156.
 
 ## Owner tasks
 

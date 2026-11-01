@@ -329,3 +329,9 @@ findings the build fixed are in the #44 PR; these are the ones the owner decided
 | # | Decision | By | Notes |
 |---|---|---|---|
 | 156 | A **countdown to `CLOSES_AT`** in two places. In How to join, under the act lead: "Applications close in", then days, hours, minutes and seconds in the act's black numerals, ticking each second (screen readers get one sentence to the minute); from the close it becomes "Applications are closed. Follow @vic.enp for the club’s news.", and before opening it is not there. On `/apply`, a fourth chip under the letter, "Closes in 3d 01h" (the pre-opening chip's format, every 15 s), shown only while applications are open; it reads "Applications closed" if the close comes while the page is open. Both read `CLOSES_AT` and follow `?now=`. | Owner, 2026-11-01 | Asked: "add a countdown to when the registrations close in the vic-enp website". Placement and copy were Claude's call. |
+
+## 2026-11-01: the domain
+
+| # | Decision | By | Notes |
+|---|---|---|---|
+| 157 | The page lives at **www.vic-enp.com**; `vic-enp.vercel.app` redirects there. Settles open question 17. | Owner | Recorded from what shipped: on 2026-11-01 `vic-enp.vercel.app/api/health` redirects to `www.vic-enp.com/api/health`. The share tags and canonical in `index.html` still name `vic-enp.vercel.app`. |

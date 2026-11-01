@@ -87,7 +87,7 @@ function Closing() {
   if (c.state === 'soon') return null
   if (c.state === 'closed')
     return (
-      <p className="t-lead font-bold text-night">
+      <p className="t-lead mt-8 font-bold text-night md:mt-10">
         Applications are closed. Follow <a href={INSTAGRAM}>@vic.enp</a> for the club’s news.
       </p>
     )
@@ -96,7 +96,7 @@ function Closing() {
     return `${c[k]} ${c[k] === 1 ? one : many}`
   })
   return (
-    <div className="closing">
+    <div className="mt-8 md:mt-10">
       <p className="flex items-center gap-2.5 text-[13px] font-bold text-ink">
         <span aria-hidden="true" className="closing-dot" />
         Applications close in<span className="sr-only"> {said.join(', ')}</span>
@@ -250,7 +250,7 @@ export function Join({ staged }: { staged: boolean }) {
           </h2>
           <p data-rv={rv} className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.</p>
           {/* a wrapper always on the page, so the reveal finds it whatever the countdown shows */}
-          <div data-rv={rv} className="mt-8 md:mt-10">
+          <div data-rv={rv}>
             <Closing />
           </div>
           <Steps staged={staged} />

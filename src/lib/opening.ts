@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react'
 import { countdown, clockOffset as offsetOf, partsOf } from '../calendar'
 import { APPLY_URL, CLOSES_AT, INSTAGRAM, OPENS_AT } from '../config'
 
-export { countdown }
-
 export type Cta =
   /** before opening `chip` holds the countdown; after the close there is none */
   | { open: false; label: string; chip?: string; href: string }

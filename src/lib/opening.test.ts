@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { clockOffset, closing, countdown, cta } from './opening'
+import { countdown } from '../calendar'
+import { clockOffset, closing, cta } from './opening'
 
 const OPENS = new Date('2026-10-25T00:00:00+01:00')
 const at = (iso: string) => new Date(iso)

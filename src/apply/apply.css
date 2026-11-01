@@ -526,6 +526,10 @@ ul {
   background: var(--accent);
 }
 
+.ap-closes {
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---------- the road down the left edge, a pin per stop ---------- */
 .ap-road {
   position: relative;

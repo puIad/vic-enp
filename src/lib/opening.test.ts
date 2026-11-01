@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { clockOffset, countdown, cta } from './opening'
+import { countdown } from '../calendar'
+import { clockOffset, closing, cta } from './opening'
 
 const OPENS = new Date('2026-10-25T00:00:00+01:00')
 const at = (iso: string) => new Date(iso)
@@ -53,5 +54,19 @@ describe('label date', () => {
     const later = new Date('2026-11-02T00:00:00+01:00')
     expect(cta(new Date('2026-10-30T12:00:00+01:00'), later, '').open).toBe(false)
     expect((cta(new Date('2026-10-30T12:00:00+01:00'), later, '') as { label: string }).label).toBe('Applications open 2\u00a0Nov')
+  })
+})
+
+describe('closing', () => {
+  const CLOSES = new Date('2026-11-04T23:59:00+01:00')
+  it('says nothing before opening', () => {
+    expect(closing(new Date(+OPENS - 1), OPENS, CLOSES)).toEqual({ state: 'soon' })
+  })
+  it('counts days, hours, minutes and seconds to the close while open', () => {
+    expect(closing(at('2026-11-01T22:17:30+01:00'), OPENS, CLOSES)).toEqual({ state: 'open', d: 3, h: 1, m: 41, s: 30 })
+    expect(closing(new Date(+CLOSES - 1), OPENS, CLOSES)).toEqual({ state: 'open', d: 0, h: 0, m: 0, s: 0 })
+  })
+  it('is closed from the closing instant', () => {
+    expect(closing(CLOSES, OPENS, CLOSES)).toEqual({ state: 'closed' })
   })
 })

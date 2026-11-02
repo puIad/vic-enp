@@ -10,6 +10,8 @@ Terms for the VIC-ENP landing page, settled on the wayfinder map (2026-10-19). T
   applications, with two phases: before opening and open. Avoid: "season" alone, which in the brief means a club year.
 - **Off-season**: the site's state for the rest of the year, from the close of applications until the next dates go on
   the site. Avoid: "closed state".
+- **Forced off-season**: the off-season set by hand before the close of applications, on the page, `/apply` and the API
+  together. It works in that one direction only, and a candidate with a checked ticket keeps their hour.
 - **Close of applications**: the instant applications stop. Avoid: "the close" alone, which is act 7.
 - **The close**: act 7, the page's last act, where your point lands in the pill.
 - **The pill**: the call to action in the hero, the corner and the close. Its words follow the site's state: the

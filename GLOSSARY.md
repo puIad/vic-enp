@@ -6,14 +6,21 @@ Terms for the VIC-ENP landing page, settled on the wayfinder map (2026-10-19). T
 - **Act**: one stretch of the journey with one feeling and one device. The page has seven.
 - **Direction**: one whole-page option, made of a 3D world, a grammar, colour on the night, a type treatment, a
   motion feel, a hand-over and anchor references. Three were comped (A, B, C); the page is their merge.
-- **Your point**: the visitor's own point of light, which travels down the page with them and lands in the Apply
-  pill at the close.
+- **Recruitment season**: the site's state from when the next application dates go on the site through the close of
+  applications, with two phases: before opening and open. Avoid: "season" alone, which in the brief means a club year.
+- **Off-season**: the site's state for the rest of the year, from the close of applications until the next dates go on
+  the site. Avoid: "closed state".
+- **Close of applications**: the instant applications stop. Avoid: "the close" alone, which is act 7.
+- **The close**: act 7, the page's last act, where your point lands in the pill.
+- **The pill**: the call to action in the hero, the corner and the close. Its words follow the site's state: the
+  opening date, then "Apply", then "Follow `@vic.enp`" in the off-season. Avoid: "Apply pill" outside the open phase.
+- **Your point**: the visitor's own point of light, which travels down the page with them and lands in the pill at the
+  close.
 - **The 600**: the field of points, one per member.
 - **Formation**: a shape the points hold for an act or a cut (the icon, the cloud, a department's shape).
 - **Icon formation**: the 600 drawing the VIC icon (bulb and iris) at the start of the hero, your point lit in its
   iris. Not "the dot logo" or "the mark": the points never draw VIC's wordmark.
-- **Iris slot**: the close's ring of the 600 around the empty slot in the Apply pill, the one echo of the icon
-  formation.
+- **Iris slot**: the close's ring of the 600 around the empty slot in the pill, the one echo of the icon formation.
 - **Logo formation**: the points drawing a department's or an event's own logo in its cut. It draws the logo's
   symbol, or the name where the name is the logo (GALA, Ignite, POLYMAZE). Not the icon formation, which is VIC's
   own. Avoid: "dot logo".

@@ -1,6 +1,7 @@
 # Content
 
-What the page says, in page order. Facts come only from
+What the page says in a recruitment season, in page order. The off-season's words are in
+[site-states.md](site-states.md#the-words). Facts come only from
 [source/landing-content-brief.md](source/landing-content-brief.md) (cited as §n). How each act looks and moves is
 in [experience.md](experience.md). The copy below was settled act by act on the wayfinder map (2026-10-19);
 lines marked **new** were written for the page and go to the owner in [one list](#new-lines-for-the-owners-approval)
@@ -43,8 +44,8 @@ before the 22 Oct copy freeze. On 2026-10-20 the owner decluttered the page and 
 
 - Headline: **Engineer more than your degree.** (§1 candidate, owner's pick)
 - Lead: **Vision & Innovation Club.** (owner, 2026-10-20: the rest of the lead and the small line went)
-- CTA before opening: "Applications open 26 Oct" with a countdown chip, links to `@vic.enp`. After: "Apply". From the
-  close (4 Nov, 23:59, decisions 147 and 155): "Applications closed", links to `@vic.enp`.
+- CTA before opening: "Applications open 26 Oct" with a countdown chip, links to `@vic.enp`. After: "Apply". In the
+  off-season (decision 163): "Follow @vic.enp", with the arrow, links to `@vic.enp`.
 - While loading only: "Gathering the 600 <n>".
 
 ## Act 2: what VIC is, the numbers, why join

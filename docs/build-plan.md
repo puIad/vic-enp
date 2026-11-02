@@ -159,14 +159,14 @@ Left on 2026-11-01:
 
 - Open question 18 (Vercel Web Analytics).
 - The share tags and canonical in `index.html` still name `vic-enp.vercel.app`, which now redirects to
-  `www.vic-enp.com`.
+  `www.vic-enp.com`. The off-season's build changes them (decision 166).
 - [#195](https://github.com/puIad/vic-recruitment/issues/195)'s part here (`api/join-sync.ts`, `api/join-clicks.ts`,
   the join link in How to join) is already in production: Vercel deploys `main`, and on 2026-11-01 production
   answers `/api/join-sync` (405 to a GET) and `/api/join-clicks` (401), where an unknown route is a 404. It waits on
   the recruitment repo: the script pushes nothing until `JOIN_URL` and `JOIN_SECRET` are set, after the close
   (4 Nov 23:59).
-- [#104](https://github.com/puIad/vic-enp/issues/104): the off-season state, to grill and plan before the next
-  recruitment.
+- [#104](https://github.com/puIad/vic-enp/issues/104): the off-season state, specified in
+  [site-states.md](site-states.md) on 2026-11-02, to go live by itself at the close of applications.
 - v1.1 below: real testimonials, more photos, `IMG_8095` once exported.
 
 The list as it stood on 23 Oct:

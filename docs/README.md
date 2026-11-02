@@ -54,6 +54,9 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
   and test step is checked off (the owner: everything works as intended). The page is live at www.vic-enp.com
   (157). What's left is in [build-plan.md](build-plan.md#where-it-stands-23-oct): open question 18, the share tags'
   domain, #195's setup after the close (its endpoints are already live), and the off-season state ([#104](https://github.com/puIad/vic-enp/issues/104)).
+- 2026-11-02: the off-season is specified ([site-states.md](site-states.md), [decisions.md](decisions.md), 158 to 169):
+  the site switches by itself at the close of applications, and an IT member reopens it next year from
+  [reopening.md](reopening.md).
 
 ## Reading order
 
@@ -70,6 +73,8 @@ The plan for VIC's 2026 recruitment landing page, written before any code. Start
 | 9 | [quality.md](quality.md) | Performance budgets, accessibility, SEO and sharing, how it gets verified |
 | 10 | [build-plan.md](build-plan.md) | Gates, slices, dates, who does what |
 | 11 | [open-questions.md](open-questions.md) | Everything still undecided, with an owner and a default |
+| 12 | [site-states.md](site-states.md) | The recruitment season and the off-season: the switch, the force, the words, the proof |
+| 13 | [reopening.md](reopening.md) | The IT member's checklist for the next recruitment |
 
 Other folders:
 

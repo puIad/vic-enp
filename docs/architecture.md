@@ -159,11 +159,12 @@ Phone browsers resize the viewport as the toolbar shows and hides. The canvas is
 | Name | Where | Value |
 |---|---|---|
 | `VITE_APPLY_URL` | Vercel env var (build time) | The Google Form's responder link until the 24 Oct live check passes, then `/apply`; flipping it back is the fallback (an env change plus a Redeploy, 1 to 2 minutes). |
-| `OPENS_AT` | `src/config.ts` | `2026-10-26T18:00:00+01:00` (Algiers time, decision 130) |
+| `OPENS_AT`, `CLOSES_AT` | `src/calendar.ts`, read by the page, `/apply` and the API | `2026-10-26T18:00:00+01:00` (decision 130), `2026-11-04T23:59:00+01:00` (decision 155), Algiers time |
+| `VITE_FORCE_OFF_SEASON` | Vercel env var, absent unless forcing, read at build by the page and at run time by the API | Any non-empty value forces the off-season, `0` included ([site-states.md](site-states.md#the-forced-off-season)). To undo it, delete it and Redeploy. |
 | Social links | `src/config.ts` | From the source brief §10 |
 
 Before `OPENS_AT`, the CTA shows the countdown and links to Instagram. After it, every CTA opens `VITE_APPLY_URL` in
-the same tab. The check runs in the browser, so no redeploy is needed at the opening; changing the registration
+the same tab, and from `CLOSES_AT` it follows @vic.enp ([site-states.md](site-states.md)). The check runs in the browser, so no redeploy is needed at the opening; changing the registration
 link is an env var change plus a Redeploy.
 
 ## Hosting

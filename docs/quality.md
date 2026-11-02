@@ -58,7 +58,7 @@ WCAG 2.1 AA as the floor.
 Most visits start from a shared link, so the preview matters as much as the page.
 
 - `<title>`, meta description, Open Graph (title, description, `og.png` 1200×630, URL) and Twitter card tags,
-  static in `index.html`.
+  static in `index.html`, with no dates all year (decision 166).
 - `theme-color` Dark Jungle Green, `favicon.svg` from the charter files, an Apple touch icon.
 - Checked in the Facebook sharing debugger and by sending the link on WhatsApp and Instagram before launch.
 

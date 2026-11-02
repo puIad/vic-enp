@@ -286,6 +286,8 @@ the hero goes on scroll.
   into the slot and breathes there.
 - **The Apply moment (after opening):** your point flares, a wave of light runs through the 600 from the slot,
   then `APPLY_URL` opens. Modified clicks skip it. Before opening the pill is the countdown linking to `@vic.enp`.
+  In the off-season it reads "Follow @vic.enp", your point still lands in its slot, and there is no wave
+  ([site-states.md](site-states.md), decision 163).
 - **Footer:** opaque night, no canvas under it. Opens on "Missed something? Jump back", a tile per act
   ([below](#the-footers-way-back)). No description line, and the address reads "10 Rue des Frères OUDEK,
   El Harrach" ([decisions.md](decisions.md), 58). Ends on the motto, centred, and the committee photo under it

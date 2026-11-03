@@ -1,6 +1,6 @@
 // The routes' real collaborators, from the env vars. Tests build their own deps on fakes.
 
-import { CLOSES_AT } from '../../src/calendar.js'
+import { CLOSES_AT, forcedOff } from '../../src/calendar.js'
 import { env } from './env.js'
 import { sendCode } from './mailer.js'
 import { upstash } from './redis.js'
@@ -30,6 +30,7 @@ export function ticketDeps(): TicketDeps {
     keyPrefix: e.keyPrefix,
     sessionKey: e.sessionKey,
     closesAt: +CLOSES_AT,
+    forced: forcedOff(e.forceOffSeason),
     now: Date.now,
     log: console.log,
     listed: listedIn(e),

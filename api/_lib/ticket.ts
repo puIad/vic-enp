@@ -10,6 +10,7 @@ import { markFree } from './mark.js'
 import { key, type Redis } from './redis.js'
 import { proofCookie } from './session.js'
 import { record } from './tally.js'
+import { siteState } from '../../src/calendar.js'
 
 export type TicketDeps = {
   redis: Redis
@@ -22,6 +23,8 @@ export type TicketDeps = {
   sessionKey: string
   /** CLOSES_AT (src/calendar.ts) in ms: from then no new ticket goes out. Unset: never closes. */
   closesAt?: number
+  /** VITE_FORCE_OFF_SEASON, parsed by forcedOff: no new ticket goes out. Codes already mailed still verify. */
+  forced?: boolean
   now: () => number
   log: Log
   /** is the address still in the Master? Asked only of an old registration mark (mark.ts) */
@@ -56,7 +59,8 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     await record(d, 'code', 'bad_request', started)
     return json({ status: 'bad_request' }, body.status)
   }
-  if (d.closesAt !== undefined && d.now() >= d.closesAt) {
+  // only the off-season closes; before opening /api/code stays reachable, as /apply does
+  if (siteState(d.now(), d.forced ?? false, -Infinity, d.closesAt ?? Infinity) === 'off') {
     await record(d, 'code', 'closed', started)
     return json({ status: 'closed' }, 403)
   }

@@ -303,6 +303,18 @@ describe('POST /api/code', () => {
     expect((await verify(s.d, 'amina', s.mails[0].code)).status).toBe(200)
   })
 
+  it('sends no ticket in a forced off-season, and still checks a code mailed before it', async () => {
+    const s = setup()
+    await ask(s.d, 'amina')
+    s.d.forced = true
+    const res = await ask(s.d, 'karim')
+    expect(res.status).toBe(403)
+    expect(await res.json()).toEqual({ status: 'closed' })
+    s.later(60)
+    expect((await verify(s.d, 'amina', s.mails[0].code)).status).toBe(200)
+    expect(s.mails.map((m) => m.to)).toEqual(['amina@g.enp.edu.dz'])
+  })
+
   it('counts every outcome in the hour, by route, under KEY_PREFIX', async () => {
     const s = setup({ keyPrefix: 'prev:' })
     await ask(s.d, 'amina')

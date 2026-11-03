@@ -1,15 +1,15 @@
 // /apply's script: the ticket (Platform 9¾). Ask for a code with the local part, type the six digits, and on a checked
 // ticket the address locks and the 8 stops unlock (form.ts fills them). A draft on this phone (draft.ts) opens the letter
 // straight away inside the ticket's hour, and after it asks only for the ticket; a ticket on its way (sent.ts) opens the
-// code box again after a reload. From CLOSES_AT the page shows only that applications are closed. The words come from
+// code box again after a reload. In the off-season (siteState) the page shows only the letter the candidate just missed. The words come from
 // ticket.ts and letter.ts; this file only moves the page.
 
-import { CLOSES_AT, clockOffset, countdown } from '../calendar'
-import { INSTAGRAM } from '../config'
+import { CLOSES_AT, clockOffset, countdown, siteState } from '../calendar'
+import { FORCE_OFF, INSTAGRAM } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
-import { CLOSED, FOLLOW } from './letter'
+import { HANDLE, closedLetter } from './letter'
 import { startMap } from './map'
 import { startScroll } from './scroll'
 import { clearSent, loadSent, saveSent } from './sent'
@@ -20,6 +20,9 @@ document.documentElement.dataset.tier = String(detectTier())
 
 /** the scroll (scroll.ts), started at the end of this file on tiers 1 and 2 */
 let scroll: ReturnType<typeof startScroll> | null = null
+
+/** the site's state now, `?now=` included: only `off` closes the page */
+const state = () => siteState(Date.now() + clockOffset(location.search), FORCE_OFF)
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -211,16 +214,27 @@ $('tk-change').addEventListener('click', () => {
   showAsk()
 })
 
-/** From CLOSES_AT: no ticket form and no letter, only the line that applications are closed. */
+/**
+ * In the off-season: the letter the candidate just missed (closedLetter), flat with no envelope, and nothing else: no
+ * chips, no ticket, no map. Its date goes by the clock, so a forced off-season before the close names none.
+ */
 function showClosed() {
-  ask.hidden = true
-  check.hidden = true
-  $('tk-unlock').hidden = true
-  // the desktop map too: no stop will open
-  $('map').hidden = true
-  // CLOSED's words, with @vic.enp as the link
-  const [before, after] = CLOSED.split(FOLLOW)
-  lead.replaceChildren(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: FOLLOW }), after)
+  const words = closedLetter(Date.now() + clockOffset(location.search) >= +CLOSES_AT, CLOSES_AT)
+  document.title = `${words.eyebrow} · Vision & Innovation Club`
+  document.querySelector('.ap-open-stage .ap-eyebrow')!.textContent = words.eyebrow
+  document.querySelector('.ap-open-title')!.textContent = words.title
+  // the letter keeps its greeting, signature and seal; its body becomes the closed one, with @vic.enp as the link
+  const letter = document.querySelector('.ap-letter')!
+  letter.querySelectorAll(':scope > p:not(.ap-greet, .ap-sign)').forEach((p) => p.remove())
+  const ps = words.body.map((line) => {
+    const p = document.createElement('p')
+    const [before, after] = line.split(HANDLE)
+    if (after === undefined) p.textContent = line
+    else p.append(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: HANDLE }), after)
+    return p
+  })
+  letter.querySelector('.ap-greet')!.after(...ps)
+  for (const el of [document.querySelector<HTMLElement>('.ap-meta')!, $('letter'), $('map')]) el.hidden = true
 }
 
 // a draft on this phone: inside the ticket's hour the letter opens as it was left; after it, the room keeps its house
@@ -233,7 +247,7 @@ const savedLocal = saved?.draft.email ? localPart(saved.draft.email) : null
 if (saved?.proven && savedLocal && 'local' in savedLocal) {
   sentTo = savedLocal.local
   proven(saved.draft.provenAt)
-} else if (Date.now() + clockOffset(location.search) >= +CLOSES_AT) {
+} else if (state() === 'off') {
   returning = true
   showClosed()
 } else {
@@ -256,12 +270,12 @@ if (saved?.proven && savedLocal && 'local' in savedLocal) {
 // the countdown to the close among the chips, while applications are open; it says so if the close comes while the page
 // is open (the API then turns down a new ticket with CLOSED)
 const closesIn = $('closes-in')
-if (Date.now() + clockOffset(location.search) < +CLOSES_AT) {
+if (state() !== 'off') {
   const text = closesIn.querySelector('span')!
   const paint = () => {
-    const left = +CLOSES_AT - (Date.now() + clockOffset(location.search))
-    text.textContent = left > 0 ? `Closes in ${countdown(left)}` : 'Applications closed'
-    if (left <= 0) clearInterval(every)
+    const off = state() === 'off'
+    text.textContent = off ? 'Applications closed' : `Closes in ${countdown(+CLOSES_AT - (Date.now() + clockOffset(location.search)))}`
+    if (off) clearInterval(every)
   }
   const every = window.setInterval(paint, 15_000)
   paint()

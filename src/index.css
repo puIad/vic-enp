@@ -325,6 +325,13 @@
     width: 38px;
     height: 38px;
   }
+  /* the label alone ("Applications closed"): no chip or arrow on the right, so the right padding matches the left */
+  .pill.is-bare {
+    padding-right: 20px;
+  }
+  .pill-lg.is-bare {
+    padding-right: 24px;
+  }
 
   /* ---------- the world: one canvas fixed behind the whole page, faded in on its first frame ---------- */
   .world-layer {

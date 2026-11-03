@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
-import { countdown, clockOffset as offsetOf, partsOf } from '../calendar'
-import { APPLY_URL, CLOSES_AT, INSTAGRAM, OPENS_AT } from '../config'
+import { countdown, clockOffset as offsetOf, partsOf, siteState } from '../calendar'
+import { APPLY_URL, CLOSES_AT, FORCE_OFF, INSTAGRAM, OPENS_AT } from '../config'
 
 export type Cta =
   /** before opening `chip` holds the countdown; after the close there is none */
   | { open: false; label: string; chip?: string; href: string }
   | { open: true; label: string; href: string }
 
-export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL, closesAt = CLOSES_AT): Cta {
-  // the close sends every CTA back to @vic.enp, where the next season is announced
-  if (now >= closesAt) return { open: false, label: 'Applications closed', href: INSTAGRAM }
-  if (now < opensAt) {
+export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL, closesAt = CLOSES_AT, forced = FORCE_OFF): Cta {
+  const state = siteState(+now, forced, +opensAt, +closesAt)
+  // the off-season sends every CTA back to @vic.enp, where the next season is announced
+  if (state === 'off') return { open: false, label: 'Applications closed', href: INSTAGRAM }
+  if (state === 'before') {
     const day = opensAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Africa/Algiers' })
     return { open: false, label: `Applications open ${day.replace(' ', '\u00a0')}`, chip: countdown(+opensAt - +now), href: INSTAGRAM }
   }
@@ -34,7 +35,7 @@ export function useNow(every: number): Date {
   return now
 }
 
-/** The CTA state, repainted every 15 s so the chip ticks and the pill flips at OPENS_AT and CLOSES_AT without a reload. */
+/** The CTA, repainted every 15 s so the chip ticks and the pill follows siteState at OPENS_AT and CLOSES_AT without a reload. */
 export function useCta(): Cta {
   return cta(useNow(15_000))
 }
@@ -45,9 +46,10 @@ export type Closing =
   | { state: 'open'; d: number; h: number; m: number; s: number }
   | { state: 'closed' }
 
-/** The countdown to the close in the light act: what is left while applications are open, and the close after it. */
-export function closing(now: Date, opensAt = OPENS_AT, closesAt = CLOSES_AT): Closing {
-  if (now >= closesAt) return { state: 'closed' }
-  if (now < opensAt) return { state: 'soon' }
+/** The countdown to the close in the light act: what is left while applications are open, and the off-season after it. */
+export function closing(now: Date, opensAt = OPENS_AT, closesAt = CLOSES_AT, forced = FORCE_OFF): Closing {
+  const state = siteState(+now, forced, +opensAt, +closesAt)
+  if (state === 'off') return { state: 'closed' }
+  if (state === 'before') return { state: 'soon' }
   return { state: 'open', ...partsOf(+closesAt - +now) }
 }

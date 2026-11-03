@@ -1,16 +1,32 @@
-// The recruitment's two instants, Algiers time, and the `?now=` override that checks them. The page (config.ts), /apply
-// and the API (api/_lib) all read this file, so it imports nothing and touches no browser or Vite global. Moving a date
-// also means the hand-typed copies listed in config.ts.
+// The recruitment's two instants, Algiers time, the site's state between them (docs/site-states.md) and the `?now=`
+// override that checks them. The page (config.ts), /apply and the API (api/_lib) all read this file, so it imports
+// nothing and touches no browser or Vite global: each side reads VITE_FORCE_OFF_SEASON itself and passes it in. Moving a
+// date also means the hand-typed copies listed in config.ts.
 
 /** Applications open: 26 Oct, 18:00 (decision 130). */
 export const OPENS_AT = new Date('2026-10-26T18:00:00+01:00')
 
 /**
- * Applications close on 4 Nov at 23:59 (decision 147, moved by decision 155). The CTA turns to "Applications closed", /apply shows
- * the closed screen, /api/code refuses new tickets, and /api/submit takes letters for one more hour (a ticket checked
- * just before the close can still be used).
+ * Applications close on 4 Nov at 23:59 (decision 147, moved by decision 155) and the off-season starts by itself: the CTA
+ * turns to "Applications closed", /apply shows the closed screen, /api/code refuses new tickets, and /api/submit takes
+ * letters for one more hour (a ticket checked just before the close can still be used).
  */
 export const CLOSES_AT = new Date('2026-11-04T23:59:00+01:00')
+
+/** `before` OPENS_AT, `open` up to CLOSES_AT, `off` from it (docs/site-states.md, The states). */
+export type SiteState = 'before' | 'open' | 'off'
+
+/**
+ * The one answer to the site's state at `now` (ms): a forced off-season first, then the dates. cta(), closing(), /apply
+ * and /api/code ask it and compare no dates themselves; /api/submit keeps its own stop an hour after the close.
+ */
+export function siteState(now: number, forced: boolean, opensAt = +OPENS_AT, closesAt = +CLOSES_AT): SiteState {
+  if (forced || now >= closesAt) return 'off'
+  return now < opensAt ? 'before' : 'open'
+}
+
+/** VITE_FORCE_OFF_SEASON's raw value: any non-empty value after trimming forces the off-season, `0` included. */
+export const forcedOff = (raw: string | undefined): boolean => !!raw?.trim()
 
 /** The ms that `?now=<ISO date>` in `search` moves the clock by, 0 without it: both pages check any instant with it. */
 export function clockOffset(search: string): number {

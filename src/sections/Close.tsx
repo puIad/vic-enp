@@ -115,9 +115,11 @@ export function Close({ cta, staged }: { cta: Cta; staged: boolean }) {
           ref={pill}
           href={cta.href}
           onClick={apply}
-          className={`pill close-pill relative min-h-16 gap-3.5 py-2.5 pr-3 pl-3 text-[17px] whitespace-normal md:text-[19px] ${cta.open ? '' : 'max-md:max-w-[320px]'}`}
+          className={`pill close-pill relative min-h-16 gap-3.5 py-2.5 pl-3 text-[17px] whitespace-normal md:text-[19px] ${cta.open ? '' : 'max-md:max-w-[320px]'} ${cta.open || cta.chip ? 'pr-3' : 'pr-[66px]'}`}
         >
-          {/* the slot where your point lands: an empty 40 px place with no ring of its own (the 600 ring it) */}
+          {/* the slot where your point lands: an empty 40 px place with no ring of its own (the 600 ring it). With the label
+              alone ("Applications closed") the right padding matches the slot and its gap (12 + 40 + 14 px), so the
+              label sits in the middle */}
           <span ref={slot} aria-hidden="true" className="close-slot relative grid size-10 flex-none place-items-center">
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgb(105_196_175/.55)_0,rgb(105_196_175/.18)_45%,transparent_70%)]" />
             <span className="relative size-[7px] rounded-full bg-white shadow-[0_0_10px_2px_#69c4af]" />

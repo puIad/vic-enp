@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { CLOSED, DEPARTMENTS, FOLLOW, RECEIVED, STOPS, sendAnswer } from './letter'
+import { CLOSES_AT } from '../calendar'
+import { DEPARTMENTS, HANDLE, RECEIVED, STOPS, closedLetter, sendAnswer } from './letter'
 import { ASKED } from './questions'
 
 const DOC = readFileSync(resolve(import.meta.dirname, '../../docs/source/registration-questions.md'), 'utf8').replaceAll('\r\n', '\n')
@@ -40,8 +41,6 @@ describe('sendAnswer', () => {
 
   it('says applications are closed on 403 "closed"', () => {
     expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 4 November/) })
-    // the closed screen splits CLOSED on FOLLOW to make the link
-    expect(CLOSED.split(FOLLOW)).toHaveLength(2)
   })
 
   it('says an address is already registered on 409', () => {
@@ -69,5 +68,19 @@ describe('Received', () => {
     expect(all).toMatch(/may follow/)
     expect(all).not.toMatch(/accept|interview|\b(today|tomorrow|hours?|days?|week|soon)\b|\d+ ?(h|min)/i)
     expect(all).not.toMatch(/docs\.google|forms\.gle|google form/i)
+  })
+})
+
+describe('closedLetter', () => {
+  it('dates the close from CLOSES_AT in Algiers time, by the clock', () => {
+    const at = new Date('2026-11-04T23:59:00+01:00')
+    expect(closedLetter(true, at).body[0]).toBe('You just missed this one: applications closed on 4\u00a0November 2026 at 23:59.')
+    expect(closedLetter(true, new Date('2027-10-30T17:00:00Z')).body[0]).toBe('You just missed this one: applications closed on 30\u00a0October 2027 at 18:00.')
+  })
+  it('drops the date before the close (a forced off-season)', () => {
+    expect(closedLetter(false, CLOSES_AT).body[0]).toBe('You just missed this one: applications are closed.')
+  })
+  it('holds the handle exactly once, for the link', () => {
+    for (const dated of [true, false]) expect(closedLetter(dated, CLOSES_AT).body.join(' ').split(HANDLE)).toHaveLength(2)
   })
 })

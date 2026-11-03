@@ -1,12 +1,20 @@
 // Everything that varies at launch lives here (docs/architecture.md, Configuration).
 
+import { forcedOff } from './calendar'
+
 /**
  * When applications open and close, Algiers time: 26 Oct, 18:00 (decision 130) to 4 Nov, 23:59 (decisions 147, 155), in
- * calendar.ts so the API reads the same instants. The CTA label follows them; these copies are typed by hand and need
+ * calendar.ts so the API reads the same instants. The site's state (siteState) follows them; these copies are typed by hand and need
  * the same edit: src/sections/Join.tsx (the act lead), src/content/join.ts (the FAQ answer) and src/apply/letter.ts
  * (CLOSED) for the close; index.html (meta, noscript) and public/og.png (re-render it) for the opening.
  */
 export { CLOSES_AT, OPENS_AT } from './calendar'
+
+/**
+ * The forced off-season (docs/site-states.md): VITE_FORCE_OFF_SEASON, set on Vercel Production when needed and absent
+ * otherwise. It is read at build, so a Redeploy changes it; the API reads the same name at run time (api/_lib/env.ts).
+ */
+export const FORCE_OFF = forcedOff(import.meta.env.VITE_FORCE_OFF_SEASON)
 
 /**
  * The Google Form's responder link, set as a Vercel env var (open question 15).

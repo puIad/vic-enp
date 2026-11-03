@@ -18,4 +18,6 @@ export const env = () => ({
   sessionKey: v('SESSION_KEY'),
   /** the result mails' group link (join.ts): signs the /join tokens and guards the script's routes; the same value as the Apps Script's JOIN_SECRET */
   joinSecret: v('JOIN_SECRET'),
+  /** the forced off-season (docs/site-states.md): the page reads the same name at build; parsed by forcedOff (src/calendar.ts) */
+  forceOffSeason: v('VITE_FORCE_OFF_SEASON'),
 })

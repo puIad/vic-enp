@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CLOSES_AT } from '../calendar'
-import { DEPARTMENTS, HANDLE, RECEIVED, STOPS, closedLetter, sendAnswer } from './letter'
+import { DEPARTMENTS, FOLLOW, HANDLE, RECEIVED, STOPS, closedLetter, closedLine, sendAnswer } from './letter'
 import { ASKED } from './questions'
 
 const DOC = readFileSync(resolve(import.meta.dirname, '../../docs/source/registration-questions.md'), 'utf8').replaceAll('\r\n', '\n')
@@ -39,8 +39,10 @@ describe('sendAnswer', () => {
     expect(sendAnswer(422, { fields: ['9', '24'] })).toMatchObject({ kind: 'fields', fields: [9, 24] })
   })
 
-  it('says applications are closed on 403 "closed"', () => {
-    expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 5 November/) })
+  it('says applications are closed on 403 "closed", the line going by the clock', () => {
+    expect(sendAnswer(403, { status: 'closed' }, +CLOSES_AT)).toEqual({ kind: 'closed', text: closedLine(+CLOSES_AT) })
+    expect(sendAnswer(403, { status: 'closed' }, +CLOSES_AT - 1)).toEqual({ kind: 'closed', text: closedLine(+CLOSES_AT - 1) })
+    expect(closedLine(+CLOSES_AT)).not.toBe(closedLine(+CLOSES_AT - 1))
   })
 
   it('says an address is already registered on 409', () => {
@@ -82,5 +84,33 @@ describe('closedLetter', () => {
   })
   it('holds the handle exactly once, for the link', () => {
     for (const dated of [true, false]) expect(closedLetter(dated, CLOSES_AT).body.join(' ').split(HANDLE)).toHaveLength(2)
+  })
+})
+
+describe('closedLine', () => {
+  // a close that isn't this year's, so moving CLOSES_AT next year breaks nothing here
+  const close = new Date('2027-10-30T23:59:00+01:00')
+  const follow = 'Follow @vic.enp on Instagram for the club’s news.'
+
+  it('dates the close from closesAt in Algiers time, from the close on', () => {
+    expect(closedLine(+close, close)).toBe(`Applications closed on 30 October 2027 at 23:59. ${follow}`)
+    expect(closedLine(+close + 864e5, close)).toBe(`Applications closed on 30 October 2027 at 23:59. ${follow}`)
+  })
+  it('names no date before the close, which only a forced off-season reaches', () => {
+    expect(closedLine(+close - 1, close)).toBe(`Applications are closed. ${follow}`)
+  })
+  it('dates by Algiers whatever the machine time zone (23:30 UTC on the 30th is 00:30 on the 31st in Algiers)', () => {
+    const tz = process.env.TZ
+    process.env.TZ = 'America/Los_Angeles'
+    try {
+      const late = new Date('2027-10-30T23:30:00Z')
+      expect(closedLine(+late, late)).toMatch(/closed on 31 October 2027 at 00:30\./)
+    } finally {
+      if (tz === undefined) delete process.env.TZ
+      else process.env.TZ = tz
+    }
+  })
+  it('holds FOLLOW exactly once, for the link, dated or not', () => {
+    for (const now of [+close - 1, +close]) expect(closedLine(now, close).split(FOLLOW)).toHaveLength(2)
   })
 })

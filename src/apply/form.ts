@@ -3,10 +3,12 @@
 // draft.ts; this file only builds and moves the page. Answers live in the page and in the draft: going back to the
 // ticket, a 422 or a failed save never clears them; only Received does.
 
+import { clockOffset } from '../calendar'
+import { INSTAGRAM } from '../config'
 import { askedFor, LONG_MAX, missing, SHORT_MAX, type Answers } from './answers'
 import { SOFT, softCheck } from './checks'
 import { browserStore, clearDraft, loadDraft, saveDraft, type Draft } from './draft'
-import { DEPARTMENTS, RECEIVED, STOPS, sendAnswer } from './letter'
+import { DEPARTMENTS, FOLLOW, RECEIVED, STOPS, sendAnswer } from './letter'
 import { postLetter, returnLetter } from './owl'
 import { ASKED, type Question } from './questions'
 
@@ -23,6 +25,12 @@ function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs = {}, ...
   for (const [k, v] of Object.entries(attrs)) if (v !== false && v !== undefined) el.setAttribute(k, v === true ? '' : v)
   el.append(...kids)
   return el
+}
+
+/** `text` with `label`, which it holds once, as the link to Instagram: the closed line and the closed letter */
+export function linked(text: string, label: string): (Node | string)[] {
+  const [before, after] = text.split(label)
+  return after === undefined ? [text] : [before, h('a', { href: INSTAGRAM }, label), after]
 }
 
 /** a title as the page shows it; the form's odd trailing spaces stay in the data */
@@ -206,9 +214,14 @@ function focusField(n: number) {
   f.querySelector<HTMLElement>('input:not([hidden]), textarea')?.focus({ preventScroll: true })
 }
 
+/** an error line in `el`, as one span: a flex item beside the "!" (apply.css .ap-err), the closed line's link inside it */
+export function errLine(el: HTMLElement, text: string) {
+  el.replaceChildren(h('span', {}, ...linked(text, FOLLOW)))
+}
+
 function sayAtSend(text: string) {
   const el = $('letter-send-err')
-  el.textContent = text
+  errLine(el, text)
   el.hidden = !text
 }
 
@@ -443,7 +456,7 @@ async function send(hooks: LetterHooks) {
   } catch {
     // a network failure reads as status 0: "could not save, try again"
   }
-  const a = sendAnswer(status, body)
+  const a = sendAnswer(status, body, Date.now() + clockOffset(location.search))
   // the owl finishes its flight before Received; a send that did not land, it brings back and sets down first
   await flight
   if (a.kind !== 'received') await returnLetter().catch(() => undefined)

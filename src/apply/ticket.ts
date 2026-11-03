@@ -2,7 +2,7 @@
 // /api/verify answered, as the line the candidate reads. No DOM here; main.ts puts these on the page. No line ever
 // points at the Google Form.
 
-import { CLOSED } from './letter'
+import { closedLine } from './letter'
 
 export const DOMAIN = 'g.enp.edu.dz'
 
@@ -24,7 +24,8 @@ export function localPart(raw: string): { local: string } | { error: string } {
 
 type Json = Record<string, unknown> | null
 
-export function codeAnswer(status: number, body: Json): { sent: true; resendIn: number } | { sent: false; text: string } {
+/** What POST /api/code's answer means to the candidate, at the clock `now` (ms; it picks the closed line). */
+export function codeAnswer(status: number, body: Json, now = Date.now()): { sent: true; resendIn: number } | { sent: false; text: string } {
   if (status === 200 && body?.status === 'sent') return { sent: true, resendIn: Number(body.resendIn) || 30 }
   if (status === 200 && body?.status === 'registered')
     return { sent: false, text: 'This address already has a registration. We have it, so there is nothing more to do. Check your ENP inbox for our mail.' }
@@ -35,7 +36,7 @@ export function codeAnswer(status: number, body: Json): { sent: true; resendIn: 
     // the limit may be this address's or the connection's (a campus or carrier IP is shared), so no "you asked"
     return { sent: false, text: `Too many tickets were asked for this hour. Try again in ${m} ${m === 1 ? 'minute' : 'minutes'}.` }
   }
-  if (status === 403 && body?.status === 'closed') return { sent: false, text: CLOSED }
+  if (status === 403 && body?.status === 'closed') return { sent: false, text: closedLine(now) }
   if (status === 400) return { sent: false, text: `Type only the part of your ENP address before @${DOMAIN}.` }
   return { sent: false, text: 'We could not send your ticket just now. Try again in a moment.' }
 }

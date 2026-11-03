@@ -5,8 +5,8 @@
 import { describe, expect, it } from 'vitest'
 import { IT_LETTER } from '../../src/apply/letter.fixture.js'
 import { SITE_HEADERS } from '../../src/apply/questions.js'
-import { CLOSES_AT, OPENS_AT, siteState } from '../../src/calendar.js'
-import { DAY, SITE_STATES as table } from '../../src/site-state.fixture.js'
+import { CLOSES_AT, OPENS_AT } from '../../src/calendar.js'
+import { SITE_STATES as table } from '../../src/site-state.fixture.js'
 import { fakeRedis } from './fake-redis.js'
 import { PROOF_S, proofCookie } from './session.js'
 import { submitLetter } from './submit.js'
@@ -72,25 +72,18 @@ describe('the API at each boundary', () => {
     }
   })
 
-  it.each(table.filter(([, now]) => now >= O))('submitLetter takes a checked ticket\'s letter at %s', async (_, now) => {
-    if (now >= C + PROOF_S * 1000) return
-    expect((await letter(now, now)).status).toBe(200)
-  })
+  // submitLetter reads no force, so only the unforced rows inside its hour: the force's own case is in ticket.test.ts
+  it.each(table.filter(([, now, forced]) => !forced && now >= O && now < C + PROOF_S * 1000))(
+    "submitLetter takes a checked ticket's letter at %s",
+    async (_, now) => {
+      expect((await letter(now, now)).status).toBe(200)
+    },
+  )
 
   it('submitLetter keeps its stop at CLOSES_AT plus PROOF_S', async () => {
     expect((await letter(C - 1, C + PROOF_S * 1000 - 2)).status).toBe(200)
     const res = await letter(C - 1, C + PROOF_S * 1000)
     expect(res.status).toBe(403)
     expect(await res.json()).toEqual({ status: 'closed' })
-  })
-})
-
-describe('a forced off-season', () => {
-  it('stops /api/code, and a ticket checked before it still sends its letter', async () => {
-    const now = C - DAY
-    expect(siteState(now, true)).toBe('off')
-    const res = await letter(now - 60_000, now)
-    expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ status: 'received' })
   })
 })

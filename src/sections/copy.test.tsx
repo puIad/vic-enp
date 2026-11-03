@@ -1,7 +1,11 @@
 import type { ReactElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Footer } from './Close'
+import { ApplyPill } from '../components/ApplyPill'
+import { Chrome } from '../components/Chrome'
+import { CLOSES_AT, OPENS_AT, type SiteState } from '../calendar'
+import { cta } from '../lib/opening'
+import { Close, Footer } from './Close'
 import { ClubLife } from './ClubLife'
 import ClubLifePeak from './ClubLifePeak'
 import { Events } from './Events'
@@ -27,6 +31,27 @@ function readHtml(html: string) {
     .replace(/&[^;\s]+;/g, (e) => ENTITIES[e] ?? e)
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+const VOID = /^(img|br|hr|input|meta|link|source)$/
+
+/** What a screen reader reads in some markup: readHtml without the aria-hidden parts (the held layout, #115). */
+function heard(html: string) {
+  let out = ''
+  let hidden = 0
+  for (const m of html.matchAll(/<(\/?)([a-zA-Z][\w-]*)([^>]*)>|[^<]+/g)) {
+    const [tag, close, name, rest = ''] = m
+    if (!name) {
+      if (!hidden) out += tag
+      continue
+    }
+    const selfClosing = VOID.test(name) || rest.endsWith('/')
+    if (hidden) {
+      if (!selfClosing) hidden += close ? -1 : 1
+    } else if (!close && !selfClosing && rest.includes('aria-hidden="true"')) hidden = 1
+    else out += tag
+  }
+  return readHtml(out)
 }
 
 /** What a visitor reads in a rendered element. */
@@ -67,6 +92,7 @@ function symbols(html: string, tag: string) {
 const symbolClasses = (html: string) => [...html.matchAll(/<img\s([^>]*src="\/logos\/[^>]*)>/g)].map(([, a]) => attr(a, 'class'))
 
 afterEach(() => {
+  vi.useRealTimers()
   vi.unstubAllGlobals()
   world.act = ''
   world.progress = 0
@@ -182,11 +208,107 @@ describe("the rail's targets (#59)", () => {
     ['departments, staged', () => <DepartmentsStage />, 'departments'],
     ['events, tier 0', () => <Events staged={false} />, 'events'],
     ['events, staged', () => <EventsStage />, 'events'],
-    ['the light act, tier 0', () => <Join staged={false} />, 'join'],
-    ['the light act, staged', () => <Join staged />, 'join'],
+    ['the light act, tier 0', () => <Join staged={false} state="open" />, 'join'],
+    ['the light act, staged', () => <Join staged state="open" />, 'join'],
   ] as const)('every sub-section of %s is an id on the page', (_, render, act) => {
     const html = ids(render())
     for (const id of [act, ...subs(act)]) expect(html).toContain(`id="${id}"`)
+  })
+})
+
+// docs/site-states.md, The words and The page (#115): the off-season's words flip live, and what holds the layout
+// between `open` and `off` is never read out.
+describe("the off-season's words (#115)", () => {
+  const INSTA = 'https://www.instagram.com/vic.enp/'
+  const NOW: Record<SiteState, Date> = {
+    before: new Date(+OPENS_AT - 864e5),
+    open: new Date(+CLOSES_AT - 864e5),
+    off: new Date(+CLOSES_AT + 864e5),
+  }
+  /** The page's clock at a state, so the countdown's own 1 s clock agrees with the 15 s CTA. */
+  const at = (state: SiteState) => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(NOW[state])
+    return cta(NOW[state], OPENS_AT, '/apply', CLOSES_AT, false)
+  }
+  const OPEN_LEAD =
+    'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.'
+  const OFF_LEAD = 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.'
+  const CLOSED = 'Applications are closed. The next recruitment is announced on @vic.enp.'
+  const SUB = 'Every ENP student can apply, any year, any specialty.'
+  const answer = (html: string) => readHtml(html.match(/how fast is the process\?<span[^>]*><\/span><\/button><\/h3><div[^>]*>(.*?)<\/div>/s)![1])
+
+  it('the pill follows @vic.enp with the round arrow, looking as the Apply pill does', () => {
+    const off = renderToStaticMarkup(<ApplyPill cta={at('off')} />)
+    expect(heard(off)).toBe('Follow @vic.enp')
+    expect(attr(off, 'href')).toBe(INSTA)
+    expect(off).toContain('class="go"')
+    expect(attr(off, 'class')).toBe(attr(renderToStaticMarkup(<ApplyPill cta={at('open')} />), 'class'))
+  })
+
+  it('keeps the open and before pills', () => {
+    expect(heard(renderToStaticMarkup(<ApplyPill cta={at('open')} />))).toBe('Apply')
+    const before = renderToStaticMarkup(<ApplyPill cta={at('before')} />)
+    expect(heard(before)).toMatch(/^Applications open 26 Oct ?in 1d 00h$/)
+    expect(before).not.toContain('class="go"')
+  })
+
+  it.each([false, true])('act 7 holds its sub line without words in the off-season, staged %s', (staged) => {
+    const off = renderToStaticMarkup(<Close cta={at('off')} staged={staged} />)
+    expect(heard(off)).toBe('Your point is on its way. Follow @vic.enp')
+    // the open phase's sentence, held unseen: the same line count, so the pill stays where it is
+    expect(readHtml(off)).toContain(SUB)
+    expect(heard(renderToStaticMarkup(<Close cta={at('open')} staged={staged} />))).toBe(`Your point is on its way. ${SUB} Apply`)
+    expect(renderToStaticMarkup(<Close cta={at('before')} staged={staged} />)).not.toContain('close-sub')
+  })
+
+  it.each([false, true])("How to join's lead and closed line in the off-season hold the open phase's, staged %s", (staged) => {
+    at('off')
+    const html = renderToStaticMarkup(<Join staged={staged} state="off" />)
+    expect(heard(html)).toContain(`How to join. ${OFF_LEAD} ${CLOSED} Fill in the form.`)
+    expect(html).toContain(`announced on <a href="${INSTA}">@vic.enp</a>.`)
+    // the open lead and the countdown are on the page, holding its height, unheard
+    expect(readHtml(html)).toContain(OPEN_LEAD)
+    expect(readHtml(html)).toContain('Applications close in')
+  })
+
+  it.each([false, true])("How to join keeps the open phase's words, staged %s", (staged) => {
+    at('open')
+    const words = heard(renderToStaticMarkup(<Join staged={staged} state="open" />))
+    expect(words).toContain(`How to join. ${OPEN_LEAD} Applications close in 1 day, 0 minutes Fill in the form.`)
+  })
+
+  it('keeps the before phase as it is today: the lead, and no countdown or closed line', () => {
+    at('before')
+    expect(readHtml(renderToStaticMarkup(<Join staged={false} state="before" />))).toContain(`How to join. ${OPEN_LEAD} 01 Fill in the form.`)
+  })
+
+  it('keeps the lead in the same revealed block in every state, so a flip never mounts one the reveal has not seen', () => {
+    const block = (state: SiteState) => {
+      at(state)
+      const html = renderToStaticMarkup(<Join staged state={state} />)
+      return html.slice(html.indexOf('</h2>') + 5).match(/^<(\w+) data-rv="true"/)?.[1]
+    }
+    expect(['before', 'open', 'off'].map((s) => block(s as SiteState))).toEqual(['div', 'div', 'div'])
+  })
+
+  it('the FAQ answers with the off-season words and the handle as its link, and keeps the open answer', () => {
+    at('off')
+    const off = renderToStaticMarkup(<Join staged={false} state="off" />)
+    expect(answer(off)).toBe(CLOSED)
+    expect(off).toContain(`<p class="max-w-[62ch] text-base text-ink">Applications are closed. The next recruitment is announced on <a href="${INSTA}">@vic.enp</a>.</p>`)
+    for (const state of ['before', 'open'] as const)
+      expect(answer(renderToStaticMarkup(<Join staged={false} state={state} />))).toBe(
+        'Applications open on 26 October 2026 at 18:00 and close on 4 November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview.',
+      )
+  })
+
+  it.each([
+    ['before', 'Skip to Apply'],
+    ['open', 'Skip to Apply'],
+    ['off', 'Skip to the end'],
+  ] as const)('the skip link at %s reads "%s"', (state, words) => {
+    expect(readHtml(inner(renderToStaticMarkup(<Chrome cta={at(state)} />), 'a'))).toBe(words)
   })
 })
 

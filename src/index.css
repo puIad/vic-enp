@@ -325,13 +325,6 @@
     width: 38px;
     height: 38px;
   }
-  /* the label alone ("Applications closed"): no chip or arrow on the right, so the right padding matches the left */
-  .pill.is-bare {
-    padding-right: 20px;
-  }
-  .pill-lg.is-bare {
-    padding-right: 24px;
-  }
 
   /* ---------- the world: one canvas fixed behind the whole page, faded in on its first frame ---------- */
   .world-layer {
@@ -1263,7 +1256,8 @@
     box-shadow: 0 0 0 1.5px var(--color-night);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .closing-dot {
+    /* not while held unseen under the closed line all off-season (Join.tsx, Hold) */
+    .closing-dot:not(.invisible *) {
       animation: closing-breathe 2s ease-in-out infinite;
     }
   }

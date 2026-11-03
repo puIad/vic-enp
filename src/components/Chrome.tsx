@@ -86,7 +86,7 @@ export function Chrome({ cta }: { cta: Cta }) {
   return (
     <header>
       <a className="skip" href="#apply">
-        Skip to Apply
+        {cta.state === 'off' ? 'Skip to the end' : 'Skip to Apply'}
       </a>
       <div className={`logoplate ${lit.logo ? 'away' : ''}`} aria-hidden="true" />
       <a className={`logo ${lit.logo ? 'away' : ''}`} href="#top" tabIndex={lit.logo ? -1 : undefined}>

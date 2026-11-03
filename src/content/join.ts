@@ -1,5 +1,19 @@
 // docs/content.md, act 6 (#16). Step 2 depends on CONFIRM_REGISTRANTS being on at launch (content check 5).
 
+import type { SiteState } from '../calendar'
+import { INSTAGRAM } from '../config'
+
+const RECRUITMENT_Q = 'When does recruitment open, and how fast is the process?'
+
+/** The act's lead while recruiting, and in the off-season (docs/site-states.md, The words). */
+export const LEAD = {
+  open: 'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.',
+  off: 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.',
+}
+
+/** The off-season's closed line and FAQ answer, up to the handle, which links to Instagram after it. */
+export const CLOSED = 'Applications are closed. The next recruitment is announced on'
+
 export const STEPS = [
   { title: 'Fill in the form.', text: 'Pick your first and second choice among the four main departments: HR, FLER, IT and COMM.' },
   { title: 'Check your inbox.', text: 'You get a confirmation email with your registration code.' },
@@ -48,7 +62,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
     a: 'Yes. Active members can request a membership certificate, and organizing-team members receive event certificates.',
   },
   {
-    q: 'When does recruitment open, and how fast is the process?',
+    q: RECRUITMENT_Q,
     a: 'Applications open on 26 October 2026 at 18:00 and close on 4 November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview.',
   },
   {
@@ -56,3 +70,12 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
     a: 'You become an alumnus and stay part of the VIC community. Once a VICer, always a VICer.',
   },
 ]
+
+/** The FAQ in a state: the off-season answers the recruitment question with the handle and drops its "how fast" half,
+ *  by the owner's choice; `before` and `open` keep today's answer (docs/site-states.md, The words). */
+export const faq = (state: SiteState) =>
+  state === 'off'
+    ? FAQ.map((f) =>
+        f.q === RECRUITMENT_Q ? { q: f.q, a: CLOSED, link: { href: INSTAGRAM, label: '@vic.enp' } } : f,
+      )
+    : FAQ

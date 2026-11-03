@@ -9,6 +9,8 @@ export function usePhone() {
   return useSyncExternalStore(
     (cb) => (phoneQuery?.addEventListener('change', cb), () => phoneQuery?.removeEventListener('change', cb)),
     () => phoneQuery?.matches ?? false,
+    // the page is never server-rendered; this lets the copy tests read act 7 as static markup
+    () => false,
   )
 }
 

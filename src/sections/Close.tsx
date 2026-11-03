@@ -84,12 +84,12 @@ export function Close({ cta, staged }: { cta: Cta; staged: boolean }) {
       world.listeners.delete(travel)
       world.slot = null
     }
-  }, [staged, cta.open])
+  }, [staged, cta.state])
 
-  // the Apply moment (after opening, with the world): your point flares, the 600 answer in a wave, then the link opens.
-  // Modified clicks open as links do; before opening the pill is a plain link to @vic.enp.
+  // the Apply moment (while open, with the world): your point flares, the 600 answer in a wave, then the link opens.
+  // Modified clicks open as links do; before opening and in the off-season the pill is a plain link to @vic.enp.
   const apply = (e: MouseEvent<HTMLAnchorElement>) => {
-    if (!cta.open || !staged || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
+    if (cta.state !== 'open' || !staged || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return
     e.preventDefault()
     world.wave = performance.now()
     e.currentTarget.classList.add('sent')
@@ -107,7 +107,12 @@ export function Close({ cta, staged }: { cta: Cta; staged: boolean }) {
           <span>is on its way.</span>
         </span>
       </h2>
-      {cta.open && <p className="close-sub t-lead mt-5 text-gray">Every ENP student can apply, any year, any specialty.</p>}
+      {/* the open phase's line; the off-season keeps its space, unseen and unread, so the pill stays where it is (docs/site-states.md, The page) */}
+      {cta.state !== 'before' && (
+        <p className={`close-sub t-lead mt-5 text-gray ${cta.state === 'off' ? 'invisible' : ''}`} aria-hidden={cta.state === 'off' || undefined}>
+          Every ENP student can apply, any year, any specialty.
+        </p>
+      )}
 
       <div id="close-cta" className="close-cta relative mt-[clamp(72px,18svh,200px)] flex justify-center">
         {!staged && <ClosePoster clearW={size.w + pad * 2 + 40} clearH={size.h + pad * 2 + 30} />}
@@ -115,27 +120,23 @@ export function Close({ cta, staged }: { cta: Cta; staged: boolean }) {
           ref={pill}
           href={cta.href}
           onClick={apply}
-          className={`pill close-pill relative min-h-16 gap-3.5 py-2.5 pl-3 text-[17px] whitespace-normal md:text-[19px] ${cta.open ? '' : 'max-md:max-w-[320px]'} ${cta.open || cta.chip ? 'pr-3' : 'pr-[66px]'}`}
+          className={`pill close-pill relative min-h-16 gap-3.5 px-3 py-2.5 text-[17px] whitespace-normal md:text-[19px] ${cta.state === 'before' ? 'max-md:max-w-[320px]' : ''}`}
         >
-          {/* the slot where your point lands: an empty 40 px place with no ring of its own (the 600 ring it). With the label
-              alone ("Applications closed") the right padding matches the slot and its gap (12 + 40 + 14 px), so the
-              label sits in the middle */}
+          {/* the slot where your point lands: an empty 40 px place with no ring of its own (the 600 ring it) */}
           <span ref={slot} aria-hidden="true" className="close-slot relative grid size-10 flex-none place-items-center">
             <span className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgb(105_196_175/.55)_0,rgb(105_196_175/.18)_45%,transparent_70%)]" />
             <span className="relative size-[7px] rounded-full bg-white shadow-[0_0_10px_2px_#69c4af]" />
           </span>
           <span className="text-left">{cta.label}</span>
-          {cta.open ? (
+          {cta.state === 'before' ? (
+            <span className="chip ml-1">
+              <span className="sr-only">in </span>
+              {cta.chip}
+            </span>
+          ) : (
             <span className="go ml-2 !size-10">
               <Arrow />
             </span>
-          ) : (
-            cta.chip && (
-              <span className="chip ml-1">
-                <span className="sr-only">in </span>
-                {cta.chip}
-              </span>
-            )
           )}
         </a>
       </div>

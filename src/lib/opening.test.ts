@@ -21,22 +21,22 @@ describe('countdown', () => {
 describe('cta', () => {
   it('links to Instagram with a countdown before opening', () => {
     const c = cta(at('2026-10-19T12:00:00+01:00'), OPENS, 'https://forms.example/apply')
-    expect(c).toEqual({ open: false, label: 'Applications open 25\u00a0Oct', chip: '5d 12h', href: 'https://www.instagram.com/vic.enp/' })
+    expect(c).toEqual({ state: 'before', label: 'Applications open 25\u00a0Oct', chip: '5d 12h', href: 'https://www.instagram.com/vic.enp/' })
   })
   it('opens APPLY_URL from the opening instant', () => {
-    expect(cta(OPENS, OPENS, 'https://forms.example/apply')).toEqual({ open: true, label: 'Apply', href: 'https://forms.example/apply' })
+    expect(cta(OPENS, OPENS, 'https://forms.example/apply')).toEqual({ state: 'open', label: 'Apply', href: 'https://forms.example/apply' })
   })
   it('one millisecond before opening is still the countdown', () => {
     const c = cta(new Date(+OPENS - 1), OPENS, 'https://forms.example/apply')
-    expect(c.open).toBe(false)
+    expect(c.state).toBe('before')
   })
   it('falls back to Instagram when no apply URL is configured', () => {
     expect(cta(OPENS, OPENS, '').href).toBe('https://www.instagram.com/vic.enp/')
   })
-  it('closes at the closing instant: back to Instagram, no chip', () => {
+  it('turns to the off-season at the closing instant: Follow @vic.enp, back to Instagram, no chip', () => {
     const closes = new Date('2026-11-04T18:00:00+01:00')
-    expect(cta(new Date(+closes - 1), OPENS, '/apply', closes)).toEqual({ open: true, label: 'Apply', href: '/apply' })
-    expect(cta(closes, OPENS, '/apply', closes)).toEqual({ open: false, label: 'Applications closed', href: 'https://www.instagram.com/vic.enp/' })
+    expect(cta(new Date(+closes - 1), OPENS, '/apply', closes)).toEqual({ state: 'open', label: 'Apply', href: '/apply' })
+    expect(cta(closes, OPENS, '/apply', closes)).toEqual({ state: 'off', label: 'Follow @vic.enp', href: 'https://www.instagram.com/vic.enp/' })
   })
 })
 
@@ -52,8 +52,8 @@ describe('clockOffset', () => {
 describe('label date', () => {
   it('follows opensAt in Algiers time', () => {
     const later = new Date('2026-11-02T00:00:00+01:00')
-    expect(cta(new Date('2026-10-30T12:00:00+01:00'), later, '').open).toBe(false)
-    expect((cta(new Date('2026-10-30T12:00:00+01:00'), later, '') as { label: string }).label).toBe('Applications open 2\u00a0Nov')
+    expect(cta(new Date('2026-10-30T12:00:00+01:00'), later, '').state).toBe('before')
+    expect(cta(new Date('2026-10-30T12:00:00+01:00'), later, '').label).toBe('Applications open 2\u00a0Nov')
   })
 })
 

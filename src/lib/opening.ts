@@ -2,21 +2,24 @@ import { useEffect, useState } from 'react'
 import { countdown, clockOffset as offsetOf, partsOf, siteState } from '../calendar'
 import { APPLY_URL, CLOSES_AT, FORCE_OFF, INSTAGRAM, OPENS_AT } from '../config'
 
+/** The CTA in each of the site's states (docs/site-states.md): the open and off pills both carry the round arrow, but act
+ *  7's wave and sub line belong to `open` alone. */
 export type Cta =
-  /** before opening `chip` holds the countdown; after the close there is none */
-  | { open: false; label: string; chip?: string; href: string }
-  | { open: true; label: string; href: string }
+  /** before opening `chip` holds the countdown */
+  | { state: 'before'; label: string; chip: string; href: string }
+  | { state: 'open'; label: string; href: string }
+  | { state: 'off'; label: string; href: string }
 
 export function cta(now: Date, opensAt = OPENS_AT, applyUrl = APPLY_URL, closesAt = CLOSES_AT, forced = FORCE_OFF): Cta {
   const state = siteState(+now, forced, +opensAt, +closesAt)
   // the off-season sends every CTA back to @vic.enp, where the next season is announced
-  if (state === 'off') return { open: false, label: 'Applications closed', href: INSTAGRAM }
+  if (state === 'off') return { state, label: 'Follow @vic.enp', href: INSTAGRAM }
   if (state === 'before') {
     const day = opensAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Africa/Algiers' })
-    return { open: false, label: `Applications open ${day.replace(' ', '\u00a0')}`, chip: countdown(+opensAt - +now), href: INSTAGRAM }
+    return { state, label: `Applications open ${day.replace(' ', '\u00a0')}`, chip: countdown(+opensAt - +now), href: INSTAGRAM }
   }
   // shortcut: without VITE_APPLY_URL the open CTA falls back to Instagram; open question 15 blocks launch until it is set.
-  return { open: true, label: 'Apply', href: applyUrl || INSTAGRAM }
+  return { state, label: 'Apply', href: applyUrl || INSTAGRAM }
 }
 
 /** `?now=2026-10-26T17:00:00Z` overrides the clock, so both states can be checked on any build (UTC: a `+` in a query

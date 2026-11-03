@@ -8,7 +8,7 @@ export const OPENS_AT = new Date('2026-10-26T18:00:00+01:00')
 
 /**
  * Applications close on 4 Nov at 23:59 (decision 147, moved by decision 155) and the off-season starts by itself: the CTA
- * turns to "Applications closed", /apply shows the closed screen, /api/code refuses new tickets, and /api/submit takes
+ * turns to "Follow @vic.enp", /apply shows the closed screen, /api/code refuses new tickets, and /api/submit takes
  * letters for one more hour (a ticket checked just before the close can still be used).
  */
 export const CLOSES_AT = new Date('2026-11-04T23:59:00+01:00')

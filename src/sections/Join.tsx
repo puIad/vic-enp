@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode, type RefObject } from 'react'
+import type { SiteState } from '../calendar'
 import { INSTAGRAM } from '../config'
-import { FAQ, RUNGS, STEPS } from '../content/join'
+import { faq, RUNGS, STEPS } from '../content/join'
 import { closing, useNow } from '../lib/opening'
 import { reached, walkAt } from '../lib/walk'
 import { world } from '../world/store'
@@ -80,23 +81,55 @@ const UNITS = [
   ['s', 'second', 'seconds'],
 ] as const
 
+/** `shown` with `held` under it in one grid cell, so the block is as tall as the taller of the two whichever shows: the
+ *  open phase and the off-season hold each other's height, and the page doesn't move at the flip (docs/site-states.md,
+ *  The page). The held one is neither seen nor read. */
+function Hold({ shown, held, className = '' }: { shown: ReactNode; held: ReactNode; className?: string }) {
+  return (
+    <div className={`grid ${className}`}>
+      <div className="[grid-area:1/1]">{shown}</div>
+      <div aria-hidden="true" className="invisible [grid-area:1/1]">
+        {held}
+      </div>
+    </div>
+  )
+}
+
+const OPEN_LEAD = 'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.'
+const OFF_LEAD = 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.'
+
+/** The act's lead: the dates while recruiting, the off-season's words from the close, each holding the other's lines.
+ *  Before opening it stands alone, as it always has. */
+function Lead({ state }: { state: SiteState }) {
+  const lead = (words: string) => <p className="t-lead text-ink">{words}</p>
+  if (state === 'before') return <div className="mt-5">{lead(OPEN_LEAD)}</div>
+  const off = state === 'off'
+  return <Hold className="mt-5" shown={lead(off ? OFF_LEAD : OPEN_LEAD)} held={lead(off ? OPEN_LEAD : OFF_LEAD)} />
+}
+
+const CLOSED_LINE = (
+  <p className="t-lead font-bold text-night">
+    Applications are closed. The next recruitment is announced on <a href={INSTAGRAM}>@vic.enp</a>.
+  </p>
+)
+
 /** The countdown to CLOSES_AT under the act's lead, ticking each second; from the close, the line that applications are
- *  closed; before opening, nothing. Screen readers get one sentence to the minute, not a number changing each second. */
+ *  closed, holding the countdown's height; before opening, nothing. */
 function Closing() {
   const c = closing(useNow(1000))
   if (c.state === 'soon') return null
-  if (c.state === 'closed')
-    return (
-      <p className="t-lead mt-8 font-bold text-night md:mt-10">
-        Applications are closed. Follow <a href={INSTAGRAM}>@vic.enp</a> for the club’s news.
-      </p>
-    )
+  if (c.state === 'closed') return <Hold className="mt-8 md:mt-10" shown={CLOSED_LINE} held={<Countdown d={0} h={0} m={0} s={0} />} />
+  return <Hold className="mt-8 md:mt-10" shown={<Countdown {...c} />} held={CLOSED_LINE} />
+}
+
+/** Screen readers get one sentence to the minute, not a number changing each second. */
+function Countdown(c: { d: number; h: number; m: number; s: number }) {
   const said = (['d', 'h', 'm'] as const).filter((k) => c[k] || k === 'm').map((k) => {
     const [, one, many] = UNITS.find((u) => u[0] === k)!
     return `${c[k]} ${c[k] === 1 ? one : many}`
   })
   return (
-    <div className="mt-8 md:mt-10">
+    <div>
       <p className="flex items-center gap-2.5 text-[13px] font-bold text-ink">
         <span aria-hidden="true" className="closing-dot" />
         Applications close in<span className="sr-only"> {said.join(', ')}</span>
@@ -177,7 +210,8 @@ function Grow({ staged }: { staged: boolean }) {
   )
 }
 
-function Faq() {
+function Faq({ state }: { state: SiteState }) {
+  const FAQ = faq(state)
   const [open, setOpen] = useState<Set<number>>(() => new Set([0]))
   const base = useId()
   const toggle = (i: number) =>
@@ -236,7 +270,8 @@ function Faq() {
   )
 }
 
-export function Join({ staged }: { staged: boolean }) {
+/** `state` is the CTA's, repainted every 15 s: the lead and the FAQ follow it; the countdown keeps its own 1 s clock. */
+export function Join({ staged, state }: { staged: boolean; state: SiteState }) {
   const ref = useRef<HTMLDivElement>(null)
   useReveal(ref, staged)
   const rv = staged || undefined
@@ -248,7 +283,9 @@ export function Join({ staged }: { staged: boolean }) {
           <h2 id="h-join" data-rv={rv} className="t-act text-night">
             How to join.
           </h2>
-          <p data-rv={rv} className="t-lead mt-5 text-ink">Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.</p>
+          <div data-rv={rv}>
+            <Lead state={state} />
+          </div>
           {/* a wrapper always on the page, so the reveal finds it whatever the countdown shows */}
           <div data-rv={rv}>
             <Closing />
@@ -275,7 +312,7 @@ export function Join({ staged }: { staged: boolean }) {
               </p>
             </div>
             <div data-rv={rv} className="lg:col-span-8">
-              <Faq />
+              <Faq state={state} />
             </div>
           </div>
         </section>

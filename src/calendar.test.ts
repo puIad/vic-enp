@@ -38,9 +38,9 @@ describe('forcedOff', () => {
 describe('the page at each boundary', () => {
   it.each(table)('cta() at %s', (_, now, forced, state) => {
     const c = cta(new Date(now), OPENS_AT, '/apply', CLOSES_AT, forced)
-    expect(c.open).toBe(state === 'open')
+    expect(c.state).toBe(state)
     if (state === 'before') expect(c).toMatchObject({ label: expect.stringMatching(/^Applications open /), chip: expect.any(String) })
-    if (state === 'off') expect(c).toEqual({ open: false, label: 'Applications closed', href: 'https://www.instagram.com/vic.enp/' })
+    if (state === 'off') expect(c).toEqual({ state: 'off', label: 'Follow @vic.enp', href: 'https://www.instagram.com/vic.enp/' })
   })
 
   it.each(table)('closing() at %s', (_, now, forced, state) => {

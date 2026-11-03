@@ -150,8 +150,8 @@ The share tags, the noscript text and `og.png` carry no dates, so they need noth
   is your call next year.
 - [ ] **IT:** on a branch, set `OPENS_AT` and `CLOSES_AT` in `src/calendar.ts`. The pill, the countdown, the closed line and the API
   read these.
-- [ ] **IT:** retype the same dates by hand in the open phase's words: `src/sections/Join.tsx` (the lead) and `src/content/join.ts`
-  (the FAQ answer). `src/config.ts` lists them.
+- [ ] **IT:** retype the same dates by hand in the open phase's words, both in `src/content/join.ts`: the lead (`LEAD.open`)
+  and the FAQ answer. `src/config.ts` lists them.
 - [ ] **IT:** run the tests. The ones that read the dates take them from the constants or as arguments, so a failure means something
   real.
 - [ ] **IT:** check the Preview with `?now=<date>` in UTC, one instant in each state, on phone and desktop. A `+` in a query string

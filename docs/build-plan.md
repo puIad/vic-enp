@@ -158,8 +158,6 @@ are closed, and the domain is live (decision 157).
 Left on 2026-11-01:
 
 - Open question 18 (Vercel Web Analytics).
-- The share tags and canonical in `index.html` still name `vic-enp.vercel.app`, which now redirects to
-  `www.vic-enp.com`. The off-season's build changes them (decision 166).
 - [#195](https://github.com/puIad/vic-recruitment/issues/195)'s part here (`api/join-sync.ts`, `api/join-clicks.ts`,
   the join link in How to join) is already in production: Vercel deploys `main`, and on 2026-11-01 production
   answers `/api/join-sync` (405 to a GET) and `/api/join-clicks` (401), where an unknown route is a 404. It waits on

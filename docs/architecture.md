@@ -171,7 +171,7 @@ link is an env var change plus a Redeploy.
 
 - A new Vercel project, `vic-enp`, on the owner's account, connected to `puIad/vic-enp`. Framework preset Vite,
   output `dist`. Preview deployment per PR, production from `main`.
-- Domain: a VIC domain if one is settled ([open-questions.md](open-questions.md)), `vic-enp.vercel.app` until then.
+- Domain: `www.vic-enp.com`, where the share tags and `canonical` point (decision 166). The apex redirects to it.
 - `vercel.json` headers: a strict CSP (`default-src 'self'`; images, fonts and scripts from self only; no inline
   scripts; `frame-ancestors 'none'`), `Referrer-Policy: strict-origin-when-cross-origin`, long immutable caching
   for hashed assets and `public/photos/`.

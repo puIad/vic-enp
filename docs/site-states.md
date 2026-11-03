@@ -69,9 +69,9 @@ place" and the page title. The `before` and `open` phases keep today's words, ap
 | How to join, closed line | Applications are closed. The next recruitment is announced on @vic.enp. (the handle links to Instagram) |
 | FAQ answer to "When does recruitment open, and how fast is the process?" | Applications are closed. The next recruitment is announced on @vic.enp. (the handle links to Instagram) |
 | Skip link | Skip to the end |
-| `/apply` closed line, from `CLOSES_AT` (`CLOSED`, the API's closed answer to a page still showing the ticket or the form) | Applications closed on 4 November 2026 at 23:59. Follow @vic.enp on Instagram for the club's news. The date and year come from `CLOSES_AT`, in Algiers time, and "@vic.enp on Instagram" stays the link. |
+| `/apply` closed line, from `CLOSES_AT` (`CLOSED`, the API's closed answer to a page still showing the ticket or the form) | Applications closed on 5 November 2026 at 23:59. Follow @vic.enp on Instagram for the club's news. The date and year come from `CLOSES_AT`, in Algiers time, and "@vic.enp on Instagram" stays the link. |
 | `/apply` closed line, before `CLOSES_AT` (a forced off-season) | Applications are closed. Follow @vic.enp on Instagram for the club's news. |
-| `/apply` closed screen (decision 171) | Eyebrow "Registrations", heading "You just missed the letter", tab title "Registrations · Vision & Innovation Club". The letter, flat with no envelope: "Dear future VICer," / "You just missed this one: applications closed on 4 November 2026 at 23:59." / "The next recruitment is announced on @vic.enp. Follow us there so the next letter finds you in time." / "The VIC team" and its seal. The date and time come from `CLOSES_AT` in Algiers time; before `CLOSES_AT` (a forced off-season) the first line is "You just missed this one: applications are closed." "@vic.enp" links to Instagram. The chips, the map and the ticket ("Step one") are removed. |
+| `/apply` closed screen (decision 171) | Eyebrow "Registrations", heading "You just missed the letter", tab title "Registrations · Vision & Innovation Club". The letter, flat with no envelope: "Dear future VICer," / "You just missed this one: applications closed on 5 November 2026 at 23:59." / "The next recruitment is announced on @vic.enp. Follow us there so the next letter finds you in time." / "The VIC team" and its seal. The date and time come from `CLOSES_AT` in Algiers time; before `CLOSES_AT` (a forced off-season) the first line is "You just missed this one: applications are closed." "@vic.enp" links to Instagram. The chips, the map and the ticket ("Step one") are removed. |
 
 Which `/apply` line shows goes by the clock, never by the force, so a tab opened before a Redeploy gets the right one
 from the API's closed answer. The same goes for the closed letter's date (`closedLetter` in `src/apply/letter.ts`,
@@ -160,10 +160,10 @@ Every merge deploys to the live site, so the owner approves each one. Each PR is
 |---|---|
 | 3 Nov, afternoon | The build tickets' PRs reviewed and merged |
 | 3 Nov, evening | The rehearsal, with the owner |
-| 4 Nov, 18:00 | Merge freeze: nothing from this work merges until the ticket hour ends |
-| 4 Nov, 23:59 | The off-season starts by itself |
-| 5 Nov, 00:59 | The ticket hour ends and the freeze lifts |
-| 5 Nov, after 00:59 | The check on production |
+| 5 Nov, 18:00 | Merge freeze: nothing from this work merges until the ticket hour ends |
+| 5 Nov, 23:59 | The off-season starts by itself |
+| 6 Nov, 00:59 | The ticket hour ends and the freeze lifts |
+| 6 Nov, after 00:59 | The check on production |
 
 If the build misses the freeze, visitors get today's closed state until it ships: the pill reads "Applications closed"
 and `/apply` closes.

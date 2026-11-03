@@ -232,7 +232,7 @@ describe("the off-season's words (#115)", () => {
     return cta(NOW[state], OPENS_AT, '/apply', CLOSES_AT, false)
   }
   const OPEN_LEAD =
-    'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.'
+    'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 5 November at 23:59.'
   const OFF_LEAD = 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.'
   const CLOSED = 'Applications are closed. The next recruitment is announced on @vic.enp.'
   const SUB = 'Every ENP student can apply, any year, any specialty.'
@@ -299,7 +299,7 @@ describe("the off-season's words (#115)", () => {
     expect(off).toContain(`<p class="max-w-[62ch] text-base text-ink">Applications are closed. The next recruitment is announced on <a href="${INSTA}">@vic.enp</a>.</p>`)
     for (const state of ['before', 'open'] as const)
       expect(answer(renderToStaticMarkup(<Join staged={false} state={state} />))).toBe(
-        'Applications open on 26 October 2026 at 18:00 and close on 4 November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview.',
+        'Applications open on 26 October 2026 at 18:00 and close on 5 November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview.',
       )
   })
 

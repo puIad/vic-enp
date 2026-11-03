@@ -40,7 +40,7 @@ describe('sendAnswer', () => {
   })
 
   it('says applications are closed on 403 "closed"', () => {
-    expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 4 November/) })
+    expect(sendAnswer(403, { status: 'closed' })).toEqual({ kind: 'closed', text: expect.stringMatching(/closed on 5 November/) })
   })
 
   it('says an address is already registered on 409', () => {

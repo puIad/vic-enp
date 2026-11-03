@@ -126,7 +126,7 @@ organized by the whole club."
 Act titles, the three leads, the four step titles and the rung titles are **new**.
 
 - **How to join.** Lead: "Every ENP student can apply, in any year and any specialty. Applications open 26
-  October 2026 at 18:00 and close 4 November at 23:59." The closing date is the owner's (decisions 147, 155).
+  October 2026 at 18:00 and close 5 November at 23:59." The closing date is the owner's (decisions 147, 155).
   1. **Fill in the form.** Pick your first and second choice among the four main departments: HR, FLER, IT and
      COMM.
   2. **Check your inbox.** You get a confirmation email with your registration code. (Only if

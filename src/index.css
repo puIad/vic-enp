@@ -1256,7 +1256,8 @@
     box-shadow: 0 0 0 1.5px var(--color-night);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .closing-dot {
+    /* not while held unseen under the closed line all off-season (Join.tsx, Hold) */
+    .closing-dot:not(.invisible *) {
       animation: closing-breathe 2s ease-in-out infinite;
     }
   }

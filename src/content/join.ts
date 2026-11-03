@@ -5,6 +5,15 @@ import { INSTAGRAM } from '../config'
 
 const RECRUITMENT_Q = 'When does recruitment open, and how fast is the process?'
 
+/** The act's lead while recruiting, and in the off-season (docs/site-states.md, The words). */
+export const LEAD = {
+  open: 'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.',
+  off: 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.',
+}
+
+/** The off-season's closed line and FAQ answer, up to the handle, which links to Instagram after it. */
+export const CLOSED = 'Applications are closed. The next recruitment is announced on'
+
 export const STEPS = [
   { title: 'Fill in the form.', text: 'Pick your first and second choice among the four main departments: HR, FLER, IT and COMM.' },
   { title: 'Check your inbox.', text: 'You get a confirmation email with your registration code.' },
@@ -67,6 +76,6 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
 export const faq = (state: SiteState) =>
   state === 'off'
     ? FAQ.map((f) =>
-        f.q === RECRUITMENT_Q ? { q: f.q, a: 'Applications are closed. The next recruitment is announced on', link: { href: INSTAGRAM, label: '@vic.enp' } } : f,
+        f.q === RECRUITMENT_Q ? { q: f.q, a: CLOSED, link: { href: INSTAGRAM, label: '@vic.enp' } } : f,
       )
     : FAQ

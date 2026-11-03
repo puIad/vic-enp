@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode, type RefObject } from 'react'
 import type { SiteState } from '../calendar'
 import { INSTAGRAM } from '../config'
-import { faq, RUNGS, STEPS } from '../content/join'
+import { CLOSED, faq, LEAD, RUNGS, STEPS } from '../content/join'
 import { closing, useNow } from '../lib/opening'
 import { reached, walkAt } from '../lib/walk'
 import { world } from '../world/store'
@@ -95,25 +95,20 @@ function Hold({ shown, held, className = '' }: { shown: ReactNode; held: ReactNo
   )
 }
 
-const OPEN_LEAD = 'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.'
-const OFF_LEAD = 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.'
-
-/** The act's lead: the dates while recruiting, the off-season's words from the close, each holding the other's lines.
- *  Before opening it stands alone, as it always has. */
-function Lead({ state }: { state: SiteState }) {
+/** The act's lead from the opening: the dates while recruiting, the off-season's words from the close of applications,
+ *  each holding the other's lines. Before opening the lead stands alone, as it always has (Join). */
+function Lead({ off }: { off: boolean }) {
   const lead = (words: string) => <p className="t-lead text-ink">{words}</p>
-  if (state === 'before') return <div className="mt-5">{lead(OPEN_LEAD)}</div>
-  const off = state === 'off'
-  return <Hold className="mt-5" shown={lead(off ? OFF_LEAD : OPEN_LEAD)} held={lead(off ? OPEN_LEAD : OFF_LEAD)} />
+  return <Hold className="mt-5" shown={lead(off ? LEAD.off : LEAD.open)} held={lead(off ? LEAD.open : LEAD.off)} />
 }
 
 const CLOSED_LINE = (
   <p className="t-lead font-bold text-night">
-    Applications are closed. The next recruitment is announced on <a href={INSTAGRAM}>@vic.enp</a>.
+    {CLOSED} <a href={INSTAGRAM}>@vic.enp</a>.
   </p>
 )
 
-/** The countdown to CLOSES_AT under the act's lead, ticking each second; from the close, the line that applications are
+/** The countdown to CLOSES_AT under the act's lead, ticking each second; from the close of applications, the line that applications are
  *  closed, holding the countdown's height; before opening, nothing. */
 function Closing() {
   const c = closing(useNow(1000))
@@ -211,7 +206,7 @@ function Grow({ staged }: { staged: boolean }) {
 }
 
 function Faq({ state }: { state: SiteState }) {
-  const FAQ = faq(state)
+  const items = faq(state)
   const [open, setOpen] = useState<Set<number>>(() => new Set([0]))
   const base = useId()
   const toggle = (i: number) =>
@@ -223,7 +218,7 @@ function Faq({ state }: { state: SiteState }) {
     })
   // ArrowUp, ArrowDown, Home and End move between questions (#16)
   const onKey = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
-    const last = FAQ.length - 1
+    const last = items.length - 1
     const to = { ArrowDown: i === last ? 0 : i + 1, ArrowUp: i === 0 ? last : i - 1, Home: 0, End: last }[e.key]
     if (to === undefined) return
     e.preventDefault()
@@ -231,7 +226,7 @@ function Faq({ state }: { state: SiteState }) {
   }
   return (
     <ul className="border-b border-(--line-dark)">
-      {FAQ.map((f, i) => {
+      {items.map((f, i) => {
         const isOpen = open.has(i)
         return (
           <li key={f.q} className="border-t border-(--line-dark)">
@@ -283,9 +278,15 @@ export function Join({ staged, state }: { staged: boolean; state: SiteState }) {
           <h2 id="h-join" data-rv={rv} className="t-act text-night">
             How to join.
           </h2>
-          <div data-rv={rv}>
-            <Lead state={state} />
-          </div>
+          {state === 'before' ? (
+            <p data-rv={rv} className="t-lead mt-5 text-ink">
+              {LEAD.open}
+            </p>
+          ) : (
+            <div data-rv={rv}>
+              <Lead off={state === 'off'} />
+            </div>
+          )}
           {/* a wrapper always on the page, so the reveal finds it whatever the countdown shows */}
           <div data-rv={rv}>
             <Closing />

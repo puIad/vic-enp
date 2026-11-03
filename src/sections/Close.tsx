@@ -120,7 +120,7 @@ export function Close({ cta, staged }: { cta: Cta; staged: boolean }) {
           ref={pill}
           href={cta.href}
           onClick={apply}
-          className={`pill close-pill relative min-h-16 gap-3.5 py-2.5 pr-3 pl-3 text-[17px] whitespace-normal md:text-[19px] ${cta.state === 'before' ? 'max-md:max-w-[320px]' : ''}`}
+          className={`pill close-pill relative min-h-16 gap-3.5 px-3 py-2.5 text-[17px] whitespace-normal md:text-[19px] ${cta.state === 'before' ? 'max-md:max-w-[320px]' : ''}`}
         >
           {/* the slot where your point lands: an empty 40 px place with no ring of its own (the 600 ring it) */}
           <span ref={slot} aria-hidden="true" className="close-slot relative grid size-10 flex-none place-items-center">

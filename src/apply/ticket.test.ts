@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { CLOSES_AT } from '../calendar'
+import { closedLine } from './letter'
 import { codeAnswer, localPart, verifyAnswer } from './ticket'
 
 describe('localPart: what the candidate typed before @g.enp.edu.dz', () => {
@@ -43,8 +45,10 @@ describe('codeAnswer: what /api/code said, in words', () => {
     expect(codeAnswer(429, { retryIn: 40 })).toEqual({ sent: false, text: expect.stringContaining('1 minute.') })
   })
 
-  it('says applications are closed when the API says so', () => {
-    expect(codeAnswer(403, { status: 'closed' })).toEqual({ sent: false, text: expect.stringMatching(/closed on 5 November/) })
+  it('says applications are closed when the API says so, the line going by the clock', () => {
+    expect(codeAnswer(403, { status: 'closed' }, +CLOSES_AT)).toEqual({ sent: false, text: closedLine(+CLOSES_AT) })
+    // before the close only a forced off-season says closed: no date
+    expect(codeAnswer(403, { status: 'closed' }, +CLOSES_AT - 1)).toEqual({ sent: false, text: closedLine(+CLOSES_AT - 1) })
   })
 
   it('says the ticket did not go out on any other answer, without a link anywhere', () => {

@@ -5,11 +5,11 @@
 // ticket.ts and letter.ts; this file only moves the page.
 
 import { CLOSES_AT, clockOffset, countdown, siteState } from '../calendar'
-import { FORCE_OFF, INSTAGRAM } from '../config'
+import { FORCE_OFF } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
-import { openLetter, washRoom } from './form'
-import { HANDLE, closedLetter } from './letter'
+import { linked, openLetter, washRoom } from './form'
+import { FOLLOW, HANDLE, closedLetter } from './letter'
 import { startMap } from './map'
 import { startScroll } from './scroll'
 import { clearSent, loadSent, saveSent } from './sent'
@@ -56,7 +56,10 @@ async function post(path: string, body: object): Promise<{ status: number; body:
 
 function say(id: 'tk-ask-err' | 'tk-check-err', text: string) {
   const el = $(id)
-  el.textContent = text
+  // one span: the line is a flex item beside the "!" (apply.css .ap-err), the closed line's link inside it
+  const line = document.createElement('span')
+  line.append(...linked(text, FOLLOW))
+  el.replaceChildren(line)
   el.hidden = !text
   const [input, help] = id === 'tk-ask-err' ? [local, 'tk-help tk-domain'] : [code, '']
   input.setAttribute('aria-invalid', String(!!text))
@@ -86,7 +89,7 @@ function startCountdown(seconds: number) {
 /** Ask the API for a ticket; true when it went out. The answer's line shows under the form that asked. */
 async function requestTicket(l: string, where: 'tk-ask-err' | 'tk-check-err'): Promise<boolean> {
   const { status, body } = await post('/api/code', { local: l, website: website.value })
-  const a = codeAnswer(status, body)
+  const a = codeAnswer(status, body, Date.now() + clockOffset(location.search))
   if (!a.sent) {
     say(where, a.text)
     return false
@@ -228,9 +231,7 @@ function showClosed() {
   letter.querySelectorAll(':scope > p:not(.ap-greet, .ap-sign)').forEach((p) => p.remove())
   const ps = words.body.map((line) => {
     const p = document.createElement('p')
-    const [before, after] = line.split(HANDLE)
-    if (after === undefined) p.textContent = line
-    else p.append(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: HANDLE }), after)
+    p.append(...linked(line, HANDLE))
     return p
   })
   letter.querySelector('.ap-greet')!.after(...ps)
@@ -268,7 +269,7 @@ if (saved?.proven && savedLocal && 'local' in savedLocal) {
 }
 
 // the countdown to the close among the chips, while applications are open; it says so if the close comes while the page
-// is open (the API then turns down a new ticket with CLOSED)
+// is open (the API then turns down a new ticket with closedLine)
 const closesIn = $('closes-in')
 if (state() !== 'off') {
   const text = closesIn.querySelector('span')!

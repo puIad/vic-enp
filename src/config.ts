@@ -5,8 +5,8 @@ import { forcedOff } from './calendar'
 /**
  * When applications open and close, Algiers time: 26 Oct, 18:00 (decision 130) to 5 Nov, 23:59 (decisions 147, 155), in
  * calendar.ts so the API reads the same instants. The site's state (siteState) follows them; these copies are typed by hand and need
- * the same edit: src/content/join.ts (the act lead and the FAQ answer) and src/apply/letter.ts
- * (CLOSED) for the close; index.html (meta, noscript) and public/og.png (re-render it) for the opening.
+ * the same edit: src/content/join.ts (the act lead and the FAQ answer) for the close; index.html (meta, noscript) and
+ * public/og.png (re-render it) for the opening. /apply's closed line and letter format their date from CLOSES_AT.
  */
 export { CLOSES_AT, OPENS_AT } from './calendar'
 

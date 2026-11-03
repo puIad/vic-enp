@@ -2,6 +2,7 @@
 // department descriptions, what /api/submit's answer means to the candidate, and the Received screen. No DOM here;
 // form.ts puts these on the page. No line ever points at the Google Form, and Received never says "accepted".
 
+import { CLOSES_AT } from '../calendar'
 import type { Dept } from './questions'
 
 /**
@@ -55,8 +56,28 @@ export type SendAnswer =
   | { kind: 'retry'; text: string }
   | { kind: 'closed'; text: string }
 
-/** The line /apply shows with a "closed" answer from the API, to a page that still holds the ticket or the form. */
-export const CLOSED = 'Applications for 2026 closed on 5 November at 23:59. Follow @vic.enp on Instagram for the club’s news.'
+/** The words in the closed line that link to Instagram. */
+export const FOLLOW = '@vic.enp on Instagram'
+
+/** The close's day ("5 November 2026", the day and month kept on one line) and time, in Algiers time. */
+function closeDay(closesAt: Date): { day: string; time: string } {
+  const tz = { timeZone: 'Africa/Algiers' } as const
+  const day = closesAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', ...tz })
+  const time = closesAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...tz })
+  return { day: day.replace(' ', '\u00a0'), time }
+}
+
+/**
+ * The line /apply shows with a "closed" answer from the API, to a page that still holds the ticket or the form. It goes
+ * by the clock `now` (ms), never the force: from `closesAt` it names the close, before it (a forced off-season) it names
+ * none. It holds FOLLOW once, which the page turns into the link.
+ */
+export function closedLine(now: number, closesAt = CLOSES_AT): string {
+  const follow = `Follow ${FOLLOW} for the club’s news.`
+  if (now < +closesAt) return `Applications are closed. ${follow}`
+  const { day, time } = closeDay(closesAt)
+  return `Applications closed on ${day} at ${time}. ${follow}`
+}
 
 /** The handle in the closed letter that links to Instagram. */
 export const HANDLE = '@vic.enp'
@@ -67,26 +88,22 @@ export const HANDLE = '@vic.enp'
  * clock) drops them. The body's last line holds HANDLE once, which the page turns into the link.
  */
 export function closedLetter(dated: boolean, closesAt: Date): { eyebrow: string; title: string; body: string[] } {
-  const tz = { timeZone: 'Africa/Algiers' } as const
-  const day = closesAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', ...tz })
-  const time = closesAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...tz })
-  // the day and the month stay on one line
-  const nb = (t: string) => t.replace(' ', '\u00a0')
+  const { day, time } = closeDay(closesAt)
   return {
     eyebrow: 'Registrations',
     title: 'You just missed the letter',
     body: [
-      dated ? `You just missed this one: applications closed on ${nb(day)} at ${time}.` : 'You just missed this one: applications are closed.',
+      dated ? `You just missed this one: applications closed on ${day} at ${time}.` : 'You just missed this one: applications are closed.',
       `The next recruitment is announced on ${HANDLE}. Follow us there so the next letter finds you in time.`,
     ],
   }
 }
 
-/** What POST /api/submit's answer means to the candidate. */
-export function sendAnswer(status: number, body: Json): SendAnswer {
+/** What POST /api/submit's answer means to the candidate, at the clock `now` (ms; it picks the closed line). */
+export function sendAnswer(status: number, body: Json, now = Date.now()): SendAnswer {
   if (status === 200 && body?.status === 'received') return { kind: 'received' }
   if (status === 401) return { kind: 'ticket', text: 'Your ticket ran out. Ask for a new one to send your letter; your answers are kept.' }
-  if (status === 403 && body?.status === 'closed') return { kind: 'closed', text: CLOSED }
+  if (status === 403 && body?.status === 'closed') return { kind: 'closed', text: closedLine(now) }
   if (status === 409)
     return { kind: 'registered', text: 'This address already has a registration. We have it, so there is nothing more to do.' }
   if (status === 422 && Array.isArray(body?.fields)) {

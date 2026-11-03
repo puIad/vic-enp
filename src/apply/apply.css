@@ -746,6 +746,11 @@ ul {
   color: #6b1b07;
   font: 700 14px/1.35 var(--sans);
 }
+.ap-err a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 .ap-err::before {
   content: '!';
   flex: none;

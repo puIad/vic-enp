@@ -283,6 +283,15 @@ describe("the off-season's words (#115)", () => {
     expect(readHtml(renderToStaticMarkup(<Join staged={false} state="before" />))).toContain(`How to join. ${OPEN_LEAD} 01 Fill in the form.`)
   })
 
+  it('keeps the lead in the same revealed block in every state, so a flip never mounts one the reveal has not seen', () => {
+    const block = (state: SiteState) => {
+      at(state)
+      const html = renderToStaticMarkup(<Join staged state={state} />)
+      return html.slice(html.indexOf('</h2>') + 5).match(/^<(\w+) data-rv="true"/)?.[1]
+    }
+    expect(['before', 'open', 'off'].map((s) => block(s as SiteState))).toEqual(['div', 'div', 'div'])
+  })
+
   it('the FAQ answers with the off-season words and the handle as its link, and keeps the open answer', () => {
     at('off')
     const off = renderToStaticMarkup(<Join staged={false} state="off" />)

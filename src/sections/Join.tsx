@@ -278,15 +278,8 @@ export function Join({ staged, state }: { staged: boolean; state: SiteState }) {
           <h2 id="h-join" data-rv={rv} className="t-act text-night">
             How to join.
           </h2>
-          {state === 'before' ? (
-            <p data-rv={rv} className="t-lead mt-5 text-ink">
-              {LEAD.open}
-            </p>
-          ) : (
-            <div data-rv={rv}>
-              <Lead off={state === 'off'} />
-            </div>
-          )}
+          {/* one wrapper in every state, as the countdown's below: a block swapped in at OPENS_AT would never be revealed */}
+          <div data-rv={rv}>{state === 'before' ? <p className="t-lead mt-5 text-ink">{LEAD.open}</p> : <Lead off={state === 'off'} />}</div>
           {/* a wrapper always on the page, so the reveal finds it whatever the countdown shows */}
           <div data-rv={rv}>
             <Closing />

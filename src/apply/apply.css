@@ -634,10 +634,11 @@ ul {
   color: #dbe3e9;
   margin-bottom: 20px;
 }
-/* the closed screen's link to @vic.enp */
-.ap-lead a {
-  color: var(--accent);
+/* the closed letter's link to @vic.enp (main.ts, showClosed), in the letter's ink */
+.ap-letter a {
+  color: var(--ink-brown);
   font-weight: 700;
+  text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 .ap-field {
@@ -1565,6 +1566,7 @@ ul {
   /* after the close the map is gone (main.ts) and the letter takes the middle */
   .ap-app:has(> #map[hidden]) #letter-app {
     grid-column: 1 / -1;
+    grid-row: 2;
     width: min(100%, 660px);
     margin: 0 auto;
   }

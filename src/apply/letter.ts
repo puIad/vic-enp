@@ -55,11 +55,32 @@ export type SendAnswer =
   | { kind: 'retry'; text: string }
   | { kind: 'closed'; text: string }
 
-/** The words in CLOSED that /apply's closed screen turns into the Instagram link. */
-export const FOLLOW = '@vic.enp on Instagram'
+/** The line /apply shows with a "closed" answer from the API, to a page that still holds the ticket or the form. */
+export const CLOSED = 'Applications for 2026 closed on 4 November at 23:59. Follow @vic.enp on Instagram for the club’s news.'
 
-/** The line /apply shows from CLOSES_AT on, and with a "closed" answer from the API. */
-export const CLOSED = `Applications for 2026 closed on 4 November at 23:59. Follow ${FOLLOW} for the club’s news.`
+/** The handle in the closed letter that links to Instagram. */
+export const HANDLE = '@vic.enp'
+
+/**
+ * /apply's closed screen (owner, 2026-11-03, decision 171): the letter the candidate just missed, flat, with no envelope.
+ * The date and time come from `closesAt` in Algiers time; `dated` false (a forced off-season before the close, by the
+ * clock) drops them. The body's last line holds HANDLE once, which the page turns into the link.
+ */
+export function closedLetter(dated: boolean, closesAt: Date): { eyebrow: string; title: string; body: string[] } {
+  const tz = { timeZone: 'Africa/Algiers' } as const
+  const day = closesAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', ...tz })
+  const time = closesAt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', ...tz })
+  // the day and the month stay on one line
+  const nb = (t: string) => t.replace(' ', '\u00a0')
+  return {
+    eyebrow: 'Registrations',
+    title: 'You just missed the letter',
+    body: [
+      dated ? `You just missed this one: applications closed on ${nb(day)} at ${time}.` : 'You just missed this one: applications are closed.',
+      `The next recruitment is announced on ${HANDLE}. Follow us there so the next letter finds you in time.`,
+    ],
+  }
+}
 
 /** What POST /api/submit's answer means to the candidate. */
 export function sendAnswer(status: number, body: Json): SendAnswer {

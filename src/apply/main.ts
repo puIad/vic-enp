@@ -1,7 +1,7 @@
 // /apply's script: the ticket (Platform 9¾). Ask for a code with the local part, type the six digits, and on a checked
 // ticket the address locks and the 8 stops unlock (form.ts fills them). A draft on this phone (draft.ts) opens the letter
 // straight away inside the ticket's hour, and after it asks only for the ticket; a ticket on its way (sent.ts) opens the
-// code box again after a reload. In the off-season (siteState) the page shows only that applications are closed. The words come from
+// code box again after a reload. In the off-season (siteState) the page shows only the letter the candidate just missed. The words come from
 // ticket.ts and letter.ts; this file only moves the page.
 
 import { CLOSES_AT, clockOffset, countdown, siteState } from '../calendar'
@@ -9,7 +9,7 @@ import { FORCE_OFF, INSTAGRAM } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
 import { openLetter, washRoom } from './form'
-import { CLOSED, FOLLOW } from './letter'
+import { HANDLE, closedLetter } from './letter'
 import { startMap } from './map'
 import { startScroll } from './scroll'
 import { clearSent, loadSent, saveSent } from './sent'
@@ -214,16 +214,27 @@ $('tk-change').addEventListener('click', () => {
   showAsk()
 })
 
-/** In the off-season: no ticket form and no letter, only the line that applications are closed. */
+/**
+ * In the off-season: the letter the candidate just missed (closedLetter), flat with no envelope, and nothing else: no
+ * chips, no ticket, no map. Its date goes by the clock, so a forced off-season before the close names none.
+ */
 function showClosed() {
-  ask.hidden = true
-  check.hidden = true
-  $('tk-unlock').hidden = true
-  // the desktop map too: no stop will open
-  $('map').hidden = true
-  // CLOSED's words, with @vic.enp as the link
-  const [before, after] = CLOSED.split(FOLLOW)
-  lead.replaceChildren(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: FOLLOW }), after)
+  const words = closedLetter(Date.now() + clockOffset(location.search) >= +CLOSES_AT, CLOSES_AT)
+  document.title = `${words.eyebrow} · Vision & Innovation Club`
+  document.querySelector('.ap-open-stage .ap-eyebrow')!.textContent = words.eyebrow
+  document.querySelector('.ap-open-title')!.textContent = words.title
+  // the letter keeps its greeting, signature and seal; its body becomes the closed one, with @vic.enp as the link
+  const letter = document.querySelector('.ap-letter')!
+  letter.querySelectorAll(':scope > p:not(.ap-greet, .ap-sign)').forEach((p) => p.remove())
+  const ps = words.body.map((line) => {
+    const p = document.createElement('p')
+    const [before, after] = line.split(HANDLE)
+    if (after === undefined) p.textContent = line
+    else p.append(before, Object.assign(document.createElement('a'), { href: INSTAGRAM, textContent: HANDLE }), after)
+    return p
+  })
+  letter.querySelector('.ap-greet')!.after(...ps)
+  for (const el of [document.querySelector<HTMLElement>('.ap-meta')!, $('letter'), $('map')]) el.hidden = true
 }
 
 // a draft on this phone: inside the ticket's hour the letter opens as it was left; after it, the room keeps its house

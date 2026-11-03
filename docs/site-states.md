@@ -69,13 +69,13 @@ place" and the page title. The `before` and `open` phases keep today's words, ap
 | How to join, closed line | Applications are closed. The next recruitment is announced on @vic.enp. (the handle links to Instagram) |
 | FAQ answer to "When does recruitment open, and how fast is the process?" | Applications are closed. The next recruitment is announced on @vic.enp. (the handle links to Instagram) |
 | Skip link | Skip to the end |
-| `/apply` closed line, from `CLOSES_AT` (`CLOSED`, also in the API's closed answers) | Applications closed on 4 November 2026 at 23:59. Follow @vic.enp on Instagram for the club's news. The date and year come from `CLOSES_AT`, in Algiers time, and "@vic.enp on Instagram" stays the link. |
+| `/apply` closed line, from `CLOSES_AT` (`CLOSED`, the API's closed answer to a page still showing the ticket or the form) | Applications closed on 4 November 2026 at 23:59. Follow @vic.enp on Instagram for the club's news. The date and year come from `CLOSES_AT`, in Algiers time, and "@vic.enp on Instagram" stays the link. |
 | `/apply` closed line, before `CLOSES_AT` (a forced off-season) | Applications are closed. Follow @vic.enp on Instagram for the club's news. |
-| `/apply` closed screen | Eyebrow "Registrations", heading "Platform 9¾", the closed line, tab title "Registrations · Vision & Innovation Club". The letter, the envelope, the chips and "Step one" are removed. |
+| `/apply` closed screen (decision 171) | Eyebrow "Registrations", heading "You just missed the letter", tab title "Registrations · Vision & Innovation Club". The letter, flat with no envelope: "Dear future VICer," / "You just missed this one: applications closed on 4 November 2026 at 23:59." / "The next recruitment is announced on @vic.enp. Follow us there so the next letter finds you in time." / "The VIC team" and its seal. The date and time come from `CLOSES_AT` in Algiers time; before `CLOSES_AT` (a forced off-season) the first line is "You just missed this one: applications are closed." "@vic.enp" links to Instagram. The chips, the map and the ticket ("Step one") are removed. |
 
 Which `/apply` line shows goes by the clock, never by the force, so a tab opened before a Redeploy gets the right one
-from the API's closed answer. Both lines contain `FOLLOW` exactly once (`src/apply/letter.test.ts`, `showClosed` in
-`src/apply/main.ts`).
+from the API's closed answer. The same goes for the closed letter's date (`closedLetter` in `src/apply/letter.ts`,
+`showClosed` in `src/apply/main.ts`).
 
 The FAQ drops the "how fast" half of its answer by the owner's choice; step 3 still says "within a day". `/apply` keeps
 "for the club's news" by the owner's choice. The eyebrow and tab title drop the year on the closed screen only; the open
@@ -120,8 +120,8 @@ skip link repaint every 15 s, so they can trail by up to 15 s, and the pill's li
 
 ## `/apply`
 
-The closed screen replaces what today's still shows above the closed line ("Your letter has arrived", "is opening its
-doors", the chips, "Step one"), and shows none of it on the way there. A candidate with a checked ticket keeps the letter,
+The closed screen is the letter the candidate just missed (decision 171): the open letter's words, the envelope, the
+chips, the map and the ticket give way to it, and none of them shows on the way there. A candidate with a checked ticket keeps the letter,
 as today, in both a normal and a forced close. A slow phone that still shows the form gets the API's closed answer and
 the closed line.
 

@@ -4,12 +4,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 const HTML = readFileSync(resolve(import.meta.dirname, '../index.html'), 'utf8')
-const HEAD_AND_NOSCRIPT = HTML.replace(/<script[\s\S]*?<\/script>/g, '')
+const HTML_WITHOUT_SCRIPTS = HTML.replace(/<script[\s\S]*?<\/script>/g, '')
 
 describe('the share tags', () => {
   // "since 2014" stays: it is the club's founding, not a recruitment date.
   it('carry no date', () => {
-    expect(HEAD_AND_NOSCRIPT).not.toMatch(/\b20[2-9]\d\b|\b\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December|Oct|Nov)\b/)
+    expect(HTML_WITHOUT_SCRIPTS).not.toMatch(/\b20[2-9]\d\b|\b\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December|Oct|Nov)\b/)
   })
 
   it('point at www.vic-enp.com', () => {

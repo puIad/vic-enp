@@ -214,10 +214,14 @@ function focusField(n: number) {
   f.querySelector<HTMLElement>('input:not([hidden]), textarea')?.focus({ preventScroll: true })
 }
 
+/** an error line in `el`, as one span: a flex item beside the "!" (apply.css .ap-err), the closed line's link inside it */
+export function errLine(el: HTMLElement, text: string) {
+  el.replaceChildren(h('span', {}, ...linked(text, FOLLOW)))
+}
+
 function sayAtSend(text: string) {
   const el = $('letter-send-err')
-  // one span: the line is a flex item beside the "!" (apply.css .ap-err), its link inside it
-  el.replaceChildren(h('span', {}, ...linked(text, FOLLOW)))
+  errLine(el, text)
   el.hidden = !text
 }
 

@@ -8,8 +8,8 @@ import { CLOSES_AT, clockOffset, countdown, siteState } from '../calendar'
 import { FORCE_OFF } from '../config'
 import { detectTier } from '../world/tier'
 import { browserStore, loadDraft } from './draft'
-import { linked, openLetter, washRoom } from './form'
-import { FOLLOW, HANDLE, closedLetter } from './letter'
+import { errLine, linked, openLetter, washRoom } from './form'
+import { HANDLE, closedLetter } from './letter'
 import { startMap } from './map'
 import { startScroll } from './scroll'
 import { clearSent, loadSent, saveSent } from './sent'
@@ -21,8 +21,11 @@ document.documentElement.dataset.tier = String(detectTier())
 /** the scroll (scroll.ts), started at the end of this file on tiers 1 and 2 */
 let scroll: ReturnType<typeof startScroll> | null = null
 
-/** the site's state now, `?now=` included: only `off` closes the page */
-const state = () => siteState(Date.now() + clockOffset(location.search), FORCE_OFF)
+/** the clock, `?now=` included */
+const now = () => Date.now() + clockOffset(location.search)
+
+/** the site's state now: only `off` closes the page */
+const state = () => siteState(now(), FORCE_OFF)
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
 
@@ -56,10 +59,7 @@ async function post(path: string, body: object): Promise<{ status: number; body:
 
 function say(id: 'tk-ask-err' | 'tk-check-err', text: string) {
   const el = $(id)
-  // one span: the line is a flex item beside the "!" (apply.css .ap-err), the closed line's link inside it
-  const line = document.createElement('span')
-  line.append(...linked(text, FOLLOW))
-  el.replaceChildren(line)
+  errLine(el, text)
   el.hidden = !text
   const [input, help] = id === 'tk-ask-err' ? [local, 'tk-help tk-domain'] : [code, '']
   input.setAttribute('aria-invalid', String(!!text))
@@ -89,7 +89,7 @@ function startCountdown(seconds: number) {
 /** Ask the API for a ticket; true when it went out. The answer's line shows under the form that asked. */
 async function requestTicket(l: string, where: 'tk-ask-err' | 'tk-check-err'): Promise<boolean> {
   const { status, body } = await post('/api/code', { local: l, website: website.value })
-  const a = codeAnswer(status, body, Date.now() + clockOffset(location.search))
+  const a = codeAnswer(status, body, now())
   if (!a.sent) {
     say(where, a.text)
     return false
@@ -222,7 +222,7 @@ $('tk-change').addEventListener('click', () => {
  * chips, no ticket, no map. Its date goes by the clock, so a forced off-season before the close names none.
  */
 function showClosed() {
-  const words = closedLetter(Date.now() + clockOffset(location.search) >= +CLOSES_AT, CLOSES_AT)
+  const words = closedLetter(now() >= +CLOSES_AT, CLOSES_AT)
   document.title = `${words.eyebrow} · Vision & Innovation Club`
   document.querySelector('.ap-open-stage .ap-eyebrow')!.textContent = words.eyebrow
   document.querySelector('.ap-open-title')!.textContent = words.title
@@ -275,7 +275,7 @@ if (state() !== 'off') {
   const text = closesIn.querySelector('span')!
   const paint = () => {
     const off = state() === 'off'
-    text.textContent = off ? 'Applications closed' : `Closes in ${countdown(+CLOSES_AT - (Date.now() + clockOffset(location.search)))}`
+    text.textContent = off ? 'Applications closed' : `Closes in ${countdown(+CLOSES_AT - now())}`
     if (off) clearInterval(every)
   }
   const every = window.setInterval(paint, 15_000)

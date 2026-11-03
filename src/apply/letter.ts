@@ -45,6 +45,12 @@ export const DEPARTMENTS: readonly { code: Dept; name: string; house: string; ab
 
 export const MAILBOX = 'vic.rh@g.enp.edu.dz'
 
+/** The handle in the closed letter that links to Instagram. */
+export const HANDLE = '@vic.enp'
+
+/** The words in the closed line that link to Instagram. */
+export const FOLLOW = `${HANDLE} on Instagram`
+
 type Json = Record<string, unknown> | null
 
 export type SendAnswer =
@@ -56,8 +62,6 @@ export type SendAnswer =
   | { kind: 'retry'; text: string }
   | { kind: 'closed'; text: string }
 
-/** The words in the closed line that link to Instagram. */
-export const FOLLOW = '@vic.enp on Instagram'
 
 /** The close's day ("5 November 2026", the day and month kept on one line) and time, in Algiers time. */
 function closeDay(closesAt: Date): { day: string; time: string } {
@@ -79,8 +83,6 @@ export function closedLine(now: number, closesAt = CLOSES_AT): string {
   return `Applications closed on ${day} at ${time}. ${follow}`
 }
 
-/** The handle in the closed letter that links to Instagram. */
-export const HANDLE = '@vic.enp'
 
 /**
  * /apply's closed screen (owner, 2026-11-03, decision 171): the letter the candidate just missed, flat, with no envelope.

@@ -7,7 +7,7 @@ const RECRUITMENT_Q = 'When does recruitment open, and how fast is the process?'
 
 /** The act's lead while recruiting, and in the off-season (docs/site-states.md, The words). */
 export const LEAD = {
-  open: 'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 4 November at 23:59.',
+  open: 'Every ENP student can apply, in any year and any specialty. Applications open 26 October 2026 at 18:00 and close 5 November at 23:59.',
   off: 'Every ENP student can apply, in any year and any specialty. The steps below are how it works once applications open.',
 }
 
@@ -63,7 +63,7 @@ export const FAQ: { q: string; a: string; link?: { href: string; label: string }
   },
   {
     q: RECRUITMENT_Q,
-    a: 'Applications open on 26 October 2026 at 18:00 and close on 4 November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview.',
+    a: 'Applications open on 26 October 2026 at 18:00 and close on 5 November at 23:59. If your application is accepted, two club members contact you within a day to set up your interview.',
   },
   {
     q: 'What happens after I graduate?',

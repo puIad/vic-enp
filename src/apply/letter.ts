@@ -56,7 +56,7 @@ export type SendAnswer =
   | { kind: 'closed'; text: string }
 
 /** The line /apply shows with a "closed" answer from the API, to a page that still holds the ticket or the form. */
-export const CLOSED = 'Applications for 2026 closed on 4 November at 23:59. Follow @vic.enp on Instagram for the club’s news.'
+export const CLOSED = 'Applications for 2026 closed on 5 November at 23:59. Follow @vic.enp on Instagram for the club’s news.'
 
 /** The handle in the closed letter that links to Instagram. */
 export const HANDLE = '@vic.enp'

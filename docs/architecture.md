@@ -159,7 +159,7 @@ Phone browsers resize the viewport as the toolbar shows and hides. The canvas is
 | Name | Where | Value |
 |---|---|---|
 | `VITE_APPLY_URL` | Vercel env var (build time) | The Google Form's responder link until the 24 Oct live check passes, then `/apply`; flipping it back is the fallback (an env change plus a Redeploy, 1 to 2 minutes). |
-| `OPENS_AT`, `CLOSES_AT` | `src/calendar.ts`, read by the page, `/apply` and the API | `2026-10-26T18:00:00+01:00` (decision 130), `2026-11-04T23:59:00+01:00` (decision 155), Algiers time |
+| `OPENS_AT`, `CLOSES_AT` | `src/calendar.ts`, read by the page, `/apply` and the API | `2026-10-26T18:00:00+01:00` (decision 130), `2026-11-05T23:59:00+01:00` (decision 155), Algiers time |
 | `VITE_FORCE_OFF_SEASON` | Vercel env var, absent unless forcing, read at build by the page and at run time by the API | Any non-empty value forces the off-season, `0` included ([site-states.md](site-states.md#the-forced-off-season)). To undo it, delete it and Redeploy. |
 | Social links | `src/config.ts` | From the source brief §10 |
 

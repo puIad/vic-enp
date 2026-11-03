@@ -164,7 +164,7 @@ Left on 2026-11-01:
   the join link in How to join) is already in production: Vercel deploys `main`, and on 2026-11-01 production
   answers `/api/join-sync` (405 to a GET) and `/api/join-clicks` (401), where an unknown route is a 404. It waits on
   the recruitment repo: the script pushes nothing until `JOIN_URL` and `JOIN_SECRET` are set, after the close
-  (4 Nov 23:59).
+  (5 Nov 23:59).
 - [#104](https://github.com/puIad/vic-enp/issues/104): the off-season state, specified in
   [site-states.md](site-states.md) on 2026-11-02, to go live by itself at the close of applications.
 - v1.1 below: real testimonials, more photos, `IMG_8095` once exported.

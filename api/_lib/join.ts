@@ -23,7 +23,8 @@ const RESULTS: readonly string[] = [...DEPTS, 'Not accepted']
 const TOLD = 'join:told'
 const LINK = 'join:link'
 const CLICK = 'join:click'
-/** the mail's test token is signed for this code: it opens the inactive page and records nothing */
+/** the mail's test token is signed for this code: it opens its own page, so a test mail's button proves JOIN_SECRET matches the
+ *  script's, and records nothing */
 const TEST_CODE = 'TEST'
 /** a candidate's code: a token and a sync must accept exactly the same ones */
 const CODE = /^[A-Z]+\.\d{1,6}$/
@@ -66,7 +67,8 @@ export async function join(req: Request, d: JoinDeps): Promise<Response> {
   }
   if (code === TEST_CODE) {
     logLine(d.log, 'join', 'test', started)
-    return inactive()
+    // not the inactive page: a wrong secret must look different from a right one
+    return html('Test link OK: its signature matches. In a real result mail this button opens the department\'s group.', 200)
   }
   const outcome = await (async () => {
     const result = await d.redis.command(['HGET', key(d.keyPrefix, TOLD), code])

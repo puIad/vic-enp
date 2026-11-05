@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { sha256 } from './hash.js'
 import { fakeRedis } from './fake-redis.js'
 import { provenEmail } from './session.js'
-import { PER_IP, checkTicket, sendTicket, type TicketDeps } from './ticket.js'
+import { PER_DAY, PER_IP, checkTicket, sendTicket, type TicketDeps } from './ticket.js'
 
 function setup(over: Partial<TicketDeps> = {}) {
   const clock = { now: Date.UTC(2026, 9, 25, 9) }
@@ -242,9 +242,23 @@ describe('POST /api/code', () => {
     expect((await ask(s.d, `c${PER_IP}`, '198.51.100.1')).status).toBe(200)
   })
 
-  it('spends neither hourly count, the address\'s or the IP\'s, when the mailer fails, and says it was not sent', async () => {
+  it('sends 500 tickets a day in all, whatever the addresses and connections, then refuses for the rest of the day', async () => {
+    const s = setup()
+    expect(PER_DAY).toBe(500)
+    for (let i = 0; i < PER_DAY; i++) expect((await ask(s.d, `c${i}`, `198.51.${i % 200}.1`)).status).toBe(200)
+    const res = await ask(s.d, 'amina', '192.0.2.9')
+    expect(res.status).toBe(429)
+    expect((await res.json()).retryIn).toBe(24 * 3600)
+    expect(s.mails).toHaveLength(PER_DAY)
+    // refused by the day's cap, the address keeps its own 3 an hour
+    expect(await s.r.redis.command(['GET', `rl:e:${sha256('amina@g.enp.edu.dz')}`])).toBe('0')
+    s.later(24 * 3600)
+    expect((await ask(s.d, 'amina', '192.0.2.9')).status).toBe(200)
+  })
+
+  it('spends none of its counts, the address\'s, the IP\'s or the day\'s, when the mailer fails, and says it was not sent', async () => {
     const s = setup({ sendCode: async () => false })
-    for (let i = 0; i < PER_IP + 2; i++) {
+    for (let i = 0; i < Math.max(PER_IP, PER_DAY) + 2; i++) {
       const res = await ask(s.d, 'amina')
       expect(res.status).toBe(502)
       expect(await res.json()).toEqual({ status: 'not_sent' })

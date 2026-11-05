@@ -33,6 +33,11 @@ export function codeAnswer(status: number, body: Json, now = Date.now()): { sent
     const s = Math.max(1, Number(body?.retryIn) || 30)
     if (s <= 30) return { sent: false, text: `Wait ${s} s before asking for another ticket.` }
     const m = Math.ceil(s / 60)
+    // past an hour it is the day's cap on every ticket together (api/_lib/ticket.ts PER_DAY)
+    if (m > 60) {
+      const h = Math.ceil(m / 60)
+      return { sent: false, text: `Too many tickets were asked for today. Try again in ${h} ${h === 1 ? 'hour' : 'hours'}.` }
+    }
     // the limit may be this address's or the connection's (a campus or carrier IP is shared), so no "you asked"
     return { sent: false, text: `Too many tickets were asked for this hour. Try again in ${m} ${m === 1 ? 'minute' : 'minutes'}.` }
   }

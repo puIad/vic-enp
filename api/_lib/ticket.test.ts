@@ -248,7 +248,7 @@ describe('POST /api/code', () => {
     for (let i = 0; i < PER_DAY; i++) expect((await ask(s.d, `c${i}`, `198.51.${i % 200}.1`)).status).toBe(200)
     const res = await ask(s.d, 'amina', '192.0.2.9')
     expect(res.status).toBe(429)
-    expect((await res.json()).retryIn).toBe(24 * 3600)
+    expect(await res.json()).toEqual({ status: 'capped', retryIn: 24 * 3600 })
     expect(s.mails).toHaveLength(PER_DAY)
     // refused by the day's cap, the address keeps its own 3 an hour
     expect(await s.r.redis.command(['GET', `rl:e:${sha256('amina@g.enp.edu.dz')}`])).toBe('0')

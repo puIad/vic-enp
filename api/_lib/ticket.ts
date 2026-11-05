@@ -98,7 +98,7 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     const all = await count(d.redis, k('rl:all'), DAY_S)
     if (all.n > PER_DAY) {
       await d.redis.command(['DECR', k(`rl:e:${h}`)])
-      return { name: 'capped', res: json({ retryIn: all.ttl }, 429) }
+      return { name: 'capped', res: json({ status: 'capped', retryIn: all.ttl }, 429) }
     }
 
     const code = String(randomInt(0, 1_000_000)).padStart(6, '0')

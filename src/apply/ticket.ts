@@ -31,13 +31,14 @@ export function codeAnswer(status: number, body: Json, now = Date.now()): { sent
     return { sent: false, text: 'This address already has a registration. We have it, so there is nothing more to do. Check your ENP inbox for our mail.' }
   if (status === 429) {
     const s = Math.max(1, Number(body?.retryIn) || 30)
-    if (s <= 30) return { sent: false, text: `Wait ${s} s before asking for another ticket.` }
     const m = Math.ceil(s / 60)
-    // past an hour it is the day's cap on every ticket together (api/_lib/ticket.ts PER_DAY)
-    if (m > 60) {
+    // the day's cap on every ticket together (api/_lib/ticket.ts PER_DAY), named by the API: its wait may be minutes or hours
+    if (body?.status === 'capped') {
       const h = Math.ceil(m / 60)
-      return { sent: false, text: `Too many tickets were asked for today. Try again in ${h} ${h === 1 ? 'hour' : 'hours'}.` }
+      const wait = m > 60 ? `${h} ${h === 1 ? 'hour' : 'hours'}` : `${m} ${m === 1 ? 'minute' : 'minutes'}`
+      return { sent: false, text: `Too many tickets were asked for today. Try again in ${wait}.` }
     }
+    if (s <= 30) return { sent: false, text: `Wait ${s} s before asking for another ticket.` }
     // the limit may be this address's or the connection's (a campus or carrier IP is shared), so no "you asked"
     return { sent: false, text: `Too many tickets were asked for this hour. Try again in ${m} ${m === 1 ? 'minute' : 'minutes'}.` }
   }

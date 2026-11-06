@@ -46,14 +46,24 @@ describe('the group link', () => {
     expect(res.headers.get('location')).toBe('https://m.me/j/hr')
   })
 
-  it('shows "no longer active" for Not accepted, an unknown code, a bad token or a test token, and records nothing', async () => {
+  it('shows "no longer active" for Not accepted, an unknown code, a bad token or a test token signed with another secret, and records nothing', async () => {
     const s = setup()
     await s.push({ links: { IT: 'https://m.me/j/it' }, told: { 'IT.1': 'Not accepted', 'IT.2': 'IT' } })
-    for (const t of [token('IT.1'), token('IT.9'), token('IT.2', 'wrong'), token('TEST'), 'garbage']) {
+    for (const t of [token('IT.1'), token('IT.9'), token('IT.2', 'wrong'), token('TEST', 'wrong'), 'garbage']) {
       const res = await s.click(t)
       expect(res.status).toBe(404)
       expect(await res.text()).toContain('no longer active')
     }
+    expect(((await (await s.clicks()).json()) as { clicks: object }).clicks).toEqual({})
+  })
+
+  it('opens its own page for the test mail\'s token, so a wrong JOIN_SECRET shows before the real mails, and records nothing', async () => {
+    const s = setup()
+    const res = await s.click(token('TEST'))
+    expect(res.status).toBe(200)
+    const text = await res.text()
+    expect(text).toContain('Test link OK')
+    expect(text).not.toContain('no longer active')
     expect(((await (await s.clicks()).json()) as { clicks: object }).clicks).toEqual({})
   })
 

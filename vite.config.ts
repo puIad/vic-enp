@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
+import { configDefaults } from 'vitest/config'
 
 /**
  * The page font's requests start from the HTML (docs/quality.md): a preload for each of Gilroy's three weights, with the
@@ -52,4 +53,6 @@ export default defineConfig({
       },
     },
   },
+  // the worktrees under .claude/ are other branches: their tests are theirs, not this checkout's
+  test: { exclude: [...configDefaults.exclude, '.claude/**'] },
 })

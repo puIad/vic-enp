@@ -43,6 +43,11 @@ describe('codeAnswer: what /api/code said, in words', () => {
     // the limit may be the connection's (a shared campus or carrier IP), so the line never says "you asked"
     expect(codeAnswer(429, { retryIn: 3507 })).toEqual({ sent: false, text: expect.not.stringMatching(/you have asked/i) })
     expect(codeAnswer(429, { retryIn: 40 })).toEqual({ sent: false, text: expect.stringContaining('1 minute.') })
+    expect(codeAnswer(429, { retryIn: 3600 })).toEqual({ sent: false, text: expect.stringContaining('60 minutes') })
+    // the day's cap on every ticket together, as the API names it, in hours or, in its last hour, minutes
+    expect(codeAnswer(429, { status: 'capped', retryIn: 86400 })).toEqual({ sent: false, text: 'Too many tickets were asked for today. Try again in 24 hours.' })
+    expect(codeAnswer(429, { status: 'capped', retryIn: 2400 })).toEqual({ sent: false, text: 'Too many tickets were asked for today. Try again in 40 minutes.' })
+    expect(codeAnswer(429, { status: 'capped', retryIn: 20 })).toEqual({ sent: false, text: expect.stringContaining('today. Try again in 1 minute.') })
   })
 
   it('says applications are closed when the API says so, the line going by the clock', () => {

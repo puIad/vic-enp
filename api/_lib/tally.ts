@@ -13,6 +13,7 @@ export const STATS_S = 30 * 24 * 3600
 /** The outcomes worth a look when they show up: a candidate was turned away or a send failed on our side. */
 export const TROUBLE = new Set([
   'code.limited',
+  'code.capped',
   'code.not_sent',
   'code.unavailable',
   'verify.unavailable',

@@ -38,6 +38,11 @@ const PER_EMAIL = 3
 // high enough for a residence or campus Wi-Fi or a carrier's NAT at the opening burst (60 could shut one out for the hour,
 // owner 2026-10-24); the per-address limit and 5 tries stop guessing, so this only caps mail spam from one connection
 export const PER_IP = 300
+// every ticket together, per day: every VIC mail leaves from vic.rh's 1,500 a day, and a made-up address per ticket from many
+// connections must not burn them all (audit 2026-11-05). The busiest days so far had about 60 registrations; this keeps 1,000
+// for the confirmations, alerts and result mails whatever happens here
+export const PER_DAY = 500
+const DAY_S = 24 * 3600
 const MAX_TRIES = 5
 const json = (body: unknown, status = 200, headers: Record<string, string> = {}) =>
   Response.json(body, { status, headers: { 'cache-control': 'no-store', ...headers } })
@@ -89,6 +94,12 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     if (!(await markFree(d.redis, k(`reg:${h}`), d.now(), listed && (() => listed(email))))) return { name: 'registered', res: json({ status: 'registered' }) }
     const mine = await count(d.redis, k(`rl:e:${h}`))
     if (mine.n > PER_EMAIL) return { name: 'limited', res: json({ retryIn: mine.ttl }, 429) }
+    // counted last, so only a ticket about to go out spends it; refused here, the address keeps its own 3
+    const all = await count(d.redis, k('rl:all'), DAY_S)
+    if (all.n > PER_DAY) {
+      await d.redis.command(['DECR', k(`rl:e:${h}`)])
+      return { name: 'capped', res: json({ status: 'capped', retryIn: all.ttl }, 429) }
+    }
 
     const code = String(randomInt(0, 1_000_000)).padStart(6, '0')
     await d.redis.command(['SET', k(`gap:${h}`), '1', 'EX', RESEND_S])
@@ -96,9 +107,10 @@ export async function sendTicket(req: Request, d: TicketDeps): Promise<Response>
     await d.redis.command(['HSET', k(`otp:${h}`), 'code', sha256(code), 'at', d.now(), 'tries', 0])
     await d.redis.command(['EXPIRE', k(`otp:${h}`), CODE_S])
     if (!(await d.sendCode(email, code).catch(() => false))) {
-      // nothing went out: give back both counts and the gap, and drop the code nobody has
+      // nothing went out: give back the three counts and the gap, and drop the code nobody has
       await d.redis.command(['DECR', k(`rl:e:${h}`)])
       await d.redis.command(['DECR', ipKey])
+      await d.redis.command(['DECR', k('rl:all')])
       await d.redis.command(['DEL', k(`gap:${h}`)])
       await d.redis.command(['DEL', k(`otp:${h}`)])
       return { name: 'not_sent', res: json({ status: 'not_sent' }, 502) }
@@ -149,11 +161,11 @@ function fields(flat: string[] | null): Record<string, string> {
 const sameHash = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b))
 
 /**
- * One more in an hourly count, and the seconds left in its hour. The expiry is set whenever the count has none, so a
- * count that lost it (a failed call between the two commands) is repaired on the next request, never refuses for good.
+ * One more in a count over `s` seconds (an hour unless said), and the seconds left in it. The expiry is set whenever the count
+ * has none, so a count that lost it (a failed call between the two commands) is repaired on the next request, never refuses for good.
  */
-async function count(redis: Redis, k: string): Promise<{ n: number; ttl: number }> {
+async function count(redis: Redis, k: string, s = HOUR_S): Promise<{ n: number; ttl: number }> {
   const n = Number(await redis.command(['INCR', k]))
-  await redis.command(['EXPIRE', k, HOUR_S, 'NX'])
+  await redis.command(['EXPIRE', k, s, 'NX'])
   return { n, ttl: Number(await redis.command(['TTL', k])) }
 }
